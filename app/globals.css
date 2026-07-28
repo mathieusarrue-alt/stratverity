@@ -77,8 +77,30 @@ summary:focus-visible {
   gap: 10px;
 }
 
-.brand > span:last-child > span {
+.brand-lockup {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1;
+}
+
+.brand-lockup strong {
+  font-size: 18px;
+  font-weight: 760;
+}
+
+.brand-lockup strong > span {
   color: var(--green);
+}
+
+.brand-lockup small {
+  color: #8fa098;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  font-weight: 680;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .brand-mark {
@@ -1065,6 +1087,17 @@ h1 span {
   color: #246e43;
   font-family: var(--font-geist-mono), monospace;
   font-size: 8px;
+  text-transform: uppercase;
+}
+
+.offer-grid .working-name {
+  color: #77817a;
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  margin-top: 7px;
   text-transform: uppercase;
 }
 

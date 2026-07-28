@@ -34,16 +34,16 @@ export async function generateMetadata(): Promise<Metadata> {
   const socialImage = `${protocol}://${host}/og.png`;
 
   return {
-    title: "BacktestProof — Auditez votre stratégie, pas son storytelling",
+    title: "BacktestProof by StratVerity — Auditez votre stratégie, pas son storytelling",
     description:
       "Audit indépendant de stratégies Pine et Python : métriques recalculées, biais détectés et résultats reliés aux preuves.",
-    applicationName: "BacktestProof",
+    applicationName: "StratVerity",
     robots: {
       index: false,
       follow: false,
     },
     openGraph: {
-      title: "BacktestProof — La preuve avant la promesse",
+      title: "BacktestProof by StratVerity — La preuve avant la promesse",
       description:
         "Déposez votre stratégie. Vérifiez ses métriques, ses biais et sa robustesse.",
       type: "website",
@@ -52,7 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "BacktestProof — La preuve avant la promesse",
+      title: "BacktestProof by StratVerity — La preuve avant la promesse",
       description:
         "Audit indépendant de stratégies Pine et Python, fondé sur les preuves.",
       images: [socialImage],

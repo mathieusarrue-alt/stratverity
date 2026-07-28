@@ -108,9 +108,12 @@ export default function Home() {
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="BacktestProof — accueil">
-          <span className="brand-mark">BP</span>
-          <span>Backtest<span>Proof</span></span>
+        <a className="brand" href="#top" aria-label="StratVerity — BacktestProof">
+          <span className="brand-mark">SV</span>
+          <span className="brand-lockup">
+            <strong>Strat<span>Verity</span></strong>
+            <small>BacktestProof</small>
+          </span>
         </a>
         <nav aria-label="Navigation principale">
           <a href="#method">Méthode</a>
@@ -125,7 +128,7 @@ export default function Home() {
         <div className="hero-copy">
           <div className="eyebrow">
             <span className="live-dot" />
-            Audit indépendant Pine & Python
+            BacktestProof · Audit indépendant Pine & Python
           </div>
           <h1>
             Ne faites pas confiance à une courbe.
@@ -192,7 +195,7 @@ export default function Home() {
       </section>
 
       <section className="proof-band" aria-label="Différenciation du produit">
-        <p>Pas un nouveau backtester.</p>
+        <p>StratVerity · Verify. Improve. Monitor. Discover.</p>
         <div className="proof-statement">
           <span>Votre backtest</span>
           <b>→</b>
@@ -467,21 +470,22 @@ export default function Home() {
 
       <section className="offers-section" id="offers">
         <div className="section-heading centered">
-          <span className="section-kicker">DU DIAGNOSTIC AU MONITORING</span>
-          <h2>Un produit qui grandit avec votre stratégie.</h2>
+          <span className="section-kicker">L’ÉCOSYSTÈME STRATVERITY</span>
+          <h2>Une plateforme qui grandit avec votre stratégie.</h2>
         </div>
         <div className="offer-grid">
           {[
-            ["01", "Audit", "Vérifiez la fiabilité du code et des résultats fournis.", "Disponible en premier"],
-            ["02", "Amélioration", "Testez entrées, sorties, stops et paramètres sans confondre optimisation et preuve.", "Laboratoire contrôlé"],
-            ["03", "Monitoring", "Surveillez en temps réel la dérive entre backtest et comportement observé.", "Abonnement futur"],
-            ["04", "Stratégies vérifiées", "Découvrez plus tard des bots et indicateurs accompagnés d’un audit versionné.", "Marketplace future"],
-          ].map(([number, title, text, tag]) => (
+            ["01", "BacktestProof", "Vérifiez la fiabilité du code et des résultats fournis.", "Produit initial · Audit"],
+            ["02", "StratVerity Lab", "Testez entrées, sorties, stops et paramètres sans confondre optimisation et preuve.", "Laboratoire contrôlé"],
+            ["03", "StratVerity Radar", "Surveillez en temps réel la dérive entre backtest et comportement observé.", "Abonnement futur"],
+            ["04", "StratVerity Market", "Découvrez plus tard des bots et indicateurs accompagnés d’un audit versionné.", "Marketplace future"],
+          ].map(([number, title, text, tag], index) => (
             <article key={number}>
               <span>{number}</span>
               <h3>{title}</h3>
               <p>{text}</p>
               <small>{tag}</small>
+              {index > 0 && <i className="working-name">Nom de travail</i>}
             </article>
           ))}
         </div>
@@ -514,17 +518,21 @@ export default function Home() {
 
       <footer>
         <div className="footer-top">
-          <a className="brand" href="#top">
-            <span className="brand-mark">BP</span>
-            <span>Backtest<span>Proof</span></span>
+          <a className="brand" href="#top" aria-label="StratVerity — retour en haut">
+            <span className="brand-mark">SV</span>
+            <span className="brand-lockup">
+              <strong>Strat<span>Verity</span></strong>
+              <small>BacktestProof</small>
+            </span>
           </a>
           <p>
+            BacktestProof est un produit StratVerity.<br />
             Audit de backtests fondé sur les preuves.<br />
             Aucun rendement futur n’est garanti.
           </p>
         </div>
         <div className="footer-bottom" id="terms">
-          <span>© 2026 BacktestProof — prototype privé</span>
+          <span>© 2026 StratVerity — prototype privé</span>
           <div>
             <a href="#terms">Conditions</a>
             <a href="#terms">Confidentialité</a>
