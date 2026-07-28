@@ -38,6 +38,10 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       "Audit indépendant de stratégies Pine et Python : métriques recalculées, biais détectés et résultats reliés aux preuves.",
     applicationName: "StratVerity",
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "#f1eee5" },
+      { media: "(prefers-color-scheme: dark)", color: "#07110d" },
+    ],
     robots: {
       index: false,
       follow: false,
