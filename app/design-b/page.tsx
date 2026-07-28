@@ -1,0 +1,198 @@
+"use client";
+
+import { ChangeEvent, useRef, useState } from "react";
+
+const studioChecks = [
+  ["01", "Code", "Repaint, lookahead et cohérence des règles"],
+  ["02", "Preuves", "Transactions, coûts et résultats déclarés"],
+  ["03", "Robustesse", "Actifs, périodes et unités de temps"],
+];
+
+const studioSuite = [
+  ["BacktestProof", "Audit", "Disponible en premier"],
+  ["StratVerity Lab", "Amélioration", "Nom de travail"],
+  ["StratVerity Radar", "Monitoring", "Nom de travail"],
+  ["StratVerity Market", "Catalogue vérifié", "Nom de travail"],
+];
+
+export default function VerifiedStudio() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState("");
+
+  const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
+    setFileName(event.target.files?.[0]?.name ?? "");
+  };
+
+  return (
+    <main className="studio-page">
+      <aside className="concept-switcher studio-switcher" aria-label="Comparer les directions visuelles">
+        <a href="/">Comparer</a>
+        <a href="/design-a">A · Proof Terminal</a>
+        <a className="active" href="/design-b">B · Verified Studio</a>
+      </aside>
+
+      <header className="studio-header">
+        <a className="studio-brand" href="#studio-top" aria-label="StratVerity — BacktestProof">
+          <span>SV</span>
+          <strong>STRATVERITY</strong>
+          <small>/ BACKTESTPROOF</small>
+        </a>
+        <nav aria-label="Navigation du concept Verified Studio">
+          <a href="#studio-method">Méthode</a>
+          <a href="#studio-suite">Plateforme</a>
+          <a href="#studio-audit">Déposer</a>
+        </nav>
+        <a className="studio-nav-cta" href="#studio-audit">Commencer l’audit</a>
+      </header>
+
+      <section className="studio-hero" id="studio-top">
+        <div className="studio-hero-copy">
+          <div className="studio-eyebrow">
+            <span>BACKTESTPROOF</span>
+            <i />
+            <small>A STRATVERITY PRODUCT</small>
+          </div>
+          <h1>
+            Know what your strategy
+            <em> can actually prove.</em>
+          </h1>
+          <p>
+            Nous auditons le code, les preuves et les résultats de votre
+            stratégie. Vous voyez ce qui est fiable, ce qui reste fragile et ce
+            qui doit encore être testé.
+          </p>
+          <div className="studio-actions">
+            <a href="#studio-audit">Auditer ma stratégie <span>→</span></a>
+            <a href="#studio-method">Découvrir la méthode</a>
+          </div>
+          <div className="studio-trust">
+            <span><b>01</b> Sans compte</span>
+            <span><b>02</b> Pine & Python</span>
+            <span><b>03</b> Preuves traçables</span>
+          </div>
+        </div>
+
+        <div className="studio-hero-proof" aria-label="Exemple de note de vérification">
+          <div className="proof-document">
+            <div className="document-head">
+              <span className="document-seal">V</span>
+              <div>
+                <small>STRATVERITY · VERIFICATION NOTE</small>
+                <strong>Backtest evidence review</strong>
+              </div>
+              <em>EXAMPLE</em>
+            </div>
+            <div className="document-title">
+              <small>STRATEGY / BTC · H1</small>
+              <h2>Evidence before confidence.</h2>
+              <p>Rapport illustratif — aucune performance promise.</p>
+            </div>
+            <div className="document-score">
+              <div>
+                <small>REPRODUCTIBILITÉ</small>
+                <strong>À établir</strong>
+              </div>
+              <span>Preuves<br />incomplètes</span>
+            </div>
+            <div className="document-lines">
+              <span><i className="verified" /> Métriques recalculables <b>PRÉVU</b></span>
+              <span><i className="review" /> Coûts et slippage <b>À VÉRIFIER</b></span>
+              <span><i className="missing" /> Données intratrade <b>NON FOURNIES</b></span>
+            </div>
+            <div className="document-foot">
+              <span>REPORT ID · DEMO-2026</span>
+              <strong>BACKTESTPROOF</strong>
+            </div>
+          </div>
+          <div className="proof-orbit orbit-one">PF</div>
+          <div className="proof-orbit orbit-two">R</div>
+        </div>
+      </section>
+
+      <section className="studio-audit" id="studio-audit">
+        <div>
+          <span className="studio-section-label">PREMIER DIAGNOSTIC</span>
+          <h2>Déposez. Nous vérifions.</h2>
+          <p>Aucun fichier n’est transmis dans ce prototype privé.</p>
+        </div>
+        <div className={fileName ? "studio-drop selected" : "studio-drop"}>
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".pine,.py,.txt"
+            onChange={chooseFile}
+            aria-label="Choisir une stratégie Pine ou Python"
+          />
+          <button type="button" onClick={() => inputRef.current?.click()}>
+            <span>{fileName ? "✓" : "+"}</span>
+            <strong>{fileName || "Choisir un fichier Pine ou Python"}</strong>
+            <small>{fileName ? "Fichier sélectionné localement" : "2 Mo maximum · Aucun code exécuté"}</small>
+          </button>
+        </div>
+        <button className="studio-audit-button" type="button" disabled={!fileName}>
+          Préparer mon diagnostic <span>→</span>
+        </button>
+      </section>
+
+      <section className="studio-method" id="studio-method">
+        <div className="studio-section-heading">
+          <span className="studio-section-label">NOTRE STANDARD</span>
+          <h2>Une conclusion n’a de valeur que si l’on peut remonter à ses preuves.</h2>
+        </div>
+        <div className="studio-checks">
+          {studioChecks.map(([number, title, text]) => (
+            <article key={number}>
+              <span>{number}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+              <i>↗</i>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="studio-manifesto">
+        <span className="manifesto-mark">V</span>
+        <div>
+          <span className="studio-section-label">THE VERITY STANDARD</span>
+          <blockquote>
+            “Un backtest n’est pas une promesse. C’est une affirmation qui doit
+            pouvoir être vérifiée.”
+          </blockquote>
+        </div>
+        <p>
+          BacktestProof distingue les chiffres annoncés, les chiffres
+          recalculés et les résultats de futurs tests indépendants.
+        </p>
+      </section>
+
+      <section className="studio-suite" id="studio-suite">
+        <div className="studio-section-heading">
+          <span className="studio-section-label">STRATVERITY PLATFORM</span>
+          <h2>De la première preuve au suivi continu.</h2>
+          <p>Une architecture de produits claire, sans présenter les modules futurs comme déjà disponibles.</p>
+        </div>
+        <div className="studio-suite-grid">
+          {studioSuite.map(([name, role, status], index) => (
+            <article className={index === 0 ? "available" : ""} key={name}>
+              <span>0{index + 1}</span>
+              <small>{role}</small>
+              <h3>{name}</h3>
+              <p>{status}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer className="studio-footer">
+        <div>
+          <strong>STRATVERITY</strong>
+          <span>BACKTESTPROOF · LA PREUVE AVANT LA PROMESSE</span>
+        </div>
+        <p>Prototype privé · Aucun rendement futur garanti · © 2026 StratVerity</p>
+      </footer>
+    </main>
+  );
+}
