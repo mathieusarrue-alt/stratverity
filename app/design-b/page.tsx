@@ -28,7 +28,7 @@ type AuditTeaser = {
 
 const AUDIT_API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
-  "https://audit.13-39-177-70.sslip.io";
+  "https://signals.13-39-177-70.sslip.io/backtestproof";
 
 const languages: { code: Locale; label: string; short: string }[] = [
   { code: "fr", label: "Français", short: "FR" },
