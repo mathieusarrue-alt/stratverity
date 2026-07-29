@@ -2720,6 +2720,69 @@ footer {
   z-index: 2;
 }
 
+.audit-report-email {
+  align-items: end;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  margin-top: 16px;
+  position: relative;
+  z-index: 3;
+}
+
+.audit-report-email label {
+  display: grid;
+  gap: 7px;
+}
+
+.audit-report-email label > span {
+  color: var(--sv-muted);
+  font: 700 7px var(--font-geist-mono), monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.audit-report-email input {
+  background: color-mix(in srgb, var(--sv-paper) 88%, transparent);
+  border: 1px solid var(--sv-line);
+  color: var(--sv-ink);
+  font: 600 11px var(--font-geist-mono), monospace;
+  min-height: 45px;
+  outline: none;
+  padding: 0 13px;
+  width: 100%;
+}
+
+.audit-report-email input:focus {
+  border-color: var(--sv-green);
+  box-shadow: 0 0 0 3px var(--sv-green-soft);
+}
+
+.audit-report-email .primary-action {
+  border: 0;
+  min-height: 45px;
+}
+
+.audit-report-email small {
+  color: #c5473a;
+  font-size: 9px;
+  grid-column: 1 / -1;
+}
+
+.audit-report-sent {
+  border-left: 3px solid var(--sv-green);
+  color: var(--sv-green) !important;
+  margin-top: 16px;
+  padding: 10px 12px;
+}
+
+.audit-report-pending {
+  border-left: 3px solid var(--sv-line);
+  color: var(--sv-muted) !important;
+  margin-top: 16px;
+  padding: 10px 12px;
+}
+
 @media (max-width: 980px) {
   .audit-workflow {
     grid-template-columns: 1fr;
@@ -2733,6 +2796,11 @@ footer {
 @media (max-width: 640px) {
   .audit-upload-grid,
   .audit-context-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-report-email {
+    align-items: stretch;
     grid-template-columns: 1fr;
   }
 

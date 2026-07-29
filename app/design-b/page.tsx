@@ -25,6 +25,7 @@ type AuditTeaser = {
   acceptance_id: string;
   terms_bundle_id: string;
   evidence_receipt: string;
+  delivery_token?: string;
   available_sections: string[];
   message: string;
 };
@@ -247,6 +248,45 @@ const copy = {
   },
 } as const;
 
+const reportCopy = {
+  fr: {
+    label: "Adresse email",
+    placeholder: "vous@exemple.com",
+    submit: "Recevoir mon rapport",
+    sending: "Envoi en cours…",
+    sent: "Lien privé envoyé. Consultez votre boîte de réception ; il expire rapidement.",
+    failed: "L’envoi est indisponible pour le moment. Réessayez dans quelques instants.",
+    pending: "La livraison email est en cours d’activation. Votre rapport reste conservé de façon privée.",
+  },
+  en: {
+    label: "Email address",
+    placeholder: "you@example.com",
+    submit: "Send my report",
+    sending: "Sending…",
+    sent: "Private link sent. Check your inbox; it expires shortly.",
+    failed: "Delivery is temporarily unavailable. Please try again shortly.",
+    pending: "Email delivery is being activated. Your report remains stored privately.",
+  },
+  es: {
+    label: "Email",
+    placeholder: "tu@ejemplo.com",
+    submit: "Recibir mi informe",
+    sending: "Enviando…",
+    sent: "Enlace privado enviado. Revisa tu correo; caduca pronto.",
+    failed: "El envío no está disponible temporalmente. Inténtalo de nuevo.",
+    pending: "La entrega por email se está activando. Tu informe permanece guardado de forma privada.",
+  },
+  de: {
+    label: "E-Mail-Adresse",
+    placeholder: "sie@beispiel.de",
+    submit: "Bericht erhalten",
+    sending: "Wird gesendet…",
+    sent: "Privater Link gesendet. Bitte prüfen Sie Ihren Posteingang; er läuft bald ab.",
+    failed: "Der Versand ist vorübergehend nicht verfügbar. Bitte erneut versuchen.",
+    pending: "Der E-Mail-Versand wird aktiviert. Ihr Bericht bleibt privat gespeichert.",
+  },
+} as const;
+
 const barSets: Record<ProductMode, number[]> = {
   audit: [18, 28, 24, 40, 36, 51, 48, 61, 57, 68, 73, 78],
   improve: [14, 22, 19, 33, 29, 46, 41, 58, 64, 72, 79, 91],
@@ -282,6 +322,8 @@ export default function StratVeritySite() {
   const [auditState, setAuditState] = useState<AuditState>("idle");
   const [auditMessage, setAuditMessage] = useState("");
   const [auditTeaser, setAuditTeaser] = useState<AuditTeaser | null>(null);
+  const [reportEmail, setReportEmail] = useState("");
+  const [reportDeliveryState, setReportDeliveryState] = useState<"idle" | "submitting" | "sent" | "error">("idle");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loginOpen, setLoginOpen] = useState(false);
@@ -289,6 +331,7 @@ export default function StratVeritySite() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const t = copy[locale];
+  const rt = reportCopy[locale];
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem("stratverity-theme");
@@ -374,18 +417,21 @@ export default function StratVeritySite() {
     setPineFile(event.target.files?.[0] ?? null);
     setAuditState("idle");
     setAuditTeaser(null);
+    setReportDeliveryState("idle");
   };
 
   const selectTrades = (event: ChangeEvent<HTMLInputElement>) => {
     setTradesFile(event.target.files?.[0] ?? null);
     setAuditState("idle");
     setAuditTeaser(null);
+    setReportDeliveryState("idle");
   };
 
   const submitAudit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAuditMessage("");
     setAuditTeaser(null);
+    setReportDeliveryState("idle");
     if (!pineFile || !tradesFile || !termsAccepted) {
       setAuditState("error");
       setAuditMessage(t.audit.missing);
@@ -428,6 +474,29 @@ export default function StratVeritySite() {
     } catch (error) {
       setAuditState("error");
       setAuditMessage(error instanceof Error ? error.message : t.audit.failed);
+    }
+  };
+
+  const submitReportEmail = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!auditTeaser?.delivery_token || !reportEmail.trim()) return;
+    setReportDeliveryState("submitting");
+    try {
+      const response = await fetch(
+        `${AUDIT_API_URL}/v1/audits/${encodeURIComponent(auditTeaser.audit_id)}/report-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: reportEmail.trim(),
+            delivery_token: auditTeaser.delivery_token,
+          }),
+        },
+      );
+      if (!response.ok) throw new Error(rt.failed);
+      setReportDeliveryState("sent");
+    } catch {
+      setReportDeliveryState("error");
     }
   };
 
@@ -564,6 +633,30 @@ export default function StratVeritySite() {
             <div className="audit-blurred-grid" aria-hidden="true"><i /><i /><i /><i /></div>
             <ul>{auditTeaser.available_sections.map((section) => <li key={section}>{section}</li>)}</ul>
             <p>{auditMessage}</p>
+            {!auditTeaser.delivery_token ? (
+              <p className="audit-report-pending" role="status">{rt.pending}</p>
+            ) : reportDeliveryState !== "sent" ? (
+              <form className="audit-report-email" onSubmit={submitReportEmail}>
+                <label>
+                  <span>{rt.label}</span>
+                  <input
+                    type="email"
+                    required
+                    maxLength={320}
+                    value={reportEmail}
+                    onChange={(event) => setReportEmail(event.target.value)}
+                    placeholder={rt.placeholder}
+                    autoComplete="email"
+                  />
+                </label>
+                <button className="primary-action" type="submit" disabled={reportDeliveryState === "submitting"}>
+                  <span>{reportDeliveryState === "submitting" ? rt.sending : rt.submit}</span><i>→</i>
+                </button>
+                {reportDeliveryState === "error" && <small role="alert">{rt.failed}</small>}
+              </form>
+            ) : (
+              <p className="audit-report-sent" role="status">{rt.sent}</p>
+            )}
           </aside>
         )}
       </section>
