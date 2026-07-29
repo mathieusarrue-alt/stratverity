@@ -14,6 +14,7 @@ type Theme = "light" | "dark";
 type Locale = "fr" | "en" | "es" | "de";
 type ProductMode = "audit" | "improve" | "monitor";
 type AuditState = "idle" | "submitting" | "success" | "error";
+type SubmissionMode = "files" | "bundle";
 
 type AuditTeaser = {
   audit_id: string;
@@ -28,6 +29,15 @@ type AuditTeaser = {
   delivery_token?: string;
   available_sections: string[];
   message: string;
+  bundle_summary?: {
+    submission_type: string;
+    audit_readiness: string;
+    member_count: number;
+    expanded_size_bytes: number;
+    detected_languages: string[];
+    role_counts: Record<string, number>;
+    archive_sha256: string;
+  };
 };
 
 const AUDIT_API_URL =
@@ -88,19 +98,24 @@ const copy = {
     audit: {
       kicker: "PREMIER DIAGNOSTIC",
       title: "Déposez. Nous vérifions.",
-      body: "Votre Pine et l’export TradingView sont audités sans exécuter le code.",
+      body: "Déposez votre Pine et l’export TradingView séparément, ou un dossier ZIP contenant les deux. Aucun code client n’est exécuté.",
+      filesMode: "Deux fichiers",
+      bundleMode: "Dossier ZIP",
       choose: "Choisir le fichier Pine",
       trades: "Choisir l’export CSV TradingView",
+      bundleChoose: "Choisir le dossier ZIP",
       selected: "Fichier sélectionné localement",
       limit: "2 Mo maximum · Aucun code exécuté",
       tradesLimit: "10 Mo maximum · Transactions clôturées",
+      bundleLimit: "20 Mo compressés · 25 Mo décompressés · Aucun code exécuté",
+      bundleDetected: "fichiers inventoriés et vérifiés",
       symbol: "Actif",
       timeframe: "Unité de temps",
       capital: "Capital initial",
       terms: "J’accepte les conditions de l’aperçu privé et le traitement des fichiers pour produire cet audit.",
       button: "Lancer l’audit",
       submitting: "Audit en cours…",
-      missing: "Ajoutez le Pine, le CSV et acceptez les conditions.",
+      missing: "Ajoutez les fichiers demandés et acceptez les conditions.",
       failed: "Le dépôt n’a pas pu être audité. Vérifiez les fichiers et réessayez.",
       ready: "Rapport calculé",
       delivery: "Livraison sécurisée par email requise pour révéler le rapport limité.",
@@ -203,7 +218,7 @@ const copy = {
     hero: { status: "Verification engine · Private preview", line1: "Turn a backtest", line2: "into usable evidence.", body: "Audit your strategy, measure robustness and test improvement paths without confusing optimization with future performance.", primary: "Audit my strategy", secondary: "Explore the method", trust: ["No account", "Pine & Python", "Traceable evidence"] },
     modes: { audit: "Audit", improve: "Improve", monitor: "Monitor" },
     console: { title: "Controlled optimization scenario", subtitle: "Interactive example · Simulated data", before: "Before", after: "After tests", labels: { audit: ["Checks", "Risks detected", "Linked evidence"], improve: ["Net performance", "Win rate", "Max drawdown"], monitor: ["Observed drift", "Active alerts", "Monitoring"] }, values: { audit: ["27", "3", "100%"], improve: ["+34.6%", "+9.4 pts", "−21.8%"], monitor: ["2.7%", "4", "24/7"] }, note: "Illustration only: simulated scenario variation, not a client result or return guarantee." },
-    audit: { kicker: "FIRST DIAGNOSTIC", title: "Upload. We verify.", body: "Your Pine file and TradingView export are audited without executing the code.", choose: "Choose the Pine file", trades: "Choose the TradingView CSV export", selected: "File selected locally", limit: "2 MB maximum · No code executed", tradesLimit: "10 MB maximum · Closed trades", symbol: "Asset", timeframe: "Timeframe", capital: "Initial capital", terms: "I accept the private-preview terms and file processing required to produce this audit.", button: "Run the audit", submitting: "Audit in progress…", missing: "Add the Pine file, CSV and accept the terms.", failed: "The submission could not be audited. Check the files and try again.", ready: "Report calculated", delivery: "Secure email delivery is required to reveal the limited report." },
+    audit: { kicker: "FIRST DIAGNOSTIC", title: "Upload. We verify.", body: "Upload your Pine and TradingView export separately, or a ZIP containing both. Client code is never executed.", filesMode: "Two files", bundleMode: "ZIP folder", choose: "Choose the Pine file", trades: "Choose the TradingView CSV export", bundleChoose: "Choose ZIP folder", selected: "File selected locally", limit: "2 MB maximum · No code executed", tradesLimit: "10 MB maximum · Closed trades", bundleLimit: "20 MB compressed · 25 MB expanded · No code executed", bundleDetected: "files inventoried and verified", symbol: "Asset", timeframe: "Timeframe", capital: "Initial capital", terms: "I accept the private-preview terms and file processing required to produce this audit.", button: "Run the audit", submitting: "Audit in progress…", missing: "Add the required files and accept the terms.", failed: "The submission could not be audited. Check the files and try again.", ready: "Report calculated", delivery: "Secure email delivery is required to reveal the limited report." },
     method: { kicker: "THE STRATVERITY STANDARD", title: "Every conclusion should lead back to evidence.", body: "We separate storytelling, declared figures, possible recalculations and tests actually performed.", items: [["01", "Inspect", "Code, parameters, dates and market assumptions."], ["02", "Recalculate", "PF, net Avg R, fees, drawdown and stability."], ["03", "Challenge", "Assets, periods, timeframes and frictions."]] },
     improvement: { kicker: "STRATVERITY LAB", title: "See what improves. And what breaks.", body: "Every variant is compared with its baseline across several dimensions. A win-rate gain means little if Profit Factor falls or drawdown rises.", before: "Submitted strategy", after: "Tested variant", metrics: [["Net performance", "+34.6%", "illustrative"], ["Win rate", "+9.4 pts", "secondary"], ["Profit Factor", "1.18 → 1.46", "after fees"], ["Max drawdown", "−21.8%", "reduction"]], disclaimer: "Demo data. Actual changes depend on code, markets, period, fees and overfitting risk." },
     research: { kicker: "RESEARCH", title: "Method before marketing.", body: "Short notes on robustness testing and why some beautiful backtests fail in live conditions.", cards: [["Robustness", "Why cross-asset testing reveals dependence on one market.", "7 min"], ["Overfitting", "Separate genuine improvement from opportunistic parameter tuning.", "9 min"], ["Execution costs", "Measure fees, slippage and liquidity impact.", "6 min"]], read: "Read note" },
@@ -219,7 +234,7 @@ const copy = {
     hero: { status: "Motor de verificación · Vista privada", line1: "Convierte un backtest", line2: "en evidencia útil.", body: "Audita tu estrategia, mide su robustez y prueba mejoras sin confundir optimización con rendimiento futuro.", primary: "Auditar mi estrategia", secondary: "Explorar el método", trust: ["Sin cuenta", "Pine y Python", "Evidencia trazable"] },
     modes: { audit: "Auditoría", improve: "Mejora", monitor: "Monitorización" },
     console: { title: "Escenario de optimización controlada", subtitle: "Ejemplo interactivo · Datos simulados", before: "Antes", after: "Después", labels: { audit: ["Controles", "Riesgos detectados", "Evidencias"], improve: ["Rendimiento neto", "Winrate", "Drawdown máx."], monitor: ["Desviación", "Alertas activas", "Vigilancia"] }, values: { audit: ["27", "3", "100%"], improve: ["+34,6%", "+9,4 pts", "−21,8%"], monitor: ["2,7%", "4", "24/7"] }, note: "Solo ilustración: escenario simulado, no resultado de cliente ni garantía de rentabilidad." },
-    audit: { kicker: "PRIMER DIAGNÓSTICO", title: "Sube. Verificamos.", body: "Auditamos el Pine y la exportación de TradingView sin ejecutar el código.", choose: "Elegir archivo Pine", trades: "Elegir CSV de TradingView", selected: "Archivo seleccionado localmente", limit: "Máximo 2 MB · Sin ejecutar código", tradesLimit: "Máximo 10 MB · Operaciones cerradas", symbol: "Activo", timeframe: "Temporalidad", capital: "Capital inicial", terms: "Acepto las condiciones de la vista privada y el tratamiento necesario para producir la auditoría.", button: "Lanzar auditoría", submitting: "Auditoría en curso…", missing: "Añade el Pine, el CSV y acepta las condiciones.", failed: "No se pudo auditar el envío. Revisa los archivos e inténtalo de nuevo.", ready: "Informe calculado", delivery: "Se requiere entrega segura por email para revelar el informe limitado." },
+    audit: { kicker: "PRIMER DIAGNÓSTICO", title: "Sube. Verificamos.", body: "Sube Pine y CSV por separado, o un ZIP con ambos. Nunca ejecutamos el código del cliente.", filesMode: "Dos archivos", bundleMode: "Carpeta ZIP", choose: "Elegir archivo Pine", trades: "Elegir CSV de TradingView", bundleChoose: "Elegir carpeta ZIP", selected: "Archivo seleccionado localmente", limit: "Máximo 2 MB · Sin ejecutar código", tradesLimit: "Máximo 10 MB · Operaciones cerradas", bundleLimit: "20 MB comprimidos · 25 MB expandidos · Sin ejecutar código", bundleDetected: "archivos inventariados y verificados", symbol: "Activo", timeframe: "Temporalidad", capital: "Capital inicial", terms: "Acepto las condiciones de la vista privada y el tratamiento necesario para producir la auditoría.", button: "Lanzar auditoría", submitting: "Auditoría en curso…", missing: "Añade los archivos requeridos y acepta las condiciones.", failed: "No se pudo auditar el envío. Revisa los archivos e inténtalo de nuevo.", ready: "Informe calculado", delivery: "Se requiere entrega segura por email para revelar el informe limitado." },
     method: { kicker: "EL ESTÁNDAR STRATVERITY", title: "Cada conclusión debe volver a su evidencia.", body: "Separamos narrativa, cifras declaradas, recálculos posibles y pruebas realmente realizadas.", items: [["01", "Inspeccionar", "Código, parámetros, fechas e hipótesis."], ["02", "Recalcular", "PF, Avg R neto, costes, drawdown y estabilidad."], ["03", "Poner a prueba", "Activos, periodos, temporalidades y fricciones."]] },
     improvement: { kicker: "STRATVERITY LAB", title: "Ve lo que mejora. Y lo que empeora.", body: "Cada variante se compara con la base. Subir el winrate no sirve si cae el Profit Factor o aumenta el drawdown.", before: "Estrategia enviada", after: "Variante probada", metrics: [["Rendimiento neto", "+34,6%", "ilustrativo"], ["Winrate", "+9,4 pts", "secundario"], ["Profit Factor", "1,18 → 1,46", "tras costes"], ["Drawdown máx.", "−21,8%", "reducción"]], disclaimer: "Datos de demostración. Los cambios reales dependen del código, mercado, periodo, costes y sobreoptimización." },
     research: { kicker: "INVESTIGACIÓN", title: "Método antes que marketing.", body: "Notas breves sobre robustez y por qué algunos backtests atractivos fallan en real.", cards: [["Robustez", "Cómo el test multi-activo revela dependencia de un mercado.", "7 min"], ["Sobreoptimización", "Distinguir una mejora real de un ajuste oportunista.", "9 min"], ["Costes de ejecución", "Medir comisiones, slippage y liquidez.", "6 min"]], read: "Leer nota" },
@@ -235,7 +250,7 @@ const copy = {
     hero: { status: "Prüfungs-Engine · Private Vorschau", line1: "Machen Sie aus Backtests", line2: "belastbare Evidenz.", body: "Prüfen Sie Ihre Strategie, messen Sie Robustheit und testen Sie Verbesserungen, ohne Optimierung mit künftiger Performance zu verwechseln.", primary: "Strategie prüfen", secondary: "Methode ansehen", trust: ["Ohne Konto", "Pine & Python", "Nachvollziehbare Evidenz"] },
     modes: { audit: "Audit", improve: "Verbessern", monitor: "Monitoring" },
     console: { title: "Kontrolliertes Optimierungsszenario", subtitle: "Interaktives Beispiel · Simulierte Daten", before: "Vorher", after: "Nach Tests", labels: { audit: ["Prüfungen", "Erkannte Risiken", "Verknüpfte Evidenz"], improve: ["Netto-Performance", "Trefferquote", "Max. Drawdown"], monitor: ["Beobachtete Drift", "Aktive Alarme", "Überwachung"] }, values: { audit: ["27", "3", "100%"], improve: ["+34,6%", "+9,4 Pkt.", "−21,8%"], monitor: ["2,7%", "4", "24/7"] }, note: "Nur Illustration: simuliertes Szenario, kein Kundenergebnis und keine Renditegarantie." },
-    audit: { kicker: "ERSTE DIAGNOSE", title: "Hochladen. Wir prüfen.", body: "Pine-Datei und TradingView-Export werden geprüft, ohne den Code auszuführen.", choose: "Pine-Datei wählen", trades: "TradingView-CSV wählen", selected: "Datei lokal ausgewählt", limit: "Maximal 2 MB · Kein Code ausgeführt", tradesLimit: "Maximal 10 MB · Geschlossene Trades", symbol: "Asset", timeframe: "Zeiteinheit", capital: "Startkapital", terms: "Ich akzeptiere die Bedingungen der privaten Vorschau und die Verarbeitung der Dateien für dieses Audit.", button: "Audit starten", submitting: "Audit läuft…", missing: "Pine, CSV hinzufügen und Bedingungen akzeptieren.", failed: "Die Einreichung konnte nicht geprüft werden. Dateien prüfen und erneut versuchen.", ready: "Bericht berechnet", delivery: "Sichere E-Mail-Zustellung ist erforderlich, um den begrenzten Bericht anzuzeigen." },
+    audit: { kicker: "ERSTE DIAGNOSE", title: "Hochladen. Wir prüfen.", body: "Pine und TradingView-CSV getrennt oder gemeinsam als ZIP hochladen. Kundencode wird nie ausgeführt.", filesMode: "Zwei Dateien", bundleMode: "ZIP-Ordner", choose: "Pine-Datei wählen", trades: "TradingView-CSV wählen", bundleChoose: "ZIP-Ordner wählen", selected: "Datei lokal ausgewählt", limit: "Maximal 2 MB · Kein Code ausgeführt", tradesLimit: "Maximal 10 MB · Geschlossene Trades", bundleLimit: "20 MB komprimiert · 25 MB entpackt · Kein Code ausgeführt", bundleDetected: "Dateien inventarisiert und geprüft", symbol: "Asset", timeframe: "Zeiteinheit", capital: "Startkapital", terms: "Ich akzeptiere die Bedingungen der privaten Vorschau und die Verarbeitung der Dateien für dieses Audit.", button: "Audit starten", submitting: "Audit läuft…", missing: "Erforderliche Dateien hinzufügen und Bedingungen akzeptieren.", failed: "Die Einreichung konnte nicht geprüft werden. Dateien prüfen und erneut versuchen.", ready: "Bericht berechnet", delivery: "Sichere E-Mail-Zustellung ist erforderlich, um den begrenzten Bericht anzuzeigen." },
     method: { kicker: "DER STRATVERITY-STANDARD", title: "Jede Schlussfolgerung muss zur Evidenz führen.", body: "Wir trennen Storytelling, deklarierte Zahlen, mögliche Neuberechnungen und tatsächlich ausgeführte Tests.", items: [["01", "Prüfen", "Code, Parameter, Daten und Marktannahmen."], ["02", "Neuberechnen", "PF, Netto-Avg-R, Gebühren, Drawdown und Stabilität."], ["03", "Belasten", "Assets, Perioden, Zeiteinheiten und Friktionen."]] },
     improvement: { kicker: "STRATVERITY LAB", title: "Sehen, was besser wird. Und was leidet.", body: "Jede Variante wird mehrdimensional verglichen. Eine höhere Trefferquote zählt nicht, wenn Profit Factor sinkt oder Drawdown steigt.", before: "Gelieferte Strategie", after: "Getestete Variante", metrics: [["Netto-Performance", "+34,6%", "illustrativ"], ["Trefferquote", "+9,4 Pkt.", "sekundär"], ["Profit Factor", "1,18 → 1,46", "nach Gebühren"], ["Max. Drawdown", "−21,8%", "Reduktion"]], disclaimer: "Demodaten. Reale Änderungen hängen von Code, Märkten, Zeitraum, Gebühren und Overfitting-Risiko ab." },
     research: { kicker: "RESEARCH", title: "Methode vor Marketing.", body: "Kurze Beiträge über Robustheit und warum schöne Backtests live scheitern können.", cards: [["Robustheit", "Wie Multi-Asset-Tests Marktabhängigkeit zeigen.", "7 Min."], ["Overfitting", "Echte Verbesserung von opportunistischem Tuning trennen.", "9 Min."], ["Ausführungskosten", "Gebühren, Slippage und Liquidität messen.", "6 Min."]], read: "Beitrag lesen" },
@@ -310,11 +325,14 @@ function BrandLogo({ compact = false }: { compact?: boolean }) {
 export default function StratVeritySite() {
   const pineInputRef = useRef<HTMLInputElement>(null);
   const tradesInputRef = useRef<HTMLInputElement>(null);
+  const bundleInputRef = useRef<HTMLInputElement>(null);
   const [theme, setTheme] = useState<Theme>("light");
   const [locale, setLocale] = useState<Locale>("fr");
   const [mode, setMode] = useState<ProductMode>("improve");
+  const [submissionMode, setSubmissionMode] = useState<SubmissionMode>("files");
   const [pineFile, setPineFile] = useState<File | null>(null);
   const [tradesFile, setTradesFile] = useState<File | null>(null);
+  const [bundleFile, setBundleFile] = useState<File | null>(null);
   const [symbol, setSymbol] = useState("BTCUSDT");
   const [timeframe, setTimeframe] = useState("15m");
   const [capital, setCapital] = useState("10000");
@@ -427,25 +445,53 @@ export default function StratVeritySite() {
     setReportDeliveryState("idle");
   };
 
+  const selectBundle = (event: ChangeEvent<HTMLInputElement>) => {
+    setBundleFile(event.target.files?.[0] ?? null);
+    setAuditState("idle");
+    setAuditTeaser(null);
+    setReportDeliveryState("idle");
+  };
+
+  const chooseSubmissionMode = (nextMode: SubmissionMode) => {
+    setSubmissionMode(nextMode);
+    setAuditState("idle");
+    setAuditTeaser(null);
+    setAuditMessage("");
+    setReportDeliveryState("idle");
+  };
+
   const submitAudit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAuditMessage("");
     setAuditTeaser(null);
     setReportDeliveryState("idle");
-    if (!pineFile || !tradesFile || !termsAccepted) {
+    const inputsReady = submissionMode === "bundle"
+      ? Boolean(bundleFile)
+      : Boolean(pineFile && tradesFile);
+    if (!inputsReady || !termsAccepted) {
       setAuditState("error");
       setAuditMessage(t.audit.missing);
       return;
     }
-    if (pineFile.size > 2 * 1024 * 1024 || tradesFile.size > 10 * 1024 * 1024) {
+    if (
+      (submissionMode === "files" && (
+        (pineFile?.size ?? 0) > 2 * 1024 * 1024
+        || (tradesFile?.size ?? 0) > 10 * 1024 * 1024
+      ))
+      || (submissionMode === "bundle" && (bundleFile?.size ?? 0) > 20 * 1024 * 1024)
+    ) {
       setAuditState("error");
       setAuditMessage(t.audit.failed);
       return;
     }
 
     const form = new FormData();
-    form.set("pine", pineFile);
-    form.set("trades", tradesFile);
+    if (submissionMode === "bundle" && bundleFile) {
+      form.set("bundle", bundleFile);
+    } else if (pineFile && tradesFile) {
+      form.set("pine", pineFile);
+      form.set("trades", tradesFile);
+    }
     form.set("symbol", symbol.trim());
     form.set("timeframe", timeframe.trim());
     form.set(
@@ -460,7 +506,10 @@ export default function StratVeritySite() {
 
     setAuditState("submitting");
     try {
-      const response = await fetch(`${AUDIT_API_URL}/v1/audits/tradingview`, {
+      const endpoint = submissionMode === "bundle"
+        ? "/v1/audits/tradingview-bundle"
+        : "/v1/audits/tradingview";
+      const response = await fetch(`${AUDIT_API_URL}${endpoint}`, {
         method: "POST",
         body: form,
       });
@@ -600,7 +649,11 @@ export default function StratVeritySite() {
       <section className="quick-audit audit-workflow" id="audit" data-reveal>
         <div className="audit-workflow-intro"><span className="section-label">{t.audit.kicker}</span><h2>{t.audit.title}</h2><p>{t.audit.body}</p></div>
         <form className="audit-form" onSubmit={submitAudit}>
-          <div className="audit-upload-grid">
+          <div className="audit-source-tabs" role="tablist" aria-label={t.audit.title}>
+            <button type="button" role="tab" aria-selected={submissionMode === "files"} className={submissionMode === "files" ? "active" : ""} onClick={() => chooseSubmissionMode("files")}>{t.audit.filesMode}</button>
+            <button type="button" role="tab" aria-selected={submissionMode === "bundle"} className={submissionMode === "bundle" ? "active" : ""} onClick={() => chooseSubmissionMode("bundle")}>{t.audit.bundleMode}</button>
+          </div>
+          {submissionMode === "files" ? <div className="audit-upload-grid">
             <div className={pineFile ? "quick-drop selected" : "quick-drop"}>
               <input ref={pineInputRef} type="file" accept=".pine,text/plain" onChange={selectPine} aria-label={t.audit.choose} />
               <button type="button" onClick={() => pineInputRef.current?.click()}>
@@ -615,7 +668,15 @@ export default function StratVeritySite() {
                 <span><strong>{tradesFile?.name || t.audit.trades}</strong><small>{tradesFile ? t.audit.selected : t.audit.tradesLimit}</small></span>
               </button>
             </div>
-          </div>
+          </div> : <div className="audit-upload-grid audit-upload-grid-bundle">
+            <div className={bundleFile ? "quick-drop selected" : "quick-drop"}>
+              <input ref={bundleInputRef} type="file" accept=".zip,application/zip" onChange={selectBundle} aria-label={t.audit.bundleChoose} />
+              <button type="button" onClick={() => bundleInputRef.current?.click()}>
+                <i>{bundleFile ? "✓" : "↥"}</i>
+                <span><strong>{bundleFile?.name || t.audit.bundleChoose}</strong><small>{bundleFile ? t.audit.selected : t.audit.bundleLimit}</small></span>
+              </button>
+            </div>
+          </div>}
           <div className="audit-context-grid">
             <label><span>{t.audit.symbol}</span><input value={symbol} onChange={(event) => setSymbol(event.target.value)} required maxLength={100} /></label>
             <label><span>{t.audit.timeframe}</span><input value={timeframe} onChange={(event) => setTimeframe(event.target.value)} required maxLength={20} /></label>
@@ -632,6 +693,12 @@ export default function StratVeritySite() {
             <div className="audit-teaser-head"><span>✓</span><div><small>BACKTESTPROOF · ENGINE {auditTeaser.engine_version}</small><h3>{t.audit.ready}</h3></div></div>
             <div className="audit-blurred-grid" aria-hidden="true"><i /><i /><i /><i /></div>
             <ul>{auditTeaser.available_sections.map((section) => <li key={section}>{section}</li>)}</ul>
+            {auditTeaser.bundle_summary && (
+              <p className="audit-bundle-summary">
+                <strong>{auditTeaser.bundle_summary.member_count}</strong> {t.audit.bundleDetected}
+                {auditTeaser.bundle_summary.detected_languages.length > 0 && <span> · {auditTeaser.bundle_summary.detected_languages.join(", ")}</span>}
+              </p>
+            )}
             <p>{auditMessage}</p>
             {!auditTeaser.delivery_token ? (
               <p className="audit-report-pending" role="status">{rt.pending}</p>

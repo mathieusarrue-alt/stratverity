@@ -2559,11 +2559,47 @@ footer {
   gap: 15px;
 }
 
+.audit-source-tabs {
+  background: color-mix(in srgb, var(--sv-paper) 70%, transparent);
+  border: 1px solid var(--sv-line);
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  justify-self: start;
+  padding: 3px;
+}
+
+.audit-source-tabs button {
+  background: transparent;
+  border: 0;
+  color: var(--sv-muted);
+  cursor: pointer;
+  font: 700 8px var(--font-geist-mono), monospace;
+  letter-spacing: 0.06em;
+  min-height: 34px;
+  padding: 0 14px;
+  text-transform: uppercase;
+  transition: background-color 220ms ease, color 220ms ease, box-shadow 220ms ease;
+}
+
+.audit-source-tabs button:hover {
+  color: var(--sv-ink);
+}
+
+.audit-source-tabs button.active {
+  background: var(--sv-green);
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--sv-green) 25%, transparent);
+  color: var(--sv-bg);
+}
+
 .audit-upload-grid,
 .audit-context-grid {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.audit-upload-grid-bundle {
+  grid-template-columns: 1fr;
 }
 
 .audit-context-grid {
@@ -2720,6 +2756,25 @@ footer {
   z-index: 2;
 }
 
+.audit-bundle-summary {
+  align-items: baseline;
+  border-left: 3px solid var(--sv-green);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 8px 10px;
+}
+
+.audit-bundle-summary strong {
+  color: var(--sv-green);
+  font: 800 13px var(--font-geist-mono), monospace;
+}
+
+.audit-bundle-summary span {
+  color: var(--sv-muted);
+}
+
 .audit-report-email {
   align-items: end;
   display: grid;
@@ -2794,6 +2849,10 @@ footer {
 }
 
 @media (max-width: 640px) {
+  .audit-source-tabs {
+    justify-self: stretch;
+  }
+
   .audit-upload-grid,
   .audit-context-grid {
     grid-template-columns: 1fr;
