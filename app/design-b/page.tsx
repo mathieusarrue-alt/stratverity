@@ -22,6 +22,9 @@ type AuditTeaser = {
   report_ready: boolean;
   blurred: boolean;
   delivery_status: "EMAIL_REQUIRED";
+  acceptance_id: string;
+  terms_bundle_id: string;
+  evidence_receipt: string;
   available_sections: string[];
   message: string;
 };
@@ -406,6 +409,7 @@ export default function StratVeritySite() {
     form.set("initial_capital", capital);
     form.set("currency", "USD");
     form.set("locale", locale === "fr" ? "fr" : "en");
+    form.set("terms_locale", locale);
     form.set("terms_accepted", "true");
 
     setAuditState("submitting");
