@@ -2563,7 +2563,7 @@ footer {
   background: color-mix(in srgb, var(--sv-paper) 70%, transparent);
   border: 1px solid var(--sv-line);
   display: inline-grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, minmax(112px, 1fr));
   justify-self: start;
   padding: 3px;
 }
@@ -2773,6 +2773,34 @@ footer {
 
 .audit-bundle-summary span {
   color: var(--sv-muted);
+}
+
+.python-qualification-summary {
+  background: color-mix(in srgb, var(--sv-green-soft) 70%, var(--sv-paper));
+  border: 1px solid var(--sv-line);
+  display: grid;
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.python-qualification-summary strong {
+  color: var(--sv-ink);
+  font-family: Georgia, serif;
+  font-size: 16px;
+}
+
+.python-qualification-summary span {
+  color: var(--sv-green);
+  font: 800 8px var(--font-geist-mono), monospace;
+  letter-spacing: 0.08em;
+}
+
+.python-qualification-summary small {
+  color: var(--sv-muted);
+  font-size: 9px;
 }
 
 .audit-report-email {

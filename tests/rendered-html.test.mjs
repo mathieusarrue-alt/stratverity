@@ -42,6 +42,9 @@ test("connected audit form keeps the report metrics out of the browser response"
   );
 
   assert.match(page, /\/v1\/audits\/tradingview/);
+  assert.match(page, /\/v1\/qualifications\/python-bundle/);
+  assert.match(page, /STATIC_ONLY_NO_EXECUTION/);
+  assert.match(page, /Projet Python/);
   assert.match(page, /accept="\.pine,text\/plain"/);
   assert.match(page, /accept="\.csv,text\/csv"/);
   assert.match(page, /terms_accepted/);
