@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "./scope-configurator.module.css";
+import { calculatePrice, formatPrice } from "./pricing";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
@@ -90,6 +91,14 @@ export default function ScopeConfiguratorPage() {
         : contextCount === 1
           ? "BASE"
           : "MATRIX";
+  const price = calculatePrice({
+    product,
+    contextCount,
+    strategyCount: projectedStrategyCount,
+    auditDepth,
+    evaluationMode,
+    retentionDays: Number(retentionDays),
+  });
 
   const buildPayload = () => {
     const auditOptions =
@@ -284,7 +293,9 @@ export default function ScopeConfiguratorPage() {
       }
       setPreview(result);
       setState("success");
-      setMessage("Périmètre validé. Aucun paiement ni scan n’a été activé.");
+      setMessage(
+        "Périmètre et tarif confirmés. Aucun débit ni scan n’a encore été activé.",
+      );
     } catch {
       setPreview(null);
       setState("fallback");
@@ -316,8 +327,8 @@ export default function ScopeConfiguratorPage() {
           </h1>
           <p>
             Sélectionnez vos stratégies, actifs et unités de temps. Nous
-            calculons les contextes réellement nécessaires avant tout prix,
-            paiement ou activation.
+            calculons immédiatement les contextes et le prix total. Vous
+            décidez ensuite si vous souhaitez continuer vers le paiement.
           </p>
         </div>
         <aside className={styles.privacyNote}>
@@ -482,7 +493,7 @@ export default function ScopeConfiguratorPage() {
                           ? "Une lecture bornée"
                           : depth === "ROBUSTNESS"
                             ? "Fenêtres et stress"
-                            : "Revue humaine"}
+                            : "Robustesse + revue humaine"}
                       </small>
                     </button>
                   ),
@@ -513,7 +524,7 @@ export default function ScopeConfiguratorPage() {
                         <small>
                           {evaluation === "BAR_CLOSE"
                             ? "Socle recommandé"
-                            : "Devis obligatoire"}
+                            : "Calcul renforcé"}
                         </small>
                       </button>
                     ),
@@ -552,6 +563,56 @@ export default function ScopeConfiguratorPage() {
             {projectedStrategyCount > 1 ? "s" : ""} × {assets.length} actif
             {assets.length > 1 ? "s" : ""} × {timeframes.length} UT
           </p>
+          <div className={styles.livePrice}>
+            <span>TARIF LANCEMENT · PRIX EN TEMPS RÉEL</span>
+            <strong>
+              {formatPrice(price.totalCents)}
+              <small>
+                {price.cadence === "MONTHLY" ? " TTC / mois" : " TTC"}
+              </small>
+            </strong>
+            <p>
+              {formatPrice(price.subtotalExVatCents)} HT · TVA France estimée
+              à 20 %
+            </p>
+            {price.cadence === "MONTHLY" ? (
+              <div>
+                Premier paiement : <b>{formatPrice(price.dueTodayCents)} TTC</b>
+                <small>
+                  dont {formatPrice(
+                    price.activationExVatCents + price.activationVatCents,
+                  )}{" "}
+                  TTC de mise en service
+                </small>
+              </div>
+            ) : (
+              <div>
+                Paiement unique · <b>aucun renouvellement automatique</b>
+              </div>
+            )}
+          </div>
+          <details className={styles.priceBreakdown}>
+            <summary>Voir le calcul du prix</summary>
+            <dl>
+              {price.lines.map((line) => (
+                <div key={line.label}>
+                  <dt>{line.label}</dt>
+                  <dd>
+                    {formatPrice(line.amountExVatCents)} HT
+                    {line.cadence === "MONTHLY" ? " / mois" : ""}
+                  </dd>
+                </div>
+              ))}
+              <div>
+                <dt>TVA estimée</dt>
+                <dd>{formatPrice(price.vatCents)}</dd>
+              </div>
+            </dl>
+            <p>
+              Le prix final et la taxe applicable seront confirmés avant le
+              paiement selon le pays de facturation.
+            </p>
+          </details>
           <dl className={styles.metrics}>
             <div>
               <dt>Service</dt>
@@ -566,7 +627,10 @@ export default function ScopeConfiguratorPage() {
               </dd>
             </div>
             <div><dt>Limite API</dt><dd>2 Mio</dd></div>
-            <div><dt>Tarif</dt><dd>À calculer</dd></div>
+            <div>
+              <dt>Tarification</dt>
+              <dd>Automatique · sans devis</dd>
+            </div>
           </dl>
           <div className={styles.limitTrack} aria-label="Utilisation de la limite API">
             <i
@@ -584,7 +648,7 @@ export default function ScopeConfiguratorPage() {
             type="submit"
           >
             <span>
-              {state === "submitting" ? "Validation…" : "Valider ce périmètre"}
+              {state === "submitting" ? "Validation…" : "Confirmer ce tarif"}
             </span>
             <i aria-hidden="true">→</i>
           </button>
@@ -595,7 +659,7 @@ export default function ScopeConfiguratorPage() {
             }`}
           >
             {message ||
-              "Cette action ne lance aucun paiement et n’active aucun scan."}
+              "Le prix évolue immédiatement avec vos choix. Aucun débit à cette étape."}
           </p>
           {preview ? (
             <div className={styles.serverProof}>
@@ -604,10 +668,17 @@ export default function ScopeConfiguratorPage() {
               <dl>
                 <div><dt>Contextes</dt><dd>{preview.context_count}</dd></div>
                 <div>
-                  <dt>Devis requis</dt>
-                  <dd>{preview.technical_estimate.quote_required ? "Oui" : "Non"}</dd>
+                  <dt>Traitement</dt>
+                  <dd>
+                    {preview.technical_estimate.quote_required
+                      ? "Renforcé"
+                      : "Standard"}
+                  </dd>
                 </div>
               </dl>
+              <button disabled type="button">
+                Paiement sécurisé · connexion suivante
+              </button>
             </div>
           ) : null}
         </aside>

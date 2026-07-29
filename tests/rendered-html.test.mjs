@@ -43,6 +43,8 @@ test("server-renders the Audit and Scan scope configurator", async () => {
   assert.match(html, /Composez votre audit/i);
   assert.match(html, /Ou votre scan/i);
   assert.match(html, /2 Mio/i);
+  assert.match(html, /PRIX EN TEMPS RÉEL/i);
+  assert.match(html, /sans devis/i);
   assert.match(html, /Aucun code de stratégie n’est envoyé/i);
 });
 
@@ -74,7 +76,22 @@ test("scope configurator targets the bounded preview endpoint", async () => {
   assert.match(page, /REQUEST_LIMIT_BYTES\s*=\s*2\s*\*\s*1024\s*\*\s*1024/);
   assert.match(page, /crypto\.subtle\.digest\("SHA-256"/);
   assert.match(page, /Aucun code de stratégie n’est envoyé/);
-  assert.doesNotMatch(page, /price_amount|checkout|payment_intent/);
+  assert.match(page, /calculatePrice/);
+  assert.doesNotMatch(page, /checkout|payment_intent/);
+});
+
+test("scope configurator publishes a deterministic launch price grid", async () => {
+  const pricing = await readFile(
+    new URL("../app/configure/pricing.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(pricing, /version:\s*"launch-v0\.1"/);
+  assert.match(pricing, /AUDIT_CONTEXT_BANDS/);
+  assert.match(pricing, /SCAN_CONTEXT_BANDS/);
+  assert.match(pricing, /const VAT_RATE = 0\.2/);
+  assert.match(pricing, /activationExVatCents = 2_900 \* strategyCount/);
+  assert.doesNotMatch(pricing, /quote|devis/i);
 });
 
 test("deployment metadata and worker output are present", async () => {

@@ -479,6 +479,103 @@
   margin: 18px 0 34px;
 }
 
+.livePrice {
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid rgba(98, 237, 160, 0.45);
+  display: grid;
+  gap: 8px;
+  margin-bottom: 2px;
+  padding: 22px 0;
+}
+
+.livePrice > span {
+  color: var(--green);
+  font: 700 8px var(--font-geist-mono), monospace;
+  letter-spacing: 0.11em;
+}
+
+.livePrice > strong {
+  color: #f4fff7;
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 590;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.livePrice > strong small {
+  color: #9bb0a2;
+  font: 600 10px var(--font-geist-mono), monospace;
+  letter-spacing: 0;
+}
+
+.livePrice > p,
+.livePrice > div {
+  color: #879b8d;
+  font-size: 9px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.livePrice > div {
+  border-left: 2px solid var(--green);
+  display: grid;
+  margin-top: 5px;
+  padding-left: 10px;
+}
+
+.livePrice > div b {
+  color: #dff9e7;
+}
+
+.livePrice > div small {
+  color: #72867a;
+}
+
+.priceBreakdown {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+  padding: 13px 0;
+}
+
+.priceBreakdown summary {
+  color: #c4d2c8;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.priceBreakdown dl {
+  margin: 12px 0 0;
+}
+
+.priceBreakdown dl > div {
+  align-items: start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.priceBreakdown dt,
+.priceBreakdown dd,
+.priceBreakdown p {
+  color: #809388;
+  font-size: 8px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.priceBreakdown dd {
+  color: #c8d7cd;
+  font-family: var(--font-geist-mono), monospace;
+  text-align: right;
+}
+
+.priceBreakdown p {
+  border-top: 1px solid var(--line);
+  margin-top: 9px;
+  padding-top: 9px;
+}
+
 .metrics {
   margin: 0;
 }
@@ -577,6 +674,17 @@
   margin: 0;
 }
 
+.serverProof > button {
+  background: transparent;
+  border: 1px solid rgba(98, 237, 160, 0.3);
+  color: #789183;
+  font: 650 8px var(--font-geist-mono), monospace;
+  margin-top: 10px;
+  padding: 12px;
+  text-transform: uppercase;
+  width: 100%;
+}
+
 .footer {
   align-items: center;
   border-top: 1px solid var(--line);
@@ -671,4 +779,3 @@
     transition: none;
   }
 }
-
