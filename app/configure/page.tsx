@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "./scope-configurator.module.css";
@@ -27,7 +27,13 @@ const REQUEST_LIMIT_BYTES = 2 * 1024 * 1024;
 type Product = "AUDIT" | "SCAN";
 type AuditDepth = "STANDARD" | "ROBUSTNESS" | "CUSTOM";
 type EvaluationMode = "BAR_CLOSE" | "INTRABAR";
-type SubmissionState = "idle" | "submitting" | "success" | "fallback" | "error";
+type SubmissionState =
+  | "idle"
+  | "submitting"
+  | "checkout"
+  | "success"
+  | "fallback"
+  | "error";
 
 type StrategyVersion = {
   id: string;
@@ -48,6 +54,14 @@ type PreviewResponse = {
   };
 };
 
+type CheckoutResponse = {
+  checkout_attempt_id: string;
+  checkout_session_id: string;
+  checkout_url: string;
+  scope_fingerprint: string;
+  status: string;
+};
+
 function formatBytes(value: number): string {
   if (value < 1024) return `${value} o`;
   return `${(value / 1024).toFixed(1)} Ko`;
@@ -58,6 +72,23 @@ async function sha256(file: File): Promise<string> {
   return Array.from(new Uint8Array(digest), (byte) =>
     byte.toString(16).padStart(2, "0"),
   ).join("");
+}
+
+async function checkoutScopeHash(payload: object): Promise<string> {
+  const bytes = new TextEncoder().encode(JSON.stringify(payload));
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+}
+
+function isStripeCheckoutUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname === "checkout.stripe.com";
+  } catch {
+    return false;
+  }
 }
 
 export default function ScopeConfiguratorPage() {
@@ -73,6 +104,10 @@ export default function ScopeConfiguratorPage() {
   const [state, setState] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState("");
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
+  const checkoutAttemptRef = useRef<{
+    scopeHash: string;
+    idempotencyKey: string;
+  } | null>(null);
 
   const projectedStrategyCount = Math.max(strategies.length, 1);
   const contextCount =
@@ -301,6 +336,73 @@ export default function ScopeConfiguratorPage() {
       setState("fallback");
       setMessage(
         "L’API consolidée est en cours de déploiement. Le calcul affiché reste une estimation locale.",
+      );
+    }
+  };
+
+  const startCheckout = async () => {
+    if (!preview || strategies.length === 0) return;
+    const scope = buildPayload();
+    const request = { pricing_version: "launch-v0.1", scope };
+    const requestBytes = new TextEncoder().encode(
+      JSON.stringify(request),
+    ).byteLength;
+    if (requestBytes > REQUEST_LIMIT_BYTES) {
+      setState("error");
+      setMessage("La demande de paiement dépasse la limite de 2 Mio.");
+      return;
+    }
+
+    setState("checkout");
+    setMessage("Préparation du paiement sécurisé sur Stripe…");
+    try {
+      const scopeHash = await checkoutScopeHash(request);
+      if (checkoutAttemptRef.current?.scopeHash !== scopeHash) {
+        checkoutAttemptRef.current = {
+          scopeHash,
+          idempotencyKey: `checkout-${crypto.randomUUID().replaceAll("-", "")}`,
+        };
+      }
+      const idempotencyKey = checkoutAttemptRef.current.idempotencyKey;
+      const response = await fetch(`${API_URL}/v1/billing/checkout-sessions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotencyKey,
+        },
+        body: JSON.stringify(request),
+      });
+      const result = (await response.json()) as CheckoutResponse & {
+        detail?: { code?: string; message?: string } | string;
+      };
+      if (!response.ok) {
+        const detail =
+          typeof result.detail === "object" ? result.detail : undefined;
+        const billingUnavailable =
+          response.status === 503 ||
+          detail?.code === "BILLING_DISABLED" ||
+          detail?.code === "STRIPE_TEST_KEY_REQUIRED";
+        setState("error");
+        setMessage(
+          billingUnavailable
+            ? "Le compte Stripe test doit encore être relié avant d’ouvrir le paiement. Votre configuration est conservée."
+            : detail?.message ??
+                "Le paiement n’a pas pu être préparé. Aucun débit n’a eu lieu.",
+        );
+        return;
+      }
+      if (!isStripeCheckoutUrl(result.checkout_url)) {
+        setState("error");
+        setMessage(
+          "La destination de paiement reçue n’est pas une page Stripe valide. Aucun débit n’a eu lieu.",
+        );
+        return;
+      }
+      window.location.assign(result.checkout_url);
+    } catch {
+      setState("error");
+      setMessage(
+        "Le service de paiement est temporairement indisponible. Aucun débit n’a eu lieu.",
       );
     }
   };
@@ -644,7 +746,11 @@ export default function ScopeConfiguratorPage() {
           </div>
           <button
             className={styles.submit}
-            disabled={state === "submitting" || strategies.length === 0}
+            disabled={
+              state === "submitting" ||
+              state === "checkout" ||
+              strategies.length === 0
+            }
             type="submit"
           >
             <span>
@@ -676,8 +782,15 @@ export default function ScopeConfiguratorPage() {
                   </dd>
                 </div>
               </dl>
-              <button disabled type="button">
-                Paiement sécurisé · connexion suivante
+              <button
+                className={styles.checkoutButton}
+                disabled={state === "checkout"}
+                onClick={startCheckout}
+                type="button"
+              >
+                {state === "checkout"
+                  ? "Ouverture de Stripe…"
+                  : "Continuer vers Stripe →"}
               </button>
             </div>
           ) : null}

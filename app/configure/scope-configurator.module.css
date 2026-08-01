@@ -674,15 +674,69 @@
   margin: 0;
 }
 
-.serverProof > button {
-  background: transparent;
-  border: 1px solid rgba(98, 237, 160, 0.3);
-  color: #789183;
+.serverProof > .checkoutButton {
+  background: var(--green);
+  border: 1px solid var(--green);
+  color: #07110d;
+  cursor: pointer;
   font: 650 8px var(--font-geist-mono), monospace;
   margin-top: 10px;
   padding: 12px;
   text-transform: uppercase;
   width: 100%;
+}
+
+.serverProof > .checkoutButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.successPage {
+  align-items: center;
+  display: grid;
+  min-height: 100vh;
+  padding: 8vw;
+}
+
+.successCard {
+  border: 1px solid rgba(98, 237, 160, 0.35);
+  max-width: 760px;
+  padding: clamp(30px, 6vw, 74px);
+}
+
+.successCard > span {
+  color: var(--green);
+  font: 700 9px var(--font-geist-mono), monospace;
+  letter-spacing: 0.14em;
+}
+
+.successCard h1 {
+  font-size: clamp(48px, 7vw, 82px);
+  font-weight: 570;
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+  margin: 25px 0;
+}
+
+.successCard p {
+  color: #aebcb3;
+  line-height: 1.7;
+  max-width: 620px;
+}
+
+.successCard strong {
+  color: #e9fff0;
+}
+
+.successCard a {
+  background: var(--green);
+  color: #07110d;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 780;
+  margin-top: 20px;
+  padding: 16px 20px;
+  text-transform: uppercase;
 }
 
 .footer {

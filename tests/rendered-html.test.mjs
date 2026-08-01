@@ -77,7 +77,21 @@ test("scope configurator targets the bounded preview endpoint", async () => {
   assert.match(page, /crypto\.subtle\.digest\("SHA-256"/);
   assert.match(page, /Aucun code de stratégie n’est envoyé/);
   assert.match(page, /calculatePrice/);
-  assert.doesNotMatch(page, /checkout|payment_intent/);
+  assert.match(page, /\/v1\/billing\/checkout-sessions/);
+  assert.match(page, /"Idempotency-Key"/);
+  assert.match(page, /checkout\.stripe\.com/);
+  assert.doesNotMatch(page, /payment_intent|STRIPE_SECRET_KEY/);
+});
+
+test("checkout return never claims provisioning before the signed webhook", async () => {
+  const response = await render("/configure/success");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Confirmation en cours/i);
+  assert.match(html, /paiement signé/i);
+  assert.match(html, /Aucun audit, scan ou worker n’est lancé/i);
+  assert.doesNotMatch(html, /service activé|paiement confirmé/i);
 });
 
 test("scope configurator publishes a deterministic launch price grid", async () => {
