@@ -62,6 +62,11 @@ type CheckoutResponse = {
   status: string;
 };
 
+function createOwnerToken(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 function formatBytes(value: number): string {
   if (value < 1024) return `${value} o`;
   return `${(value / 1024).toFixed(1)} Ko`;
@@ -107,6 +112,7 @@ export default function ScopeConfiguratorPage() {
   const checkoutAttemptRef = useRef<{
     scopeHash: string;
     idempotencyKey: string;
+    ownerToken: string;
   } | null>(null);
 
   const projectedStrategyCount = Math.max(strategies.length, 1);
@@ -343,27 +349,29 @@ export default function ScopeConfiguratorPage() {
   const startCheckout = async () => {
     if (!preview || strategies.length === 0) return;
     const scope = buildPayload();
-    const request = { pricing_version: "launch-v0.1", scope };
-    const requestBytes = new TextEncoder().encode(
-      JSON.stringify(request),
-    ).byteLength;
-    if (requestBytes > REQUEST_LIMIT_BYTES) {
-      setState("error");
-      setMessage("La demande de paiement dépasse la limite de 2 Mio.");
-      return;
-    }
-
+    const pricedRequest = { pricing_version: "launch-v0.1", scope };
     setState("checkout");
     setMessage("Préparation du paiement sécurisé sur Stripe…");
     try {
-      const scopeHash = await checkoutScopeHash(request);
+      const scopeHash = await checkoutScopeHash(pricedRequest);
       if (checkoutAttemptRef.current?.scopeHash !== scopeHash) {
         checkoutAttemptRef.current = {
           scopeHash,
           idempotencyKey: `checkout-${crypto.randomUUID().replaceAll("-", "")}`,
+          ownerToken: createOwnerToken(),
         };
       }
       const idempotencyKey = checkoutAttemptRef.current.idempotencyKey;
+      const ownerToken = checkoutAttemptRef.current.ownerToken;
+      const request = { ...pricedRequest, owner_token: ownerToken };
+      const requestBytes = new TextEncoder().encode(
+        JSON.stringify(request),
+      ).byteLength;
+      if (requestBytes > REQUEST_LIMIT_BYTES) {
+        setState("error");
+        setMessage("La demande de paiement dépasse la limite de 2 Mio.");
+        return;
+      }
       const response = await fetch(`${API_URL}/v1/billing/checkout-sessions`, {
         method: "POST",
         headers: {
@@ -398,6 +406,10 @@ export default function ScopeConfiguratorPage() {
         );
         return;
       }
+      sessionStorage.setItem(
+        `stratverity.order-owner:${result.checkout_session_id}`,
+        ownerToken,
+      );
       window.location.assign(result.checkout_url);
     } catch {
       setState("error");

@@ -94,6 +94,27 @@ test("checkout return never claims provisioning before the signed webhook", asyn
   assert.doesNotMatch(html, /service activé|paiement confirmé/i);
 });
 
+test("checkout and return page bind uploads to one browser-held owner token", async () => {
+  const configurator = await readFile(
+    new URL("../app/configure/page.tsx", import.meta.url),
+    "utf8",
+  );
+  const returnPage = await readFile(
+    new URL("../app/configure/success/page.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(configurator, /owner_token:\s*ownerToken/);
+  assert.match(configurator, /sessionStorage\.setItem/);
+  assert.match(returnPage, /\/v1\/orders\/status/);
+  assert.match(returnPage, /\/submissions/);
+  assert.match(returnPage, /STRATEGY_SOURCE/);
+  assert.match(returnPage, /BACKTEST_EVIDENCE/);
+  assert.match(returnPage, /NOT_CREATED/);
+  assert.match(returnPage, /NOT_DISPATCHED/);
+  assert.doesNotMatch(configurator + returnPage, /sk_test_|whsec_/);
+});
+
 test("scope configurator publishes a deterministic launch price grid", async () => {
   const pricing = await readFile(
     new URL("../app/configure/pricing.ts", import.meta.url),
