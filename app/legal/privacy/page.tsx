@@ -28,10 +28,13 @@ export default function PrivacyPage() {
       <section>
         <h2>Durée, droits et contact</h2>
         <p>
-          Les durées exactes par catégorie, l’identité et l’adresse du
-          responsable de traitement, ainsi que l’adresse d’exercice des droits
-          seront complétées avant le lancement commercial. Jusqu’à cette
-          publication, aucun paiement réel ne peut être activé.
+          Le responsable de traitement est Mathieu Sarrue, entrepreneur
+          individuel, 11 avenue du Huit Mai, 13400 Aubagne, France (SIRET
+          903 756 575 00028). L’adresse prévue pour l’exercice des droits est
+          support@stratverity.com ; elle doit encore réussir un test de réception
+          avant l’ouverture commerciale. Les durées exactes par catégorie seront
+          publiées avant le lancement. Jusqu’à ces validations, aucun paiement
+          réel ne peut être activé.
         </p>
       </section>
     </LegalPage>

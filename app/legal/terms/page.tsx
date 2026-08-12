@@ -8,12 +8,23 @@ export default function TermsPage() {
     >
       <p className={styles.warning}>
         Le service fonctionne actuellement avec Stripe en mode test. Aucun
-        paiement réel ne doit être accepté avant publication de l’identité
-        juridique complète du vendeur, de ses coordonnées, de son régime de
-        TVA et de ses délais de livraison définitifs.
+        paiement réel ne doit être accepté avant validation de la formalité RNE
+        en cours, activation d’un contact entrant, choix du médiateur de la
+        consommation et publication des délais de livraison définitifs.
       </p>
       <section>
-        <h2>1. Service testé</h2>
+        <h2>1. Exploitant de la bêta</h2>
+        <p>
+          Mathieu Sarrue, entrepreneur individuel · nom commercial déclaré :
+          Prism Works · SIREN 903 756 575 · SIRET 903 756 575 00028 · 11 avenue
+          du Huit Mai, 13400 Aubagne, France. Produit : StratVerity / BacktestProof.
+          La modification publique du nom commercial et de l’activité SaaS est
+          en cours de traitement au Guichet unique.
+        </p>
+        <p>TVA non applicable — article 293 B du CGI.</p>
+      </section>
+      <section>
+        <h2>2. Service testé</h2>
         <p>
           BacktestProof reçoit une stratégie Pine, Python ou un dossier pris en
           charge, vérifie d’abord sa sécurité et sa compatibilité, puis prépare
@@ -23,7 +34,7 @@ export default function TermsPage() {
         </p>
       </section>
       <section>
-        <h2>2. Commande et preuve</h2>
+        <h2>3. Commande et preuve</h2>
         <p>
           Le périmètre, le tarif, la version des documents et leur empreinte
           sont calculés côté serveur. L’acceptation est horodatée et conservée
@@ -32,7 +43,7 @@ export default function TermsPage() {
         </p>
       </section>
       <section>
-        <h2>3. Responsabilités</h2>
+        <h2>4. Responsabilités</h2>
         <p>
           Le client garantit qu’il peut transmettre les fichiers et données.
           Il reste seul responsable de ses décisions de trading. StratVerity
@@ -40,11 +51,13 @@ export default function TermsPage() {
         </p>
       </section>
       <section>
-        <h2>4. Support et litiges</h2>
+        <h2>5. Support et litiges</h2>
         <p>
-          Les coordonnées légales, l’adresse de support, le droit applicable et
-          le dispositif de médiation seront publiés avant tout passage en
-          paiement réel. Leur absence maintient automatiquement le NO-GO live.
+          L’adresse prévue est support@stratverity.com. Elle ne sera présentée
+          comme canal de support qu’après validation de la réception des
+          messages. Le droit applicable et le dispositif de médiation seront
+          publiés avant tout passage en paiement réel. Leur absence maintient
+          automatiquement le NO-GO live.
         </p>
       </section>
     </LegalPage>

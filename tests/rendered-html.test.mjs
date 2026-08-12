@@ -173,7 +173,8 @@ test("scope configurator publishes a deterministic launch price grid", async () 
   assert.match(pricing, /version:\s*"launch-v0\.1"/);
   assert.match(pricing, /AUDIT_CONTEXT_BANDS/);
   assert.match(pricing, /SCAN_CONTEXT_BANDS/);
-  assert.match(pricing, /const VAT_RATE = 0\.2/);
+  assert.match(pricing, /const VAT_RATE = 0/);
+  assert.match(pricing, /franchise en base de TVA/i);
   assert.match(pricing, /activationExVatCents = 2_900 \* strategyCount/);
   assert.doesNotMatch(pricing, /quote|devis/i);
 });

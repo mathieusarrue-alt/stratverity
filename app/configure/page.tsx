@@ -713,21 +713,20 @@ export default function ScopeConfiguratorPage() {
             <strong>
               {formatPrice(price.totalCents)}
               <small>
-                {price.cadence === "MONTHLY" ? " TTC / mois" : " TTC"}
+                {price.cadence === "MONTHLY" ? " / mois" : " au total"}
               </small>
             </strong>
             <p>
-              {formatPrice(price.subtotalExVatCents)} HT · TVA France estimée
-              à 20 %
+              TVA non applicable · article 293 B du CGI
             </p>
             {price.cadence === "MONTHLY" ? (
               <div>
-                Premier paiement : <b>{formatPrice(price.dueTodayCents)} TTC</b>
+                Premier paiement : <b>{formatPrice(price.dueTodayCents)}</b>
                 <small>
                   dont {formatPrice(
                     price.activationExVatCents + price.activationVatCents,
                   )}{" "}
-                  TTC de mise en service
+                  de mise en service
                 </small>
               </div>
             ) : (
@@ -743,19 +742,20 @@ export default function ScopeConfiguratorPage() {
                 <div key={line.label}>
                   <dt>{line.label}</dt>
                   <dd>
-                    {formatPrice(line.amountExVatCents)} HT
+                    {formatPrice(line.amountExVatCents)}
                     {line.cadence === "MONTHLY" ? " / mois" : ""}
                   </dd>
                 </div>
               ))}
               <div>
-                <dt>TVA estimée</dt>
+                <dt>TVA</dt>
                 <dd>{formatPrice(price.vatCents)}</dd>
               </div>
             </dl>
             <p>
-              Le prix final et la taxe applicable seront confirmés avant le
-              paiement selon le pays de facturation.
+              Prix de la bêta française en franchise de TVA. Le régime fiscal
+              applicable aux ventes internationales sera validé avant leur
+              ouverture.
             </p>
           </details>
           <dl className={styles.metrics}>

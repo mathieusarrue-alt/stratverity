@@ -29,7 +29,10 @@ type PricingInput = {
   retentionDays: number;
 };
 
-const VAT_RATE = 0.2;
+// Régime actuel de l'exploitant : franchise en base de TVA.
+// Une future ouverture internationale devra recalculer la taxe selon le pays
+// du client avant d'activer Stripe live.
+const VAT_RATE = 0;
 
 const AUDIT_CONTEXT_BANDS = [
   { capacity: 9, unitCents: 800 },

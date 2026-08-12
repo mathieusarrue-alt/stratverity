@@ -192,8 +192,8 @@ const copy = {
       body: "Le prix se calcule instantanément selon les stratégies, actifs et unités de temps sélectionnés. Aucun devis à attendre.",
       plans: [
         ["Diagnostic", "Gratuit", "Une première lecture limitée par email", "Commencer"],
-        ["Audit complet", "Dès 46,80 € TTC", "Paiement unique, rapport détaillé et recalculs", "Configurer mon audit"],
-        ["Radar", "Dès 22,80 € TTC/mois", "Suivi continu et détection de dérive", "Configurer mon périmètre"],
+        ["Audit complet", "Dès 39 €", "Paiement unique, rapport détaillé et recalculs", "Configurer mon audit"],
+        ["Radar", "Dès 19 €/mois", "Suivi continu et détection de dérive", "Configurer mon périmètre"],
       ],
       popular: "Produit initial",
     },
