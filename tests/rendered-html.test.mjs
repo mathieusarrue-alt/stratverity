@@ -80,7 +80,32 @@ test("scope configurator targets the bounded preview endpoint", async () => {
   assert.match(page, /\/v1\/billing\/checkout-sessions/);
   assert.match(page, /"Idempotency-Key"/);
   assert.match(page, /checkout\.stripe\.com/);
+  assert.match(page, /beta-fr-2026-08-12-v1/);
+  assert.match(page, /AUDIT_BETA_NO_MARKETPLACE_RESALE/);
+  assert.match(page, /contract_acceptance/);
+  assert.match(page, /Scan sur invitation/);
+  assert.match(page, /Stripe test uniquement/i);
   assert.doesNotMatch(page, /payment_intent|STRIPE_SECRET_KEY/);
+});
+
+test("legal beta bundle is public and excludes client-code resale", async () => {
+  for (const path of [
+    "/legal/terms",
+    "/legal/privacy",
+    "/legal/content-license",
+    "/legal/refunds",
+    "/legal/risk",
+  ]) {
+    const response = await render(path);
+    assert.equal(response.status, 200, path);
+    const html = await response.text();
+    assert.match(html, /beta-fr-2026-08-12-v1/i, path);
+    assert.match(html, /aucun paiement réel/i, path);
+  }
+  const license = await (await render("/legal/content-license")).text();
+  assert.match(license, /propriétaire de votre stratégie/i);
+  assert.match(license, /exclut expressément la publication/i);
+  assert.match(license, /vente, la sous-licence/i);
 });
 
 test("checkout return never claims provisioning before the signed webhook", async () => {
