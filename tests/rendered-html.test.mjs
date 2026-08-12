@@ -141,6 +141,9 @@ test("checkout and return page bind uploads to one browser-held owner token", as
   assert.match(returnPage, /NOT_CREATED/);
   assert.match(returnPage, /NOT_DISPATCHED/);
   assert.match(returnPage, /\/audit-reports\/\$\{draft\.draft_id\}\/access/);
+  assert.match(returnPage, /approvedReportHtml\s*\?\s*"Rapport approuvé\."/);
+  assert.match(returnPage, /approvedReportHtml\s*\?\s*"REPORT_APPROVED"/);
+  assert.match(returnPage, /Rapport livré/);
   assert.match(returnPage, /\/audit-reports\/status/);
   assert.match(returnPage, /\/v1\/paid-audit-reports\/\$\{draft\.draft_id\}/);
   assert.match(returnPage, /sandbox=""/);

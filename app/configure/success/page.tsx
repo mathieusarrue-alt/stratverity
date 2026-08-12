@@ -366,7 +366,9 @@ export default function CheckoutReturnPage() {
       <section className={styles.successCard}>
         <span>STRATVERITY · COMMANDE SÉCURISÉE</span>
         <h1>
-          {pageState === "ready"
+          {approvedReportHtml
+            ? "Rapport approuvé."
+            : pageState === "ready"
             ? "Dépôt prêt."
             : pageState === "draft"
               ? "Audit en revue."
@@ -391,7 +393,7 @@ export default function CheckoutReturnPage() {
               </div>
               <div>
                 <dt>État</dt>
-                <dd>{status.order_status}</dd>
+                <dd>{approvedReportHtml ? "REPORT_APPROVED" : status.order_status}</dd>
               </div>
               <div>
                 <dt>Exécution</dt>
@@ -518,7 +520,7 @@ export default function CheckoutReturnPage() {
           </div>
         )}
 
-        {status?.order_id && pageState === "draft" && (
+        {status?.order_id && pageState === "draft" && !approvedReportHtml && (
           <div className={styles.orderUpload}>
             <h2>Revue humaine obligatoire</h2>
             <p>
@@ -532,12 +534,19 @@ export default function CheckoutReturnPage() {
         )}
 
         {approvedReportHtml && (
-          <iframe
-            className={styles.approvedReport}
-            sandbox=""
-            srcDoc={approvedReportHtml}
-            title="Rapport d’audit StratVerity approuvé"
-          />
+          <div className={styles.orderUpload}>
+            <h2>Rapport livré</h2>
+            <p>
+              La revue humaine est terminée. L&apos;accès ci-dessous est temporaire
+              et lié uniquement à cette commande.
+            </p>
+            <iframe
+              className={styles.approvedReport}
+              sandbox=""
+              srcDoc={approvedReportHtml}
+              title="Rapport d’audit StratVerity approuvé"
+            />
+          </div>
         )}
 
         {status?.strategies.some(
