@@ -817,6 +817,14 @@
   margin: 0;
 }
 
+.approvedReport {
+  background: white;
+  border: 1px solid rgba(98, 237, 160, 0.3);
+  height: min(760px, 80vh);
+  margin-top: 22px;
+  width: 100%;
+}
+
 .footer {
   align-items: center;
   border-top: 1px solid var(--line);

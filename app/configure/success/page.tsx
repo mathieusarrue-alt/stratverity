@@ -67,6 +67,8 @@ export default function CheckoutReturnPage() {
   const [uploading, setUploading] = useState(false);
   const [qualifying, setQualifying] = useState(false);
   const [generatingDraft, setGeneratingDraft] = useState(false);
+  const [openingReport, setOpeningReport] = useState(false);
+  const [approvedReportHtml, setApprovedReportHtml] = useState("");
   const [contextKey, setContextKey] = useState("");
   const [sourceTimezone, setSourceTimezone] = useState("UTC");
   const [initialCapital, setInitialCapital] = useState("10000");
@@ -301,6 +303,64 @@ export default function CheckoutReturnPage() {
     }
   };
 
+  const openApprovedReport = async () => {
+    if (!status?.order_id || !sessionId || !ownerToken) return;
+    const draftId = status.strategies.find((strategy) => strategy.audit_draft_count > 0);
+    if (!draftId) return;
+    setOpeningReport(true);
+    setMessage("Vérification de l’approbation humaine…");
+    try {
+      const draftsResponse = await fetch(
+        `${API_URL}/v1/orders/${status.order_id}/audit-reports/status`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ checkout_session_id: sessionId, owner_token: ownerToken }),
+        },
+      );
+      if (!draftsResponse.ok) throw new Error("AUDIT_DRAFT_UNAVAILABLE");
+      const drafts = (await draftsResponse.json()) as {
+        reports: Array<{ draft_id: string; review_decision: string }>;
+      };
+      const draft = drafts.reports.find(
+        (report) => report.review_decision === "APPROVED",
+      );
+      if (!draft) throw new Error("AUDIT_DRAFT_UNAVAILABLE");
+      const accessResponse = await fetch(
+        `${API_URL}/v1/orders/${status.order_id}/audit-reports/${draft.draft_id}/access`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ checkout_session_id: sessionId, owner_token: ownerToken }),
+        },
+      );
+      const access = (await accessResponse.json()) as {
+        access_token?: string;
+        detail?: { message?: string; code?: string };
+      };
+      if (!accessResponse.ok || !access.access_token) {
+        throw new Error(
+          access.detail?.message ?? access.detail?.code ?? "AUDIT_REPORT_NOT_APPROVED",
+        );
+      }
+      const reportResponse = await fetch(
+        `${API_URL}/v1/paid-audit-reports/${draft.draft_id}`,
+        { headers: { Authorization: `Bearer ${access.access_token}` } },
+      );
+      if (!reportResponse.ok) throw new Error("AUDIT_REPORT_UNAVAILABLE");
+      setApprovedReportHtml(await reportResponse.text());
+      setMessage("Rapport approuvé ouvert. Cet accès temporaire n’est pas conservé.");
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Le rapport n’est pas encore approuvé ou est temporairement indisponible.",
+      );
+    } finally {
+      setOpeningReport(false);
+    }
+  };
+
   return (
     <main className={`${styles.page} ${styles.successPage}`}>
       <section className={styles.successCard}>
@@ -465,7 +525,19 @@ export default function CheckoutReturnPage() {
               Le rapport est immuable et non livré. Nous vérifions les hypothèses, les
               limites et la cohérence des preuves avant de le rendre accessible.
             </p>
+            <button disabled={openingReport} type="button" onClick={openApprovedReport}>
+              {openingReport ? "Vérification…" : "Ouvrir le rapport s’il est approuvé"}
+            </button>
           </div>
+        )}
+
+        {approvedReportHtml && (
+          <iframe
+            className={styles.approvedReport}
+            sandbox=""
+            srcDoc={approvedReportHtml}
+            title="Rapport d’audit StratVerity approuvé"
+          />
         )}
 
         {status?.strategies.some(

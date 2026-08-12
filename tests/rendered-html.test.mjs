@@ -140,7 +140,25 @@ test("checkout and return page bind uploads to one browser-held owner token", as
   assert.match(returnPage, /BACKTEST_EVIDENCE/);
   assert.match(returnPage, /NOT_CREATED/);
   assert.match(returnPage, /NOT_DISPATCHED/);
+  assert.match(returnPage, /\/audit-reports\/\$\{draft\.draft_id\}\/access/);
+  assert.match(returnPage, /\/audit-reports\/status/);
+  assert.match(returnPage, /\/v1\/paid-audit-reports\/\$\{draft\.draft_id\}/);
+  assert.match(returnPage, /sandbox=""/);
+  assert.doesNotMatch(returnPage, /localStorage/);
   assert.doesNotMatch(configurator + returnPage, /sk_test_|whsec_/);
+});
+
+test("private admin console keeps its bearer secret in volatile component state", async () => {
+  const page = await readFile(new URL("../app/admin/page.tsx", import.meta.url), "utf8");
+  const consoleSource = await readFile(
+    new URL("../app/admin/review-console.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(page, /requireChatGPTUser\("\/admin"\)/);
+  assert.match(consoleSource, /\/v1\/admin\/audit-drafts/);
+  assert.match(consoleSource, /Authorization:\s*`Bearer \$\{adminSecret\}`/);
+  assert.match(consoleSource, /useState\(""\)/);
+  assert.doesNotMatch(consoleSource, /localStorage|sessionStorage|NEXT_PUBLIC_.*ADMIN/);
 });
 
 test("scope configurator publishes a deterministic launch price grid", async () => {

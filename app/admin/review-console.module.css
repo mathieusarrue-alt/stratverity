@@ -1,0 +1,22 @@
+.page { background: #07110d; color: #edf7f0; min-height: 100vh; padding: 6vw; }
+.page header { max-width: 860px; }
+.page header span, .page article > span { color: #62eda0; font: 700 10px monospace; letter-spacing: .12em; }
+.page h1 { font-size: clamp(42px, 6vw, 82px); letter-spacing: -.06em; line-height: .95; margin: 20px 0; }
+.page p { color: #9eafa4; line-height: 1.6; }
+.secretPanel { align-items: end; border: 1px solid rgba(98,237,160,.2); display: flex; gap: 14px; margin: 42px 0 22px; padding: 20px; }
+.secretPanel label, .decisionPanel label { display: grid; flex: 1; font: 650 10px monospace; gap: 8px; letter-spacing: .06em; text-transform: uppercase; }
+.secretPanel input, .decisionPanel textarea { background: #0b1812; border: 1px solid rgba(98,237,160,.25); color: white; padding: 13px; }
+.page button { background: #62eda0; border: 0; color: #07110d; cursor: pointer; font: 750 10px monospace; padding: 14px 18px; text-transform: uppercase; }
+.page button:disabled { cursor: not-allowed; opacity: .45; }
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(220px, 320px) minmax(0, 1fr); }
+.workspace aside, .workspace article { border: 1px solid rgba(220,242,228,.14); padding: 22px; }
+.workspace aside button { background: #0b1812; border: 1px solid rgba(220,242,228,.12); color: white; display: grid; gap: 5px; margin: 10px 0; text-align: left; width: 100%; }
+.workspace aside button span { color: #9eafa4; font-size: 10px; }
+.workspace aside button em { color: #62eda0; font-size: 9px; font-style: normal; }
+.workspace dl div { display: grid; gap: 12px; grid-template-columns: 70px 1fr; }
+.workspace dd { color: #9eafa4; font: 9px monospace; margin: 0; overflow-wrap: anywhere; }
+.workspace pre { background: #030805; border: 1px solid rgba(220,242,228,.12); max-height: 620px; overflow: auto; padding: 20px; white-space: pre-wrap; }
+.decisionPanel { display: grid; gap: 12px; grid-template-columns: 1fr auto auto; margin-top: 18px; }
+.decisionPanel textarea { min-height: 80px; resize: vertical; }
+.decisionPanel .reject { background: #ff8b79; }
+@media (max-width: 800px) { .workspace, .decisionPanel { grid-template-columns: 1fr; } .secretPanel { align-items: stretch; flex-direction: column; } }
