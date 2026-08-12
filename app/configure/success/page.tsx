@@ -14,6 +14,12 @@ type StrategyStatus = {
   expected_sha256: string;
   source_received: boolean;
   evidence_count: number;
+  qualification_id: string | null;
+  qualification_status:
+    | "NOT_STARTED"
+    | "STATIC_PASS"
+    | "REVIEW_REQUIRED"
+    | "STATIC_REJECTED";
 };
 
 type OrderStatus = {
@@ -27,7 +33,15 @@ type OrderStatus = {
   worker_status: "NOT_DISPATCHED";
 };
 
-type PageState = "checking" | "pending" | "paid" | "ready" | "error";
+type PageState =
+  | "checking"
+  | "pending"
+  | "paid"
+  | "ready"
+  | "qualified"
+  | "review"
+  | "blocked"
+  | "error";
 
 export default function CheckoutReturnPage() {
   const [pageState, setPageState] = useState<PageState>("checking");
@@ -41,6 +55,7 @@ export default function CheckoutReturnPage() {
   >("STRATEGY_SOURCE");
   const [artifact, setArtifact] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [qualifying, setQualifying] = useState(false);
 
   const loadStatus = useCallback(
     async (stripeSession: string, browserOwner: string) => {
@@ -61,6 +76,21 @@ export default function CheckoutReturnPage() {
       if (result.order_status === "READY_FOR_QUALIFICATION") {
         setPageState("ready");
         setMessage("Tous les codes achetés sont reçus et prêts pour qualification.");
+      } else if (result.order_status === "STATIC_QUALIFIED_AWAITING_APPROVAL") {
+        setPageState("qualified");
+        setMessage(
+          "Qualification statique terminée. La commande attend le contrôle final, sans exécution automatique.",
+        );
+      } else if (result.order_status === "HUMAN_REVIEW_REQUIRED") {
+        setPageState("review");
+        setMessage(
+          "Qualification terminée. Une revue humaine est nécessaire avant la suite.",
+        );
+      } else if (result.order_status === "QUALIFICATION_BLOCKED") {
+        setPageState("blocked");
+        setMessage(
+          "La source ne peut pas poursuivre automatiquement. Aucun worker n'a été lancé.",
+        );
       } else if (result.order_id) {
         setPageState("paid");
         setMessage("Paiement confirmé. Votre commande attend maintenant ses fichiers.");
@@ -145,6 +175,43 @@ export default function CheckoutReturnPage() {
     }
   };
 
+  const qualifyOrder = async () => {
+    if (!status?.order_id || !sessionId || !ownerToken) return;
+    setQualifying(true);
+    setMessage("Qualification statique en cours, sans exécution du code…");
+    try {
+      const response = await fetch(
+        `${API_URL}/v1/orders/${status.order_id}/qualifications`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            checkout_session_id: sessionId,
+            owner_token: ownerToken,
+          }),
+        },
+      );
+      const result = (await response.json()) as {
+        detail?: { code?: string; message?: string };
+      };
+      if (!response.ok) {
+        throw new Error(
+          result.detail?.message ?? result.detail?.code ?? "QUALIFICATION_FAILED",
+        );
+      }
+      await loadStatus(sessionId, ownerToken);
+    } catch (error) {
+      setPageState("error");
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "La qualification est temporairement indisponible.",
+      );
+    } finally {
+      setQualifying(false);
+    }
+  };
+
   return (
     <main className={`${styles.page} ${styles.successPage}`}>
       <section className={styles.successCard}>
@@ -152,6 +219,12 @@ export default function CheckoutReturnPage() {
         <h1>
           {pageState === "ready"
             ? "Dépôt prêt."
+            : pageState === "qualified"
+              ? "Qualification validée."
+              : pageState === "review"
+                ? "Revue nécessaire."
+                : pageState === "blocked"
+                  ? "Qualification bloquée."
             : pageState === "paid"
               ? "Paiement confirmé."
               : "Confirmation en cours."}
@@ -177,7 +250,7 @@ export default function CheckoutReturnPage() {
           </div>
         )}
 
-        {status?.order_id && pageState !== "ready" && (
+        {status?.order_id && ["paid", "error"].includes(pageState) && (
           <form className={styles.orderUpload} onSubmit={submitArtifact}>
             <h2>Déposez les fichiers de la commande</h2>
             <label>
@@ -225,6 +298,34 @@ export default function CheckoutReturnPage() {
               aucun code n’est exécuté sur le serveur public.
             </p>
           </form>
+        )}
+
+        {status?.order_id && pageState === "ready" && (
+          <div className={styles.orderUpload}>
+            <h2>Qualifier les sources reçues</h2>
+            <p>
+              Cette étape inspecte uniquement la structure et la compatibilité.
+              Aucun Pine, Python, notebook ou bot n&apos;est exécuté.
+            </p>
+            <button disabled={qualifying} type="button" onClick={qualifyOrder}>
+              {qualifying ? "Qualification…" : "Lancer la qualification statique"}
+            </button>
+          </div>
+        )}
+
+        {status?.strategies.some(
+          (strategy) => strategy.qualification_status !== "NOT_STARTED",
+        ) && (
+          <div className={styles.orderProof}>
+            <dl>
+              {status.strategies.map((strategy) => (
+                <div key={strategy.strategy_version_id}>
+                  <dt>{strategy.strategy_version_id}</dt>
+                  <dd>{strategy.qualification_status}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         )}
 
         <p>

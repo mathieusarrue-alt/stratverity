@@ -108,6 +108,9 @@ test("checkout and return page bind uploads to one browser-held owner token", as
   assert.match(configurator, /sessionStorage\.setItem/);
   assert.match(returnPage, /\/v1\/orders\/status/);
   assert.match(returnPage, /\/submissions/);
+  assert.match(returnPage, /\/qualifications/);
+  assert.match(returnPage, /Lancer la qualification statique/);
+  assert.match(returnPage, /STATIC_QUALIFIED_AWAITING_APPROVAL/);
   assert.match(returnPage, /STRATEGY_SOURCE/);
   assert.match(returnPage, /BACKTEST_EVIDENCE/);
   assert.match(returnPage, /NOT_CREATED/);
