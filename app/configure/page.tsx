@@ -23,6 +23,15 @@ const MAX_STRATEGIES = 10;
 const MAX_ASSETS = 50;
 const MAX_CONTEXTS = 10_000;
 const REQUEST_LIMIT_BYTES = 2 * 1024 * 1024;
+const CHECKOUT_CONTRACT = {
+  version: "beta-fr-2026-08-12-v1",
+  language: "fr",
+  digest: "c6500f4c391351fb245d3c1c445e77c91f866d70b9d1a121b7b334e8b2e95c7c",
+  rights_profile: "AUDIT_BETA_NO_MARKETPLACE_RESALE",
+  accepted: true,
+  immediate_performance_requested: true,
+  withdrawal_acknowledged: true,
+} as const;
 
 type Product = "AUDIT" | "SCAN";
 type AuditDepth = "STANDARD" | "ROBUSTNESS" | "CUSTOM";
@@ -97,7 +106,7 @@ function isStripeCheckoutUrl(value: string): boolean {
 }
 
 export default function ScopeConfiguratorPage() {
-  const [product, setProduct] = useState<Product>("SCAN");
+  const [product, setProduct] = useState<Product>("AUDIT");
   const [strategies, setStrategies] = useState<StrategyVersion[]>([]);
   const [assets, setAssets] = useState<string[]>(["BINANCE:BTCUSDT"]);
   const [timeframes, setTimeframes] = useState<string[]>(["15m"]);
@@ -109,6 +118,7 @@ export default function ScopeConfiguratorPage() {
   const [state, setState] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState("");
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
+  const [contractAccepted, setContractAccepted] = useState(false);
   const checkoutAttemptRef = useRef<{
     scopeHash: string;
     idempotencyKey: string;
@@ -348,8 +358,24 @@ export default function ScopeConfiguratorPage() {
 
   const startCheckout = async () => {
     if (!preview || strategies.length === 0) return;
+    if (product === "SCAN") {
+      setState("error");
+      setMessage(
+        "Le Scan live est actuellement sur invitation. Aucun abonnement ne peut être débité.",
+      );
+      return;
+    }
+    if (!contractAccepted) {
+      setState("error");
+      setMessage("Veuillez lire et accepter les documents contractuels avant Stripe.");
+      return;
+    }
     const scope = buildPayload();
-    const pricedRequest = { pricing_version: "launch-v0.1", scope };
+    const pricedRequest = {
+      pricing_version: "launch-v0.1",
+      scope,
+      contract_acceptance: CHECKOUT_CONTRACT,
+    };
     setState("checkout");
     setMessage("Préparation du paiement sécurisé sur Stripe…");
     try {
@@ -432,6 +458,10 @@ export default function ScopeConfiguratorPage() {
         </Link>
       </header>
 
+      <div className={styles.betaBanner}>
+        RECETTE SÉCURISÉE · STRIPE TEST UNIQUEMENT · AUCUN PAIEMENT RÉEL
+      </div>
+
       <section className={styles.intro}>
         <div>
           <span className={styles.eyebrow}>CONFIGURATEUR DE PÉRIMÈTRE · V0.1</span>
@@ -478,6 +508,7 @@ export default function ScopeConfiguratorPage() {
                       ? "Analyser une matrice historique et produire un rapport."
                       : "Surveiller signaux, positions et dérives dans le temps."}
                   </p>
+                  {choice === "SCAN" ? <em>Sur invitation · bientôt</em> : null}
                 </button>
               ))}
             </div>
@@ -794,15 +825,36 @@ export default function ScopeConfiguratorPage() {
                   </dd>
                 </div>
               </dl>
+              <label className={styles.contractAcceptance}>
+                <input
+                  checked={contractAccepted}
+                  onChange={(event) => setContractAccepted(event.target.checked)}
+                  type="checkbox"
+                />
+                <span>
+                  J’accepte les <Link href="/legal/terms">conditions bêta</Link>,
+                  la <Link href="/legal/privacy">confidentialité</Link> et la{" "}
+                  <Link href="/legal/content-license">licence de contenu</Link>.
+                  Je demande le démarrage du service après confirmation du
+                  paiement et reconnais les règles de rétractation. La bêta
+                  n’autorise ni publication ni revente de mon code.
+                </span>
+              </label>
               <button
                 className={styles.checkoutButton}
-                disabled={state === "checkout"}
+                disabled={
+                  state === "checkout" ||
+                  product === "SCAN" ||
+                  !contractAccepted
+                }
                 onClick={startCheckout}
                 type="button"
               >
                 {state === "checkout"
                   ? "Ouverture de Stripe…"
-                  : "Continuer vers Stripe →"}
+                  : product === "SCAN"
+                    ? "Scan sur invitation"
+                    : "Continuer vers Stripe →"}
               </button>
             </div>
           ) : null}
@@ -813,7 +865,10 @@ export default function ScopeConfiguratorPage() {
         <span>STRATVERITY · LA PREUVE AVANT LA PROMESSE</span>
         <p>
           Aucun rendement futur garanti. Cette page configure un périmètre de
-          test, pas un conseil d’investissement.
+          test, pas un conseil d’investissement. ·{" "}
+          <Link href="/legal/terms">Conditions</Link> ·{" "}
+          <Link href="/legal/privacy">Confidentialité</Link> ·{" "}
+          <Link href="/legal/risk">Risques</Link>
         </p>
       </footer>
     </main>

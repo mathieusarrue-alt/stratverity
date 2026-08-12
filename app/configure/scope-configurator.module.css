@@ -835,6 +835,54 @@
   text-align: right;
 }
 
+.betaBanner {
+  background: #ffc95f;
+  color: #07110d;
+  font: 760 9px var(--font-geist-mono), monospace;
+  letter-spacing: 0.12em;
+  padding: 9px 5vw;
+  text-align: center;
+}
+
+.productChoices button em {
+  color: var(--warning);
+  font: 700 8px var(--font-geist-mono), monospace;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.contractAcceptance {
+  align-items: flex-start;
+  background: rgba(98, 237, 160, 0.04);
+  border: 1px solid rgba(98, 237, 160, 0.2);
+  color: #b8c7bd;
+  display: flex;
+  font-size: 11px;
+  gap: 11px;
+  line-height: 1.55;
+  margin-top: 18px;
+  padding: 14px;
+}
+
+.contractAcceptance input {
+  accent-color: var(--green);
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.contractAcceptance a,
+.footer a {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.checkoutButton:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.7);
+  opacity: 0.48;
+}
+
 @media (max-width: 980px) {
   .intro {
     align-items: start;
