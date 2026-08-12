@@ -7,7 +7,7 @@ import styles from "../scope-configurator.module.css";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
-  "https://signals.13-39-177-70.sslip.io/backtestproof";
+  "https://api.stratverity.com";
 
 type StrategyStatus = {
   strategy_version_id: string;

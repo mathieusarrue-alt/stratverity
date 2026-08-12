@@ -8,7 +8,7 @@ import { calculatePrice, formatPrice } from "./pricing";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
-  "https://signals.13-39-177-70.sslip.io/backtestproof";
+  "https://api.stratverity.com";
 
 const ASSET_PRESETS = [
   "BINANCE:BTCUSDT",

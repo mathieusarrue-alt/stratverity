@@ -53,7 +53,7 @@ type AuditTeaser = {
 
 const AUDIT_API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
-  "https://signals.13-39-177-70.sslip.io/backtestproof";
+  "https://api.stratverity.com";
 
 const languages: { code: Locale; label: string; short: string }[] = [
   { code: "fr", label: "Français", short: "FR" },
