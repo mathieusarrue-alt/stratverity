@@ -1,0 +1,12 @@
+<svg width="96" height="96" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StratVerity — variante D Monogramme">
+  <defs>
+    <linearGradient id="dTile" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16B981"/>
+      <stop offset="0.55" stop-color="#0E7F5F"/>
+      <stop offset="1" stop-color="#0B3A2C"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#dTile)"/>
+  <path d="M33 16.4C33 12.6 29 10.4 24 10.4C18 10.4 14.6 13 14.6 16.8C14.6 20.6 18.4 22 24 23.2C29.6 24.4 33.4 25.8 33.4 30C33.4 34 29.4 36.4 24 36.4C18.6 36.4 14.6 34.2 14.6 30.4"
+        stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>

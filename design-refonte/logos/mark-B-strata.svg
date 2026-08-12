@@ -1,0 +1,18 @@
+<svg width="96" height="96" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StratVerity — variante B Strata">
+  <defs>
+    <linearGradient id="bS" x1="13" y1="9" x2="35" y2="39" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#12604A"/>
+      <stop offset="1" stop-color="#0E4A38"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="#F4F1E8"/>
+  <rect x="2.5" y="2.5" width="43" height="43" rx="11.5" stroke="#0E4A38" stroke-opacity="0.14"/>
+  <g fill="url(#bS)">
+    <rect x="13" y="9" width="22" height="6.6" rx="2.4"/>
+    <rect x="13" y="9" width="6.6" height="16" rx="2.4"/>
+    <rect x="13" y="20.7" width="22" height="6.6" rx="2.4"/>
+    <rect x="28.4" y="23" width="6.6" height="16" rx="2.4"/>
+    <rect x="13" y="32.4" width="22" height="6.6" rx="2.4"/>
+  </g>
+  <circle cx="35" cy="12.3" r="2.2" fill="#16B981"/>
+</svg>

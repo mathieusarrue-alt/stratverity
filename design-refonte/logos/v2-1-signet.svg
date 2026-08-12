@@ -1,0 +1,11 @@
+<svg width="112" height="112" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="StratVerity — Signet">
+  <defs>
+    <linearGradient id="s1" x1="10" y1="8" x2="38" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#12604A"/><stop offset="1" stop-color="#08301F"/></linearGradient>
+  </defs>
+  <g transform="rotate(45 24 24)">
+    <rect x="9" y="9" width="30" height="30" rx="8" fill="url(#s1)"/>
+    <rect x="9.8" y="9.8" width="28.4" height="28.4" rx="7.2" fill="none" stroke="#5FE3B0" stroke-opacity="0.35"/>
+  </g>
+  <path d="M30.2 18.4C30.2 15.5 27.4 13.8 24 13.8C19.6 13.8 16.8 15.7 16.8 18.4C16.8 21.1 19.5 22.1 24 23C28.5 23.9 31.2 24.9 31.2 27.8C31.2 30.6 28.5 32.4 24 32.4C20.6 32.4 17.8 31 17.8 28.7"
+        stroke="#F3FBF7" stroke-width="3.8" stroke-linecap="round" fill="none"/>
+</svg>
