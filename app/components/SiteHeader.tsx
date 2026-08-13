@@ -9,6 +9,35 @@ import { useI18n } from "../i18n/I18nProvider";
 
 type Theme = "light" | "dark";
 
+const THEME_COLORS: Record<Theme, string> = {
+  light: "#f6f3ec",
+  dark: "#06110d",
+};
+
+function applyDocumentTheme(nextTheme: Theme, persist = false) {
+  document.documentElement.dataset.theme = nextTheme;
+  document.documentElement.style.colorScheme = nextTheme;
+
+  let themeColor = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"][data-stratverity-theme]',
+  );
+  if (!themeColor) {
+    themeColor = document.createElement("meta");
+    themeColor.name = "theme-color";
+    themeColor.dataset.stratverityTheme = "true";
+    document.head.append(themeColor);
+  }
+  themeColor.content = THEME_COLORS[nextTheme];
+
+  if (persist) {
+    try {
+      window.localStorage.setItem("sv-theme", nextTheme);
+    } catch {
+      // Le thème reste fonctionnel même si Safari bloque le stockage local.
+    }
+  }
+}
+
 const navItems = [
   ["nav.product", "/#product"],
   ["nav.method", "/#method"],
@@ -27,16 +56,23 @@ export default function SiteHeader() {
   const languageRoot = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      const stored = window.localStorage.getItem("sv-theme");
+    const syncTheme = () => {
+      let stored: string | null = null;
+      try {
+        stored = window.localStorage.getItem("sv-theme");
+      } catch {
+        // Certains modes de navigation privée mobiles refusent localStorage.
+      }
       const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
       const nextTheme: Theme = stored === "dark" || stored === "light" ? stored : preferred;
       setTheme(nextTheme);
-      document.documentElement.dataset.theme = nextTheme;
-    }, 0);
-    return () => window.clearTimeout(timer);
+      applyDocumentTheme(nextTheme);
+    };
+    syncTheme();
+    window.addEventListener("pageshow", syncTheme);
+    return () => window.removeEventListener("pageshow", syncTheme);
   }, []);
 
   useEffect(() => {
@@ -68,10 +104,11 @@ export default function SiteHeader() {
   }, []);
 
   const toggleTheme = () => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
+    const currentTheme: Theme =
+      document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    document.documentElement.dataset.theme = nextTheme;
-    window.localStorage.setItem("sv-theme", nextTheme);
+    applyDocumentTheme(nextTheme, true);
   };
 
   const closeMenus = () => {

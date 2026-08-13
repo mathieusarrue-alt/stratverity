@@ -18,7 +18,9 @@
   --display:'Fraunces','Inter',serif; --ease:cubic-bezier(.22,.61,.36,1);
   --mx:.5; --my:.3; /* pointer 0..1 */
 }
+html[data-theme="light"]{color-scheme:light}
 [data-theme="dark"]{
+  color-scheme:dark;
   --paper:#06110d; --paper-2:#081712; --surface:#0c1a14; --surface-2:#0f221a;
   --ink:#eaf3ee; --ink-2:#a9bcb3; --ink-3:#7b8f86;
   --line:rgba(234,243,238,.12); --line-2:rgba(234,243,238,.07);

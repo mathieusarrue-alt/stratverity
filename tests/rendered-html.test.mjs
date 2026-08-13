@@ -142,6 +142,23 @@ test("every public route receives the shared interactive art direction", async (
   }
 });
 
+test("mobile theme follows the real document state and survives restricted storage", async () => {
+  const [layout, header, css] = await Promise.all([
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(layout, /localStorage\.getItem\("sv-theme"\)/);
+  assert.match(layout, /prefers-color-scheme: dark/);
+  assert.match(layout, /dataset\.stratverityTheme/);
+  assert.match(header, /document\.documentElement\.dataset\.theme === "dark"/);
+  assert.match(header, /document\.documentElement\.style\.colorScheme = nextTheme/);
+  assert.match(header, /catch \{[\s\S]*Safari bloque le stockage local/);
+  assert.match(css, /html\[data-theme="light"\]\{color-scheme:light\}/);
+  assert.match(css, /\[data-theme="dark"\]\{\s*color-scheme:dark;/);
+});
+
 test("customer account stays protected by server-side identity", async () => {
   const response = await render("/account");
   assert.ok([302, 303, 307, 308].includes(response.status));

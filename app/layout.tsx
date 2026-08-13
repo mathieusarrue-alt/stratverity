@@ -32,6 +32,25 @@ const notoDevanagari = Noto_Sans_Devanagari({ variable: "--font-noto-devanagari"
 const notoSc = Noto_Sans_SC({ variable: "--font-noto-sc", preload: false, weight: "variable" });
 const notoKr = Noto_Sans_KR({ variable: "--font-noto-kr", preload: false, weight: "variable" });
 
+const themeBootstrap = `(() => {
+  let theme = "light";
+  try {
+    const stored = localStorage.getItem("sv-theme");
+    theme = stored === "light" || stored === "dark"
+      ? stored
+      : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  } catch {
+    theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+  const meta = document.createElement("meta");
+  meta.name = "theme-color";
+  meta.dataset.stratverityTheme = "true";
+  meta.content = theme === "dark" ? "#06110d" : "#f6f3ec";
+  document.head.append(meta);
+})();`;
+
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0].trim();
@@ -94,6 +113,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+      </head>
       <body className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}>
         <AmbientExperience />
         <I18nProvider>
