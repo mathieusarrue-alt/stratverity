@@ -39,6 +39,37 @@ test("server-renders the StratVerity product page", async () => {
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
 });
 
+test("every frontend response receives the shared security policy", async () => {
+  for (const path of ["/", "/configure", "/login", "/legal/privacy"] ) {
+    const response = await render(path);
+    assert.equal(response.status, 200, path);
+    const csp = response.headers.get("content-security-policy") ?? "";
+    assert.match(csp, /default-src 'self'/, path);
+    assert.match(csp, /object-src 'none'/, path);
+    assert.match(csp, /frame-ancestors 'none'/, path);
+    assert.match(csp, /connect-src 'self' https:\/\/api\.stratverity\.com/, path);
+    assert.equal(
+      response.headers.get("strict-transport-security"),
+      "max-age=31536000; includeSubDomains",
+      path,
+    );
+    assert.equal(response.headers.get("x-content-type-options"), "nosniff", path);
+    assert.equal(response.headers.get("x-frame-options"), "DENY", path);
+    assert.equal(
+      response.headers.get("referrer-policy"),
+      "strict-origin-when-cross-origin",
+      path,
+    );
+    assert.equal(
+      response.headers.get("cross-origin-opener-policy"),
+      "same-origin-allow-popups",
+      path,
+    );
+    assert.match(response.headers.get("permissions-policy") ?? "", /camera=\(\)/, path);
+    assert.equal(response.headers.get("x-xss-protection"), "0", path);
+  }
+});
+
 test("server-renders the Audit and Scan scope configurator", async () => {
   const response = await render("/configure");
   assert.equal(response.status, 200);
