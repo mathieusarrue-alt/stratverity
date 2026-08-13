@@ -36,7 +36,7 @@ const CHECKOUT_CONTRACT = {
 } as const;
 
 type Product = "AUDIT" | "SCAN";
-type AuditDepth = "STANDARD" | "ROBUSTNESS" | "CUSTOM";
+type AuditDepth = "ESSENTIAL" | "STANDARD" | "ROBUSTNESS" | "CUSTOM";
 type EvaluationMode = "BAR_CLOSE" | "INTRABAR";
 type SubmissionState =
   | "idle"
@@ -118,7 +118,7 @@ export default function ScopeConfiguratorPage() {
   const [assets, setAssets] = useState<string[]>(["BINANCE:BTCUSDT"]);
   const [timeframes, setTimeframes] = useState<string[]>(["15m"]);
   const [assetDraft, setAssetDraft] = useState("");
-  const [auditDepth, setAuditDepth] = useState<AuditDepth>("STANDARD");
+  const [auditDepth, setAuditDepth] = useState<AuditDepth>("ESSENTIAL");
   const [evaluationMode, setEvaluationMode] =
     useState<EvaluationMode>("BAR_CLOSE");
   const [retentionDays, setRetentionDays] = useState("30");
@@ -167,6 +167,7 @@ export default function ScopeConfiguratorPage() {
     ? t(notice.key, notice.values)
     : "";
   const translatePriceLine = (label: string) => {
+    if (label.startsWith("Audit essentiel")) return t("configure.priceLine.auditEssential");
     if (label.startsWith("Audit standard")) return t("configure.priceLine.auditBase");
     if (label.startsWith("Tests de robustesse")) return t("configure.priceLine.robustness");
     if (label.startsWith("Revue humaine")) {
@@ -182,7 +183,15 @@ export default function ScopeConfiguratorPage() {
 
   const buildPayload = () => {
     const auditOptions =
-      auditDepth === "STANDARD"
+      auditDepth === "ESSENTIAL"
+        ? {
+            depth: "ESSENTIAL",
+            historical_windows: 1,
+            stress_scenarios: 1,
+            parameter_variants: 1,
+            human_review: false,
+          }
+        : auditDepth === "STANDARD"
         ? {
             depth: "STANDARD",
             historical_windows: 1,
@@ -244,6 +253,12 @@ export default function ScopeConfiguratorPage() {
       ? new TextEncoder().encode(JSON.stringify(buildPayload())).byteLength
       : 0;
 
+  const promoteEssentialForScope = (nextContextCount: number) => {
+    if (product === "AUDIT" && auditDepth === "ESSENTIAL" && nextContextCount > 1) {
+      setAuditDepth("STANDARD");
+    }
+  };
+
   const chooseStrategies = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
@@ -268,15 +283,15 @@ export default function ScopeConfiguratorPage() {
           };
         }),
       );
-      setStrategies((current) => {
-        const seen = new Set(current.map((strategy) => strategy.sha256));
-        const unique = hashed.filter((strategy) => {
-          if (seen.has(strategy.sha256)) return false;
-          seen.add(strategy.sha256);
-          return true;
-        });
-        return [...current, ...unique];
+      const seen = new Set(strategies.map((strategy) => strategy.sha256));
+      const unique = hashed.filter((strategy) => {
+        if (seen.has(strategy.sha256)) return false;
+        seen.add(strategy.sha256);
+        return true;
       });
+      const nextStrategies = [...strategies, ...unique];
+      setStrategies(nextStrategies);
+      promoteEssentialForScope(nextStrategies.length * assets.length * timeframes.length);
       setState("idle");
       setNotice(null);
       setPreview(null);
@@ -288,6 +303,10 @@ export default function ScopeConfiguratorPage() {
 
   const toggleAsset = (asset: string) => {
     setPreview(null);
+    const nextAssetCount = assets.includes(asset)
+      ? Math.max(1, assets.length - 1)
+      : Math.min(MAX_ASSETS, assets.length + 1);
+    promoteEssentialForScope(projectedStrategyCount * nextAssetCount * timeframes.length);
     setAssets((current) =>
       current.includes(asset)
         ? current.length === 1
@@ -308,6 +327,9 @@ export default function ScopeConfiguratorPage() {
     }
     if (!assets.includes(asset) && assets.length < MAX_ASSETS) {
       setAssets((current) => [...current, asset]);
+      promoteEssentialForScope(
+        projectedStrategyCount * (assets.length + 1) * timeframes.length,
+      );
     }
     setAssetDraft("");
     setPreview(null);
@@ -317,6 +339,10 @@ export default function ScopeConfiguratorPage() {
 
   const toggleTimeframe = (timeframe: string) => {
     setPreview(null);
+    const nextTimeframeCount = timeframes.includes(timeframe)
+      ? Math.max(1, timeframes.length - 1)
+      : timeframes.length + 1;
+    promoteEssentialForScope(projectedStrategyCount * assets.length * nextTimeframeCount);
     setTimeframes((current) =>
       current.includes(timeframe)
         ? current.length === 1
@@ -393,7 +419,7 @@ export default function ScopeConfiguratorPage() {
     }
     const scope = buildPayload();
     const pricedRequest = {
-      pricing_version: "launch-v0.1",
+      pricing_version: "launch-v0.2",
       scope,
       contract_acceptance: CHECKOUT_CONTRACT,
     };
@@ -495,6 +521,9 @@ export default function ScopeConfiguratorPage() {
                   key={choice}
                   onClick={() => {
                     setProduct(choice);
+                    if (choice === "AUDIT" && auditDepth === "ESSENTIAL" && contextCount > 1) {
+                      setAuditDepth("STANDARD");
+                    }
                     setPreview(null);
                   }}
                   type="button"
@@ -617,11 +646,12 @@ export default function ScopeConfiguratorPage() {
             <legend><span>05</span>{t("configure.step.depth")}</legend>
             {product === "AUDIT" ? (
               <div className={styles.optionGrid}>
-                {(["STANDARD", "ROBUSTNESS", "CUSTOM"] as AuditDepth[]).map(
+                {(["ESSENTIAL", "STANDARD", "ROBUSTNESS", "CUSTOM"] as AuditDepth[]).map(
                   (depth) => (
                     <button
                       aria-pressed={auditDepth === depth}
                       className={auditDepth === depth ? styles.activeOption : ""}
+                      disabled={depth === "ESSENTIAL" && contextCount > 1}
                       key={depth}
                       onClick={() => {
                         setAuditDepth(depth);
@@ -630,15 +660,19 @@ export default function ScopeConfiguratorPage() {
                       type="button"
                     >
                       <strong>
-                        {depth === "STANDARD"
-                          ? t("configure.depth.standard")
+                        {depth === "ESSENTIAL"
+                          ? t("configure.depth.essential")
+                          : depth === "STANDARD"
+                            ? t("configure.depth.standard")
                           : depth === "ROBUSTNESS"
                             ? t("configure.depth.robustness")
                             : t("configure.depth.custom")}
                       </strong>
                       <small>
-                        {depth === "STANDARD"
-                          ? t("configure.depth.standardHelp")
+                        {depth === "ESSENTIAL"
+                          ? t("configure.depth.essentialHelp")
+                          : depth === "STANDARD"
+                            ? t("configure.depth.standardHelp")
                           : depth === "ROBUSTNESS"
                             ? t("configure.depth.robustnessHelp")
                             : t("configure.depth.customHelp")}
@@ -722,6 +756,9 @@ export default function ScopeConfiguratorPage() {
               </small>
             </strong>
             <p>{t("configure.vatExempt")}</p>
+            {product === "AUDIT" && auditDepth === "ESSENTIAL" ? (
+              <p>{t("configure.essentialCredit")}</p>
+            ) : null}
             {price.cadence === "MONTHLY" ? (
               <div>
                 <b>{t("configure.firstPayment", { amount: formatLocalizedPrice(price.dueTodayCents) })}</b>

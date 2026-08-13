@@ -71,17 +71,17 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="hero" id="top">
   <div class="container hero-grid">
     <div data-reveal>
-      <span class="badge"><span class="dot"></span><span data-i18n="hero.badge">Audit indépendant · Pine &amp; Python</span></span>
-      <h1><span data-i18n="hero.h1a">Auditez votre stratégie,</span><br><span class="accent" data-i18n="hero.h1b">pas son storytelling.</span></h1>
-      <p class="lead" data-i18n="hero.lead">Déposez une stratégie. BacktestProof recalcule ses métriques, détecte les biais et mesure sa robustesse — la preuve avant la promesse.</p>
+      <span class="badge"><span class="dot"></span><span data-i18n="hero.badge">Independent audit · Pine & Python</span></span>
+      <h1><span data-i18n="hero.h1a">Audit your strategy,</span><br><span class="accent" data-i18n="hero.h1b">not its storytelling.</span></h1>
+      <p class="lead" data-i18n="hero.lead">Upload a strategy. BacktestProof recomputes its metrics, detects biases and measures robustness — proof before promise.</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="hero.cta1">Auditer ma stratégie</a>
-        <a class="btn btn-ghost" href="#method" data-i18n="hero.cta2">Voir la méthode</a>
+        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="hero.cta1">Audit my strategy</a>
+        <a class="btn btn-ghost" href="#method" data-i18n="hero.cta2">See the method</a>
       </div>
       <div class="trust">
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · Notebook</span></span>
-        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t2">Frais &amp; slippage inclus</span></span>
-        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t3">Code non partagé</span></span>
+        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t2">Fees & slippage included</span></span>
+        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t3">Your code stays private</span></span>
       </div>
     </div>
 
@@ -89,17 +89,17 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <div class="glare"></div>
       <span class="gain-flag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7M9 7h8v8"/></svg>+41% net</span>
       <div class="pc-head">
-        <div class="pc-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2.2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-i18n="card.title">Rapport de vérification</span></div>
-        <span class="pc-tag" data-i18n="card.example">Exemple illustratif</span>
+        <div class="pc-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2.2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-i18n="card.title">Verification report</span></div>
+        <span class="pc-tag" data-i18n="card.example">Illustrative example</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin:2px 0 4px">
-        <span class="verify-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="card.verified">Vérifié</span></span>
+        <span class="verify-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="card.verified">Verified</span></span>
         <span class="mono" style="font-size:12px;color:var(--ink-3)">BTCUSDT · 4H · 2021–2026</span>
       </div>
       <div class="chart-wrap" id="chartWrap">
         <div class="chart-legend">
-          <b><span class="swatch" style="background:var(--amber-500)"></span><span data-i18n="card.declared">Déclaré</span></b>
-          <b><span class="swatch" style="background:var(--forest-600)"></span><span data-i18n="card.recalc">Recalculé net</span></b>
+          <b><span class="swatch" style="background:var(--amber-500)"></span><span data-i18n="card.declared">Declared</span></b>
+          <b><span class="swatch" style="background:var(--forest-600)"></span><span data-i18n="card.recalc">Recomputed net</span></b>
         </div>
         <div class="chart-tip" id="chartTip"></div>
         <svg id="heroChart" viewBox="0 0 320 120" width="100%" height="118" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="netFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--forest-600)" stop-opacity=".30"/><stop offset="1" stop-color="var(--forest-600)" stop-opacity="0"/></linearGradient></defs><path class="grow" style="transform-origin:bottom" d="M4 100 C60 98,96 90,134 84 S212 66,252 58 300 48 316 44 L316 118 L4 118 Z" fill="url(#netFill)"/>
@@ -111,11 +111,11 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         </svg>
       </div>
       <div class="metrics">
-        <div class="metric"><div class="k" data-i18n="card.pf">Profit Factor</div><div class="v" data-count="1.28" data-dec="2">1.28</div><div class="d dec" data-i18n="card.pfd">déclaré 2.10</div></div>
-        <div class="metric"><div class="k" data-i18n="card.net">Net après frais</div><div class="v" data-count="41" data-suffix="%">+41%</div><div class="d dec" data-i18n="card.netd">déclaré +212%</div></div>
-        <div class="metric"><div class="k" data-i18n="card.dd">Drawdown</div><div class="v" data-count="23.5" data-dec="1" data-prefix="−" data-suffix="%">−23.5%</div><div class="d pos" data-i18n="card.ddd">robuste</div></div>
+        <div class="metric"><div class="k" data-i18n="card.pf">Profit Factor</div><div class="v" data-count="1.28" data-dec="2">1.28</div><div class="d dec" data-i18n="card.pfd">declared 2.10</div></div>
+        <div class="metric"><div class="k" data-i18n="card.net">Net after fees</div><div class="v" data-count="41" data-suffix="%">+41%</div><div class="d dec" data-i18n="card.netd">declared +212%</div></div>
+        <div class="metric"><div class="k" data-i18n="card.dd">Drawdown</div><div class="v" data-count="23.5" data-dec="1" data-prefix="−" data-suffix="%">−23.5%</div><div class="d pos" data-i18n="card.ddd">robust</div></div>
       </div>
-      <div class="pc-foot"><span data-i18n="card.foot">12 actifs · 3 unités de temps · walk-forward</span><span class="mono">robustesse 74/100</span></div>
+      <div class="pc-foot"><span data-i18n="card.foot">12 assets · 3 timeframes · walk-forward</span><span class="mono">robustesse 74/100</span></div>
     </div>
   </div>
 </section>
@@ -124,20 +124,20 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
 <section class="statband"><div class="container">
   <div class="g4">
-    <div class="stat" data-reveal><div class="top"><span class="big pos" data-count="41" data-suffix="%">+41%</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.net">Rendement net vérifié</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
-    <div class="stat" data-reveal data-delay="1"><div class="top"><span class="big pos" data-count="1.28" data-dec="2">1.28</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.pf">Profit Factor recalculé</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
-    <div class="stat" data-reveal data-delay="2"><div class="top"><span class="big" data-count="74" data-suffix="/100">74/100</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.rob">Score de robustesse</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
-    <div class="stat" data-reveal data-delay="3"><div class="top"><span class="big" data-count="16" data-suffix="/18">16/18</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.mtx">Actifs positifs</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
+    <div class="stat" data-reveal><div class="top"><span class="big pos" data-count="41" data-suffix="%">+41%</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.net">Verified net return</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
+    <div class="stat" data-reveal data-delay="1"><div class="top"><span class="big pos" data-count="1.28" data-dec="2">1.28</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.pf">Recomputed Profit Factor</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
+    <div class="stat" data-reveal data-delay="2"><div class="top"><span class="big" data-count="74" data-suffix="/100">74/100</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.rob">Robustness score</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
+    <div class="stat" data-reveal data-delay="3"><div class="top"><span class="big" data-count="16" data-suffix="/18">16/18</span><span class="up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div><div class="lbl" data-i18n="sb.mtx">Positive assets</div><svg class="spark" viewBox="0 0 120 40" preserveAspectRatio="none"><path class="area" fill="var(--emerald-500)" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5 L118 40 L2 40 Z"/><path class="draw" style="--len:170" fill="none" stroke="var(--emerald-500)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M2 34 L22 30 L40 32 L58 23 L76 19 L96 11 L118 5"/></svg></div>
   </div>
-  <div class="sb-note" data-i18n="sb.note">Exemple illustratif · net de frais · walk-forward</div>
+  <div class="sb-note" data-i18n="sb.note">Illustrative example · net of fees · walk-forward</div>
 </div></section>
 
 <section class="block" id="product">
   <div class="container">
     <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="prod.eyebrow">Ce que BacktestProof vérifie</span>
-      <h2 data-i18n="prod.h2">La performance annoncée, confrontée aux preuves.</h2>
-      <p data-i18n="prod.p">Chaque métrique est recalculée sur vos données, frais et slippage inclus, puis reliée à la preuve qui la justifie.</p>
+      <span class="eyebrow" data-i18n="prod.eyebrow">What BacktestProof verifies</span>
+      <h2 data-i18n="prod.h2">Claimed performance, put to the evidence.</h2>
+      <p data-i18n="prod.p">Every metric is recomputed on your data — fees and slippage included — then tied to the evidence behind it.</p>
     </div>
     <div class="feature-grid">
       <article class="card" data-tilt data-reveal><div class="viz"><svg viewBox="0 0 200 90" width="100%" height="90" preserveAspectRatio="none">
@@ -145,27 +145,27 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <rect class="grow" style="transition-delay:.1s" x="58" y="30" width="26" height="56" rx="4" fill="var(--forest-600)"/>
         <rect class="grow" style="transition-delay:.2s" x="102" y="20" width="26" height="66" rx="4" fill="var(--forest-600)"/>
         <rect class="grow" style="transition-delay:.3s" x="146" y="10" width="26" height="76" rx="4" fill="var(--emerald-500)"/></svg></div>
-        <h3 data-i18n="f.pf.t">Profit Factor recalculé</h3><p data-i18n="f.pf.p">On rejoue les trades pour comparer le PF annoncé au PF réel, net de frais.</p>
-        <div class="kpi"><span class="big pos" data-count="1.47" data-dec="2">1.47</span><span class="delta dec" data-i18n="f.pf.k">vs 2.10 déclaré</span></div></article>
+        <h3 data-i18n="f.pf.t">Recomputed Profit Factor</h3><p data-i18n="f.pf.p">We replay the trades to compare the claimed PF with the real, net-of-fees one.</p>
+        <div class="kpi"><span class="big pos" data-count="1.47" data-dec="2">1.47</span><span class="delta dec" data-i18n="f.pf.k">vs 2.10 declared</span></div></article>
 
       <article class="card" data-tilt data-reveal data-delay="1"><div class="viz"><svg viewBox="0 0 200 90" width="100%" height="90">
         <path class="draw" style="--len:230" d="M6 74 C50 70,80 40,120 34 S180 16,196 12" fill="none" stroke="var(--forest-600)" stroke-width="3" stroke-linecap="round"/>
         <path d="M6 74 C50 70,80 40,120 34 S180 16,196 12 L196 88 L6 88 Z" fill="var(--forest-600)" opacity=".08"/></svg></div>
-        <h3 data-i18n="f.net.t">Rendement net après frais</h3><p data-i18n="f.net.p">La courbe brute promise, ramenée au réel : commissions, spread et slippage déduits.</p>
-        <div class="kpi"><span class="big pos" data-count="41" data-suffix="%">+41%</span><span class="delta dec" data-i18n="f.net.k">brut +212%</span></div></article>
+        <h3 data-i18n="f.net.t">Net return after fees</h3><p data-i18n="f.net.p">The gross promised curve, brought back to reality: commissions, spread and slippage removed.</p>
+        <div class="kpi"><span class="big pos" data-count="41" data-suffix="%">+41%</span><span class="delta dec" data-i18n="f.net.k">gross +212%</span></div></article>
 
       <article class="card" data-tilt data-reveal data-delay="2"><div class="viz"><svg viewBox="0 0 200 90" width="100%" height="90">
         <path d="M6 20 C50 22,70 60,96 58 S150 26,196 30 L196 30 L6 20Z" fill="var(--risk-500)" opacity=".14"/>
         <path class="draw" style="--len:240" d="M6 20 C50 22,70 60,96 58 S150 26,196 30" fill="none" stroke="var(--risk-500)" stroke-width="2.6"/>
         <line x1="6" y1="20" x2="196" y2="20" stroke="var(--line)" stroke-dasharray="3 4"/></svg></div>
-        <h3 data-i18n="f.dd.t">Drawdown mesuré</h3><p data-i18n="f.dd.p">La perte maximale réelle, celle que l'on ressent, sur toute la fenêtre testée.</p>
-        <div class="kpi"><span class="big neg" data-count="23.5" data-dec="1" data-prefix="−" data-suffix="%">−23.5%</span><span class="delta muted" data-i18n="f.dd.k">max composé</span></div></article>
+        <h3 data-i18n="f.dd.t">Measured drawdown</h3><p data-i18n="f.dd.p">The real maximum loss — the one you actually feel — across the full test window.</p>
+        <div class="kpi"><span class="big neg" data-count="23.5" data-dec="1" data-prefix="−" data-suffix="%">−23.5%</span><span class="delta muted" data-i18n="f.dd.k">max compounded</span></div></article>
 
       <article class="card" data-tilt data-reveal><div class="viz" style="align-items:center;justify-content:center"><svg viewBox="0 0 120 90" width="120" height="90">
         <g fill="none" stroke="var(--line)" stroke-width="1"><circle cx="60" cy="45" r="34"/><circle cx="60" cy="45" r="22"/></g>
         <polygon class="grow" style="transform-origin:center" points="60,16 88,38 78,72 42,72 32,38" fill="color-mix(in oklab,var(--emerald-500) 30%,transparent)" stroke="var(--forest-600)" stroke-width="2"/></svg></div>
-        <h3 data-i18n="f.rob.t">Score de robustesse</h3><p data-i18n="f.rob.p">Stabilité hors-échantillon, multi-actifs et multi-périodes, résumée en un score.</p>
-        <div class="kpi"><span class="big" data-count="74" data-suffix="/100">74/100</span><span class="delta pos" data-i18n="f.rob.k">tient en OOS</span></div></article>
+        <h3 data-i18n="f.rob.t">Robustness score</h3><p data-i18n="f.rob.p">Out-of-sample, multi-asset and multi-period stability, summarised in one score.</p>
+        <div class="kpi"><span class="big" data-count="74" data-suffix="/100">74/100</span><span class="delta pos" data-i18n="f.rob.k">holds in OOS</span></div></article>
 
       <article class="card" data-tilt data-reveal data-delay="1"><div class="viz"><svg viewBox="0 0 200 90" width="100%" height="90"><g>
         <rect class="grow" x="8" y="12" width="16" height="16" rx="3" fill="color-mix(in oklab,var(--emerald-500) 45%,var(--surface))"/>
@@ -176,15 +176,15 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <rect class="grow" style="transition-delay:.25s" x="30" y="34" width="16" height="16" rx="3" fill="color-mix(in oklab,var(--risk-500) 28%,var(--surface))"/>
         <rect class="grow" style="transition-delay:.3s" x="52" y="34" width="16" height="16" rx="3" fill="color-mix(in oklab,var(--emerald-500) 35%,var(--surface))"/>
         <rect class="grow" style="transition-delay:.35s" x="74" y="34" width="16" height="16" rx="3" fill="color-mix(in oklab,var(--emerald-500) 30%,var(--surface))"/></g></svg></div>
-        <h3 data-i18n="f.mtx.t">Matrice multi-actifs × UT</h3><p data-i18n="f.mtx.p">La même stratégie testée sur un panier large et plusieurs unités de temps.</p>
-        <div class="kpi"><span class="big" data-count="16" data-suffix="/18">16/18</span><span class="delta pos" data-i18n="f.mtx.k">actifs positifs</span></div></article>
+        <h3 data-i18n="f.mtx.t">Multi-asset × TF matrix</h3><p data-i18n="f.mtx.p">The same strategy tested across a broad basket and several timeframes.</p>
+        <div class="kpi"><span class="big" data-count="16" data-suffix="/18">16/18</span><span class="delta pos" data-i18n="f.mtx.k">assets positive</span></div></article>
 
       <article class="card" data-tilt data-reveal data-delay="2"><div class="viz" style="flex-direction:column;justify-content:center;gap:8px">
         <div style="display:flex;gap:8px;align-items:center"><span class="mono" style="font-size:10px;color:var(--risk-500)">HIGH</span><div style="flex:1;height:8px;border-radius:4px;background:var(--risk-500);opacity:.35"></div></div>
         <div style="display:flex;gap:8px;align-items:center"><span class="mono" style="font-size:10px;color:var(--amber-500)">MED</span><div style="flex:1;height:8px;border-radius:4px;background:var(--amber-500);opacity:.35"></div></div>
         <div style="display:flex;gap:8px;align-items:center"><span class="mono" style="font-size:10px;color:var(--amber-500)">MED</span><div style="flex:1;height:8px;border-radius:4px;background:var(--amber-500);opacity:.35"></div></div></div>
-        <h3 data-i18n="f.div.t">Divergences détectées</h3><p data-i18n="f.div.p">Écarts entre le backtest déclaré et le recalcul : biais look-ahead, frais oubliés, sur-ajustement.</p>
-        <div class="kpi"><span class="big dec" data-count="3">3</span><span class="delta muted" data-i18n="f.div.k">écarts signalés</span></div></article>
+        <h3 data-i18n="f.div.t">Detected divergences</h3><p data-i18n="f.div.p">Gaps between the declared backtest and the recalculation: look-ahead, missing fees, overfitting.</p>
+        <div class="kpi"><span class="big dec" data-count="3">3</span><span class="delta muted" data-i18n="f.div.k">gaps flagged</span></div></article>
     </div>
   </div>
 </section>
@@ -192,15 +192,15 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="block" id="method" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
     <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="m.eyebrow">Méthode</span>
-      <h2 data-i18n="m.h2">Quatre étapes, une conclusion défendable.</h2>
-      <p data-i18n="m.p">Un protocole transparent, du dépôt au rapport — sans boîte noire.</p>
+      <span class="eyebrow" data-i18n="m.eyebrow">Method</span>
+      <h2 data-i18n="m.h2">Four steps, one defensible conclusion.</h2>
+      <p data-i18n="m.p">A transparent protocol, from upload to report — no black box.</p>
     </div>
     <div class="steps">
-      <div class="step" data-reveal><span class="connect"></span><span class="no">01</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg></span><h3 data-i18n="m.s1.t">Dépôt</h3><p data-i18n="m.s1.p">Stratégie Pine, script Python, notebook ou dossier. Votre code reste privé.</p></div>
-      <div class="step" data-reveal data-delay="1"><span class="connect"></span><span class="no">02</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></span><h3 data-i18n="m.s2.t">Recalcul</h3><p data-i18n="m.s2.p">Les métriques sont rejouées sur vos données, frais et slippage inclus.</p></div>
-      <div class="step" data-reveal data-delay="2"><span class="connect"></span><span class="no">03</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3 data-i18n="m.s3.t">Robustesse</h3><p data-i18n="m.s3.p">Walk-forward, multi-actifs, multi-UT et stress tests hors-échantillon.</p></div>
-      <div class="step" data-reveal data-delay="3"><span class="no">04</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 14l2 2 4-4"/></svg></span><h3 data-i18n="m.s4.t">Rapport</h3><p data-i18n="m.s4.p">Chaque chiffre relié à sa preuve, avec les divergences et des pistes d'amélioration.</p></div>
+      <div class="step" data-reveal><span class="connect"></span><span class="no">01</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg></span><h3 data-i18n="m.s1.t">Upload</h3><p data-i18n="m.s1.p">Pine strategy, Python script, notebook or folder. Your code stays private.</p></div>
+      <div class="step" data-reveal data-delay="1"><span class="connect"></span><span class="no">02</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></span><h3 data-i18n="m.s2.t">Recompute</h3><p data-i18n="m.s2.p">Metrics are replayed on your data, fees and slippage included.</p></div>
+      <div class="step" data-reveal data-delay="2"><span class="connect"></span><span class="no">03</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><h3 data-i18n="m.s3.t">Robustness</h3><p data-i18n="m.s3.p">Walk-forward, multi-asset, multi-TF and out-of-sample stress tests.</p></div>
+      <div class="step" data-reveal data-delay="3"><span class="no">04</span><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/><path d="M9 14l2 2 4-4"/></svg></span><h3 data-i18n="m.s4.t">Report</h3><p data-i18n="m.s4.p">Each number tied to its evidence, with divergences and improvement leads.</p></div>
     </div>
   </div>
 </section>
@@ -208,20 +208,20 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="block" id="audit">
   <div class="container">
     <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="cmp.eyebrow">Déclaré vs vérifié</span>
-      <h2 data-i18n="cmp.h2">L'écart que personne ne montre.</h2>
-      <p data-i18n="cmp.p">Côte à côte, la performance affichée et celle qui survit au recalcul.</p>
+      <span class="eyebrow" data-i18n="cmp.eyebrow">Declared vs verified</span>
+      <h2 data-i18n="cmp.h2">The gap nobody shows you.</h2>
+      <p data-i18n="cmp.p">Side by side: the displayed performance and the one that survives recomputation.</p>
     </div>
     <div class="panel" data-reveal>
-      <span class="stamp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="cmp.stamp">VÉRIFIÉ</span></span>
+      <span class="stamp"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="cmp.stamp">VERIFIED</span></span>
       <div class="panel-head">
-        <div class="pc-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--forest-600)" stroke-width="2.2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg><span data-i18n="cmp.panel">Comparaison de backtest</span></div>
-        <span class="divergence"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span data-i18n="cmp.flag">3 divergences · exemple illustratif</span></span>
+        <div class="pc-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--forest-600)" stroke-width="2.2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg><span data-i18n="cmp.panel">Backtest comparison</span></div>
+        <span class="divergence"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span data-i18n="cmp.flag">3 divergences · illustrative example</span></span>
       </div>
       <div class="panel-body">
         <div class="compare">
           <div>
-            <div class="bar-row"><span class="lbl" data-i18n="cmp.b1">Rendement net</span><div class="bar-track"><div class="bar-fill bar-declared" style="--w:.92"></div></div><span class="val dec">+212%</span></div>
+            <div class="bar-row"><span class="lbl" data-i18n="cmp.b1">Net return</span><div class="bar-track"><div class="bar-fill bar-declared" style="--w:.92"></div></div><span class="val dec">+212%</span></div>
             <div class="bar-row"><span class="lbl">&nbsp;</span><div class="bar-track"><div class="bar-fill bar-verified" style="--w:.30"></div></div><span class="val pos">+41%</span></div>
             <div class="bar-row"><span class="lbl" data-i18n="cmp.b2">Profit Factor</span><div class="bar-track"><div class="bar-fill bar-declared" style="--w:.84"></div></div><span class="val dec">2.10</span></div>
             <div class="bar-row"><span class="lbl">&nbsp;</span><div class="bar-track"><div class="bar-fill bar-verified" style="--w:.51"></div></div><span class="val pos">1.28</span></div>
@@ -240,16 +240,16 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 
 <section class="block" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
-    <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="mx.eyebrow">Généralisation</span><h2 data-i18n="mx.h2">Robuste sur un panier, pas sur un ticker chanceux.</h2></div>
+    <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="mx.eyebrow">Generalisation</span><h2 data-i18n="mx.h2">Robust across a basket, not on a lucky ticker.</h2></div>
     <div class="matrix-wrap">
       <div class="panel" data-reveal>
-        <div class="panel-head"><div class="pc-title" data-i18n="mx.panel">Matrice actifs × unités de temps</div><span class="pc-tag" data-i18n="card.example">Exemple illustratif</span></div>
+        <div class="panel-head"><div class="pc-title" data-i18n="mx.panel">Asset × timeframe matrix</div><span class="pc-tag" data-i18n="card.example">Illustrative example</span></div>
         <div class="panel-body">
           <div class="matrix" id="matrix"></div>
           <div style="display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--ink-2)">
-            <span><span class="swatch" style="background:color-mix(in oklab,var(--emerald-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.pass">passe</span></span>
+            <span><span class="swatch" style="background:color-mix(in oklab,var(--emerald-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.pass">pass</span></span>
             <span><span class="swatch" style="background:color-mix(in oklab,var(--amber-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.warn">fragile</span></span>
-            <span><span class="swatch" style="background:color-mix(in oklab,var(--risk-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.fail">rejeté</span></span>
+            <span><span class="swatch" style="background:color-mix(in oklab,var(--risk-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.fail">rejected</span></span>
           </div>
         </div>
       </div>
@@ -258,10 +258,10 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
           <div class="radial" id="radial">
             <svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="72" fill="none" stroke="var(--line)" stroke-width="12"/>
               <circle id="radialArc" cx="85" cy="85" r="72" fill="none" stroke="var(--forest-600)" stroke-width="12" stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="452"/></svg>
-            <div class="num"><b data-count="74">74</b><span data-i18n="mx.score">robustesse / 100</span></div>
+            <div class="num"><b data-count="74">74</b><span data-i18n="mx.score">robustness / 100</span></div>
           </div>
           <div class="stress">
-            <div class="s"><div class="t" data-i18n="mx.st1">Frais ×3</div><div class="m pos">PF 1.24</div></div>
+            <div class="s"><div class="t" data-i18n="mx.st1">Fees ×3</div><div class="m pos">PF 1.24</div></div>
             <div class="s"><div class="t" data-i18n="mx.st2">OOS 2026</div><div class="m pos">+9.1%</div></div>
             <div class="s"><div class="t" data-i18n="mx.st3">Slippage 2×</div><div class="m dec">PF 1.11</div></div>
           </div>
@@ -274,29 +274,29 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="block" id="research">
   <div class="container">
     <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="rs.eyebrow">Recherche &amp; biais</span>
-      <h2 data-i18n="rs.h2">Les biais qui gonflent un backtest, nommés un par un.</h2>
-      <p data-i18n="rs.p">Notre moteur traque les erreurs les plus courantes — celles qui transforment une courbe perdante en promesse spectaculaire.</p>
+      <span class="eyebrow" data-i18n="rs.eyebrow">Research & biases</span>
+      <h2 data-i18n="rs.h2">The biases that inflate a backtest, named one by one.</h2>
+      <p data-i18n="rs.p">Our engine hunts the most common errors — the ones that turn a losing curve into a spectacular promise.</p>
     </div>
     <div class="div-grid">
-      <article class="div-card high" data-reveal><div class="sev" data-i18n="rs.d1.s">Biais élevé</div><h4 data-i18n="rs.d1.t">Look-ahead</h4><p data-i18n="rs.d1.p">Des décisions prises avec une information non encore disponible à la clôture de la bougie.</p></article>
-      <article class="div-card" data-reveal data-delay="1"><div class="sev" data-i18n="rs.d2.s">Frais</div><h4 data-i18n="rs.d2.t">Coûts oubliés</h4><p data-i18n="rs.d2.p">Commissions, spread et slippage absents : l'edge apparent disparaît une fois déduits.</p></article>
-      <article class="div-card" data-reveal data-delay="2"><div class="sev" data-i18n="rs.d3.s">Sur-ajustement</div><h4 data-i18n="rs.d3.t">Fenêtre unique</h4><p data-i18n="rs.d3.p">Une performance portée par une seule période favorable, invisible en walk-forward.</p></article>
+      <article class="div-card high" data-reveal><div class="sev" data-i18n="rs.d1.s">High bias</div><h4 data-i18n="rs.d1.t">Look-ahead</h4><p data-i18n="rs.d1.p">Decisions taken with information not yet available at bar close.</p></article>
+      <article class="div-card" data-reveal data-delay="1"><div class="sev" data-i18n="rs.d2.s">Fees</div><h4 data-i18n="rs.d2.t">Missing costs</h4><p data-i18n="rs.d2.p">Commissions, spread and slippage absent: the apparent edge vanishes once deducted.</p></article>
+      <article class="div-card" data-reveal data-delay="2"><div class="sev" data-i18n="rs.d3.s">Overfitting</div><h4 data-i18n="rs.d3.t">Single window</h4><p data-i18n="rs.d3.p">Performance carried by one favourable period, invisible in walk-forward.</p></article>
     </div>
   </div>
 </section>
 
 <section class="block">
   <div class="container">
-    <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="lock.eyebrow">Votre rapport</span><h2 data-i18n="lock.h2">Un livrable complet, débloqué après validation.</h2></div>
+    <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="lock.eyebrow">Your report</span><h2 data-i18n="lock.h2">A full deliverable, unlocked after validation.</h2></div>
     <div class="locked" data-reveal>
       <div class="doc"><h3>BacktestProof — BTCUSDT · 4H · Wolfe+RSI</h3><div class="lines"><span></span><span></span><span></span></div>
         <div class="grid3"><div></div><div></div><div></div></div><div class="lines" style="margin-top:16px"><span></span><span></span></div></div>
       <div class="veil"><div class="unlock">
         <div class="lock"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
-        <h3 data-i18n="lock.t">Rapport prêt — action requise</h3>
-        <p data-i18n="lock.p">Aperçu flouté d'un rapport de démonstration. Le rapport complet se débloque après paiement et validation humaine.</p>
-        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="lock.cta">Débloquer un exemple de rapport</a>
+        <h3 data-i18n="lock.t">Report ready — action required</h3>
+        <p data-i18n="lock.p">Blurred preview of a demo report. The full report unlocks after payment and human validation.</p>
+        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="lock.cta">Unlock an example report</a>
       </div></div>
     </div>
   </div>
@@ -305,38 +305,38 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="block" id="pricing" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
     <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="pr.eyebrow">Tarifs</span>
-      <h2 data-i18n="pr.h2">Un audit, pas un abonnement à des promesses.</h2>
-      <p data-i18n="pr.p">Grille de lancement. Tarifs indicatifs — le détail définitif est présenté dans le configurateur.</p>
+      <span class="eyebrow" data-i18n="pr.eyebrow">Pricing</span>
+      <h2 data-i18n="pr.h2">An audit, not a subscription to promises.</h2>
+      <p data-i18n="pr.p">Launch pricing. Indicative rates — final details are shown in the configurator.</p>
     </div>
     <div class="price-grid">
-      <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Audit unique</div><div class="amt" data-i18n="pr.a.amt">dès 49€<small> / stratégie</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Recalcul net de frais</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">1 actif · 1 unité de temps</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Rapport de divergences</span></li></ul>
-        <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choisir</a></div>
-      <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Audit Pro</div><div class="amt" data-i18n="pr.b.amt">dès 149€<small> / stratégie</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">Panier multi-actifs × UT</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Walk-forward &amp; stress tests</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Score de robustesse + pistes</span></li></ul>
-        <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choisir</a></div>
-      <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Équipe</div><div class="amt" data-i18n="pr.c.amt">sur devis</div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">Volume de stratégies</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Scan temps réel (à venir)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Accès prioritaire</span></li></ul>
-        <a class="btn btn-ghost" href="/login?return_to=/account" style="width:100%;justify-content:center" data-i18n="pr.contact">Nous contacter</a></div>
+      <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€14.99<small> / strategy</small></div>
+        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Net-of-fees recompute</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">1 asset · 1 timeframe</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Divergence report</span></li></ul>
+        <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
+      <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Standard audit</div><div class="amt" data-i18n="pr.b.amt">from €39<small> / strategy</small></div>
+        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">Multiple explicit contexts</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Deeper evidence comparison</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">€14.99 Essential fee credited</span></li></ul>
+        <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
+      <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Radar</div><div class="amt" data-i18n="pr.c.amt">from €19<small> / month</small></div>
+        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">Volume of strategies</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Real-time scan (soon)</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Priority access</span></li></ul>
+        <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Contact us</a></div>
     </div>
   </div>
 </section>
 
 <section class="block" id="faq">
   <div class="container">
-    <div class="sec-head" data-reveal><span class="eyebrow">FAQ</span><h2 data-i18n="faq.h2">Questions fréquentes</h2></div>
+    <div class="sec-head" data-reveal><span class="eyebrow">FAQ</span><h2 data-i18n="faq.h2">Frequently asked questions</h2></div>
     <div class="faq">
-      <details class="qa" data-reveal open><summary><span data-i18n="faq.q1">Mon code de stratégie est-il partagé ou stocké ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a1">Non. Votre code sert au calcul de l'audit et n'est jamais publié ni revendu. Vous gardez la propriété de votre stratégie.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q2">Quels formats puis-je déposer ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a2">Pine Script, scripts Python, notebooks ou un dossier compatible. Vous pouvez aussi fournir vos trades exportés.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q3">Les chiffres du site sont-ils des résultats clients ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a3">Non. Toutes les données affichées ici sont des exemples illustratifs. Un audit ne garantit aucune performance future.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q4">Comment se débloque le rapport ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a4">Après paiement, votre demande passe une validation humaine avant que le rapport complet ne soit accessible, via un lien temporaire.</div></details>
+      <details class="qa" data-reveal open><summary><span data-i18n="faq.q1">Is my strategy code shared or stored?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a1">No. Your code powers the audit computation and is never published or resold. You keep ownership of your strategy.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q2">Which formats can I upload?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a2">Pine Script, Python scripts, notebooks or a compatible folder. You can also provide your exported trades.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q3">Are the site numbers real client results?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a3">No. All figures shown here are illustrative examples. An audit guarantees no future performance.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q4">How is the report unlocked?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a4">After payment, your request goes through human validation before the full report becomes accessible via a temporary link.</div></details>
     </div>
   </div>
 </section>
@@ -344,11 +344,11 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="block">
   <div class="container">
     <div class="cta-band" data-reveal id="ctaBand">
-      <h2 data-i18n="cta.h2">Prêt à confronter votre stratégie aux preuves ?</h2>
-      <p data-i18n="cta.p">Déposez-la. Vous saurez ce qui tient — et ce qui n'était que du storytelling.</p>
+      <h2 data-i18n="cta.h2">Ready to put your strategy to the evidence?</h2>
+      <p data-i18n="cta.p">Upload it. You will know what holds — and what was only storytelling.</p>
       <div class="hero-cta" style="margin-bottom:0">
-        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="cta.b1">Auditer une stratégie</a>
-        <a class="btn btn-ghost" style="border-color:rgba(255,255,255,.35);color:#eafbf3" href="#method" data-i18n="cta.b2">Comprendre la méthode</a>
+        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="cta.b1">Audit a strategy</a>
+        <a class="btn btn-ghost" style="border-color:rgba(255,255,255,.35);color:#eafbf3" href="#method" data-i18n="cta.b2">Understand the method</a>
       </div>
     </div>
   </div>
@@ -360,12 +360,12 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
     <div class="foot-grid">
       <div>
         <a class="brand" href="#top" style="margin-bottom:12px"><svg class="brand-lock lt" viewBox="22 18 496 150" role="img" aria-label="StratVerity — BacktestProof"><use href="#lockLight"/></svg><svg class="brand-lock dk" viewBox="22 18 496 150" aria-hidden="true"><use href="#lockDark"/></svg></a>
-        <p class="disclaimer" data-i18n="foot.disc">StratVerity fournit un audit indépendant de stratégies de trading. Les données affichées sont illustratives et ne constituent ni un conseil en investissement ni une garantie de performance. Le trading comporte un risque de perte.</p>
+        <p class="disclaimer" data-i18n="foot.disc">StratVerity provides an independent audit of trading strategies. Figures shown are illustrative and constitute neither investment advice nor a performance guarantee. Trading involves a risk of loss.</p>
       </div>
-      <div><h5 data-i18n="foot.prod">Produit</h5><a href="#product" data-i18n="nav.product">Produit</a><a href="#method" data-i18n="nav.method">Méthode</a><a href="#pricing" data-i18n="nav.pricing">Tarifs</a><a href="/configure" data-i18n="nav.cta">Auditer</a></div>
-      <div><h5 data-i18n="foot.res">Recherche</h5><a href="#research" data-i18n="nav.research">Biais détectés</a><a href="#method" data-i18n="foot.meth">Méthodologie</a><a href="#faq">FAQ</a></div>
-      <div><h5 data-i18n="foot.legal">Légal</h5><a href="/legal/terms" data-i18n="foot.terms">Conditions</a><a href="/legal/privacy" data-i18n="foot.privacy">Confidentialité</a><a href="/legal/risk" data-i18n="foot.risk">Avertissement risque</a><a href="/legal/refunds" data-i18n="foot.refund">Remboursements</a></div>
+      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
+      <div><h5 data-i18n="foot.res">Research</h5><a href="#research" data-i18n="nav.research">Research</a><a href="#method" data-i18n="foot.meth">Methodology</a><a href="#faq">FAQ</a></div>
+      <div><h5 data-i18n="foot.legal">Legal</h5><a href="/contact" data-i18n="common.contact">Contact</a><a href="/legal/terms" data-i18n="foot.terms">Terms</a><a href="/legal/privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal/risk" data-i18n="foot.risk">Risk notice</a><a href="/legal/refunds" data-i18n="foot.refund">Refunds</a></div>
     </div>
-    <div class="legal"><span>© <span id="year"></span> StratVerity · BacktestProof</span><span class="mono" data-i18n="foot.build">launch-v0.1 · aperçu design</span></div>
+    <div class="legal"><span>© <span id="year"></span> StratVerity · BacktestProof</span><span class="mono" data-i18n="foot.build">launch-v0.2 · design preview</span></div>
   </div>
 </footer>`;

@@ -44,6 +44,7 @@ const navItems = [
   ["nav.research", "/#research"],
   ["nav.pricing", "/#pricing"],
   ["nav.faq", "/#faq"],
+  ["common.contact", "/contact"],
 ] as const;
 
 export default function SiteHeader() {
@@ -125,7 +126,7 @@ export default function SiteHeader() {
           <Image className="brand-lock lt" src="/brand-light.svg" alt="StratVerity — BacktestProof" width={279} height={84} priority />
           <Image className="brand-lock dk" src="/brand-dark.svg" alt="" aria-hidden="true" width={279} height={84} priority />
         </Link>
-        <nav className="nav" aria-label="Principale">
+        <nav className="nav" aria-label={t("header.primaryNav")}>
           {navItems.map(([key, href]) => (
             <Link href={href} key={key}>{t(key)}</Link>
           ))}
@@ -137,7 +138,7 @@ export default function SiteHeader() {
               type="button"
               aria-haspopup="menu"
               aria-expanded={languageOpen}
-              aria-label="Choisir la langue"
+              aria-label={t("header.chooseLanguage")}
               onClick={() => setLanguageOpen((open) => !open)}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -164,7 +165,7 @@ export default function SiteHeader() {
               ))}
             </div>
           </div>
-          <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Basculer le thème clair ou sombre">
+          <button className="icon-btn" type="button" onClick={toggleTheme} aria-label={t("header.toggleTheme")}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
               {theme === "dark" ? (
                 <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
@@ -180,7 +181,7 @@ export default function SiteHeader() {
           </button>
         </div>
       </div>
-      <nav className={`mobile-nav${mobileOpen ? " open" : ""}`} aria-label="Navigation mobile">
+      <nav className={`mobile-nav${mobileOpen ? " open" : ""}`} aria-label={t("header.mobileNav")}>
         {navItems.map(([key, href]) => <Link href={href} key={key} onClick={closeMenus}>{t(key)}</Link>)}
         <Link href="/login?return_to=/account" onClick={closeMenus}>{t("nav.login")}</Link>
         <Link className="btn btn-primary mobile-cta" href="/configure" onClick={closeMenus}>{t("nav.cta")}</Link>

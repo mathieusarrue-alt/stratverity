@@ -1,5 +1,5 @@
 export type PricingProduct = "AUDIT" | "SCAN";
-export type PricingAuditDepth = "STANDARD" | "ROBUSTNESS" | "CUSTOM";
+export type PricingAuditDepth = "ESSENTIAL" | "STANDARD" | "ROBUSTNESS" | "CUSTOM";
 export type PricingEvaluationMode = "BAR_CLOSE" | "INTRABAR";
 
 export type PricingLine = {
@@ -9,7 +9,7 @@ export type PricingLine = {
 };
 
 export type PricingResult = {
-  version: "launch-v0.1";
+  version: "launch-v0.2";
   cadence: "ONE_TIME" | "MONTHLY";
   lines: PricingLine[];
   subtotalExVatCents: number;
@@ -82,6 +82,25 @@ export function calculatePrice(input: PricingInput): PricingResult {
   const strategyCount = Math.max(1, Math.floor(input.strategyCount));
 
   if (input.product === "AUDIT") {
+    if (input.auditDepth === "ESSENTIAL") {
+      return {
+        version: "launch-v0.2",
+        cadence: "ONE_TIME",
+        lines: [
+          {
+            label: "Audit essentiel · 1 stratégie × 1 actif × 1 unité de temps",
+            amountExVatCents: 1_499,
+            cadence: "ONE_TIME",
+          },
+        ],
+        subtotalExVatCents: 1_499,
+        vatCents: 0,
+        totalCents: 1_499,
+        activationExVatCents: 0,
+        activationVatCents: 0,
+        dueTodayCents: 1_499,
+      };
+    }
     const standardScope =
       3_900 +
       progressiveContextCost(contextCount, AUDIT_CONTEXT_BANDS);
@@ -121,7 +140,7 @@ export function calculatePrice(input: PricingInput): PricingResult {
     const vatCents = vat(subtotalExVatCents);
 
     return {
-      version: "launch-v0.1",
+      version: "launch-v0.2",
       cadence: "ONE_TIME",
       lines,
       subtotalExVatCents,
@@ -175,7 +194,7 @@ export function calculatePrice(input: PricingInput): PricingResult {
   const activationVatCents = vat(activationExVatCents);
 
   return {
-    version: "launch-v0.1",
+    version: "launch-v0.2",
     cadence: "MONTHLY",
     lines,
     subtotalExVatCents,

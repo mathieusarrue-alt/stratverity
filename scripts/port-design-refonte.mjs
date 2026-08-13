@@ -51,31 +51,32 @@ for (const language of languages) {
 }
 
 // Les cartes restent indicatives, mais leurs montants doivent refléter la
-// grille launch-v0.1 déjà en vigueur dans pricing.ts.
+// grille launch-v0.2 déjà en vigueur dans pricing.ts.
 for (const language of Object.keys(messages)) {
-  if (messages[language]["pr.a.amt"]) {
-    messages[language]["pr.a.amt"] = messages[language]["pr.a.amt"].replace(
-      /49/g,
-      "39",
-    );
-  }
-  if (messages[language]["pr.b.amt"]) {
-    messages[language]["pr.b.amt"] = messages[language]["pr.b.amt"].replace(
-      /149/g,
-      "68.25",
-    );
-  }
+  messages[language]["pr.a.n"] = "Essential audit";
+  messages[language]["pr.a.amt"] = "€14.99<small> / strategy</small>";
+  messages[language]["pr.b.n"] = "Standard audit";
+  messages[language]["pr.b.amt"] = "from €39<small> / strategy</small>";
+  messages[language]["pr.b.1"] = "Multiple explicit contexts";
+  messages[language]["pr.b.2"] = "Deeper evidence comparison";
+  messages[language]["pr.b.3"] = "€14.99 Essential fee credited";
   messages[language]["pr.c.n"] = "Radar";
-  messages[language]["pr.c.amt"] = "€19<small> / month</small>";
+  messages[language]["pr.c.amt"] = "from €19<small> / month</small>";
+  messages[language]["foot.build"] = "launch-v0.2 · design preview";
 }
 
 Object.assign(messages.fr, {
-  "pr.b.n": "Audit robustesse",
-  "pr.b.amt": "dès 68,25€<small> / stratégie</small>",
+  "pr.a.n": "Audit essentiel",
+  "pr.a.amt": "14,99€<small> / stratégie</small>",
+  "pr.b.n": "Audit standard",
+  "pr.b.amt": "dès 39€<small> / stratégie</small>",
+  "pr.b.1": "Plusieurs contextes explicites",
+  "pr.b.2": "Comparaison de preuves approfondie",
+  "pr.b.3": "14,99€ de l’Essentiel déduits",
   "pr.c.amt": "dès 19€<small> / mois</small>",
+  "foot.build": "launch-v0.2 · aperçu design",
 });
 Object.assign(messages.en, {
-  "pr.b.n": "Robustness audit",
   "pr.c.amt": "from €19<small> / month</small>",
 });
 Object.assign(messages.es, { "pr.c.amt": "desde 19€<small> / mes</small>" });
@@ -124,6 +125,18 @@ let markup = bodyMatch[1]
   )
   .trim();
 
+// English is the server-rendered default. Client-side locale changes still
+// replace these values through the same data-i18n keys after hydration.
+markup = markup.replace(
+  /<([a-z0-9]+)\b([^>]*data-i18n="([^"]+)"[^>]*)>([\s\S]*?)<\/\1>/gi,
+  (full, tag, attributes, key) => {
+    const english = messages.en[key];
+    return typeof english === "string"
+      ? `<${tag}${attributes}>${english}</${tag}>`
+      : full;
+  },
+);
+
 markup = markup.replaceAll("`", "\\`").replaceAll("${", "\\${");
 
 const additions = `
@@ -140,6 +153,11 @@ const additions = `
   --danger-500: var(--risk-500);
   --line-strong: color-mix(in oklab, var(--ink) 22%, transparent);
   --focus-ring: 0 0 0 3px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+html[data-theme="light"]{color-scheme:light}
+[data-theme="dark"]{
+  color-scheme:dark;
 }
 
 body {

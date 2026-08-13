@@ -32,7 +32,9 @@ test("server-renders the StratVerity product page", async () => {
   assert.match(html, /BacktestProof by StratVerity/i);
   assert.match(html, /StratVerity/i);
   assert.match(html, /BACKTESTPROOF/);
-  assert.match(html, /Exemple illustratif/i);
+  assert.match(html, /Illustrative example/i);
+  assert.match(html, /Essential audit/i);
+  assert.match(html, /€14\.99/i);
   assert.match(html, /href="\/configure"/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
 });
@@ -48,6 +50,8 @@ test("server-renders the Audit and Scan scope configurator", async () => {
   assert.match(html, /LAUNCH PRICING/i);
   assert.match(html, /no quote/i);
   assert.match(html, /No strategy code is sent/i);
+  assert.match(html, /Essential/i);
+  assert.match(html, /€14\.99|€14,99/i);
 });
 
 test("landing uses the centralized 12-language design source", async () => {
@@ -119,21 +123,32 @@ test("public login offers the low-friction verified identity path", async () => 
   const response = await render("/login?return_to=/account");
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /CONNEXION OU INSCRIPTION/i);
-  assert.match(html, />Continuer<\/span>/i);
-  assert.doesNotMatch(html, /Continuer avec ChatGPT/i);
+  assert.match(html, /SIGN IN OR CREATE ACCOUNT/i);
+  assert.match(html, />Continue<\/span>/i);
+  assert.doesNotMatch(html, /Continue with ChatGPT/i);
   assert.match(html, /Google/i);
   assert.match(html, /Microsoft/i);
   assert.match(html, /Email/i);
   assert.doesNotMatch(html, /via ChatGPT/i);
-  assert.match(html, /aria-label="Ouvrir l’écran sécurisé et continuer avec Google/i);
-  assert.match(html, /aria-label="Ouvrir l’écran sécurisé et continuer avec Microsoft/i);
-  assert.match(html, /GitHub direct sera propos/i);
-  assert.match(html, /Aucun accès à vos conversations/i);
+  assert.match(html, /aria-label="Open the secure screen and continue with Google/i);
+  assert.match(html, /aria-label="Open the secure screen and continue with Microsoft/i);
+  assert.match(html, /Direct GitHub sign-in will be offered/i);
+  assert.match(html, /No access to your conversations/i);
+});
+
+test("contact details are public and pricing Contact Us opens them", async () => {
+  const [contact, landing] = await Promise.all([render("/contact"), render("/")]);
+  assert.equal(contact.status, 200);
+  const contactHtml = await contact.text();
+  assert.match(contactHtml, /support@stratverity\.com/i);
+  assert.match(contactHtml, /Prism Works/i);
+  assert.doesNotMatch(contactHtml, /Mathieu Sarrue|903 756 575 00028|11 avenue du Huit Mai/i);
+  const landingHtml = await landing.text();
+  assert.match(landingHtml, /href="\/contact"[^>]*data-i18n="pr\.contact"/i);
 });
 
 test("every public route receives the shared interactive art direction", async () => {
-  for (const path of ["/", "/configure", "/configure/success", "/login", "/legal/terms"]) {
+  for (const path of ["/", "/configure", "/configure/success", "/login", "/contact", "/legal/terms"]) {
     const response = await render(path);
     assert.equal(response.status, 200, path);
     const html = await response.text();
@@ -179,6 +194,8 @@ test("scope configurator targets the bounded preview endpoint", async () => {
   assert.match(page, /crypto\.subtle\.digest\("SHA-256"/);
   assert.match(page, /configure\.localFilesBody/);
   assert.match(page, /calculatePrice/);
+  assert.match(page, /"launch-v0\.2"/);
+  assert.match(page, /"ESSENTIAL"/);
   assert.match(page, /\/v1\/billing\/checkout-sessions/);
   assert.match(page, /"Idempotency-Key"/);
   assert.match(page, /checkout\.stripe\.com/);
@@ -272,7 +289,9 @@ test("scope configurator publishes a deterministic launch price grid", async () 
     "utf8",
   );
 
-  assert.match(pricing, /version:\s*"launch-v0\.1"/);
+  assert.match(pricing, /version:\s*"launch-v0\.2"/);
+  assert.match(pricing, /auditDepth === "ESSENTIAL"/);
+  assert.match(pricing, /1_499/);
   assert.match(pricing, /AUDIT_CONTEXT_BANDS/);
   assert.match(pricing, /SCAN_CONTEXT_BANDS/);
   assert.match(pricing, /const VAT_RATE = 0/);
