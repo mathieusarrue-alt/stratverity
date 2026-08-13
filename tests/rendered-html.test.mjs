@@ -120,7 +120,8 @@ test("public login offers the low-friction verified identity path", async () => 
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /CONNEXION OU INSCRIPTION/i);
-  assert.match(html, /Continuer avec ChatGPT/i);
+  assert.match(html, />Continuer<\/span>/i);
+  assert.doesNotMatch(html, /Continuer avec ChatGPT/i);
   assert.match(html, /Google/i);
   assert.match(html, /Microsoft/i);
   assert.match(html, /Email/i);

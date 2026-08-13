@@ -83,7 +83,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               : "L’écran sécurisé suivant vous permet de continuer avec Google, Apple, Microsoft ou votre email."}
           </p>
           <Link className={styles.primaryAction} href={destination}>
-            <span>{user ? "Ouvrir mon espace" : "Continuer avec ChatGPT"}</span>
+            <span>{user ? "Ouvrir mon espace" : "Continuer"}</span>
             <span aria-hidden="true">→</span>
           </Link>
           {!user && (
@@ -110,7 +110,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <p className={styles.finePrint}>
             La connexion partage uniquement les informations d’identité affichées
             pendant l’autorisation. Elle ne donne pas accès à vos conversations,
-            fichiers ou facturation ChatGPT. · <Link href="/legal/privacy">Confidentialité</Link>
+            fichiers ou facturation. · <Link href="/legal/privacy">Confidentialité</Link>
           </p>
         </section>
       </div>
