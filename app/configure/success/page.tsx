@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "../scope-configurator.module.css";
+import { useI18n } from "../../i18n/I18nProvider";
+import type { MessageKey } from "../../i18n/messages";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
@@ -54,9 +56,11 @@ type PageState =
   | "error";
 
 export default function CheckoutReturnPage() {
+  const { t } = useI18n();
   const [pageState, setPageState] = useState<PageState>("checking");
   const [status, setStatus] = useState<OrderStatus | null>(null);
-  const [message, setMessage] = useState("Vérification du paiement signé par Stripe…");
+  const [messageKey, setMessageKey] = useState<MessageKey>("success.initial");
+  const message = t(messageKey);
   const [sessionId, setSessionId] = useState("");
   const [ownerToken, setOwnerToken] = useState("");
   const [strategyId, setStrategyId] = useState("");
@@ -101,33 +105,25 @@ export default function CheckoutReturnPage() {
       });
       if (result.order_status === "DRAFT_AWAITING_HUMAN_REVIEW") {
         setPageState("draft");
-        setMessage(
-          "Brouillon d’audit calculé et scellé. Une revue humaine est obligatoire avant toute livraison.",
-        );
+        setMessageKey("success.msg.draft");
       } else if (result.order_status === "READY_FOR_QUALIFICATION") {
         setPageState("ready");
-        setMessage("Tous les codes achetés sont reçus et prêts pour qualification.");
+        setMessageKey("success.msg.ready");
       } else if (result.order_status === "STATIC_QUALIFIED_AWAITING_APPROVAL") {
         setPageState("qualified");
-        setMessage(
-          "Qualification statique terminée. La commande attend le contrôle final, sans exécution automatique.",
-        );
+        setMessageKey("success.msg.qualified");
       } else if (result.order_status === "HUMAN_REVIEW_REQUIRED") {
         setPageState("review");
-        setMessage(
-          "Qualification terminée. Une revue humaine est nécessaire avant la suite.",
-        );
+        setMessageKey("success.msg.review");
       } else if (result.order_status === "QUALIFICATION_BLOCKED") {
         setPageState("blocked");
-        setMessage(
-          "La source ne peut pas poursuivre automatiquement. Aucun worker n'a été lancé.",
-        );
+        setMessageKey("success.msg.blocked");
       } else if (result.order_id) {
         setPageState("paid");
-        setMessage("Paiement confirmé. Votre commande attend maintenant ses fichiers.");
+        setMessageKey("success.msg.paid");
       } else {
         setPageState("pending");
-        setMessage("Paiement reçu par Stripe. Le webhook est encore en rapprochement.");
+        setMessageKey("success.msg.pending");
       }
       return result;
     },
@@ -145,7 +141,7 @@ export default function CheckoutReturnPage() {
         : "";
       if (!stripeSession || !browserOwner) {
         setPageState("error");
-        setMessage("Cette commande ne peut pas être ouverte depuis cette session navigateur.");
+        setMessageKey("success.msg.session");
         return;
       }
       setSessionId(stripeSession);
@@ -157,7 +153,7 @@ export default function CheckoutReturnPage() {
         } catch {
           if (attempt === 7 && !stopped) {
             setPageState("error");
-            setMessage("La confirmation sécurisée est indisponible pour le moment.");
+            setMessageKey("success.msg.confirmUnavailable");
             return;
           }
         }
@@ -178,7 +174,7 @@ export default function CheckoutReturnPage() {
     event.preventDefault();
     if (!status?.order_id || !artifact || !strategyId) return;
     setUploading(true);
-    setMessage("Inspection et conservation de l’artefact…");
+    setMessageKey("success.msg.inspecting");
     try {
       const body = new FormData();
       body.set("artifact", artifact);
@@ -192,7 +188,7 @@ export default function CheckoutReturnPage() {
             `${context.strategy_version_id}|${context.asset_id}|${context.timeframe}` ===
             contextKey,
         );
-        if (!selected) throw new Error("Contexte acheté requis pour cette preuve.");
+        if (!selected) throw new Error("PURCHASED_CONTEXT_REQUIRED");
         body.set(
           "evidence_context_json",
           JSON.stringify({
@@ -223,7 +219,7 @@ export default function CheckoutReturnPage() {
       await loadStatus(sessionId, ownerToken);
     } catch (error) {
       setPageState("error");
-      setMessage(error instanceof Error ? error.message : "Le dépôt a échoué.");
+      setMessageKey(error instanceof Error && error.message === "PURCHASED_CONTEXT_REQUIRED" ? "success.msg.contextRequired" : "success.msg.uploadFailed");
     } finally {
       setUploading(false);
     }
@@ -232,7 +228,7 @@ export default function CheckoutReturnPage() {
   const qualifyOrder = async () => {
     if (!status?.order_id || !sessionId || !ownerToken) return;
     setQualifying(true);
-    setMessage("Qualification statique en cours, sans exécution du code…");
+    setMessageKey("success.msg.qualifying");
     try {
       const response = await fetch(
         `${API_URL}/v1/orders/${status.order_id}/qualifications`,
@@ -254,13 +250,9 @@ export default function CheckoutReturnPage() {
         );
       }
       await loadStatus(sessionId, ownerToken);
-    } catch (error) {
+    } catch {
       setPageState("error");
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "La qualification est temporairement indisponible.",
-      );
+      setMessageKey("success.msg.qualificationUnavailable");
     } finally {
       setQualifying(false);
     }
@@ -269,7 +261,7 @@ export default function CheckoutReturnPage() {
   const generateAuditDraft = async () => {
     if (!status?.order_id || !sessionId || !ownerToken) return;
     setGeneratingDraft(true);
-    setMessage("Recalcul des métriques et scellement du brouillon…");
+    setMessageKey("success.msg.drafting");
     try {
       const response = await fetch(
         `${API_URL}/v1/orders/${status.order_id}/audit-drafts`,
@@ -291,13 +283,9 @@ export default function CheckoutReturnPage() {
         );
       }
       await loadStatus(sessionId, ownerToken);
-    } catch (error) {
+    } catch {
       setPageState("error");
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Le brouillon d’audit est temporairement indisponible.",
-      );
+      setMessageKey("success.msg.draftUnavailable");
     } finally {
       setGeneratingDraft(false);
     }
@@ -308,7 +296,7 @@ export default function CheckoutReturnPage() {
     const draftId = status.strategies.find((strategy) => strategy.audit_draft_count > 0);
     if (!draftId) return;
     setOpeningReport(true);
-    setMessage("Vérification de l’approbation humaine…");
+    setMessageKey("success.msg.checkingApproval");
     try {
       const draftsResponse = await fetch(
         `${API_URL}/v1/orders/${status.order_id}/audit-reports/status`,
@@ -349,13 +337,9 @@ export default function CheckoutReturnPage() {
       );
       if (!reportResponse.ok) throw new Error("AUDIT_REPORT_UNAVAILABLE");
       setApprovedReportHtml(await reportResponse.text());
-      setMessage("Rapport approuvé ouvert. Cet accès temporaire n’est pas conservé.");
-    } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Le rapport n’est pas encore approuvé ou est temporairement indisponible.",
-      );
+      setMessageKey("success.msg.reportOpened");
+    } catch {
+      setMessageKey("success.msg.reportUnavailable");
     } finally {
       setOpeningReport(false);
     }
@@ -363,24 +347,24 @@ export default function CheckoutReturnPage() {
 
   return (
     <main className={`${styles.page} ${styles.successPage}`}>
-      <section className={styles.successCard}>
-        <span>STRATVERITY · COMMANDE SÉCURISÉE</span>
+      <section className={styles.successCard} data-premium-surface>
+        <span>{t("success.badge")}</span>
         <h1>
           {approvedReportHtml
-            ? "Rapport approuvé."
+            ? t("success.title.approved")
             : pageState === "ready"
-            ? "Dépôt prêt."
+            ? t("success.title.ready")
             : pageState === "draft"
-              ? "Audit en revue."
+              ? t("success.title.draft")
             : pageState === "qualified"
-              ? "Qualification validée."
+              ? t("success.title.qualified")
               : pageState === "review"
-                ? "Revue nécessaire."
+                ? t("success.title.review")
                 : pageState === "blocked"
-                  ? "Qualification bloquée."
+                  ? t("success.title.blocked")
             : pageState === "paid"
-              ? "Paiement confirmé."
-              : "Confirmation en cours."}
+              ? t("success.title.paid")
+              : t("success.title.pending")}
         </h1>
         <p>{message}</p>
 
@@ -388,15 +372,15 @@ export default function CheckoutReturnPage() {
           <div className={styles.orderProof}>
             <dl>
               <div>
-                <dt>Commande</dt>
+                <dt>{t("success.order")}</dt>
                 <dd>{status.order_id.slice(0, 26)}…</dd>
               </div>
               <div>
-                <dt>État</dt>
+                <dt>{t("success.state")}</dt>
                 <dd>{approvedReportHtml ? "REPORT_APPROVED" : status.order_status}</dd>
               </div>
               <div>
-                <dt>Exécution</dt>
+                <dt>{t("success.execution")}</dt>
                 <dd>{status.worker_status}</dd>
               </div>
             </dl>
@@ -405,25 +389,22 @@ export default function CheckoutReturnPage() {
 
         {status?.order_id && ["paid", "qualified", "error"].includes(pageState) && (
           <form className={styles.orderUpload} onSubmit={submitArtifact}>
-            <h2>Déposez les fichiers de la commande</h2>
+            <h2>{t("success.uploadTitle")}</h2>
             {pageState === "qualified" && (
-              <p>
-                La source est qualifiée. Ajoutez maintenant les CSV TradingView
-                contextualisés nécessaires au brouillon d’audit.
-              </p>
+              <p>{t("success.qualifiedHelp")}</p>
             )}
             <label>
-              Stratégie
+              {t("success.strategy")}
               <select value={strategyId} onChange={(event) => setStrategyId(event.target.value)}>
                 {status.strategies.map((strategy) => (
                   <option key={strategy.strategy_version_id} value={strategy.strategy_version_id}>
-                    {strategy.strategy_version_id} {strategy.source_received ? "· source reçue" : ""}
+                    {strategy.strategy_version_id} {strategy.source_received ? t("success.sourceReceived") : ""}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Type de fichier
+              {t("success.fileType")}
               <select
                 value={artifactRole}
                 onChange={(event) =>
@@ -432,12 +413,12 @@ export default function CheckoutReturnPage() {
                   )
                 }
               >
-                <option value="STRATEGY_SOURCE">Code de stratégie</option>
-                <option value="BACKTEST_EVIDENCE">Backtest ou preuve complémentaire</option>
+                <option value="STRATEGY_SOURCE">{t("success.strategyCode")}</option>
+                <option value="BACKTEST_EVIDENCE">{t("success.backtestEvidence")}</option>
               </select>
             </label>
             <label>
-              Fichier
+              {t("success.file")}
               <input
                 type="file"
                 required
@@ -452,7 +433,7 @@ export default function CheckoutReturnPage() {
             {artifactRole === "BACKTEST_EVIDENCE" && (
               <>
                 <label>
-                  Contexte acheté
+                  {t("success.purchasedContext")}
                   <select value={contextKey} onChange={(event) => setContextKey(event.target.value)}>
                     {status.contexts
                       .filter((context) => context.strategy_version_id === strategyId)
@@ -463,88 +444,73 @@ export default function CheckoutReturnPage() {
                   </select>
                 </label>
                 <label>
-                  Fuseau de l’export
+                  {t("success.timezone")}
                   <input value={sourceTimezone} onChange={(event) => setSourceTimezone(event.target.value)} required />
                 </label>
                 <label>
-                  Capital initial
+                  {t("success.initialCapital")}
                   <input type="number" min="0.01" step="0.01" value={initialCapital} onChange={(event) => setInitialCapital(event.target.value)} required />
                 </label>
                 <label>
-                  Devise
+                  {t("success.currency")}
                   <input minLength={3} maxLength={10} value={currency} onChange={(event) => setCurrency(event.target.value)} required />
                 </label>
                 <label>
-                  Commission (%)
+                  {t("success.commission")}
                   <input type="number" min="0" max="100" step="0.001" value={commissionPercent} onChange={(event) => setCommissionPercent(event.target.value)} required />
                 </label>
                 <label>
-                  Slippage (ticks)
+                  {t("success.slippage")}
                   <input type="number" min="0" step="1" value={slippageTicks} onChange={(event) => setSlippageTicks(event.target.value)} required />
                 </label>
               </>
             )}
             <button disabled={uploading || !artifact} type="submit">
-              {uploading ? "Inspection…" : "Déposer sans exécuter"}
+              {uploading ? t("success.inspecting") : t("success.uploadWithoutExecution")}
             </button>
-            <p>
-              La source doit correspondre à l’empreinte achetée. Les ZIP sont inspectés ;
-              aucun code n’est exécuté sur le serveur public.
-            </p>
+            <p>{t("success.uploadHelp")}</p>
           </form>
         )}
 
         {status?.order_id && pageState === "ready" && (
-          <div className={styles.orderUpload}>
-            <h2>Qualifier les sources reçues</h2>
-            <p>
-              Cette étape inspecte uniquement la structure et la compatibilité.
-              Aucun Pine, Python, notebook ou bot n&apos;est exécuté.
-            </p>
+          <div className={styles.orderUpload} data-premium-surface>
+            <h2>{t("success.qualifyTitle")}</h2>
+            <p>{t("success.qualifyBody")}</p>
             <button disabled={qualifying} type="button" onClick={qualifyOrder}>
-              {qualifying ? "Qualification…" : "Lancer la qualification statique"}
+              {qualifying ? t("success.qualifying") : t("success.qualifyAction")}
             </button>
           </div>
         )}
 
         {status?.order_id && pageState === "qualified" && status.product === "AUDIT" && (
-          <div className={styles.orderUpload}>
-            <h2>Créer le brouillon d’audit</h2>
-            <p>
-              Un CSV TradingView contextualisé est requis pour chaque actif et unité de
-              temps achetés. Les métriques sont recalculées sans exécuter le Pine.
-            </p>
+          <div className={styles.orderUpload} data-premium-surface>
+            <h2>{t("success.draftTitle")}</h2>
+            <p>{t("success.draftBody")}</p>
             <button disabled={generatingDraft} type="button" onClick={generateAuditDraft}>
-              {generatingDraft ? "Calcul…" : "Calculer le brouillon vérifiable"}
+              {generatingDraft ? t("success.calculating") : t("success.draftAction")}
             </button>
           </div>
         )}
 
         {status?.order_id && pageState === "draft" && !approvedReportHtml && (
-          <div className={styles.orderUpload}>
-            <h2>Revue humaine obligatoire</h2>
-            <p>
-              Le rapport est immuable et non livré. Nous vérifions les hypothèses, les
-              limites et la cohérence des preuves avant de le rendre accessible.
-            </p>
+          <div className={styles.orderUpload} data-premium-surface>
+            <h2>{t("success.humanTitle")}</h2>
+            <p>{t("success.humanBody")}</p>
             <button disabled={openingReport} type="button" onClick={openApprovedReport}>
-              {openingReport ? "Vérification…" : "Ouvrir le rapport s’il est approuvé"}
+              {openingReport ? t("success.checking") : t("success.openApproved")}
             </button>
           </div>
         )}
 
         {approvedReportHtml && (
-          <div className={styles.orderUpload}>
-            <h2>Rapport livré</h2>
-            <p>
-              La revue humaine est terminée. L&apos;accès ci-dessous est temporaire
-              et lié uniquement à cette commande.
-            </p>
+          <div className={styles.orderUpload} data-premium-surface>
+            <h2>{t("success.deliveredTitle")}</h2>
+            <p>{t("success.deliveredBody")}</p>
             <iframe
               className={styles.approvedReport}
               sandbox=""
               srcDoc={approvedReportHtml}
-              title="Rapport d’audit StratVerity approuvé"
+              title={t("success.iframeTitle")}
             />
           </div>
         )}
@@ -565,11 +531,10 @@ export default function CheckoutReturnPage() {
         )}
 
         <p>
-          <strong>Aucun audit, scan ou worker n’est lancé depuis cette page.</strong>{" "}
-          Le brouillon recalcule uniquement les preuves déposées sans exécuter le
-          code client ; aucun entitlement n’est créé et aucune livraison n’est automatique.
+          <strong>{t("success.safetyStrong")}</strong>{" "}
+          {t("success.safetyBody")}
         </p>
-        <Link href="/configure">Retour au configurateur</Link>
+        <Link href="/configure">{t("success.back")}</Link>
       </section>
     </main>
   );

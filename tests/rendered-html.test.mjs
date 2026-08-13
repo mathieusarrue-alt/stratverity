@@ -30,8 +30,10 @@ test("server-renders the StratVerity product page", async () => {
 
   const html = await response.text();
   assert.match(html, /BacktestProof by StratVerity/i);
-  assert.match(html, /STRATVERITY/);
+  assert.match(html, /StratVerity/i);
   assert.match(html, /BACKTESTPROOF/);
+  assert.match(html, /Exemple illustratif/i);
+  assert.match(html, /href="\/configure"/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
 });
 
@@ -40,30 +42,112 @@ test("server-renders the Audit and Scan scope configurator", async () => {
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /Composez votre audit/i);
-  assert.match(html, /Ou votre scan/i);
-  assert.match(html, /2 Mio/i);
-  assert.match(html, /PRIX EN TEMPS RÉEL/i);
-  assert.match(html, /sans devis/i);
-  assert.match(html, /Aucun code de stratégie n’est envoyé/i);
+  assert.match(html, /Build your audit/i);
+  assert.match(html, /Or your scan/i);
+  assert.match(html, /2 MiB/i);
+  assert.match(html, /LAUNCH PRICING/i);
+  assert.match(html, /no quote/i);
+  assert.match(html, /No strategy code is sent/i);
 });
 
-test("connected audit form keeps the report metrics out of the browser response", async () => {
-  const page = await readFile(
-    new URL("../app/design-b/page.tsx", import.meta.url),
+test("landing uses the centralized 12-language design source", async () => {
+  const landing = await readFile(
+    new URL("../app/home/LandingPage.tsx", import.meta.url),
+    "utf8",
+  );
+  const messages = await readFile(
+    new URL("../app/i18n/messages.ts", import.meta.url),
+    "utf8",
+  );
+  const header = await readFile(
+    new URL("../app/components/SiteHeader.tsx", import.meta.url),
+    "utf8",
+  );
+  const layout = await readFile(
+    new URL("../app/layout.tsx", import.meta.url),
+    "utf8",
+  );
+  const ambient = await readFile(
+    new URL("../app/components/AmbientExperience.tsx", import.meta.url),
     "utf8",
   );
 
-  assert.match(page, /\/v1\/audits\/tradingview/);
-  assert.match(page, /\/v1\/qualifications\/python-bundle/);
-  assert.match(page, /STATIC_ONLY_NO_EXECUTION/);
-  assert.match(page, /Projet Python/);
-  assert.match(page, /accept="\.pine,text\/plain"/);
-  assert.match(page, /accept="\.csv,text\/csv"/);
-  assert.match(page, /terms_accepted/);
-  assert.match(page, /delivery_status:\s*"EMAIL_REQUIRED"/);
-  assert.match(page, /setAuditTeaser/);
-  assert.doesNotMatch(page, /payload\.metrics|payload\.checks/);
+  for (const locale of ["fr", "en", "es", "pt", "de", "it", "ru", "zh", "ko", "hi", "ar", "bn"]) {
+    assert.match(messages, new RegExp(`"${locale}"\\s*:`), locale);
+  }
+  assert.match(landing, /landingMarkup/);
+  assert.match(landing, /prefers-reduced-motion/);
+  assert.match(header, /brand-light\.svg/);
+  assert.match(header, /brand-dark\.svg/);
+  assert.match(header, /\/configure/);
+  assert.match(header, /\/login\?return_to=\/account/);
+  assert.match(layout, /<AmbientExperience \/>/);
+  assert.match(ambient, /id="fx"/);
+  assert.match(ambient, /data-premium-surface/);
+  assert.doesNotMatch(landing, /querySelector<HTMLCanvasElement>\("#fx"\)/);
+  assert.doesNotMatch(landing + header, /sk_test_|whsec_|STRIPE_SECRET_KEY/);
+});
+
+test("application routes use the generated 12-locale catalogue with English default", async () => {
+  const provider = await readFile(
+    new URL("../app/i18n/I18nProvider.tsx", import.meta.url),
+    "utf8",
+  );
+  const catalogue = await import(
+    new URL(`../scripts/app-messages.mjs?test=${Date.now()}`, import.meta.url)
+  );
+  const sources = await Promise.all([
+    "../app/configure/page.tsx",
+    "../app/configure/success/page.tsx",
+    "../app/admin/review-console.tsx",
+    "../app/legal/LegalPage.tsx",
+  ].map((path) => readFile(new URL(path, import.meta.url), "utf8")));
+
+  assert.match(provider, /useState<Locale>\("en"\)/);
+  const expectedKeys = Object.keys(catalogue.appMessages.en).sort();
+  assert.ok(expectedKeys.length >= 230);
+  for (const locale of ["fr", "en", "es", "pt", "de", "it", "ru", "zh", "ko", "hi", "ar", "bn"]) {
+    assert.deepEqual(Object.keys(catalogue.appMessages[locale]).sort(), expectedKeys, locale);
+    assert.ok(expectedKeys.every((key) => typeof catalogue.appMessages[locale][key] === "string"), locale);
+  }
+  assert.match(sources.join("\n"), /useI18n/);
+  assert.match(sources[0], /toLocaleString\(locale\)/);
+  assert.match(sources[0], /Intl\.NumberFormat\(locale/);
+});
+
+test("public login offers the low-friction verified identity path", async () => {
+  const response = await render("/login?return_to=/account");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /CONNEXION OU INSCRIPTION/i);
+  assert.match(html, /Continuer avec ChatGPT/i);
+  assert.match(html, /Google/i);
+  assert.match(html, /Microsoft/i);
+  assert.match(html, /Email/i);
+  assert.doesNotMatch(html, /via ChatGPT/i);
+  assert.match(html, /aria-label="Ouvrir l’écran sécurisé et continuer avec Google/i);
+  assert.match(html, /aria-label="Ouvrir l’écran sécurisé et continuer avec Microsoft/i);
+  assert.match(html, /GitHub direct sera propos/i);
+  assert.match(html, /Aucun accès à vos conversations/i);
+});
+
+test("every public route receives the shared interactive art direction", async () => {
+  for (const path of ["/", "/configure", "/configure/success", "/login", "/legal/terms"]) {
+    const response = await render(path);
+    assert.equal(response.status, 200, path);
+    const html = await response.text();
+    assert.match(html, /class="ambient-experience"/, path);
+    assert.match(html, /<canvas[^>]+id="fx"/, path);
+  }
+});
+
+test("customer account stays protected by server-side identity", async () => {
+  const response = await render("/account");
+  assert.ok([302, 303, 307, 308].includes(response.status));
+  assert.match(
+    response.headers.get("location") ?? "",
+    /^(?:http:\/\/localhost)?\/signin-with-chatgpt\?/,
+  );
 });
 
 test("scope configurator targets the bounded preview endpoint", async () => {
@@ -75,7 +159,7 @@ test("scope configurator targets the bounded preview endpoint", async () => {
   assert.match(page, /\/v1\/service-scopes\/preview/);
   assert.match(page, /REQUEST_LIMIT_BYTES\s*=\s*2\s*\*\s*1024\s*\*\s*1024/);
   assert.match(page, /crypto\.subtle\.digest\("SHA-256"/);
-  assert.match(page, /Aucun code de stratégie n’est envoyé/);
+  assert.match(page, /configure\.localFilesBody/);
   assert.match(page, /calculatePrice/);
   assert.match(page, /\/v1\/billing\/checkout-sessions/);
   assert.match(page, /"Idempotency-Key"/);
@@ -83,8 +167,8 @@ test("scope configurator targets the bounded preview endpoint", async () => {
   assert.match(page, /beta-fr-2026-08-12-v1/);
   assert.match(page, /AUDIT_BETA_NO_MARKETPLACE_RESALE/);
   assert.match(page, /contract_acceptance/);
-  assert.match(page, /Scan sur invitation/);
-  assert.match(page, /Stripe test uniquement/i);
+  assert.match(page, /configure\.scanInvitation/);
+  assert.match(page, /configure\.betaBanner/);
   assert.doesNotMatch(page, /payment_intent|STRIPE_SECRET_KEY/);
 });
 
@@ -100,12 +184,12 @@ test("legal beta bundle is public and excludes client-code resale", async () => 
     assert.equal(response.status, 200, path);
     const html = await response.text();
     assert.match(html, /beta-fr-2026-08-12-v1/i, path);
-    assert.match(html, /aucun paiement réel/i, path);
+    assert.match(html, /no real payment/i, path);
   }
   const license = await (await render("/legal/content-license")).text();
-  assert.match(license, /propriétaire de votre stratégie/i);
-  assert.match(license, /exclut expressément la publication/i);
-  assert.match(license, /vente, la sous-licence/i);
+  assert.match(license, /remain the owner of your strategy/i);
+  assert.match(license, /expressly excludes publishing/i);
+  assert.match(license, /selling, sublicensing/i);
 });
 
 test("checkout return never claims provisioning before the signed webhook", async () => {
@@ -113,10 +197,10 @@ test("checkout return never claims provisioning before the signed webhook", asyn
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /Confirmation en cours/i);
-  assert.match(html, /paiement signé/i);
-  assert.match(html, /Aucun audit, scan ou worker n’est lancé/i);
-  assert.doesNotMatch(html, /service activé|paiement confirmé/i);
+  assert.match(html, /Confirmation in progress/i);
+  assert.match(html, /Stripe-signed payment/i);
+  assert.match(html, /No audit, scan or worker is started/i);
+  assert.doesNotMatch(html, /service activated|payment confirmed/i);
 });
 
 test("checkout and return page bind uploads to one browser-held owner token", async () => {
@@ -134,16 +218,16 @@ test("checkout and return page bind uploads to one browser-held owner token", as
   assert.match(returnPage, /\/v1\/orders\/status/);
   assert.match(returnPage, /\/submissions/);
   assert.match(returnPage, /\/qualifications/);
-  assert.match(returnPage, /Lancer la qualification statique/);
+  assert.match(returnPage, /success\.qualifyAction/);
   assert.match(returnPage, /STATIC_QUALIFIED_AWAITING_APPROVAL/);
   assert.match(returnPage, /STRATEGY_SOURCE/);
   assert.match(returnPage, /BACKTEST_EVIDENCE/);
   assert.match(returnPage, /NOT_CREATED/);
   assert.match(returnPage, /NOT_DISPATCHED/);
   assert.match(returnPage, /\/audit-reports\/\$\{draft\.draft_id\}\/access/);
-  assert.match(returnPage, /approvedReportHtml\s*\?\s*"Rapport approuvé\."/);
+  assert.match(returnPage, /approvedReportHtml\s*\?\s*t\("success\.title\.approved"\)/);
   assert.match(returnPage, /approvedReportHtml\s*\?\s*"REPORT_APPROVED"/);
-  assert.match(returnPage, /Rapport livré/);
+  assert.match(returnPage, /success\.deliveredTitle/);
   assert.match(returnPage, /\/audit-reports\/status/);
   assert.match(returnPage, /\/v1\/paid-audit-reports\/\$\{draft\.draft_id\}/);
   assert.match(returnPage, /sandbox=""/);

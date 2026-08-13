@@ -1,36 +1,23 @@
+"use client";
+
 import { LegalPage } from "../LegalPage";
+import { useI18n } from "../../i18n/I18nProvider";
 
 export default function RiskPage() {
+  const { t } = useI18n();
   return (
     <LegalPage
-      title="Avertissement risques"
-      lead="Un backtest est une mesure historique sous hypothèses. Ce n’est ni une promesse de gain ni un conseil d’investissement."
+      titleKey="legal.risk.title"
+      leadKey="legal.risk.lead"
     >
       <section>
-        <h2>Limites d’un backtest</h2>
-        <p>
-          Les données, frais, spreads, slippage, liquidité, latence, biais de
-          sélection, sur-optimisation et erreurs de code peuvent transformer les
-          résultats. Les performances passées ne préjugent pas des performances
-          futures et une perte totale du capital engagé reste possible.
-        </p>
+        <h2>{t("legal.risk.s1h")}</h2><p>{t("legal.risk.s1p")}</p>
       </section>
       <section>
-        <h2>Portée de l’audit</h2>
-        <p>
-          L’audit vise à rendre les hypothèses, métriques et divergences plus
-          vérifiables. Il ne certifie pas la rentabilité, ne donne pas d’ordre de
-          marché et ne remplace pas l’avis d’un professionnel autorisé.
-        </p>
+        <h2>{t("legal.risk.s2h")}</h2><p>{t("legal.risk.s2p")}</p>
       </section>
       <section>
-        <h2>Décision humaine</h2>
-        <p>
-          Aucun worker, ordre ou scan n’est déclenché directement depuis un
-          paiement. Toute activation sensible exige une qualification, une
-          autorisation explicite et un périmètre exact stratégie × actif × unité
-          de temps.
-        </p>
+        <h2>{t("legal.risk.s3h")}</h2><p>{t("legal.risk.s3p")}</p>
       </section>
     </LegalPage>
   );

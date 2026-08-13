@@ -1,40 +1,42 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import styles from "./legal.module.css";
+import { useI18n } from "../i18n/I18nProvider";
+import type { MessageKey } from "../i18n/messages";
 
 export function LegalPage({
-  title,
-  lead,
+  titleKey,
+  leadKey,
   children,
 }: {
-  title: string;
-  lead: string;
+  titleKey: MessageKey;
+  leadKey: MessageKey;
   children: ReactNode;
 }) {
+  const { locale, t } = useI18n();
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <Link className={styles.brand} href="/">
-          STRAT<span>VERITY</span>
-        </Link>
-        <Link href="/configure">Retour au configurateur ↗</Link>
-      </header>
-      <article className={styles.article}>
+      <article className={styles.article} data-premium-surface>
         <span className={styles.status}>
-          Bêta de recette · aucun paiement réel
+          {t("legal.status")}
         </span>
-        <h1>{title}</h1>
-        <p className={styles.lead}>{lead}</p>
+        <h1>{t(titleKey)}</h1>
+        <p className={styles.lead}>{t(leadKey)}</p>
         <p className={styles.meta}>
-          Bundle beta-fr-2026-08-12-v1 · publié le 12 août 2026
+          {t("legal.meta")}
         </p>
+        {locale !== "fr" ? (
+          <p className={styles.warning}>{t("legal.translationNotice")}</p>
+        ) : null}
         {children}
-        <nav className={styles.footer} aria-label="Documents juridiques">
-          <Link href="/legal/terms">Conditions</Link>
-          <Link href="/legal/privacy">Confidentialité</Link>
-          <Link href="/legal/content-license">Licence de contenu</Link>
-          <Link href="/legal/refunds">Rétractation</Link>
-          <Link href="/legal/risk">Risques</Link>
+        <nav className={styles.footer} aria-label={t("legal.nav")}>
+          <Link href="/legal/terms">{t("common.conditions")}</Link>
+          <Link href="/legal/privacy">{t("common.privacy")}</Link>
+          <Link href="/legal/content-license">{t("common.contentLicense")}</Link>
+          <Link href="/legal/refunds">{t("legal.refunds")}</Link>
+          <Link href="/legal/risk">{t("common.risks")}</Link>
         </nav>
       </article>
     </main>

@@ -1,0 +1,153 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { languages } from "../i18n/messages";
+import type { Locale } from "../i18n/messages";
+import { useI18n } from "../i18n/I18nProvider";
+
+type Theme = "light" | "dark";
+
+const navItems = [
+  ["nav.product", "/#product"],
+  ["nav.method", "/#method"],
+  ["nav.research", "/#research"],
+  ["nav.pricing", "/#pricing"],
+  ["nav.faq", "/#faq"],
+] as const;
+
+export default function SiteHeader() {
+  const { locale, setLocale, t } = useI18n();
+  const [theme, setTheme] = useState<Theme>("light");
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const languageRoot = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem("sv-theme");
+      const preferred = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+      const nextTheme: Theme = stored === "dark" || stored === "light" ? stored : preferred;
+      setTheme(nextTheme);
+      document.documentElement.dataset.theme = nextTheme;
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const closeLanguage = (event: MouseEvent) => {
+      if (!languageRoot.current?.contains(event.target as Node)) setLanguageOpen(false);
+    };
+    document.addEventListener("pointerdown", closeLanguage);
+    return () => document.removeEventListener("pointerdown", closeLanguage);
+  }, []);
+
+  useEffect(() => {
+    let scheduled = false;
+    const update = () => {
+      const root = document.documentElement;
+      const distance = Math.max(1, root.scrollHeight - root.clientHeight);
+      setProgress(Math.min(100, (root.scrollTop / distance) * 100));
+      setScrolled(window.scrollY > 8);
+      scheduled = false;
+    };
+    const onScroll = () => {
+      if (!scheduled) {
+        scheduled = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+    document.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => document.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    window.localStorage.setItem("sv-theme", nextTheme);
+  };
+
+  const closeMenus = () => {
+    setMobileOpen(false);
+    setLanguageOpen(false);
+  };
+
+  return (
+    <header className={`site-head${scrolled ? " scrolled" : ""}`}>
+      <div className="progress" style={{ width: `${progress}%` }} />
+      <div className="container head-row">
+        <Link className="brand" href="/" aria-label="StratVerity, accueil" onClick={closeMenus}>
+          {/* Les deux variantes évitent un flash de logo lors du changement de thème. */}
+          <Image className="brand-lock lt" src="/brand-light.svg" alt="StratVerity — BacktestProof" width={279} height={84} priority />
+          <Image className="brand-lock dk" src="/brand-dark.svg" alt="" aria-hidden="true" width={279} height={84} priority />
+        </Link>
+        <nav className="nav" aria-label="Principale">
+          {navItems.map(([key, href]) => (
+            <Link href={href} key={key}>{t(key)}</Link>
+          ))}
+        </nav>
+        <div className="head-tools">
+          <div className="lang" ref={languageRoot}>
+            <button
+              className="icon-btn"
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded={languageOpen}
+              aria-label="Choisir la langue"
+              onClick={() => setLanguageOpen((open) => !open)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18" />
+              </svg>
+              <span className="sr-only">{locale.toUpperCase()}</span>
+            </button>
+            <div className={`lang-menu${languageOpen ? " open" : ""}`} role="menu">
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={locale === language.code}
+                  onClick={() => {
+                    setLocale(language.code as Locale);
+                    setLanguageOpen(false);
+                  }}
+                  style={locale === language.code ? { background: "var(--surface-2)" } : undefined}
+                >
+                  <span>{language.label}</span><span className="tag">{language.tag}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Basculer le thème clair ou sombre">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              {theme === "dark" ? (
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+              ) : (
+                <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>
+              )}
+            </svg>
+          </button>
+          <Link className="btn btn-ghost btn-sm desk" href="/login?return_to=/account">{t("nav.login")}</Link>
+          <Link className="btn btn-primary btn-sm desk-cta" href="/configure">{t("nav.cta")}</Link>
+          <button className="icon-btn burger" type="button" aria-expanded={mobileOpen} aria-label="Menu" onClick={() => setMobileOpen((open) => !open)}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          </button>
+        </div>
+      </div>
+      <nav className={`mobile-nav${mobileOpen ? " open" : ""}`} aria-label="Navigation mobile">
+        {navItems.map(([key, href]) => <Link href={href} key={key} onClick={closeMenus}>{t(key)}</Link>)}
+        <Link href="/login?return_to=/account" onClick={closeMenus}>{t("nav.login")}</Link>
+        <Link className="btn btn-primary mobile-cta" href="/configure" onClick={closeMenus}>{t("nav.cta")}</Link>
+      </nav>
+    </header>
+  );
+}

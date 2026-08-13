@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import styles from "./review-console.module.css";
+import { useI18n } from "../i18n/I18nProvider";
+import type { MessageKey } from "../i18n/messages";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
@@ -25,13 +27,13 @@ type Detail = Draft & {
 };
 
 export default function AdminReviewConsole() {
+  const { t } = useI18n();
   const [adminSecret, setAdminSecret] = useState("");
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [detail, setDetail] = useState<Detail | null>(null);
   const [note, setNote] = useState("");
-  const [message, setMessage] = useState(
-    "Le secret reste uniquement en mémoire pendant l’ouverture de cette page.",
-  );
+  const [messageKey, setMessageKey] = useState<MessageKey>("admin.initial");
+  const message = t(messageKey);
   const [busy, setBusy] = useState(false);
 
   const adminFetch = async (path: string, init: RequestInit = {}) => {
@@ -58,9 +60,9 @@ export default function AdminReviewConsole() {
     try {
       const result = await adminFetch("/v1/admin/audit-drafts");
       setDrafts(result.audit_drafts as Draft[]);
-      setMessage("File de revue chargée. Aucun jeton client n’est visible ici.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Console indisponible.");
+      setMessageKey("admin.queueLoaded");
+    } catch {
+      setMessageKey("admin.consoleUnavailable");
     } finally {
       setBusy(false);
     }
@@ -72,9 +74,9 @@ export default function AdminReviewConsole() {
       const result = (await adminFetch(`/v1/admin/audit-drafts/${draftId}`)) as Detail;
       setDetail(result);
       setNote("");
-      setMessage("Les deux empreintes ont été vérifiées avant cet affichage.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Brouillon indisponible.");
+      setMessageKey("admin.hashesVerified");
+    } catch {
+      setMessageKey("admin.draftUnavailable");
     } finally {
       setBusy(false);
     }
@@ -94,15 +96,11 @@ export default function AdminReviewConsole() {
           expected_report_html_sha256: detail.report_html_sha256,
         }),
       });
-      setMessage(
-        decision === "APPROVED"
-          ? "Rapport approuvé. Le client peut maintenant réclamer son accès."
-          : "Brouillon rejeté définitivement. Une nouvelle commande sera nécessaire.",
-      );
+      setMessageKey(decision === "APPROVED" ? "admin.approved" : "admin.rejected");
       setDetail(null);
       await loadQueue();
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Décision non enregistrée.");
+    } catch {
+      setMessageKey("admin.decisionFailed");
     } finally {
       setBusy(false);
     }
@@ -111,13 +109,13 @@ export default function AdminReviewConsole() {
   return (
     <main className={styles.page}>
       <header>
-        <span>STRATVERITY · CONTRÔLE HUMAIN</span>
-        <h1>File de revue des audits payés</h1>
+        <span>{t("admin.badge")}</span>
+        <h1>{t("admin.title")}</h1>
         <p>{message}</p>
       </header>
-      <section className={styles.secretPanel}>
+      <section className={styles.secretPanel} data-premium-surface>
         <label>
-          Secret administrateur temporaire
+          {t("admin.secret")}
           <input
             type="password"
             autoComplete="off"
@@ -126,12 +124,12 @@ export default function AdminReviewConsole() {
           />
         </label>
         <button disabled={busy || adminSecret.length < 32} onClick={loadQueue} type="button">
-          {busy ? "Vérification…" : "Charger la file"}
+          {busy ? t("admin.checking") : t("admin.loadQueue")}
         </button>
       </section>
       <section className={styles.workspace}>
-        <aside>
-          <h2>Brouillons</h2>
+        <aside data-premium-surface>
+          <h2>{t("admin.drafts")}</h2>
           {drafts.map((draft) => (
             <button key={draft.draft_id} onClick={() => openDraft(draft.draft_id)} type="button">
               <strong>{draft.strategy_version_id}</strong>
@@ -139,9 +137,9 @@ export default function AdminReviewConsole() {
               <em>{draft.review_decision}</em>
             </button>
           ))}
-          {!drafts.length && <p>Aucun brouillon chargé.</p>}
+          {!drafts.length && <p>{t("admin.noDraft")}</p>}
         </aside>
-        <article>
+        <article data-premium-surface>
           {detail ? (
             <>
               <span>{detail.qualification_decision} · {detail.payment_status}</span>
@@ -154,16 +152,16 @@ export default function AdminReviewConsole() {
               {detail.review_decision === "PENDING" && (
                 <div className={styles.decisionPanel}>
                   <label>
-                    Note interne bornée
+                    {t("admin.note")}
                     <textarea maxLength={2000} value={note} onChange={(event) => setNote(event.target.value)} />
                   </label>
-                  <button disabled={busy} onClick={() => decide("APPROVED")} type="button">Approuver les octets affichés</button>
-                  <button className={styles.reject} disabled={busy} onClick={() => decide("REJECTED")} type="button">Rejeter définitivement</button>
+                  <button disabled={busy} onClick={() => decide("APPROVED")} type="button">{t("admin.approve")}</button>
+                  <button className={styles.reject} disabled={busy} onClick={() => decide("REJECTED")} type="button">{t("admin.reject")}</button>
                 </div>
               )}
             </>
           ) : (
-            <p>Sélectionnez un brouillon pour examiner le rapport et ses empreintes.</p>
+            <p>{t("admin.selectDraft")}</p>
           )}
         </article>
       </section>

@@ -1,17 +1,36 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Fraunces,
+  Inter,
+  JetBrains_Mono,
+  Noto_Sans_Arabic,
+  Noto_Sans_Bengali,
+  Noto_Sans_Devanagari,
+  Noto_Sans_KR,
+  Noto_Sans_SC,
+} from "next/font/google";
 import { headers } from "next/headers";
+import SiteHeader from "./components/SiteHeader";
+import AmbientExperience from "./components/AmbientExperience";
+import { I18nProvider } from "./i18n/I18nProvider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const mono = JetBrains_Mono({
+  variable: "--font-mono-loaded",
   subsets: ["latin"],
 });
+
+const display = Fraunces({ variable: "--font-display-loaded", subsets: ["latin"] });
+const notoArabic = Noto_Sans_Arabic({ variable: "--font-noto-arabic", subsets: ["arabic"], weight: "variable" });
+const notoBengali = Noto_Sans_Bengali({ variable: "--font-noto-bengali", subsets: ["bengali"], weight: "variable" });
+const notoDevanagari = Noto_Sans_Devanagari({ variable: "--font-noto-devanagari", subsets: ["devanagari"], weight: "variable" });
+const notoSc = Noto_Sans_SC({ variable: "--font-noto-sc", preload: false, weight: "variable" });
+const notoKr = Noto_Sans_KR({ variable: "--font-noto-kr", preload: false, weight: "variable" });
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -34,10 +53,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const socialImage = `${protocol}://${host}/og.png`;
 
   return {
-    title: "BacktestProof by StratVerity — Auditez votre stratégie, pas son storytelling",
+    title: "BacktestProof by StratVerity — Audit your strategy, not its storytelling",
     description:
-      "Audit indépendant de stratégies Pine et Python : métriques recalculées, biais détectés et résultats reliés aux preuves.",
+      "Independent audit of Pine and Python strategies: recomputed metrics, detected biases, and results tied to the evidence.",
     applicationName: "StratVerity",
+    icons: {
+      icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+      shortcut: "/favicon.svg",
+    },
     themeColor: [
       { media: "(prefers-color-scheme: light)", color: "#f1eee5" },
       { media: "(prefers-color-scheme: dark)", color: "#07110d" },
@@ -47,18 +70,18 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: false,
     },
     openGraph: {
-      title: "BacktestProof by StratVerity — La preuve avant la promesse",
+      title: "BacktestProof by StratVerity — Proof before the promise",
       description:
-        "Déposez votre stratégie. Vérifiez ses métriques, ses biais et sa robustesse.",
+        "Upload your strategy. Verify its metrics, its biases and its robustness.",
       type: "website",
-      locale: "fr_FR",
+      locale: "en_US",
       images: [{ url: socialImage, width: 1672, height: 941 }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "BacktestProof by StratVerity — La preuve avant la promesse",
+      title: "BacktestProof by StratVerity — Proof before the promise",
       description:
-        "Audit indépendant de stratégies Pine et Python, fondé sur les preuves.",
+        "Independent, evidence-based audit of Pine and Python strategies.",
       images: [socialImage],
     },
   };
@@ -70,9 +93,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+    <html lang="en" data-theme="light" suppressHydrationWarning>
+      <body className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}>
+        <AmbientExperience />
+        <I18nProvider>
+          <SiteHeader />
+          <div className="app-content">{children}</div>
+        </I18nProvider>
       </body>
     </html>
   );

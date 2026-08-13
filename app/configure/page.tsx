@@ -4,7 +4,9 @@ import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "./scope-configurator.module.css";
-import { calculatePrice, formatPrice } from "./pricing";
+import { calculatePrice } from "./pricing";
+import { useI18n } from "../i18n/I18nProvider";
+import type { Locale, MessageKey } from "../i18n/messages";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
@@ -44,6 +46,10 @@ type SubmissionState =
   | "fallback"
   | "error";
 
+type UiNotice =
+  | { key: MessageKey; values?: Record<string, string | number> }
+  | null;
+
 type StrategyVersion = {
   id: string;
   name: string;
@@ -76,9 +82,9 @@ function createOwnerToken(): string {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function formatBytes(value: number): string {
-  if (value < 1024) return `${value} o`;
-  return `${(value / 1024).toFixed(1)} Ko`;
+function formatBytes(value: number, locale: Locale): string {
+  if (value < 1024) return `${new Intl.NumberFormat(locale).format(value)} B`;
+  return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value / 1024)} KiB`;
 }
 
 async function sha256(file: File): Promise<string> {
@@ -106,6 +112,7 @@ function isStripeCheckoutUrl(value: string): boolean {
 }
 
 export default function ScopeConfiguratorPage() {
+  const { locale, t } = useI18n();
   const [product, setProduct] = useState<Product>("AUDIT");
   const [strategies, setStrategies] = useState<StrategyVersion[]>([]);
   const [assets, setAssets] = useState<string[]>(["BINANCE:BTCUSDT"]);
@@ -116,7 +123,7 @@ export default function ScopeConfiguratorPage() {
     useState<EvaluationMode>("BAR_CLOSE");
   const [retentionDays, setRetentionDays] = useState("30");
   const [state, setState] = useState<SubmissionState>("idle");
-  const [message, setMessage] = useState("");
+  const [notice, setNotice] = useState<UiNotice>(null);
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
   const [contractAccepted, setContractAccepted] = useState(false);
   const checkoutAttemptRef = useRef<{
@@ -150,6 +157,28 @@ export default function ScopeConfiguratorPage() {
     evaluationMode,
     retentionDays: Number(retentionDays),
   });
+  const formatLocalizedPrice = (cents: number) =>
+    new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    }).format(cents / 100);
+  const message = notice
+    ? t(notice.key, notice.values)
+    : "";
+  const translatePriceLine = (label: string) => {
+    if (label.startsWith("Audit standard")) return t("configure.priceLine.auditBase");
+    if (label.startsWith("Tests de robustesse")) return t("configure.priceLine.robustness");
+    if (label.startsWith("Revue humaine")) {
+      return t("configure.priceLine.humanReview", { count: projectedStrategyCount });
+    }
+    if (label.startsWith("Scan live")) return t("configure.priceLine.scanBase");
+    if (label.startsWith("Traitement intrabar")) return t("configure.priceLine.intrabar");
+    if (label.startsWith("Conservation")) {
+      return t("configure.priceLine.retention", { days: retentionDays });
+    }
+    return label;
+  };
 
   const buildPayload = () => {
     const auditOptions =
@@ -221,11 +250,11 @@ export default function ScopeConfiguratorPage() {
     if (files.length === 0) return;
     if (strategies.length + files.length > MAX_STRATEGIES) {
       setState("error");
-      setMessage(`Maximum ${MAX_STRATEGIES} stratégies par configuration.`);
+      setNotice({ key: "configure.msg.maxStrategies", values: { count: MAX_STRATEGIES } });
       return;
     }
     setState("submitting");
-    setMessage("Calcul des empreintes, sans envoyer les fichiers…");
+    setNotice({ key: "configure.msg.hashing" });
     try {
       const offset = strategies.length;
       const hashed = await Promise.all(
@@ -249,11 +278,11 @@ export default function ScopeConfiguratorPage() {
         return [...current, ...unique];
       });
       setState("idle");
-      setMessage("");
+      setNotice(null);
       setPreview(null);
     } catch {
       setState("error");
-      setMessage("Impossible de calculer l’empreinte de ce fichier.");
+      setNotice({ key: "configure.msg.hashFailed" });
     }
   };
 
@@ -274,7 +303,7 @@ export default function ScopeConfiguratorPage() {
     const asset = assetDraft.trim().toUpperCase();
     if (!/^[A-Z0-9][A-Z0-9._:/-]{0,99}$/.test(asset)) {
       setState("error");
-      setMessage("Utilisez un symbole comme BINANCE:BTCUSDT ou OANDA:EURUSD.");
+      setNotice({ key: "configure.msg.invalidSymbol" });
       return;
     }
     if (!assets.includes(asset) && assets.length < MAX_ASSETS) {
@@ -283,7 +312,7 @@ export default function ScopeConfiguratorPage() {
     setAssetDraft("");
     setPreview(null);
     setState("idle");
-    setMessage("");
+    setNotice(null);
   };
 
   const toggleTimeframe = (timeframe: string) => {
@@ -301,12 +330,12 @@ export default function ScopeConfiguratorPage() {
     event.preventDefault();
     if (strategies.length === 0) {
       setState("error");
-      setMessage("Ajoutez au moins un fichier de stratégie.");
+      setNotice({ key: "configure.msg.addFile" });
       return;
     }
     if (contextCount > MAX_CONTEXTS) {
       setState("error");
-      setMessage(`La matrice dépasse la limite de ${MAX_CONTEXTS} contextes.`);
+      setNotice({ key: "configure.msg.tooLarge" });
       return;
     }
     const payload = buildPayload();
@@ -315,12 +344,12 @@ export default function ScopeConfiguratorPage() {
     ).byteLength;
     if (requestBytes > REQUEST_LIMIT_BYTES) {
       setState("error");
-      setMessage("La configuration dépasse la limite de 2 Mio.");
+      setNotice({ key: "configure.msg.tooLarge" });
       return;
     }
 
     setState("submitting");
-    setMessage("Validation sécurisée du périmètre…");
+    setNotice({ key: "configure.msg.validatingScope" });
     try {
       const response = await fetch(`${API_URL}/v1/service-scopes/preview`, {
         method: "POST",
@@ -331,28 +360,22 @@ export default function ScopeConfiguratorPage() {
         detail?: { code?: string; message?: string } | string;
       };
       if (!response.ok) {
-        const detail =
-          typeof result.detail === "object" ? result.detail : undefined;
         setPreview(null);
         setState(response.status === 404 || response.status >= 500 ? "fallback" : "error");
-        setMessage(
+        setNotice(
           response.status === 404 || response.status >= 500
-            ? "L’API consolidée est en cours de déploiement. Le calcul affiché reste une estimation locale."
-            : detail?.message ?? "Le périmètre n’a pas pu être validé.",
+            ? { key: "configure.msg.apiFallback" }
+            : { key: "configure.msg.scopeFailed" },
         );
         return;
       }
       setPreview(result);
       setState("success");
-      setMessage(
-        "Périmètre et tarif confirmés. Aucun débit ni scan n’a encore été activé.",
-      );
+      setNotice({ key: "configure.msg.scopeConfirmed" });
     } catch {
       setPreview(null);
       setState("fallback");
-      setMessage(
-        "L’API consolidée est en cours de déploiement. Le calcul affiché reste une estimation locale.",
-      );
+      setNotice({ key: "configure.msg.apiFallback" });
     }
   };
 
@@ -360,14 +383,12 @@ export default function ScopeConfiguratorPage() {
     if (!preview || strategies.length === 0) return;
     if (product === "SCAN") {
       setState("error");
-      setMessage(
-        "Le Scan live est actuellement sur invitation. Aucun abonnement ne peut être débité.",
-      );
+      setNotice({ key: "configure.msg.scanUnavailable" });
       return;
     }
     if (!contractAccepted) {
       setState("error");
-      setMessage("Veuillez lire et accepter les documents contractuels avant Stripe.");
+      setNotice({ key: "configure.msg.acceptContract" });
       return;
     }
     const scope = buildPayload();
@@ -377,7 +398,7 @@ export default function ScopeConfiguratorPage() {
       contract_acceptance: CHECKOUT_CONTRACT,
     };
     setState("checkout");
-    setMessage("Préparation du paiement sécurisé sur Stripe…");
+    setNotice({ key: "configure.msg.preparingPayment" });
     try {
       const scopeHash = await checkoutScopeHash(pricedRequest);
       if (checkoutAttemptRef.current?.scopeHash !== scopeHash) {
@@ -395,7 +416,7 @@ export default function ScopeConfiguratorPage() {
       ).byteLength;
       if (requestBytes > REQUEST_LIMIT_BYTES) {
         setState("error");
-        setMessage("La demande de paiement dépasse la limite de 2 Mio.");
+        setNotice({ key: "configure.msg.tooLarge" });
         return;
       }
       const response = await fetch(`${API_URL}/v1/billing/checkout-sessions`, {
@@ -417,19 +438,16 @@ export default function ScopeConfiguratorPage() {
           detail?.code === "BILLING_DISABLED" ||
           detail?.code === "STRIPE_TEST_KEY_REQUIRED";
         setState("error");
-        setMessage(
+        setNotice(
           billingUnavailable
-            ? "Le compte Stripe test doit encore être relié avant d’ouvrir le paiement. Votre configuration est conservée."
-            : detail?.message ??
-                "Le paiement n’a pas pu être préparé. Aucun débit n’a eu lieu.",
+            ? { key: "configure.msg.billingUnavailable" }
+            : { key: "configure.msg.paymentFailed" },
         );
         return;
       }
       if (!isStripeCheckoutUrl(result.checkout_url)) {
         setState("error");
-        setMessage(
-          "La destination de paiement reçue n’est pas une page Stripe valide. Aucun débit n’a eu lieu.",
-        );
+        setNotice({ key: "configure.msg.invalidStripe" });
         return;
       }
       sessionStorage.setItem(
@@ -439,56 +457,36 @@ export default function ScopeConfiguratorPage() {
       window.location.assign(result.checkout_url);
     } catch {
       setState("error");
-      setMessage(
-        "Le service de paiement est temporairement indisponible. Aucun débit n’a eu lieu.",
-      );
+      setNotice({ key: "configure.msg.paymentUnavailable" });
     }
   };
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <Link className={styles.brand} href="/">
-          <span aria-hidden="true">S/V</span>
-          <strong>STRATVERITY</strong>
-          <small>BACKTESTPROOF · RADAR</small>
-        </Link>
-        <Link className={styles.backLink} href="/">
-          Retour au site <span aria-hidden="true">↗</span>
-        </Link>
-      </header>
-
       <div className={styles.betaBanner}>
-        RECETTE SÉCURISÉE · STRIPE TEST UNIQUEMENT · AUCUN PAIEMENT RÉEL
+        {t("configure.betaBanner")}
       </div>
 
       <section className={styles.intro}>
         <div>
-          <span className={styles.eyebrow}>CONFIGURATEUR DE PÉRIMÈTRE · V0.1</span>
+          <span className={styles.eyebrow}>{t("configure.eyebrow")}</span>
           <h1>
-            Composez votre audit.
-            <em>Ou votre scan.</em>
+            {t("configure.titlePrimary")}
+            <em>{t("configure.titleAccent")}</em>
           </h1>
-          <p>
-            Sélectionnez vos stratégies, actifs et unités de temps. Nous
-            calculons immédiatement les contextes et le prix total. Vous
-            décidez ensuite si vous souhaitez continuer vers le paiement.
-          </p>
+          <p>{t("configure.intro")}</p>
         </div>
-        <aside className={styles.privacyNote}>
+        <aside className={styles.privacyNote} data-premium-surface>
           <span aria-hidden="true">01</span>
-          <strong>Vos fichiers restent locaux</strong>
-          <p>
-            Cette prévisualisation calcule uniquement leur empreinte SHA-256.
-            Aucun code de stratégie n’est envoyé.
-          </p>
+          <strong>{t("configure.localFilesTitle")}</strong>
+          <p>{t("configure.localFilesBody")}</p>
         </aside>
       </section>
 
       <form className={styles.workspace} onSubmit={submitPreview}>
         <div className={styles.builder}>
-          <fieldset className={styles.block}>
-            <legend><span>01</span>Quel service souhaitez-vous ?</legend>
+          <fieldset className={styles.block} data-premium-surface>
+            <legend><span>01</span>{t("configure.step.service")}</legend>
             <div className={styles.productChoices}>
               {(["AUDIT", "SCAN"] as Product[]).map((choice) => (
                 <button
@@ -501,21 +499,21 @@ export default function ScopeConfiguratorPage() {
                   }}
                   type="button"
                 >
-                  <small>{choice === "AUDIT" ? "Ponctuel" : "Récurrent"}</small>
-                  <strong>{choice === "AUDIT" ? "Audit" : "Scan live"}</strong>
+                  <small>{choice === "AUDIT" ? t("configure.kind.oneTime") : t("configure.kind.recurring")}</small>
+                  <strong>{choice === "AUDIT" ? t("configure.audit") : t("configure.scanLive")}</strong>
                   <p>
                     {choice === "AUDIT"
-                      ? "Analyser une matrice historique et produire un rapport."
-                      : "Surveiller signaux, positions et dérives dans le temps."}
+                      ? t("configure.auditDescription")
+                      : t("configure.scanDescription")}
                   </p>
-                  {choice === "SCAN" ? <em>Sur invitation · bientôt</em> : null}
+                  {choice === "SCAN" ? <em>{t("configure.invitationSoon")}</em> : null}
                 </button>
               ))}
             </div>
           </fieldset>
 
-          <fieldset className={styles.block}>
-            <legend><span>02</span>Ajoutez vos stratégies</legend>
+          <fieldset className={styles.block} data-premium-surface>
+            <legend><span>02</span>{t("configure.step.strategies")}</legend>
             <label className={styles.filePicker}>
               <input
                 accept=".pine,.py,.ipynb,.zip,text/plain,application/zip"
@@ -524,8 +522,8 @@ export default function ScopeConfiguratorPage() {
                 type="file"
               />
               <span aria-hidden="true">＋</span>
-              <strong>Choisir un ou plusieurs fichiers</strong>
-              <small>10 stratégies maximum · empreinte locale uniquement</small>
+              <strong>{t("configure.chooseFiles")}</strong>
+              <small>{t("configure.fileHelp")}</small>
             </label>
             {strategies.length > 0 ? (
               <ul className={styles.strategyList}>
@@ -535,12 +533,12 @@ export default function ScopeConfiguratorPage() {
                     <div>
                       <strong>{strategy.name}</strong>
                       <small>
-                        {formatBytes(strategy.size)} · SHA{" "}
+                        {formatBytes(strategy.size, locale)} · SHA{" "}
                         {strategy.sha256.slice(0, 12)}…
                       </small>
                     </div>
                     <button
-                      aria-label={`Retirer ${strategy.name}`}
+                      aria-label={t("configure.removeStrategy", { name: strategy.name })}
                       onClick={() => {
                         setStrategies((current) =>
                           current.filter((item) => item.sha256 !== strategy.sha256),
@@ -556,13 +554,13 @@ export default function ScopeConfiguratorPage() {
               </ul>
             ) : (
               <p className={styles.emptyLine}>
-                1 stratégie sera comptée dans l’estimation initiale.
+                {t("configure.initialEstimate")}
               </p>
             )}
           </fieldset>
 
-          <fieldset className={styles.block}>
-            <legend><span>03</span>Sélectionnez les actifs</legend>
+          <fieldset className={styles.block} data-premium-surface>
+            <legend><span>03</span>{t("configure.step.assets")}</legend>
             <div className={styles.chips}>
               {ASSET_PRESETS.map((asset) => (
                 <button
@@ -572,13 +570,18 @@ export default function ScopeConfiguratorPage() {
                   onClick={() => toggleAsset(asset)}
                   type="button"
                 >
-                  {asset.replace(/^.*:/, "")}
-                  <small>{asset.split(":")[0]}</small>
+                  <span className={styles.assetIcon} data-asset={asset.replace(/^.*:/, "")} aria-hidden="true">
+                    {asset === "BINANCE:BTCUSDT" ? "₿" : asset === "BINANCE:ETHUSDT" ? "◆" : asset === "OANDA:EURUSD" ? "€$" : asset === "OANDA:XAUUSD" ? "Au" : asset === "SP:SPX" ? "S&P" : "N"}
+                  </span>
+                  <span className={styles.assetLabel}>
+                    <strong>{asset.replace(/^.*:/, "")}</strong>
+                    <small>{asset.split(":")[0]}</small>
+                  </span>
                 </button>
               ))}
             </div>
             <div className={styles.customAsset}>
-              <label htmlFor="custom-asset">Autre symbole</label>
+              <label htmlFor="custom-asset">{t("configure.customSymbol")}</label>
               <div>
                 <input
                   id="custom-asset"
@@ -586,13 +589,13 @@ export default function ScopeConfiguratorPage() {
                   placeholder="EXCHANGE:SYMBOL"
                   value={assetDraft}
                 />
-                <button onClick={addAsset} type="button">Ajouter</button>
+                <button onClick={addAsset} type="button">{t("configure.add")}</button>
               </div>
             </div>
           </fieldset>
 
-          <fieldset className={styles.block}>
-            <legend><span>04</span>Choisissez les unités de temps</legend>
+          <fieldset className={styles.block} data-premium-surface>
+            <legend><span>04</span>{t("configure.step.timeframes")}</legend>
             <div className={styles.timeframes}>
               {TIMEFRAME_PRESETS.map((timeframe) => (
                 <button
@@ -610,8 +613,8 @@ export default function ScopeConfiguratorPage() {
             </div>
           </fieldset>
 
-          <fieldset className={styles.block}>
-            <legend><span>05</span>Ajustez la profondeur</legend>
+          <fieldset className={styles.block} data-premium-surface>
+            <legend><span>05</span>{t("configure.step.depth")}</legend>
             {product === "AUDIT" ? (
               <div className={styles.optionGrid}>
                 {(["STANDARD", "ROBUSTNESS", "CUSTOM"] as AuditDepth[]).map(
@@ -628,17 +631,17 @@ export default function ScopeConfiguratorPage() {
                     >
                       <strong>
                         {depth === "STANDARD"
-                          ? "Standard"
+                          ? t("configure.depth.standard")
                           : depth === "ROBUSTNESS"
-                            ? "Robustesse"
-                            : "Sur mesure"}
+                            ? t("configure.depth.robustness")
+                            : t("configure.depth.custom")}
                       </strong>
                       <small>
                         {depth === "STANDARD"
-                          ? "Une lecture bornée"
+                          ? t("configure.depth.standardHelp")
                           : depth === "ROBUSTNESS"
-                            ? "Fenêtres et stress"
-                            : "Robustesse + revue humaine"}
+                            ? t("configure.depth.robustnessHelp")
+                            : t("configure.depth.customHelp")}
                       </small>
                     </button>
                   ),
@@ -663,20 +666,20 @@ export default function ScopeConfiguratorPage() {
                       >
                         <strong>
                           {evaluation === "BAR_CLOSE"
-                            ? "Clôture de bougie"
-                            : "Intrabar Premium"}
+                            ? t("configure.barClose")
+                            : t("configure.intrabar")}
                         </strong>
                         <small>
                           {evaluation === "BAR_CLOSE"
-                            ? "Socle recommandé"
-                            : "Calcul renforcé"}
+                            ? t("configure.recommended")
+                            : t("configure.enhancedCompute")}
                         </small>
                       </button>
                     ),
                   )}
                 </div>
                 <label>
-                  Rétention
+                  {t("configure.retention")}
                   <select
                     onChange={(event) => {
                       setRetentionDays(event.target.value);
@@ -684,9 +687,9 @@ export default function ScopeConfiguratorPage() {
                     }}
                     value={retentionDays}
                   >
-                    <option value="30">30 jours</option>
-                    <option value="90">90 jours</option>
-                    <option value="365">1 an</option>
+                    <option value="30">{t("configure.days30")}</option>
+                    <option value="90">{t("configure.days90")}</option>
+                    <option value="365">{t("configure.oneYear")}</option>
                   </select>
                 </label>
               </div>
@@ -694,90 +697,89 @@ export default function ScopeConfiguratorPage() {
           </fieldset>
         </div>
 
-        <aside className={styles.summary}>
+        <aside className={styles.summary} data-premium-surface>
           <div className={styles.summaryHead}>
-            <span>PÉRIMÈTRE ACTUEL</span>
+            <span>{t("configure.currentScope")}</span>
             <strong>{offerFamily}</strong>
           </div>
           <div className={styles.contextNumber}>
-            <strong>{contextCount.toLocaleString("fr-FR")}</strong>
-            <span>contexte{contextCount > 1 ? "s" : ""}</span>
+            <strong>{contextCount.toLocaleString(locale)}</strong>
+            <span>{t(contextCount === 1 ? "configure.context.one" : "configure.context.other")}</span>
           </div>
           <p className={styles.formula}>
-            {projectedStrategyCount} stratégie
-            {projectedStrategyCount > 1 ? "s" : ""} × {assets.length} actif
-            {assets.length > 1 ? "s" : ""} × {timeframes.length} UT
+            {t("configure.formula", {
+              strategies: projectedStrategyCount.toLocaleString(locale),
+              assets: assets.length.toLocaleString(locale),
+              timeframes: timeframes.length.toLocaleString(locale),
+            })}
           </p>
           <div className={styles.livePrice}>
-            <span>TARIF LANCEMENT · PRIX EN TEMPS RÉEL</span>
+            <span>{t("configure.launchPrice")}</span>
             <strong>
-              {formatPrice(price.totalCents)}
+              {formatLocalizedPrice(price.totalCents)}
               <small>
-                {price.cadence === "MONTHLY" ? " / mois" : " au total"}
+                {price.cadence === "MONTHLY" ? t("configure.perMonth") : t("configure.totalSuffix")}
               </small>
             </strong>
-            <p>
-              TVA non applicable · article 293 B du CGI
-            </p>
+            <p>{t("configure.vatExempt")}</p>
             {price.cadence === "MONTHLY" ? (
               <div>
-                Premier paiement : <b>{formatPrice(price.dueTodayCents)}</b>
+                <b>{t("configure.firstPayment", { amount: formatLocalizedPrice(price.dueTodayCents) })}</b>
                 <small>
-                  dont {formatPrice(
-                    price.activationExVatCents + price.activationVatCents,
-                  )}{" "}
-                  de mise en service
+                  {t("configure.activationIncluded", {
+                    amount: formatLocalizedPrice(
+                      price.activationExVatCents + price.activationVatCents,
+                    ),
+                  })}
                 </small>
               </div>
             ) : (
               <div>
-                Paiement unique · <b>aucun renouvellement automatique</b>
+                {t("configure.oneTimePayment")} · <b>{t("configure.noRenewal")}</b>
               </div>
             )}
           </div>
           <details className={styles.priceBreakdown}>
-            <summary>Voir le calcul du prix</summary>
+            <summary>{t("configure.priceBreakdown")}</summary>
             <dl>
               {price.lines.map((line) => (
                 <div key={line.label}>
-                  <dt>{line.label}</dt>
+                  <dt>{translatePriceLine(line.label)}</dt>
                   <dd>
-                    {formatPrice(line.amountExVatCents)}
-                    {line.cadence === "MONTHLY" ? " / mois" : ""}
+                    {formatLocalizedPrice(line.amountExVatCents)}
+                    {line.cadence === "MONTHLY" ? t("configure.perMonth") : ""}
                   </dd>
                 </div>
               ))}
               <div>
-                <dt>TVA</dt>
-                <dd>{formatPrice(price.vatCents)}</dd>
+                <dt>{t("configure.vat")}</dt>
+                <dd>{formatLocalizedPrice(price.vatCents)}</dd>
               </div>
             </dl>
             <p>
-              Prix de la bêta française en franchise de TVA. Le régime fiscal
-              applicable aux ventes internationales sera validé avant leur
-              ouverture.
+              {t("configure.taxNote")}
             </p>
           </details>
           <dl className={styles.metrics}>
             <div>
-              <dt>Service</dt>
-              <dd>{product === "AUDIT" ? "Audit ponctuel" : "Scan récurrent"}</dd>
+              <dt>{t("configure.service")}</dt>
+              <dd>{product === "AUDIT" ? t("configure.auditOneTime") : t("configure.scanRecurring")}</dd>
             </div>
             <div>
-              <dt>Requête estimée</dt>
+              <dt>{t("configure.requestEstimate")}</dt>
               <dd>
                 {estimatedRequestBytes
-                  ? formatBytes(estimatedRequestBytes)
-                  : "Après ajout du fichier"}
+                  ? formatBytes(estimatedRequestBytes, locale)
+                  : t("configure.afterFile")}
               </dd>
             </div>
-            <div><dt>Limite API</dt><dd>2 Mio</dd></div>
+            <div><dt>{t("configure.apiLimit")}</dt><dd>2 MiB</dd></div>
             <div>
-              <dt>Tarification</dt>
-              <dd>Automatique · sans devis</dd>
+              <dt>{t("configure.pricing")}</dt>
+              <dd>{t("configure.automaticNoQuote")}</dd>
             </div>
           </dl>
-          <div className={styles.limitTrack} aria-label="Utilisation de la limite API">
+          <div className={styles.limitTrack} aria-label={t("configure.limitUsage")}>
             <i
               style={{
                 width: `${Math.min(
@@ -797,7 +799,7 @@ export default function ScopeConfiguratorPage() {
             type="submit"
           >
             <span>
-              {state === "submitting" ? "Validation…" : "Confirmer ce tarif"}
+              {state === "submitting" ? t("configure.validating") : t("configure.confirmPrice")}
             </span>
             <i aria-hidden="true">→</i>
           </button>
@@ -808,20 +810,20 @@ export default function ScopeConfiguratorPage() {
             }`}
           >
             {message ||
-              "Le prix évolue immédiatement avec vos choix. Aucun débit à cette étape."}
+              t("configure.defaultMessage")}
           </p>
           {preview ? (
             <div className={styles.serverProof}>
-              <span>VALIDÉ PAR LE SERVEUR</span>
+              <span>{t("configure.serverValidated")}</span>
               <strong>{preview.scope_fingerprint.slice(0, 18)}…</strong>
               <dl>
-                <div><dt>Contextes</dt><dd>{preview.context_count}</dd></div>
+                <div><dt>{t("configure.contexts")}</dt><dd>{preview.context_count.toLocaleString(locale)}</dd></div>
                 <div>
-                  <dt>Traitement</dt>
+                  <dt>{t("configure.processing")}</dt>
                   <dd>
                     {preview.technical_estimate.quote_required
-                      ? "Renforcé"
-                      : "Standard"}
+                      ? t("configure.enhanced")
+                      : t("configure.depth.standard")}
                   </dd>
                 </div>
               </dl>
@@ -832,12 +834,10 @@ export default function ScopeConfiguratorPage() {
                   type="checkbox"
                 />
                 <span>
-                  J’accepte les <Link href="/legal/terms">conditions bêta</Link>,
-                  la <Link href="/legal/privacy">confidentialité</Link> et la{" "}
-                  <Link href="/legal/content-license">licence de contenu</Link>.
-                  Je demande le démarrage du service après confirmation du
-                  paiement et reconnais les règles de rétractation. La bêta
-                  n’autorise ni publication ni revente de mon code.
+                  {t("configure.contract.beforeTerms")} <Link href="/legal/terms">{t("common.conditions")}</Link>,{" "}
+                  {t("configure.contract.beforePrivacy")} <Link href="/legal/privacy">{t("common.privacy")}</Link>{" "}
+                  {t("configure.contract.beforeLicense")} <Link href="/legal/content-license">{t("common.contentLicense")}</Link>
+                  {t("configure.contract.afterLinks")}
                 </span>
               </label>
               <button
@@ -851,10 +851,10 @@ export default function ScopeConfiguratorPage() {
                 type="button"
               >
                 {state === "checkout"
-                  ? "Ouverture de Stripe…"
+                  ? t("configure.openingStripe")
                   : product === "SCAN"
-                    ? "Scan sur invitation"
-                    : "Continuer vers Stripe →"}
+                    ? t("configure.scanInvitation")
+                    : t("configure.continueStripe")}
               </button>
             </div>
           ) : null}
@@ -862,13 +862,12 @@ export default function ScopeConfiguratorPage() {
       </form>
 
       <footer className={styles.footer}>
-        <span>STRATVERITY · LA PREUVE AVANT LA PROMESSE</span>
+        <span>{t("configure.footerTag")}</span>
         <p>
-          Aucun rendement futur garanti. Cette page configure un périmètre de
-          test, pas un conseil d’investissement. ·{" "}
-          <Link href="/legal/terms">Conditions</Link> ·{" "}
-          <Link href="/legal/privacy">Confidentialité</Link> ·{" "}
-          <Link href="/legal/risk">Risques</Link>
+          {t("configure.disclaimer")} ·{" "}
+          <Link href="/legal/terms">{t("common.conditions")}</Link> ·{" "}
+          <Link href="/legal/privacy">{t("common.privacy")}</Link> ·{" "}
+          <Link href="/legal/risk">{t("common.risks")}</Link>
         </p>
       </footer>
     </main>

@@ -1,1 +1,1 @@
-export { default } from "./design-b/page";
+export { default } from "./home/LandingPage";
