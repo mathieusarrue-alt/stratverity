@@ -1,7 +1,6 @@
-import {
-  chatGPTSignInPath,
-  getChatGPTUser,
-} from "../chatgpt-auth";
+import { getEnabledSocialProviders } from "../supabase/config";
+import { safeReturnTo } from "../supabase/return-to";
+import { getSupabaseUser } from "../supabase/server";
 import LoginContent from "./LoginContent";
 
 export const dynamic = "force-dynamic";
@@ -15,9 +14,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const rawReturnTo = Array.isArray(params.return_to)
     ? params.return_to[0]
     : params.return_to;
-  const returnTo = rawReturnTo ?? "/account";
-  const user = await getChatGPTUser();
-  const destination = user ? returnTo : chatGPTSignInPath(returnTo);
+  const returnTo = safeReturnTo(rawReturnTo);
+  const [user, enabledProviders] = await Promise.all([
+    getSupabaseUser(),
+    getEnabledSocialProviders(),
+  ]);
 
-  return <LoginContent user={user} destination={destination} />;
+  return (
+    <LoginContent
+      user={user}
+      returnTo={returnTo}
+      enabledProviders={enabledProviders}
+    />
+  );
 }

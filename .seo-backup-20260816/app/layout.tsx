@@ -51,14 +51,12 @@ const themeBootstrap = `(() => {
   document.head.append(meta);
 })();`;
 
-const PUBLIC_SITE_URL = "https://www.stratverity.com";
-
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "StratVerity",
-  url: PUBLIC_SITE_URL,
-  logo: `${PUBLIC_SITE_URL}/favicon.svg`,
+  url: "https://stratverity.com",
+  logo: "https://stratverity.com/favicon.svg",
   description:
     "Independent strategy audit and validation for Pine Script and Python trading systems.",
 };
@@ -67,10 +65,10 @@ const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "StratVerity",
-  url: PUBLIC_SITE_URL,
+  url: "https://stratverity.com",
   potentialAction: {
     "@type": "SearchAction",
-    target: `${PUBLIC_SITE_URL}/search?q={search_term_string}`,
+    target: "https://stratverity.com/search?q={search_term_string}",
     "query-input": "required name=search_term_string",
   },
 };
@@ -79,11 +77,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0].trim();
   const directHost = requestHeaders.get("host")?.trim();
-  const candidateHost = forwardedHost || directHost || "www.stratverity.com";
-  const normalizedHost = candidateHost === "stratverity.com" ? "www.stratverity.com" : candidateHost;
-  const host = /^[a-zA-Z0-9.-]+(?::\d{1,5})?$/.test(normalizedHost)
-    ? normalizedHost
-    : "www.stratverity.com";
+  const candidateHost = forwardedHost || directHost || "stratverity.com";
+  const host = /^[a-zA-Z0-9.-]+(?::\d{1,5})?$/.test(candidateHost)
+    ? candidateHost
+    : "stratverity.com";
   const forwardedProtocol = requestHeaders
     .get("x-forwarded-proto")
     ?.split(",")[0]

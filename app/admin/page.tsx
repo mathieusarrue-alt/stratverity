@@ -1,7 +1,7 @@
-import { requireChatGPTUser } from "../chatgpt-auth";
+import { requireSupabaseUser } from "../supabase/server";
 import AdminReviewConsole from "./review-console";
 
 export default async function AdminPage() {
-  await requireChatGPTUser("/admin");
+  await requireSupabaseUser("/admin");
   return <AdminReviewConsole />;
 }

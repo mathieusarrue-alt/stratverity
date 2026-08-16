@@ -262,3 +262,59 @@
   .identity { grid-template-columns: 44px 1fr; }
   .identity .status { grid-column: 1 / -1; }
 }
+/* Supabase authentication controls */
+.emailForm { margin-top: 24px; }
+.emailForm label {
+  color: var(--ink-2);
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.emailForm small {
+  color: var(--ink-3);
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.emailRow { display: grid; gap: 8px; grid-template-columns: 1fr auto; }
+.emailRow input {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  min-height: 54px;
+  min-width: 0;
+  padding: 0 14px;
+}
+.emailRow .primaryAction { cursor: pointer; margin-top: 0; }
+.providerLink:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: .44;
+}
+.providerLink:disabled:hover {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-2);
+  transform: none;
+}
+.authMessage {
+  background: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--line));
+  border-radius: 10px;
+  color: var(--brand-ink) !important;
+  font-size: 11px !important;
+  margin-top: 14px;
+  padding: 10px 12px;
+}
+.signOut {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+@media (max-width: 520px) {
+  .emailRow { grid-template-columns: 1fr; }
+}

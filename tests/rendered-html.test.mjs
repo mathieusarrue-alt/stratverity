@@ -47,7 +47,7 @@ test("every frontend response receives the shared security policy", async () => 
     assert.match(csp, /default-src 'self'/, path);
     assert.match(csp, /object-src 'none'/, path);
     assert.match(csp, /frame-ancestors 'none'/, path);
-    assert.match(csp, /connect-src 'self' https:\/\/api\.stratverity\.com/, path);
+    assert.match(csp, /connect-src 'self' https:\/\/api\.stratverity\.com https:\/\/qxeylhrjelywtjoswyni\.supabase\.co/, path);
     assert.equal(
       response.headers.get("strict-transport-security"),
       "max-age=31536000; includeSubDomains",
@@ -150,23 +150,29 @@ test("application routes use the generated 12-locale catalogue with English defa
   assert.match(sources[0], /Intl\.NumberFormat\(locale/);
 });
 
-test("public login offers the low-friction verified identity path", async () => {
+test("public login offers verified email and real Supabase OAuth actions", async () => {
   const response = await render("/login?return_to=/account");
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /SIGN IN OR CREATE ACCOUNT/i);
-  assert.match(html, />Continue<\/span>/i);
-  assert.doesNotMatch(html, /Continue with ChatGPT/i);
+  assert.match(html, /Send my sign-in link/i);
+  assert.match(html, /Email address/i);
   assert.match(html, /Google/i);
+  assert.match(html, /GitHub/i);
   assert.match(html, /Microsoft/i);
-  assert.match(html, /Email/i);
-  assert.doesNotMatch(html, /via ChatGPT/i);
-  assert.match(html, /aria-label="Open the secure screen and continue with Google/i);
-  assert.match(html, /aria-label="Open the secure screen and continue with Microsoft/i);
-  assert.match(html, /Direct GitHub sign-in will be offered/i);
+  assert.doesNotMatch(html, /via ChatGPT|Continue with ChatGPT/i);
+  assert.match(html, /Provider is being activated/i);
   assert.match(html, /No access to your conversations/i);
-});
 
+  const source = await readFile(
+    new URL("../app/login/LoginContent.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(source, /signInWithOAuth/);
+  assert.match(source, /signInWithOtp/);
+  assert.match(source, /shouldCreateUser:\s*true/);
+  assert.match(source, /\/auth\/callback/);
+});
 test("contact details are public and pricing Contact Us opens them", async () => {
   const [contact, landing] = await Promise.all([render("/contact"), render("/")]);
   assert.equal(contact.status, 200);
@@ -205,15 +211,14 @@ test("mobile theme follows the real document state and survives restricted stora
   assert.match(css, /\[data-theme="dark"\]\{\s*color-scheme:dark;/);
 });
 
-test("customer account stays protected by server-side identity", async () => {
+test("customer account stays protected by server-side Supabase identity", async () => {
   const response = await render("/account");
   assert.ok([302, 303, 307, 308].includes(response.status));
   assert.match(
     response.headers.get("location") ?? "",
-    /^(?:http:\/\/localhost)?\/signin-with-chatgpt\?/,
+    /^(?:http:\/\/localhost)?\/login\?return_to=%2Faccount/,
   );
 });
-
 test("scope configurator targets the bounded preview endpoint", async () => {
   const page = await readFile(
     new URL("../app/configure/page.tsx", import.meta.url),
@@ -307,7 +312,7 @@ test("private admin console keeps its bearer secret in volatile component state"
     new URL("../app/admin/review-console.tsx", import.meta.url),
     "utf8",
   );
-  assert.match(page, /requireChatGPTUser\("\/admin"\)/);
+  assert.match(page, /requireSupabaseUser\("\/admin"\)/);
   assert.match(consoleSource, /\/v1\/admin\/audit-drafts/);
   assert.match(consoleSource, /Authorization:\s*`Bearer \$\{adminSecret\}`/);
   assert.match(consoleSource, /useState\(""\)/);

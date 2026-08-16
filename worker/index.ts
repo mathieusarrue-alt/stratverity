@@ -29,7 +29,7 @@ const CONTENT_SECURITY_POLICY = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self' https://api.stratverity.com",
+  "connect-src 'self' https://api.stratverity.com https://qxeylhrjelywtjoswyni.supabase.co",
   "frame-src 'none'",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
