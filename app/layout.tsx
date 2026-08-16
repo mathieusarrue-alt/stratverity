@@ -103,6 +103,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       "Audit Pine Script and Python trading strategies with evidence-based metrics, bias detection, and walk-forward validation.",
     applicationName: "StratVerity",
+    verification: {
+      google: "s06fNzpmUsWfWUm6YkD_4_VXyfLYLD8ppSLTUsxXf_0",
+    },
     alternates: {
       canonical: "/",
     },
