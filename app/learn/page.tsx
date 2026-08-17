@@ -21,6 +21,24 @@ const articles = [
     description:
       "A practical framework for validating strategy quality without turning your research into a curve-fit artifact.",
   },
+  {
+    slug: "survivorship-bias-trading",
+    title: "Survivorship bias in trading backtests",
+    description:
+      "Why testing only today's assets hides the strategies that failed and inflates your results.",
+  },
+  {
+    slug: "monte-carlo-vs-walk-forward",
+    title: "Monte Carlo vs walk-forward testing",
+    description:
+      "Two robustness tests that answer different questions about your strategy.",
+  },
+  {
+    slug: "pine-script-backtest-pitfalls",
+    title: "Common Pine Script backtest pitfalls",
+    description:
+      "The frequent mistakes in Pine Script backtests that inflate results.",
+  },
 ] as const;
 
 export const metadata: Metadata = {

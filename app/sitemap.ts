@@ -28,6 +28,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
     },
     {
+      path: "/learn/survivorship-bias-trading",
+      priority: 0.7,
+      changeFrequency: "monthly" as const,
+    },
+    {
+      path: "/learn/monte-carlo-vs-walk-forward",
+      priority: 0.7,
+      changeFrequency: "monthly" as const,
+    },
+    {
+      path: "/learn/pine-script-backtest-pitfalls",
+      priority: 0.7,
+      changeFrequency: "monthly" as const,
+    },
+    {
       path: "/legal/privacy",
       priority: 0.3,
       changeFrequency: "yearly" as const,

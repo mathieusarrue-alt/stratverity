@@ -160,6 +160,35 @@ const faqJsonLd = {
   ],
 };
 
+const professionalServiceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "StratVerity — BacktestProof",
+  url: PUBLIC_SITE_URL,
+  email: "support@stratverity.com",
+  image: `${PUBLIC_SITE_URL}/og.png`,
+  priceRange: "€14.99 - €149",
+  founder: {
+    "@type": "Person",
+    name: "Mathieu Sarrue",
+  },
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "11 avenue du Huit Mai",
+    addressLocality: "Aubagne",
+    postalCode: "13400",
+    addressCountry: "FR",
+  },
+  identifier: {
+    "@type": "PropertyValue",
+    name: "SIRET",
+    value: "903 756 575 00028",
+  },
+  areaServed: "Worldwide",
+  description:
+    "Independent backtest audit and strategy verification service for Pine Script and Python trading systems.",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0].trim();
@@ -317,6 +346,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceJsonLd) }}
         />
       </head>
       <body className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}>
