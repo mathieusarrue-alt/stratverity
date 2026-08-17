@@ -168,11 +168,6 @@ const professionalServiceJsonLd = {
   email: "support@stratverity.com",
   image: `${PUBLIC_SITE_URL}/og.png`,
   priceRange: "€14.99 - €149",
-  identifier: {
-    "@type": "PropertyValue",
-    name: "SIRET",
-    value: "903 756 575 00028",
-  },
   areaServed: "Worldwide",
   description:
     "Independent backtest audit and strategy verification service for Pine Script and Python trading systems.",
