@@ -168,17 +168,6 @@ const professionalServiceJsonLd = {
   email: "support@stratverity.com",
   image: `${PUBLIC_SITE_URL}/og.png`,
   priceRange: "€14.99 - €149",
-  founder: {
-    "@type": "Person",
-    name: "Mathieu Sarrue",
-  },
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "11 avenue du Huit Mai",
-    addressLocality: "Aubagne",
-    postalCode: "13400",
-    addressCountry: "FR",
-  },
   identifier: {
     "@type": "PropertyValue",
     name: "SIRET",
