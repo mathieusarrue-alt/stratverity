@@ -96,18 +96,40 @@ export function generateMetadata({
   }
 
   const canonical = `/learn/${params.slug}`;
+  const url = `https://www.stratverity.com${canonical}`;
+  const publishedTime = "2026-08-16T22:00:00Z";
 
   return {
-    title: `${article.title} | StratVerity`,
+    title: article.title,
     description: article.description,
+    keywords: [
+      article.title.toLowerCase(),
+      "trading strategy",
+      "backtest audit",
+      "Pine Script",
+      "Python trading",
+      "bias detection",
+    ],
     alternates: {
       canonical,
     },
+    authors: [{ name: "StratVerity Research" }],
     openGraph: {
-      title: `${article.title} | StratVerity`,
+      title: article.title,
       description: article.description,
       type: "article",
-      url: `https://www.stratverity.com${canonical}`,
+      url,
+      siteName: "StratVerity",
+      publishedTime,
+      authors: ["StratVerity Research"],
+      section: "Trading Research",
+      images: [{ url: "https://www.stratverity.com/og.png", width: 1672, height: 941 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.description,
+      images: ["https://www.stratverity.com/og.png"],
     },
   };
 }
@@ -119,8 +141,35 @@ export default function LearnArticlePage({ params }: { params: { slug: string } 
     notFound();
   }
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.description,
+    author: {
+      "@type": "Organization",
+      name: "StratVerity Research",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "StratVerity",
+      url: "https://www.stratverity.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://www.stratverity.com/favicon.svg",
+      },
+    },
+    datePublished: "2026-08-16T22:00:00Z",
+    dateModified: "2026-08-16T22:00:00Z",
+    mainEntityOfPage: `https://www.stratverity.com/learn/${params.slug}`,
+  };
+
   return (
     <main className={styles.article}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <Link href="/learn" className={styles.back}>
         ← Back to Learn
       </Link>

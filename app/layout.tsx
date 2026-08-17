@@ -56,23 +56,108 @@ const PUBLIC_SITE_URL = "https://www.stratverity.com";
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${PUBLIC_SITE_URL}/#organization`,
   name: "StratVerity",
   url: PUBLIC_SITE_URL,
-  logo: `${PUBLIC_SITE_URL}/favicon.svg`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${PUBLIC_SITE_URL}/favicon.svg`,
+  },
+  image: `${PUBLIC_SITE_URL}/og.png`,
   description:
     "Independent strategy audit and validation for Pine Script and Python trading systems.",
+  email: "support@stratverity.com",
+  brand: {
+    "@type": "Brand",
+    name: "BacktestProof",
+  },
+  sameAs: [],
 };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${PUBLIC_SITE_URL}/#website`,
   name: "StratVerity",
   url: PUBLIC_SITE_URL,
+  publisher: { "@id": `${PUBLIC_SITE_URL}/#organization` },
   potentialAction: {
     "@type": "SearchAction",
-    target: `${PUBLIC_SITE_URL}/search?q={search_term_string}`,
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${PUBLIC_SITE_URL}/search?q={search_term_string}`,
+    },
     "query-input": "required name=search_term_string",
   },
+};
+
+const softwareApplicationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "BacktestProof by StratVerity",
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Web",
+  url: PUBLIC_SITE_URL,
+  description:
+    "Independent backtest audit platform that recomputes trading strategy metrics, detects look-ahead bias and overfitting, and ties results to the evidence for Pine Script and Python systems.",
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Essential audit",
+      price: "14.99",
+      priceCurrency: "EUR",
+      description:
+        "Single strategy, single asset, single timeframe audit.",
+    },
+    {
+      "@type": "Offer",
+      name: "Standard audit",
+      price: "39.00",
+      priceCurrency: "EUR",
+      description:
+        "Full audit with recomputed metrics, bias detection, and evidence-linked report.",
+    },
+  ],
+  aggregateRating: undefined,
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What does StratVerity audit?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "StratVerity audits trading strategies and backtests written in Pine Script or Python. It recomputes performance metrics, detects biases such as look-ahead and overfitting, and ties every result to the evidence in your code and data.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How is my strategy code handled?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Your code is analysed statically and is never executed with live orders. The audit pipeline recomputes declared metrics from your manifest, Pine code, and CSV export without running client code.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Which biases can the audit detect?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The audit focuses on look-ahead bias, overfitting and curve-fitting, survivorship issues, and robustness problems. Walk-forward validation is used to separate a real edge from a curve-fit story.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How much does a strategy audit cost?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "The Essential audit is 14.99 EUR for one strategy, asset, and timeframe. The Standard audit is 39 EUR and includes a full recomputation, bias detection, and an evidence-linked report.",
+      },
+    },
+  ],
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -99,15 +184,48 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(baseUrl),
-    title: "StratVerity — Independent strategy audit for trading systems",
+    title: {
+      default:
+        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
+      template: "%s | StratVerity",
+    },
     description:
-      "Audit Pine Script and Python trading strategies with evidence-based metrics, bias detection, and walk-forward validation.",
+      "Independent backtest audit platform. Verify Pine Script and Python trading strategies with recomputed metrics, look-ahead bias & overfitting detection, and walk-forward validation.",
     applicationName: "StratVerity",
+    keywords: [
+      "backtest audit",
+      "trading strategy verification",
+      "Pine Script audit",
+      "Python trading strategy audit",
+      "look-ahead bias detection",
+      "overfitting detection",
+      "walk-forward validation",
+      "backtest proof",
+      "strategy robustness",
+      "StratVerity",
+    ],
+    category: "finance",
+    creator: "StratVerity",
+    publisher: "StratVerity",
     verification: {
       google: "s06fNzpmUsWfWUm6YkD_4_VXyfLYLD8ppSLTUsxXf_0",
     },
     alternates: {
       canonical: "/",
+      languages: {
+        "en-US": "/",
+        "fr-FR": "/",
+        "zh-CN": "/",
+        "hi-IN": "/",
+        "es-ES": "/",
+        "ar-SA": "/",
+        "pt-PT": "/",
+        "bn-BD": "/",
+        "de-DE": "/",
+        "it-IT": "/",
+        "ru-RU": "/",
+        "ko-KR": "/",
+      },
     },
     icons: {
       icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
@@ -161,6 +279,14 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </head>
       <body className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}>
