@@ -164,11 +164,40 @@ export default function LearnArticlePage({ params }: { params: { slug: string } 
     mainEntityOfPage: `https://www.stratverity.com/learn/${params.slug}`,
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://www.stratverity.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Learn",
+        item: "https://www.stratverity.com/learn",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: article.title,
+        item: `https://www.stratverity.com/learn/${params.slug}`,
+      },
+    ],
+  };
+
   return (
     <main className={styles.article}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Link href="/learn" className={styles.back}>
         ← Back to Learn

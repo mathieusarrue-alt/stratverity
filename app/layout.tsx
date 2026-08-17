@@ -194,11 +194,18 @@ export async function generateMetadata(): Promise<Metadata> {
     applicationName: "StratVerity",
     keywords: [
       "backtest audit",
-      "trading strategy verification",
+      "backtest verification service",
+      "verify backtest results",
+      "trading strategy audit",
+      "strategy audit before going live",
       "Pine Script audit",
+      "TradingView Pine Script backtest audit",
       "Python trading strategy audit",
+      "algorithmic trading strategy validation",
       "look-ahead bias detection",
+      "look-ahead bias checker",
       "overfitting detection",
+      "curve-fitting detection",
       "walk-forward validation",
       "backtest proof",
       "strategy robustness",
@@ -213,6 +220,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: "/",
       languages: {
+        "x-default": "/",
         "en-US": "/",
         "fr-FR": "/",
         "zh-CN": "/",
@@ -244,20 +252,42 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: "StratVerity — Independent strategy audit for trading systems",
+      title:
+        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
       description:
-        "Verify your backtest with evidence, not storytelling. Expose look-ahead bias, overfitting, and robustness issues before you trust a strategy.",
+        "Verify your backtest with evidence, not storytelling. Detect look-ahead bias, overfitting, and robustness issues before you trust a trading strategy.",
       type: "website",
       locale: "en_US",
+      alternateLocale: [
+        "fr_FR",
+        "zh_CN",
+        "hi_IN",
+        "es_ES",
+        "ar_SA",
+        "pt_PT",
+        "bn_BD",
+        "de_DE",
+        "it_IT",
+        "ru_RU",
+        "ko_KR",
+      ],
       url: baseUrl,
       siteName: "StratVerity",
-      images: [{ url: socialImage, width: 1672, height: 941 }],
+      images: [
+        {
+          url: socialImage,
+          width: 1672,
+          height: 941,
+          alt: "StratVerity — independent backtest audit and strategy verification platform",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "StratVerity — Independent strategy audit for trading systems",
+      title:
+        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
       description:
-        "Independent, evidence-based audit of Pine and Python strategies.",
+        "Independent, evidence-based audit of Pine and Python strategies. Detect look-ahead bias and overfitting before you trade.",
       images: [socialImage],
     },
   };
