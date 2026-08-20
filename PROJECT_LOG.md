@@ -25,4 +25,12 @@
 
 - Le guide universel est `docs/DEPLOYMENT_GUIDE.md`.
 - Les secrets Stripe, Supabase service-role, AWS et GitHub ne doivent jamais être exposés au frontend ni stockés dans Git.
-- L'ancien hébergement doit rester disponible jusqu'à la validation complète du domaine Amplify et de la recette publique.
+- Le domaine Amplify est `AVAILABLE`; l'état DNS antérieur est sauvegardé localement pour un rollback contrôlé.
+### Mise en production publique
+
+- Commit déployé : `0fdc4411ec3e86aab21f343835d177286fc8c4fc` ; job Amplify `15`, étapes BUILD, DEPLOY et VERIFY réussies.
+- `stratverity.com` et `www.stratverity.com` servent désormais le frontend via AWS Amplify/CloudFront avec certificat géré par AWS.
+- Recette publique validée : routes produit et SEO en HTTP 200, `/cert` en redirection 307 attendue, canonical et OG sur `www.stratverity.com`, en-têtes de sécurité présents.
+- Recette commerciale non payante validée : preview Audit BASE à un contexte, création d'une session Stripe `cs_live_*`, URL exclusivement `checkout.stripe.com`, aucun débit exécuté.
+- Le projet Supabase configuré a été restauré après détection de son état inactif. L'authentification e-mail est activée.
+- Google, GitHub et Microsoft restent désactivés dans Supabase tant que leurs identifiants OAuth propres ne sont pas fournis ; l'interface les rend volontairement non cliquables dans cet état.
