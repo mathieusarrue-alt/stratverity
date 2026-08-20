@@ -2,7 +2,7 @@
 
 ## Decision
 
-Status: **prepared, not activated**.
+Status: **activated on AWS Amplify; custom-domain cutover in progress**.
 
 - **REUSE** AWS Amplify Hosting because it provides CloudFront, TLS, SSR
   compute, branch releases and logs.
@@ -10,14 +10,24 @@ Status: **prepared, not activated**.
   the aws_amplify preset.
 - **REJECT** a plain S3 static deployment: StratVerity uses SSR, dynamic routes,
   Supabase authentication callbacks and protected account/admin pages.
-- **DEFER** the DNS switch from OpenAI Sites until an Amplify preview passes the
-  complete production smoke test.
+- **APPROVE** the DNS switch from OpenAI Sites: the Amplify preview passed the
+  complete production smoke test on 2026-08-20.
 
-The repository now contains amplify.yml, .github/workflows/deploy-aws.yml and a
-dual target in vite.config.ts. The existing Sites/Cloudflare build remains
-unchanged; Amplify builds use Nitro.
+The repository contains amplify.yml, .github/workflows/deploy-aws.yml and a
+dual target in vite.config.ts. Amplify builds use Nitro and the bounded native
+Node response adapter in scripts/patch-amplify-runtime.mjs. The complete
+operational procedure is maintained in [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md).
 
-## One-time AWS Amplify setup
+Production application:
+
+- app ID: d1ybxnm394w3bh;
+- branch: main;
+- region: eu-west-3;
+- preview: https://main.d1ybxnm394w3bh.amplifyapp.com;
+- platform: WEB_COMPUTE;
+- auto-build: enabled.
+
+## One-time AWS Amplify setup (completed)
 
 1. Create an Amplify Hosting app connected to
    mathieusarrue-alt/stratverity.
@@ -93,17 +103,16 @@ administrator or EC2 access key.
 
 ## Activation and rollback
 
-1. Keep AWS_DEPLOY_ENABLED=false.
-2. Run the workflow and confirm the quality job, including the
-   .amplify-hosting bundle.
-3. Create the Amplify app and add its ID.
-4. Set AWS_DEPLOY_ENABLED=true, run the workflow and test the Amplify URL.
-5. Verify /, /robots.txt, /sitemap.xml, /marketplace, /score, /crash-test,
-   /health-check, /cert, /login and /configure.
-6. Verify login/OAuth callbacks, one Stripe test checkout and the signed webhook
-   path before moving the custom domain.
-7. Lower DNS TTL, switch Route 53, monitor, then keep the former Sites version
-   available for rollback.
+1. Push a validated commit to main; Amplify auto-builds it.
+2. Keep AWS_DEPLOY_ENABLED=false while Amplify auto-build remains enabled, to
+   avoid duplicate releases.
+3. Confirm the quality and secret-scan workflows, then the Amplify job.
+4. Verify /, /robots.txt, /sitemap.xml, /marketplace, /score, /crash-test,
+   /health-check, /cert, /login and /configure on the Amplify hostname.
+5. Verify login/OAuth callbacks and the Stripe Checkout redirection without
+   making a real charge.
+6. Switch Route 53 only after the Amplify domain association and TLS
+   certificate are available.
 
 Rollback is a redeploy of the last successful Amplify job or a temporary DNS
 return to the last successful OpenAI Sites deployment. Never roll back the
