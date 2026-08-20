@@ -35,7 +35,37 @@ const amplifyServer = new Server((request, response) => {
     response.end("ok");
     return;
   }
-  amplifyNodeHandler(request, response);
+  if (request.url === "/__amplify-size-probe") {
+    const payload = Buffer.alloc(300000, "x");
+    response.statusCode = 200;
+    response.setHeader("content-type", "text/plain; charset=utf-8");
+    response.setHeader("content-length", String(payload.byteLength));
+    response.end(payload);
+    return;
+  }
+  if (request.url === "/__amplify-render-probe") {
+    void nitroApp
+      .fetch(new Request("https://www.stratverity.com/"))
+      .then((appResponse) => appResponse.arrayBuffer())
+      .then((body) => {
+        const payload = Buffer.from(body);
+        response.statusCode = 200;
+        response.setHeader("content-type", "text/html; charset=utf-8");
+        response.setHeader("content-length", String(payload.byteLength));
+        response.end(payload);
+      })
+      .catch((error) => {
+        console.error("Amplify render probe failed", error);
+        response.statusCode = 500;
+        response.end("render probe failed");
+      });
+    return;
+  }
+  Promise.resolve(amplifyNodeHandler(request, response)).catch((error) => {
+    console.error("Amplify node adapter failed", error);
+    if (!response.headersSent) response.statusCode = 500;
+    response.end();
+  });
 });
 amplifyServer.listen(3e3, "0.0.0.0", (err) => {`;
 

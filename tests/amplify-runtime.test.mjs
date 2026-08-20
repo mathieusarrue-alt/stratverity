@@ -15,5 +15,7 @@ test("Amplify build emits non-streaming SSR responses", async () => {
   assert.match(runtime, /headers\.set\("content-length"/);
   assert.match(runtime, /toNodeHandler\(amplifyBufferedFetch\)/);
   assert.match(runtime, /request\.url === "\/__amplify-probe"/);
+  assert.match(runtime, /request\.url === "\/__amplify-size-probe"/);
+  assert.match(runtime, /request\.url === "\/__amplify-render-probe"/);
   assert.match(runtime, /listen\(3e3, "0\.0\.0\.0"/);
 });
