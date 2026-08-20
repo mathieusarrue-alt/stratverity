@@ -22,6 +22,7 @@ const ASSET_PRESETS = [
 const TIMEFRAME_PRESETS = ["5m", "15m", "1h", "4h", "1D"] as const;
 
 const CRASH_TEST_PRICE = 49;
+const CRASH_TEST_AVAILABLE = false;
 
 type Language = "pinescript" | "python";
 type SubmissionState = "idle" | "submitting" | "checkout" | "error";
@@ -77,6 +78,11 @@ export default function CrashTestPage() {
 
   const submitCheckout = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!CRASH_TEST_AVAILABLE) {
+      setMessage(t("ct.maintenance"));
+      setMessageType("warning");
+      return;
+    }
     if (!isReady) {
       setMessage(t("ct.minChars"));
       setMessageType("warning");
@@ -142,6 +148,9 @@ export default function CrashTestPage() {
           <em>{t("ct.title2")}</em>
         </h1>
         <p>{t("ct.lead")}</p>
+        <p className={styles.maintenance} role="status">
+          {t("ct.maintenance")}
+        </p>
         <div className={styles.pricePill}>
           <b>{CRASH_TEST_PRICE}€</b>
           <small>{t("ct.price")}</small>
@@ -149,7 +158,7 @@ export default function CrashTestPage() {
       </section>
 
       <div className={styles.workspace}>
-        <form className={styles.form} onSubmit={submitCheckout}>
+        <form id="crash-test-form" className={styles.form} onSubmit={submitCheckout}>
           <fieldset className={styles.block}>
             <legend>
               <span>01</span>{t("ct.step.code")}
@@ -283,10 +292,13 @@ export default function CrashTestPage() {
           <button
             className={styles.submit}
             type="submit"
-            disabled={!isReady || state === "submitting" || state === "checkout"}
+            form="crash-test-form"
+            disabled={!CRASH_TEST_AVAILABLE || !isReady || state === "submitting" || state === "checkout"}
           >
-            {state === "submitting"
-              ? t("ct.preparing")
+            {!CRASH_TEST_AVAILABLE
+              ? t("ct.maintenanceCta")
+              : state === "submitting"
+                ? t("ct.preparing")
               : state === "checkout"
                 ? t("ct.redirecting")
                 : t("ct.pay")}
