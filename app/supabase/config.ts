@@ -1,6 +1,7 @@
-const DEFAULT_SUPABASE_URL = "https://qxeylhrjelywtjoswyni.supabase.co";
-const DEFAULT_SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_fV9OeuxQQ5TjS-1T4DFPQw_iaX2NgT6";
+// Non-production placeholders keep local/static checks deterministic. Every
+// deployed environment must provide the two NEXT_PUBLIC_SUPABASE_* variables.
+const DEFAULT_SUPABASE_URL = "https://example.supabase.co";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_placeholder";
 
 export const SUPABASE_URL = (
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? DEFAULT_SUPABASE_URL
