@@ -372,6 +372,8 @@ test("certification SEO stays complete but unindexed until the backend is live",
   assert.match(page, /openGraph:/);
   assert.match(page, /twitter:/);
   assert.match(page, /canonical:/);
+  assert.match(page, /robots:\s*\{[\s\S]*index:\s*false,[\s\S]*follow:\s*false/);
+  assert.doesNotMatch(page, /robots:\s*\{[\s\S]*index:\s*true/);
   assert.match(page, /\/v1\/certifications\//);
 
   // Schema.org de certification (EducationalOccupationalCredential) + fil d'Ariane.

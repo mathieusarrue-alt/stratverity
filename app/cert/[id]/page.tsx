@@ -79,8 +79,8 @@ export async function generateMetadata({
       images: [image],
     },
     robots: {
-      index: true,
-      follow: true,
+      index: false,
+      follow: false,
     },
   };
 }
