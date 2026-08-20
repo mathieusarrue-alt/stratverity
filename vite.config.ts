@@ -47,7 +47,12 @@ export default defineConfig(async () => {
   if (isAwsAmplifyBuild) {
     const { nitro } = await import("nitro/vite");
     return {
-      plugins: [vinext(), nitro()],
+      plugins: [
+        vinext(),
+        nitro({
+          awsAmplify: { runtime: "nodejs22.x" },
+        }),
+      ],
     };
   }
 

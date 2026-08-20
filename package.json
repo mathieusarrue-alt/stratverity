@@ -17,7 +17,6 @@
     "@supabase/ssr": "0.12.4",
     "@supabase/supabase-js": "2.112.3",
     "drizzle-orm": "0.45.2",
-    "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
@@ -32,6 +31,7 @@
     "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "16.3.0",
+    "next": "16.3.0",
     "nitro": "3.0.260610-beta",
     "react-server-dom-webpack": "19.2.8",
     "tailwindcss": "4.2.1",
