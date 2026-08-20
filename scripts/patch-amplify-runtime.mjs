@@ -5,6 +5,10 @@ const runtimePath = new URL(
   import.meta.url,
 );
 
+const httpImportOriginal = 'import { Server } from "node:http";';
+const httpImportReplacement =
+  'import { Server, STATUS_CODES } from "node:http";';
+
 const original =
   "new Server(toNodeHandler(nitroApp.fetch)).listen(3e3, (err) => {";
 const replacement = `const amplifyBufferedFetch = async (request) => {
@@ -21,7 +25,7 @@ const replacement = `const amplifyBufferedFetch = async (request) => {
 
   return new Response(body, {
     status: response.status,
-    statusText: response.statusText,
+    statusText: response.statusText || STATUS_CODES[response.status] || "Unknown",
     headers,
   });
 };
@@ -39,7 +43,14 @@ const amplifyServer = new Server((request, response) => {
 amplifyServer.listen(3e3, "0.0.0.0", (err) => {`;
 
 const source = await readFile(runtimePath, "utf8");
+const httpImportMatches = source.split(httpImportOriginal).length - 1;
 const matches = source.split(original).length - 1;
+
+if (httpImportMatches !== 1) {
+  throw new Error(
+    `Expected exactly one Node HTTP import, found ${httpImportMatches}.`,
+  );
+}
 
 if (matches !== 1) {
   throw new Error(
@@ -47,5 +58,8 @@ if (matches !== 1) {
   );
 }
 
-await writeFile(runtimePath, source.replace(original, replacement), "utf8");
-console.log("Patched Amplify runtime to buffer unsupported streamed responses.");
+const patchedSource = source
+  .replace(httpImportOriginal, httpImportReplacement)
+  .replace(original, replacement);
+await writeFile(runtimePath, patchedSource, "utf8");
+console.log("Patched Amplify runtime for CloudFront HTTP compatibility.");
