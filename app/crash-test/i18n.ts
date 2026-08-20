@@ -7,6 +7,8 @@ type Locale = "fr" | "en";
 const dict: Record<Locale, Record<string, string>> = {
   fr: {
     "ct.eyebrow": "Crash-Test Express",
+    "ct.maintenance": "Service temporairement indisponible — maintenance de sécurité en cours. Aucun dépôt ni paiement n’est accepté.",
+    "ct.maintenanceCta": "Temporairement indisponible",
     "ct.title1": "Votre stratégie",
     "ct.title2": "passe le crash-test.",
     "ct.lead": "Audit ponctuel sans abonnement. Déposez votre code Pine Script ou Python, payez une fois 49€, et recevez un rapport d'audit complet avec score de robustesse, diagnostic des biais et recommandations correctives.",
@@ -69,6 +71,8 @@ const dict: Record<Locale, Record<string, string>> = {
   },
   en: {
     "ct.eyebrow": "Crash-Test Express",
+    "ct.maintenance": "Temporarily unavailable — security maintenance is in progress. No upload or payment is accepted.",
+    "ct.maintenanceCta": "Temporarily unavailable",
     "ct.title1": "Your strategy",
     "ct.title2": "passes the crash test.",
     "ct.lead": "One-off audit, no subscription. Drop your Pine Script or Python code, pay 49€ once, and receive a full audit report with robustness score, bias diagnostics, and corrective recommendations.",

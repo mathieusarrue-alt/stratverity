@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: false },
   title: "Hall of Fame & Hall of Shame",
   description:
     "Real examples of backtests that survived verification — and the ones that lied. See declared vs recomputed performance.",

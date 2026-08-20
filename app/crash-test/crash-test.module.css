@@ -45,6 +45,15 @@
   max-width: 660px;
 }
 
+.maintenance {
+  background: color-mix(in oklab, var(--risk-500) 10%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--risk-500) 32%, var(--line));
+  border-radius: var(--radius-sm);
+  color: var(--risk-500) !important;
+  font-weight: 650;
+  margin-top: 20px !important;
+  padding: 12px 14px;
+}
 .pricePill {
   display: inline-flex;
   align-items: center;

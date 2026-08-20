@@ -358,7 +358,7 @@ test("public certification page renders a status shell for any audit id", async 
   assert.doesNotMatch(html, /sk_test_|whsec_|STRIPE_SECRET_KEY/i);
 });
 
-test("certification SEO ships metadata, OpenGraph, Twitter and JSON-LD", async () => {
+test("certification SEO stays complete but unindexed until the backend is live", async () => {
   const [page, layout, sitemap, state, view] = await Promise.all([
     readFile(new URL("../app/cert/[id]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/cert/layout.tsx", import.meta.url), "utf8"),
@@ -380,10 +380,12 @@ test("certification SEO ships metadata, OpenGraph, Twitter and JSON-LD", async (
   assert.match(page, /BreadcrumbList/);
   assert.match(page, /issuedBy/);
 
-  // Layout de section et sitemap dynamique.
+  // La future page garde ses métadonnées, mais reste noindex et hors sitemap
+  // tant que la chaîne backend de certification n'est pas activée.
   assert.match(layout, /export const metadata: Metadata/);
-  assert.match(sitemap, /\/v1\/certifications\?limit=500/);
-  assert.match(sitemap, /\/cert\/\$\{encodeURIComponent/);
+  assert.match(layout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
+  assert.doesNotMatch(sitemap, /\/v1\/certifications\?limit=500/);
+  assert.doesNotMatch(sitemap, /\/cert\/\$\{encodeURIComponent/);
 
   // Aucun secret n'est embarqué côté public.
   assert.doesNotMatch(page + layout + sitemap + state + view, /sk_test_|whsec_|STRIPE_SECRET_KEY|sk_live_/);
@@ -424,4 +426,27 @@ test("certification UI derives the three trust states from the engine", async ()
   assert.match(page, /NEXT_PUBLIC_BACKTESTPROOF_API_URL/);
   assert.match(page, /generateMetadata/);
   assert.doesNotMatch(state + view + page, /sk_test_|whsec_|STRIPE_SECRET_KEY/);
+});
+
+test("disabled product surfaces stay out of indexing and submission", async () => {
+  const [crashPage, sitemap, crashLayout, marketplaceLayout, galleryLayout, certLayout] =
+    await Promise.all([
+      readFile(new URL("../app/crash-test/page.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
+      readFile(new URL("../app/crash-test/layout.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/marketplace/layout.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/gallery/layout.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/cert/layout.tsx", import.meta.url), "utf8"),
+    ]);
+
+  assert.match(crashPage, /const CRASH_TEST_AVAILABLE = false/);
+  assert.match(crashPage, /id="crash-test-form"/);
+  assert.match(crashPage, /form="crash-test-form"/);
+  assert.match(crashPage, /disabled=\{!CRASH_TEST_AVAILABLE/);
+  assert.doesNotMatch(sitemap, /path:\s*"\/(?:crash-test|gallery|marketplace)"/);
+  assert.doesNotMatch(sitemap, /\/v1\/certifications|\/cert\/\$\{/);
+
+  for (const layout of [crashLayout, marketplaceLayout, galleryLayout, certLayout]) {
+    assert.match(layout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
+  }
 });

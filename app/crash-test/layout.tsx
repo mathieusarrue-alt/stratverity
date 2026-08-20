@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: false },
   title: "Crash-Test Express — Audit de stratégie à 49€",
   description:
     "Auditez votre stratégie Pine Script ou Python sans abonnement. Paiement unique 49€, rapport certifié avec score de robustesse, détection de look-ahead bias et recommandations.",

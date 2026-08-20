@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: false },
   title: "Verified Strategy Marketplace",
   description:
     "A marketplace of independently audited trading strategies and bots. Every listing verified with real recomputed numbers. Coming soon.",
