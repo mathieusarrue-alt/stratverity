@@ -17,6 +17,7 @@ const replacement = `const amplifyBufferedFetch = async (request) => {
   const body = await response.arrayBuffer();
   const headers = new Headers(response.headers);
   headers.delete("transfer-encoding");
+  headers.delete("vary");
   headers.set("content-length", String(body.byteLength));
 
   return new NodeResponse(new Uint8Array(body), {
