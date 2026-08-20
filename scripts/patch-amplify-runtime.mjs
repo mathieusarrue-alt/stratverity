@@ -25,7 +25,18 @@ const replacement = `const amplifyBufferedFetch = async (request) => {
     headers,
   });
 };
-new Server(toNodeHandler(amplifyBufferedFetch)).listen(3e3, (err) => {`;
+const amplifyNodeHandler = toNodeHandler(amplifyBufferedFetch);
+const amplifyServer = new Server((request, response) => {
+  if (request.url === "/__amplify-probe") {
+    response.statusCode = 200;
+    response.setHeader("content-type", "text/plain; charset=utf-8");
+    response.setHeader("content-length", "2");
+    response.end("ok");
+    return;
+  }
+  amplifyNodeHandler(request, response);
+});
+amplifyServer.listen(3e3, "0.0.0.0", (err) => {`;
 
 const source = await readFile(runtimePath, "utf8");
 const matches = source.split(original).length - 1;

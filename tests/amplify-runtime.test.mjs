@@ -12,4 +12,6 @@ test("Amplify build buffers streamed SSR responses", async () => {
   assert.match(runtime, /response\.arrayBuffer\(\)/);
   assert.match(runtime, /headers\.set\("content-length"/);
   assert.match(runtime, /toNodeHandler\(amplifyBufferedFetch\)/);
+  assert.match(runtime, /request\.url === "\/__amplify-probe"/);
+  assert.match(runtime, /listen\(3e3, "0\.0\.0\.0"/);
 });
