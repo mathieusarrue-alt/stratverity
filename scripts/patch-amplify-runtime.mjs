@@ -5,78 +5,104 @@ const runtimePath = new URL(
   import.meta.url,
 );
 
+const httpImportOriginal = 'import { Server } from "node:http";';
+const httpImportReplacement = `import { Server, STATUS_CODES } from "node:http";
+import { Readable } from "node:stream";`;
+
 const original =
   "new Server(toNodeHandler(nitroApp.fetch)).listen(3e3, (err) => {";
-const replacement = `const amplifyBufferedFetch = async (request) => {
-  const response = await nitroApp.fetch(request);
-  if (!response.body) return response;
+const replacement = `const AMPLIFY_HOP_BY_HOP_HEADERS = new Set([
+  "connection",
+  "keep-alive",
+  "proxy-authenticate",
+  "proxy-authorization",
+  "te",
+  "trailer",
+  "transfer-encoding",
+  "upgrade",
+  "vary",
+]);
 
-  // Amplify Hosting Compute does not support Next.js streaming responses.
-  // Materialize the body as Nitro's native NodeResponse so srvx writes and
-  // ends the response instead of recreating a ReadableStream.
-  const body = await response.arrayBuffer();
-  const headers = new Headers(response.headers);
-  headers.delete("transfer-encoding");
-  headers.delete("vary");
-  headers.set("content-length", String(body.byteLength));
+const amplifyNodeHandler = async (nodeRequest, nodeResponse) => {
+  try {
+    const method = (nodeRequest.method || "GET").toUpperCase();
+    const requestHeaders = new Headers();
+    for (const [name, value] of Object.entries(nodeRequest.headers)) {
+      if (Array.isArray(value)) {
+        for (const item of value) requestHeaders.append(name, item);
+      } else if (value !== undefined) {
+        requestHeaders.set(name, value);
+      }
+    }
 
-  return new NodeResponse(new Uint8Array(body), {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
+    const requestInit = { method, headers: requestHeaders };
+    if (method !== "GET" && method !== "HEAD") {
+      requestInit.body = Readable.toWeb(nodeRequest);
+      requestInit.duplex = "half";
+    }
+
+    const siteOrigin =
+      process.env.NEXT_PUBLIC_SITE_ORIGIN || "https://www.stratverity.com";
+    const requestUrl = new URL(nodeRequest.url || "/", siteOrigin);
+    const response = await nitroApp.fetch(new Request(requestUrl, requestInit));
+    const body = response.body
+      ? Buffer.from(await response.arrayBuffer())
+      : Buffer.alloc(0);
+
+    nodeResponse.statusCode = response.status;
+    nodeResponse.statusMessage =
+      response.statusText || STATUS_CODES[response.status] || "Unknown";
+
+    for (const [name, value] of response.headers) {
+      if (
+        name !== "set-cookie" &&
+        !AMPLIFY_HOP_BY_HOP_HEADERS.has(name.toLowerCase())
+      ) {
+        nodeResponse.setHeader(name, value);
+      }
+    }
+    const setCookies = response.headers.getSetCookie();
+    if (setCookies.length > 0) nodeResponse.setHeader("set-cookie", setCookies);
+
+    const hasNoBody =
+      method === "HEAD" ||
+      response.status === 204 ||
+      response.status === 205 ||
+      response.status === 304;
+    nodeResponse.setHeader("content-length", hasNoBody ? "0" : String(body.length));
+    nodeResponse.end(hasNoBody ? undefined : body);
+  } catch (error) {
+    console.error("Amplify request adapter failed", error);
+    if (!nodeResponse.headersSent) {
+      nodeResponse.statusCode = 500;
+      nodeResponse.statusMessage = "Internal Server Error";
+      nodeResponse.setHeader("content-length", "0");
+    }
+    nodeResponse.end();
+  }
 };
-const amplifyNodeHandler = toNodeHandler(amplifyBufferedFetch);
-const amplifyServer = new Server((request, response) => {
-  if (request.url === "/__amplify-probe") {
-    response.statusCode = 200;
-    response.setHeader("content-type", "text/plain; charset=utf-8");
-    response.setHeader("content-length", "2");
-    response.end("ok");
-    return;
-  }
-  if (request.url === "/__amplify-size-probe") {
-    const payload = Buffer.alloc(300000, "x");
-    response.statusCode = 200;
-    response.setHeader("content-type", "text/plain; charset=utf-8");
-    response.setHeader("content-length", String(payload.byteLength));
-    response.end(payload);
-    return;
-  }
-  if (request.url === "/__amplify-render-probe") {
-    void nitroApp
-      .fetch(new Request("https://www.stratverity.com/"))
-      .then((appResponse) => appResponse.arrayBuffer())
-      .then((body) => {
-        const payload = Buffer.from(body);
-        response.statusCode = 200;
-        response.setHeader("content-type", "text/html; charset=utf-8");
-        response.setHeader("content-length", String(payload.byteLength));
-        response.end(payload);
-      })
-      .catch((error) => {
-        console.error("Amplify render probe failed", error);
-        response.statusCode = 500;
-        response.end("render probe failed");
-      });
-    return;
-  }
-  Promise.resolve(amplifyNodeHandler(request, response)).catch((error) => {
-    console.error("Amplify node adapter failed", error);
-    if (!response.headersSent) response.statusCode = 500;
-    response.end();
-  });
-});
-amplifyServer.listen(3e3, "0.0.0.0", (err) => {`;
+
+new Server((request, response) => {
+  void amplifyNodeHandler(request, response);
+}).listen(3e3, "0.0.0.0", (err) => {`;
 
 const source = await readFile(runtimePath, "utf8");
-const matches = source.split(original).length - 1;
+const importMatches = source.split(httpImportOriginal).length - 1;
+const entrypointMatches = source.split(original).length - 1;
 
-if (matches !== 1) {
+if (importMatches !== 1) {
   throw new Error(
-    `Expected exactly one Nitro Amplify server entrypoint, found ${matches}.`,
+    `Expected exactly one Node HTTP import, found ${importMatches}.`,
+  );
+}
+if (entrypointMatches !== 1) {
+  throw new Error(
+    `Expected exactly one Nitro Amplify entrypoint, found ${entrypointMatches}.`,
   );
 }
 
-await writeFile(runtimePath, source.replace(original, replacement), "utf8");
-console.log("Patched Amplify runtime for non-streaming CloudFront responses.");
+const patchedSource = source
+  .replace(httpImportOriginal, httpImportReplacement)
+  .replace(original, replacement);
+await writeFile(runtimePath, patchedSource, "utf8");
+console.log("Patched Amplify runtime with a buffered Node HTTP adapter.");
