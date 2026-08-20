@@ -48,7 +48,10 @@ jobs:
       - name: Verify AWS Amplify SSR bundle
         env:
           NITRO_PRESET: aws_amplify
-        run: npx vite build
+        run: npm run build:amplify
+
+      - name: Test Amplify transport adapter
+        run: npm run test:amplify
 
   deploy:
     name: Trigger AWS Amplify production branch

@@ -8,7 +8,7 @@ frontend:
     build:
       commands:
         - export NITRO_PRESET=aws_amplify
-        - npx vite build
+        - npm run build:amplify
   artifacts:
     baseDirectory: .amplify-hosting
     files:
