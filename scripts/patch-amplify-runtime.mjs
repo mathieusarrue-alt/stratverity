@@ -5,10 +5,6 @@ const runtimePath = new URL(
   import.meta.url,
 );
 
-const httpImportOriginal = 'import { Server } from "node:http";';
-const httpImportReplacement =
-  'import { Server, STATUS_CODES } from "node:http";';
-
 const original =
   "new Server(toNodeHandler(nitroApp.fetch)).listen(3e3, (err) => {";
 const replacement = `const amplifyBufferedFetch = async (request) => {
@@ -16,16 +12,16 @@ const replacement = `const amplifyBufferedFetch = async (request) => {
   if (!response.body) return response;
 
   // Amplify Hosting Compute does not support Next.js streaming responses.
-  // Buffer the body and provide a deterministic length before crossing its
-  // CloudFront-to-compute proxy. This changes transport only, not app logic.
+  // Materialize the body as Nitro's native NodeResponse so srvx writes and
+  // ends the response instead of recreating a ReadableStream.
   const body = await response.arrayBuffer();
   const headers = new Headers(response.headers);
   headers.delete("transfer-encoding");
   headers.set("content-length", String(body.byteLength));
 
-  return new Response(body, {
+  return new NodeResponse(new Uint8Array(body), {
     status: response.status,
-    statusText: response.statusText || STATUS_CODES[response.status] || "Unknown",
+    statusText: response.statusText,
     headers,
   });
 };
@@ -43,14 +39,7 @@ const amplifyServer = new Server((request, response) => {
 amplifyServer.listen(3e3, "0.0.0.0", (err) => {`;
 
 const source = await readFile(runtimePath, "utf8");
-const httpImportMatches = source.split(httpImportOriginal).length - 1;
 const matches = source.split(original).length - 1;
-
-if (httpImportMatches !== 1) {
-  throw new Error(
-    `Expected exactly one Node HTTP import, found ${httpImportMatches}.`,
-  );
-}
 
 if (matches !== 1) {
   throw new Error(
@@ -58,8 +47,5 @@ if (matches !== 1) {
   );
 }
 
-const patchedSource = source
-  .replace(httpImportOriginal, httpImportReplacement)
-  .replace(original, replacement);
-await writeFile(runtimePath, patchedSource, "utf8");
-console.log("Patched Amplify runtime for CloudFront HTTP compatibility.");
+await writeFile(runtimePath, source.replace(original, replacement), "utf8");
+console.log("Patched Amplify runtime for non-streaming CloudFront responses.");
