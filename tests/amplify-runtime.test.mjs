@@ -14,7 +14,7 @@ test("Amplify build emits buffered Node HTTP responses", async () => {
   assert.match(runtime, /nitroApp\.fetch\(new Request/);
   assert.match(runtime, /response\.arrayBuffer\(\)/);
   assert.match(runtime, /response\.headers\.getSetCookie\(\)/);
-  assert.match(runtime, /AMPLIFY_HOP_BY_HOP_HEADERS/);
+  assert.match(runtime, /AMPLIFY_RESPONSE_HEADERS/);
   assert.match(runtime, /nodeResponse\.end\(hasNoBody \? undefined : body\)/);
   assert.match(runtime, /listen\(3e3, "0\.0\.0\.0"/);
   assert.doesNotMatch(runtime, /__amplify-probe/);

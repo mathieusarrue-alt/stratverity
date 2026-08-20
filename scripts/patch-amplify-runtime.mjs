@@ -11,16 +11,13 @@ import { Readable } from "node:stream";`;
 
 const original =
   "new Server(toNodeHandler(nitroApp.fetch)).listen(3e3, (err) => {";
-const replacement = `const AMPLIFY_HOP_BY_HOP_HEADERS = new Set([
-  "connection",
-  "keep-alive",
-  "proxy-authenticate",
-  "proxy-authorization",
-  "te",
-  "trailer",
-  "transfer-encoding",
-  "upgrade",
-  "vary",
+const replacement = `const AMPLIFY_RESPONSE_HEADERS = new Set([
+  "cache-control",
+  "content-disposition",
+  "content-type",
+  "etag",
+  "last-modified",
+  "location",
 ]);
 
 const amplifyNodeHandler = async (nodeRequest, nodeResponse) => {
@@ -54,10 +51,7 @@ const amplifyNodeHandler = async (nodeRequest, nodeResponse) => {
       response.statusText || STATUS_CODES[response.status] || "Unknown";
 
     for (const [name, value] of response.headers) {
-      if (
-        name !== "set-cookie" &&
-        !AMPLIFY_HOP_BY_HOP_HEADERS.has(name.toLowerCase())
-      ) {
+      if (AMPLIFY_RESPONSE_HEADERS.has(name.toLowerCase())) {
         nodeResponse.setHeader(name, value);
       }
     }
