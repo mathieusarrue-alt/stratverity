@@ -358,7 +358,7 @@ test("public certification page renders a status shell for any audit id", async 
   assert.doesNotMatch(html, /sk_test_|whsec_|STRIPE_SECRET_KEY/i);
 });
 
-test("certification SEO stays complete but unindexed until the backend is live", async () => {
+test("certification SEO indexes only genuinely sealed certificates", async () => {
   const [page, layout, sitemap, state, view] = await Promise.all([
     readFile(new URL("../app/cert/[id]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/cert/layout.tsx", import.meta.url), "utf8"),
@@ -372,8 +372,11 @@ test("certification SEO stays complete but unindexed until the backend is live",
   assert.match(page, /openGraph:/);
   assert.match(page, /twitter:/);
   assert.match(page, /canonical:/);
-  assert.match(page, /robots:\s*\{[\s\S]*index:\s*false,[\s\S]*follow:\s*false/);
-  assert.doesNotMatch(page, /robots:\s*\{[\s\S]*index:\s*true/);
+  assert.match(page, /const indexable\s*=/);
+  assert.match(page, /data\?\.status === "CERTIFIED"/);
+  assert.match(page, /data\.certified === true/);
+  assert.match(page, /index:\s*indexable/);
+  assert.match(page, /follow:\s*indexable/);
   assert.match(page, /\/v1\/certifications\//);
 
   // Schema.org de certification (EducationalOccupationalCredential) + fil d'Ariane.
@@ -382,10 +385,10 @@ test("certification SEO stays complete but unindexed until the backend is live",
   assert.match(page, /BreadcrumbList/);
   assert.match(page, /issuedBy/);
 
-  // La future page garde ses métadonnées, mais reste noindex et hors sitemap
-  // tant que la chaîne backend de certification n'est pas activée.
+  // La section ne force plus noindex : la page dynamique décide à partir
+  // du statut CERTIFIED et de l'empreinte SHA-256 scellée.
   assert.match(layout, /export const metadata: Metadata/);
-  assert.match(layout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
+  assert.doesNotMatch(layout, /robots:/);
   assert.doesNotMatch(sitemap, /\/v1\/certifications\?limit=500/);
   assert.doesNotMatch(sitemap, /\/cert\/\$\{encodeURIComponent/);
 
@@ -431,14 +434,13 @@ test("certification UI derives the three trust states from the engine", async ()
 });
 
 test("disabled product surfaces stay out of indexing and submission", async () => {
-  const [crashPage, sitemap, crashLayout, marketplaceLayout, galleryLayout, certLayout] =
+  const [crashPage, sitemap, crashLayout, marketplaceLayout, galleryLayout] =
     await Promise.all([
       readFile(new URL("../app/crash-test/page.tsx", import.meta.url), "utf8"),
       readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
       readFile(new URL("../app/crash-test/layout.tsx", import.meta.url), "utf8"),
       readFile(new URL("../app/marketplace/layout.tsx", import.meta.url), "utf8"),
       readFile(new URL("../app/gallery/layout.tsx", import.meta.url), "utf8"),
-      readFile(new URL("../app/cert/layout.tsx", import.meta.url), "utf8"),
     ]);
 
   assert.match(crashPage, /const CRASH_TEST_AVAILABLE = false/);
@@ -448,7 +450,7 @@ test("disabled product surfaces stay out of indexing and submission", async () =
   assert.doesNotMatch(sitemap, /path:\s*"\/(?:crash-test|gallery|marketplace)"/);
   assert.doesNotMatch(sitemap, /\/v1\/certifications|\/cert\/\$\{/);
 
-  for (const layout of [crashLayout, marketplaceLayout, galleryLayout, certLayout]) {
+  for (const layout of [crashLayout, marketplaceLayout, galleryLayout]) {
     assert.match(layout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
   }
 });

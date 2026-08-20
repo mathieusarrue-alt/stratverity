@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 // Métadonnées de section de la page de certification (pattern des autres
 // routes : app/configure/layout.tsx, app/contact/layout.tsx, …).
 export const metadata: Metadata = {
-  robots: { index: false, follow: false },
   title: {
     default: "StratVerity certification",
     template: "%s | StratVerity",

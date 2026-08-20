@@ -56,6 +56,11 @@ export async function generateMetadata({
     : `Audit ${auditId} — StratVerity certification`;
   const description = `StratVerity public audit ${statusLabel.toLowerCase()}${score !== null ? ` — robustness score ${score}/100` : ""}. Out-of-sample validation, fees and overfitting checks performed by the independent StratVerity engine.`;
   const image = badgeUrl(auditId);
+  const indexable =
+    data?.status === "CERTIFIED" &&
+    data.certified === true &&
+    typeof data.code_hash === "string" &&
+    /^[a-f0-9]{64}$/.test(data.code_hash);
 
   return {
     title,
@@ -79,8 +84,8 @@ export async function generateMetadata({
       images: [image],
     },
     robots: {
-      index: false,
-      follow: false,
+      index: indexable,
+      follow: indexable,
     },
   };
 }
@@ -135,10 +140,12 @@ export default async function CertificationPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {data?.status === "CERTIFIED" && data.certified === true ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      ) : null}
       <CertificationView
         auditId={auditId}
         data={data}
