@@ -40,7 +40,7 @@ test("server-renders the StratVerity product page", async () => {
 });
 
 test("every frontend response receives the shared security policy", async () => {
-  for (const path of ["/", "/configure", "/login", "/legal/privacy"] ) {
+  for (const path of ["/", "/configure", "/login", "/legal/privacy", "/cert/demo-audit"]) {
     const response = await render(path);
     assert.equal(response.status, 200, path);
     const csp = response.headers.get("content-security-policy") ?? "";
@@ -346,4 +346,82 @@ test("deployment metadata and worker output are present", async () => {
   assert.match(hosting.project_id, /^appgprj_/);
   await access(new URL("../dist/server/index.js", import.meta.url));
   await access(new URL("../public/og.png", import.meta.url));
+});
+
+test("public certification page renders a status shell for any audit id", async () => {
+  const response = await render("/cert/demo-audit-1234");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  // La page est rendue côté serveur (RSC) : elle affiche au minimum le cadre
+  // de certification publique — jamais une assertion de verdict inventée.
+  assert.match(html, /StratVerity certification/i);
+  assert.doesNotMatch(html, /sk_test_|whsec_|STRIPE_SECRET_KEY/i);
+});
+
+test("certification SEO ships metadata, OpenGraph, Twitter and JSON-LD", async () => {
+  const [page, layout, sitemap, state, view] = await Promise.all([
+    readFile(new URL("../app/cert/[id]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/cert/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/cert/certification-state.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/cert/CertificationView.tsx", import.meta.url), "utf8"),
+  ]);
+
+  // Métadonnées dynamiques (OpenGraph + Twitter Cards) dans la page serveur.
+  assert.match(page, /export async function generateMetadata/);
+  assert.match(page, /openGraph:/);
+  assert.match(page, /twitter:/);
+  assert.match(page, /canonical:/);
+  assert.match(page, /\/v1\/certifications\//);
+
+  // Schema.org de certification (EducationalOccupationalCredential) + fil d'Ariane.
+  assert.match(page, /application\/ld\+json/);
+  assert.match(page, /EducationalOccupationalCredential/);
+  assert.match(page, /BreadcrumbList/);
+  assert.match(page, /issuedBy/);
+
+  // Layout de section et sitemap dynamique.
+  assert.match(layout, /export const metadata: Metadata/);
+  assert.match(sitemap, /\/v1\/certifications\?limit=500/);
+  assert.match(sitemap, /\/cert\/\$\{encodeURIComponent/);
+
+  // Aucun secret n'est embarqué côté public.
+  assert.doesNotMatch(page + layout + sitemap + state + view, /sk_test_|whsec_|STRIPE_SECRET_KEY|sk_live_/);
+});
+
+test("certification UI derives the three trust states from the engine", async () => {
+  const [state, view, page] = await Promise.all([
+    readFile(new URL("../app/cert/certification-state.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/cert/CertificationView.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/cert/[id]/page.tsx", import.meta.url), "utf8"),
+  ]);
+
+  // Trois états exigés : Certifié (vert), Révision obsolète (orange),
+  // Rejeté / Non vérifié (rouge / gris).
+  assert.match(state, /statusKey: "CERTIFIED"/);
+  assert.match(state, /"REVISION_STALE"/);
+  assert.match(state, /"FAILED"/);
+  assert.match(state, /toneForScore/);
+  assert.match(state, /score >= 70/);
+  assert.match(state, /score >= 50/);
+  // Couleur cohérente avec le badge SVG backend (#22c55e vert
+  // institutionnalisé côté UI via les variables de ton).
+  assert.match(state, /"Audit certified"/);
+  assert.match(state, /"Revision stale — not verified"/);
+  assert.match(state, /"Audit failed"/);
+
+  // Vérification d'intégrité du code : SHA-256 local, aucune exfiltration.
+  assert.match(view, /crypto\.subtle\.digest\("SHA-256"/);
+  assert.match(view, /navigator\.clipboard\.writeText/);
+
+  // Boutons d'intégration du badge (HTML / Markdown).
+  assert.match(view, /Copy Markdown/);
+  assert.match(view, /Copy HTML/);
+  assert.match(state, /buildBadgeEmbed/);
+
+  // La page interroge l'endpoint public de certification côté serveur.
+  assert.match(page, /\/v1\/certifications\//);
+  assert.match(page, /NEXT_PUBLIC_BACKTESTPROOF_API_URL/);
+  assert.match(page, /generateMetadata/);
+  assert.doesNotMatch(state + view + page, /sk_test_|whsec_|STRIPE_SECRET_KEY/);
 });

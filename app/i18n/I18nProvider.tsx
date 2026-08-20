@@ -24,6 +24,20 @@ type I18nContextValue = {
 const I18nContext = createContext<I18nContextValue | null>(null);
 const availableLocales = new Set<string>(languages.map(({ code }) => code));
 
+function detectBrowserLocale(): Locale | null {
+  if (typeof navigator === "undefined") return null;
+  const rawLocales: string[] =
+    navigator.languages && navigator.languages.length
+      ? Array.from(navigator.languages)
+      : [navigator.language];
+  for (const raw of rawLocales) {
+    if (!raw) continue;
+    const base = raw.split("-")[0].toLowerCase();
+    if (availableLocales.has(base)) return base as Locale;
+  }
+  return null;
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, updateLocale] = useState<Locale>("en");
 
@@ -37,7 +51,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       const storedLocale = window.localStorage.getItem("sv-lang");
       if (storedLocale && availableLocales.has(storedLocale)) {
         updateLocale(storedLocale as Locale);
+        return;
       }
+      const detected = detectBrowserLocale();
+      if (detected) updateLocale(detected);
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);

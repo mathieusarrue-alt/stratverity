@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /.vinext/
+/.amplify-hosting/
 /out/
 
 # misc

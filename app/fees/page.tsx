@@ -118,7 +118,7 @@ export default function FeesPage() {
           </div>
 
           <div style={{ color: "var(--ink-2)", fontSize: 14 }}>
-            That's <strong style={{ color: "var(--risk-500)" }}>{ratio}× less</strong> than declared
+            That&apos;s <strong style={{ color: "var(--risk-500)" }}>{ratio}× less</strong> than declared
             ({lost} points lost to fees over {trades} trades).
           </div>
         </div>

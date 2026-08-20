@@ -36,11 +36,9 @@ const themeBootstrap = `(() => {
   let theme = "light";
   try {
     const stored = localStorage.getItem("sv-theme");
-    theme = stored === "light" || stored === "dark"
-      ? stored
-      : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    theme = stored === "light" || stored === "dark" ? stored : "light";
   } catch {
-    theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    theme = "light";
   }
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
@@ -199,11 +197,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(baseUrl),
     title: {
       default:
-        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
+        "StratVerity — Trading Strategy Audit, Free Health Check & Auto-Pilot",
       template: "%s | StratVerity",
     },
     description:
-      "Independent backtest audit platform. Verify Pine Script and Python trading strategies with recomputed metrics, look-ahead bias & overfitting detection, and walk-forward validation.",
+      "Audit and certify algorithmic trading strategies with a free code health check, look-ahead and repainting detection, Pine Script, Python, MQL and StrategyQuant X analysis, plus optional 24/7 Auto-Pilot execution.",
     applicationName: "StratVerity",
     keywords: [
       "backtest audit",
@@ -223,6 +221,19 @@ export async function generateMetadata(): Promise<Metadata> {
       "backtest proof",
       "strategy robustness",
       "StratVerity",
+      "health check gratuit",
+      "scanner pine script gratuit",
+      "verifier code pine script",
+      "detecter lookahead bias",
+      "MQL5 static code analyzer free",
+      "MQL4 code analyzer",
+      "StrategyQuant X import",
+      "anti repaint verified",
+      "repainting detection TradingView",
+      "auto pilot MT5",
+      "deploiement EA MT5 automatique",
+      "execution automatique EA",
+      "testeur de bug robot de trading",
     ],
     category: "finance",
     creator: "StratVerity",
@@ -266,9 +277,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title:
-        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
+        "StratVerity — Trading Strategy Audit, Free Health Check & Auto-Pilot",
       description:
-        "Verify your backtest with evidence, not storytelling. Detect look-ahead bias, overfitting, and robustness issues before you trust a trading strategy.",
+        "Free strategy code health check, look-ahead and repainting detection, Pine Script, Python, MQL and StrategyQuant X audits, plus optional 24/7 Auto-Pilot execution.",
       type: "website",
       locale: "en_US",
       alternateLocale: [

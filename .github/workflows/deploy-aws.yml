@@ -1,0 +1,97 @@
+name: Frontend quality gate and AWS Amplify release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: stratverity-frontend-production
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "22.13.0"
+  AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-3' }}
+  AWS_AMPLIFY_BRANCH: main
+
+jobs:
+  quality:
+    name: Install, lint, test and AWS compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the exact commit
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test production build
+        run: npm test
+
+      - name: Verify production dependencies
+        run: npm audit --omit=dev
+
+      - name: Verify AWS Amplify SSR bundle
+        env:
+          NITRO_PRESET: aws_amplify
+        run: npx vite build
+
+  deploy:
+    name: Trigger AWS Amplify production branch
+    needs: quality
+    if: ${{ vars.AWS_DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - name: Configure temporary AWS credentials with GitHub OIDC
+        if: ${{ vars.AWS_ROLE_TO_ASSUME != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Configure AWS access-key fallback
+        if: ${{ vars.AWS_ROLE_TO_ASSUME == '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Start the Amplify release
+        id: release
+        env:
+          AWS_AMPLIFY_APP_ID: ${{ secrets.AWS_AMPLIFY_APP_ID }}
+        run: |
+          test -n "$AWS_AMPLIFY_APP_ID"
+          job_id="$(aws amplify start-job --app-id "$AWS_AMPLIFY_APP_ID" --branch-name "$AWS_AMPLIFY_BRANCH" --job-type RELEASE --job-reason "GitHub Actions commit $GITHUB_SHA" --query 'jobSummary.jobId' --output text)"
+          echo "job_id=$job_id" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Amplify
+        env:
+          AWS_AMPLIFY_APP_ID: ${{ secrets.AWS_AMPLIFY_APP_ID }}
+          JOB_ID: ${{ steps.release.outputs.job_id }}
+        run: |
+          for attempt in $(seq 1 60); do
+            status="$(aws amplify get-job --app-id "$AWS_AMPLIFY_APP_ID" --branch-name "$AWS_AMPLIFY_BRANCH" --job-id "$JOB_ID" --query 'job.summary.status' --output text)"
+            echo "Amplify status: $status"
+            case "$status" in
+              SUCCEED) exit 0 ;;
+              FAILED|CANCELLED) exit 1 ;;
+            esac
+            sleep 15

@@ -184,6 +184,22 @@ export default function SiteHeader() {
       <nav className={`mobile-nav${mobileOpen ? " open" : ""}`} aria-label={t("header.mobileNav")}>
         {navItems.map(([key, href]) => <Link href={href} key={key} onClick={closeMenus}>{t(key)}</Link>)}
         <Link href="/login?return_to=/account" onClick={closeMenus}>{t("nav.login")}</Link>
+        <div className="mobile-lang" aria-label={t("header.chooseLanguage")}>
+          {languages.map((language) => (
+            <button
+              key={language.code}
+              type="button"
+              aria-pressed={locale === language.code}
+              className={locale === language.code ? "active" : ""}
+              onClick={() => {
+                setLocale(language.code as Locale);
+                closeMenus();
+              }}
+            >
+              {language.tag}
+            </button>
+          ))}
+        </div>
         <Link className="btn btn-primary mobile-cta" href="/configure" onClick={closeMenus}>{t("nav.cta")}</Link>
       </nav>
     </header>
