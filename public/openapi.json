@@ -1,0 +1,72 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "StratVerity Quick Audit API",
+    "version": "1.0.0",
+    "description": "Static indicative diagnostic for algorithmic trading strategy code (Pine Script, Python, MQL5). Never executes submitted code. For the full deterministic audit, use the backend FastAPI endpoint /v1/audit/quick-check."
+  },
+  "servers": [
+    { "url": "https://www.stratverity.com" }
+  ],
+  "paths": {
+    "/api/v1/quick-audit": {
+      "post": {
+        "operationId": "quickAudit",
+        "summary": "Static quick diagnostic of strategy source",
+        "description": "Receives a source excerpt and returns indicative indicators (look-ahead, repainting, overfitting, fees). Static analysis only — the code is never executed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source": { "type": "string", "description": "Strategy source code excerpt." },
+                  "language": {
+                    "type": "string",
+                    "enum": ["pinescript", "python", "mql5"],
+                    "description": "Source language."
+                  }
+                },
+                "required": ["source"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Diagnostic result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "language": { "type": "string" },
+                    "length": { "type": "integer" },
+                    "indicators": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "key": { "type": "string" },
+                          "label": { "type": "string" },
+                          "severity": { "type": "string", "enum": ["info", "warning", "critical"] }
+                        }
+                      }
+                    },
+                    "summary": { "type": "string" },
+                    "disclaimer": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid or empty source" },
+          "413": { "description": "Request too large (max 64 KB)" },
+          "415": { "description": "Content-Type must be application/json" }
+        }
+      }
+    }
+  }
+}

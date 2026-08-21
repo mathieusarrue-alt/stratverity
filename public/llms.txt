@@ -1,0 +1,52 @@
+# StratVerity
+
+> StratVerity is the independent auditing and verification engine for algorithmic
+> trading strategies, backtests, Pine Script, and MQL5. It recomputes declared
+> metrics, detects look-ahead bias and overfitting, and seals verified results
+> with a tamper-evident badge.
+
+## What StratVerity does
+
+- Recomputes backtest metrics (Profit Factor, net return, drawdown) from raw
+  trades rather than trusting declared numbers.
+- Detects look-ahead bias, repainting, missing fees, and single-window
+  overfitting through out-of-sample (70/30 walk-forward) replay.
+- Issues a "Verified by StratVerity" badge tied to an immutable SHA256 hash of
+  the audited code.
+
+## Public tools
+
+- `/free-tools` — free diagnostics hub (health check, robustness score, fee calculator).
+- `/health-check` — free static code health check for Pine Script, MQL4/5 and Python (0–100 score).
+- `/crash-test` — one-time €49 audit with a certified robustness report.
+- `/score` — free backtest credibility score (look-ahead, missing fees, overfitting).
+- `/fees` — fee & slippage reality check for declared returns.
+- `/learn` — methodology articles (look-ahead bias, overfitting, walk-forward, survivorship).
+
+## Key metrics & concepts
+
+- **Look-ahead bias detection** — flags decisions made with information not yet
+  available at bar close.
+- **Overfitting Score** — measures single-window curve-fitting vs. out-of-sample stability.
+- **Robustness Certification** — a 0–100 score weighting out-of-sample stability
+  (40%), net Profit Factor (30%), drawdown (20%) and trade count (10%). A green
+  badge is issued only when the engine verdict is CERTIFIED (score ≥ 70).
+
+## Getting an audit
+
+1. Open `/configure`, select strategy, assets and timeframes.
+2. Upload Pine Script, Python, or MQL source (read-only, never executed with real orders).
+3. Pay once (€14.99 Essential / €39 Standard) — no subscription.
+4. Receive a sealed report after human review.
+
+## Verification
+
+- Public registry: `/gallery`
+- Certificate page: `/cert/{audit_id}`
+- Badge endpoint: `/v1/badge/{audit_id}.svg` (backend API)
+
+## Contact
+
+- Site: https://www.stratverity.com
+- Email: support@stratverity.com
+- Operated by Prism Works.

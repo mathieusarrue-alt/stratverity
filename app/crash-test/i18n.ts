@@ -73,6 +73,8 @@ const dict: Record<Locale, Record<string, string>> = {
     "ct.verify.missingHash": "Paramètre 'hash' manquant dans l'URL.",
     "ct.verify.certBody": "Ce badge atteste qu'un audit statique a été exécuté sur la version exacte identifiée par l'audit_hash ci-dessus. Il ne constitue ni un conseil en investissement ni une promesse de rendement.",
     "ct.verify.cta": "Auditer ma stratégie →",
+    "ct.verify.badgeExportTitle": "Badge embarquable",
+    "ct.verify.badgeExportBody": "Intégrez ce badge sur votre vitrine (TradingView, Telegram, GitHub). Chaque affichage renvoie vers votre certificat vérifié.",
   },
   en: {
     "ct.eyebrow": "Crash-Test Express",
@@ -142,6 +144,8 @@ const dict: Record<Locale, Record<string, string>> = {
     "ct.verify.missingHash": "Missing 'hash' parameter in the URL.",
     "ct.verify.certBody": "This badge certifies that a static audit was performed on the exact version identified by the audit_hash above. It does not constitute investment advice or a promise of return.",
     "ct.verify.cta": "Audit my strategy →",
+    "ct.verify.badgeExportTitle": "Embeddable badge",
+    "ct.verify.badgeExportBody": "Embed this badge on your storefront (TradingView, Telegram, GitHub). Every display links back to your verified certificate.",
   },
 };
 

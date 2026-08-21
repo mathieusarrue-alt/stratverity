@@ -118,6 +118,13 @@ const softwareApplicationJsonLd = {
         "Full audit with recomputed metrics, bias detection, and evidence-linked report.",
     },
   ],
+  featureList: [
+    "Look-ahead bias detection",
+    "Overfitting & curve-fitting audit",
+    "Robustness Score computation",
+    "Verified Backtest Badge (SVG, SHA256-sealed)",
+    "Pine Script, MQL4/5 and Python strategy verification",
+  ],
   aggregateRating: undefined,
 };
 
@@ -348,6 +355,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Information" />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <script
           type="application/ld+json"
