@@ -86,7 +86,8 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
     </div>
 
     <div class="proof-card tilt" data-reveal data-delay="1" data-tilt id="heroCard">
-      <div class="glare"></div>
+          <img class="hero-banner" src="/banner-hero.webp" alt="StratVerity — audit et certification d'algorithmes de trading" width="664" height="371" loading="eager" decoding="async" />
+          <div class="glare"></div>
       <span class="gain-flag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7M9 7h8v8"/></svg>+41% net</span>
       <div class="pc-head">
         <div class="pc-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2.2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-i18n="card.title">Verification report</span></div>
