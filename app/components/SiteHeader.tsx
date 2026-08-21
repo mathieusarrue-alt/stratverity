@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { languages } from "../i18n/messages";
 import type { Locale } from "../i18n/messages";
 import { useI18n } from "../i18n/I18nProvider";
+import { BrandMark } from "./BrandMark";
 
 type Theme = "light" | "dark";
 
@@ -124,10 +124,9 @@ export default function SiteHeader() {
       <div className="progress" style={{ width: `${progress}%` }} />
       <div className="container head-row">
         <Link className="brand" href="/" aria-label="StratVerity, accueil" onClick={closeMenus}>
-          {/* Les deux variantes évitent un flash de logo lors du changement de thème. */}
-          <Image className="brand-lock lt" src="/brand-light.svg" alt="StratVerity" width={279} height={84} priority />
-          <Image className="brand-lock dk" src="/brand-dark.svg" alt="" aria-hidden="true" width={279} height={84} priority />
-        </Link>
+                  <BrandMark className="brand-mark" />
+                  <span className="brand-word">Strat<span>Verity</span></span>
+                </Link>
         <nav className="nav" aria-label={t("header.primaryNav")}>
           {navItems.map(([key, href]) => (
             <Link href={href} key={key}>{t(key)}</Link>

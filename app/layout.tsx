@@ -90,10 +90,10 @@ const organizationJsonLd = {
   image: `${PUBLIC_SITE_URL}/og.png`,
   description:
     "Independent strategy audit and validation for Pine Script and Python trading systems.",
-  email: "support@stratverity.com",
+  email: "contact@stratverity.com",
   brand: {
     "@type": "Brand",
-    name: "BacktestProof",
+    name: "StratVerity",
   },
   sameAs: [],
 };
@@ -118,7 +118,7 @@ const websiteJsonLd = {
 const softwareApplicationJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "BacktestProof by StratVerity",
+  name: "StratVerity",
   applicationCategory: "FinanceApplication",
   operatingSystem: "Web",
   url: PUBLIC_SITE_URL,
@@ -193,9 +193,9 @@ const faqJsonLd = {
 const professionalServiceJsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  name: "StratVerity — BacktestProof",
+  name: "StratVerity",
   url: PUBLIC_SITE_URL,
-  email: "support@stratverity.com",
+  email: "contact@stratverity.com",
   image: `${PUBLIC_SITE_URL}/og.png`,
   priceRange: "€14.99 - €149",
   areaServed: "Worldwide",

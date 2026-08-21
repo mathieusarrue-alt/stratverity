@@ -110,9 +110,9 @@ test("landing uses the centralized 12-language design source", async () => {
   }
   assert.match(landing, /landingMarkup/);
   assert.match(landing, /prefers-reduced-motion/);
-  assert.match(header, /brand-light\.svg/);
-  assert.match(header, /brand-dark\.svg/);
-  assert.match(header, /\/configure/);
+  assert.match(header, /BrandMark/);
+    assert.match(header, /Strat<span>Verity<\/span>/);
+    assert.match(header, /\/configure/);
   assert.match(header, /\/login\?return_to=\/account/);
   assert.match(layout, /<AmbientExperience \/>/);
   assert.match(ambient, /id="fx"/);
@@ -177,7 +177,7 @@ test("contact details are public and pricing Contact Us opens them", async () =>
   const [contact, landing] = await Promise.all([render("/contact"), render("/")]);
   assert.equal(contact.status, 200);
   const contactHtml = await contact.text();
-  assert.match(contactHtml, /support@stratverity\.com/i);
+  assert.match(contactHtml, /contact@stratverity\.com/i);
   assert.match(contactHtml, /Prism Works/i);
   assert.doesNotMatch(contactHtml, /Mathieu Sarrue|903 756 575 00028|11 avenue du Huit Mai/i);
   const landingHtml = await landing.text();
