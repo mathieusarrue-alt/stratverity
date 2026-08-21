@@ -125,7 +125,7 @@ export default function SiteHeader() {
       <div className="container head-row">
         <Link className="brand" href="/" aria-label="StratVerity, accueil" onClick={closeMenus}>
           {/* Les deux variantes évitent un flash de logo lors du changement de thème. */}
-          <Image className="brand-lock lt" src="/brand-light.svg" alt="StratVerity — BacktestProof" width={279} height={84} priority />
+          <Image className="brand-lock lt" src="/brand-light.svg" alt="StratVerity" width={279} height={84} priority />
           <Image className="brand-lock dk" src="/brand-dark.svg" alt="" aria-hidden="true" width={279} height={84} priority />
         </Link>
         <nav className="nav" aria-label={t("header.primaryNav")}>
