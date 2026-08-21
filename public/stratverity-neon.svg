@@ -1,0 +1,24 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00FF9D" />
+      <stop offset="100%" stop-color="#00D47F" />
+    </linearGradient>
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <g id="neon-spark">
+      <path d="M0 -13 C1.6 -4.3 4.3 -1.6 13 0 C4.3 1.6 1.6 4.3 0 13 C-1.6 4.3 -4.3 1.6 -13 0 C-4.3 -1.6 -1.6 -4.3 0 -13 Z" fill="#00FF9D" filter="url(#neonGlow)"/>
+      <circle cx="0" cy="0" r="3.2" fill="#FFFFFF" />
+    </g>
+  </defs>
+  <rect width="128" height="128" rx="26" fill="#06110d" />
+  <g transform="translate(14, 14)">
+    <path d="M 50 8 C 75 8 88 16 88 16 V 48 C 88 72 50 88 50 88 C 50 88 12 72 12 48 V 16 C 12 16 25 8 50 8 Z"
+          fill="#00FF9D" fill-opacity="0.08" stroke="#00FF9D" stroke-width="2.5" stroke-opacity="0.9"/>
+    <path d="M 24 46 L 40 62 L 75 24"
+          fill="none" stroke="url(#neonGrad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" filter="url(#neonGlow)"/>
+    <use href="#neon-spark" x="72" y="18" transform="scale(1.25)" />
+  </g>
+</svg>

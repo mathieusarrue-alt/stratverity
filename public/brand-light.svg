@@ -1,10 +1,10 @@
 <svg width="700" height="200" viewBox="0 0 700 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="greenGradLight" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#047857"/><stop offset="50%" stop-color="#059669"/><stop offset="100%" stop-color="#10B981"/></linearGradient>
+    <linearGradient id="greenGradLight" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00945a"/><stop offset="50%" stop-color="#00b36e"/><stop offset="100%" stop-color="#00C07A"/></linearGradient>
     <filter id="glowLight" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
-    <g id="spark-light"><path d="M0 -12 C1.5 -4 4 -1.5 12 0 C4 1.5 1.5 4 0 12 C-1.5 4 -4 1.5 -12 0 C-4 -1.5 -1.5 -4 0 -12 Z" fill="#10B981" filter="url(#glowLight)"/><circle cx="0" cy="0" r="3" fill="#FFFFFF"/></g>
+    <g id="spark-light"><path d="M0 -12 C1.5 -4 4 -1.5 12 0 C4 1.5 1.5 4 0 12 C-1.5 4 -4 1.5 -12 0 C-4 -1.5 -1.5 -4 0 -12 Z" fill="#00C07A" filter="url(#glowLight)"/><circle cx="0" cy="0" r="3" fill="#FFFFFF"/></g>
   </defs>
-  <g transform="translate(30, 42)"><path d="M 50 8 C 75 8 88 16 88 16 V 48 C 88 72 50 88 50 88 C 50 88 12 72 12 48 V 16 C 12 16 25 8 50 8 Z" fill="#E6F4EA" fill-opacity="0.7" stroke="#10B981" stroke-width="2.5" stroke-opacity="0.6"/><path d="M 24 46 L 40 62 L 75 24" fill="none" stroke="url(#greenGradLight)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><use href="#spark-light" x="72" y="18" transform="scale(1.1)"/></g>
+  <g transform="translate(30, 42)"><path d="M 50 8 C 75 8 88 16 88 16 V 48 C 88 72 50 88 50 88 C 50 88 12 72 12 48 V 16 C 12 16 25 8 50 8 Z" fill="#E6F4EA" fill-opacity="0.7" stroke="#00C07A" stroke-width="2.5" stroke-opacity="0.6"/><path d="M 24 46 L 40 62 L 75 24" fill="none" stroke="url(#greenGradLight)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><use href="#spark-light" x="72" y="18" transform="scale(1.1)"/></g>
   <g transform="translate(155, 102)"><text font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="54" letter-spacing="-1.5"><tspan fill="#111827">Strat</tspan><tspan fill="url(#greenGradLight)">Verıty</tspan></text><use href="#spark-light" x="242" y="-42" transform="scale(0.9)"/></g>
   <text x="157" y="138" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20" fill="#6B7280" letter-spacing="4">BACKTESTPROOF</text>
 </svg>
