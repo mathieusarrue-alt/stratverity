@@ -14,6 +14,7 @@ import SiteHeader from "./components/SiteHeader";
 import AmbientExperience from "./components/AmbientExperience";
 import ChatwootWidget from "./components/ChatwootWidget";
 import BackToTop from "./components/BackToTop";
+import { I18nErrorBoundary } from "./components/I18nErrorBoundary";
 import { I18nProvider } from "./i18n/I18nProvider";
 import "./globals.css";
 
@@ -414,10 +415,12 @@ export default function RootLayout({
         className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}
       >
         <AmbientExperience />
-        <I18nProvider>
-          <SiteHeader />
-          <div className="app-content">{children}</div>
-        </I18nProvider>
+        <I18nErrorBoundary>
+          <I18nProvider>
+            <SiteHeader />
+            <div className="app-content">{children}</div>
+          </I18nProvider>
+        </I18nErrorBoundary>
         <ChatwootWidget />
         <BackToTop />
       </body>

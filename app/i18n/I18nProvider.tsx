@@ -26,16 +26,12 @@ const availableLocales = new Set<string>(languages.map(({ code }) => code));
 
 function detectBrowserLocale(): Locale | null {
   if (typeof navigator === "undefined") return null;
-  const rawLocales: string[] =
-    navigator.languages && navigator.languages.length
-      ? Array.from(navigator.languages)
-      : [navigator.language];
-  for (const raw of rawLocales) {
-    if (!raw) continue;
-    const base = raw.split("-")[0].toLowerCase();
-    if (availableLocales.has(base)) return base as Locale;
-  }
-  return null;
+  // L'API navigateur standard est `navigator.language` (singulier).
+  // `navigator.languages` n'existe pas en JS natif — on lit la langue unique.
+  const raw = navigator.language;
+  if (!raw) return null;
+  const base = raw.split("-")[0].toLowerCase();
+  return availableLocales.has(base) ? (base as Locale) : null;
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
