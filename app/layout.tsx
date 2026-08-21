@@ -27,12 +27,35 @@ const mono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-const display = Fraunces({ variable: "--font-display-loaded", subsets: ["latin"] });
-const notoArabic = Noto_Sans_Arabic({ variable: "--font-noto-arabic", subsets: ["arabic"], weight: "variable" });
-const notoBengali = Noto_Sans_Bengali({ variable: "--font-noto-bengali", subsets: ["bengali"], weight: "variable" });
-const notoDevanagari = Noto_Sans_Devanagari({ variable: "--font-noto-devanagari", subsets: ["devanagari"], weight: "variable" });
-const notoSc = Noto_Sans_SC({ variable: "--font-noto-sc", preload: false, weight: "variable" });
-const notoKr = Noto_Sans_KR({ variable: "--font-noto-kr", preload: false, weight: "variable" });
+const display = Fraunces({
+  variable: "--font-display-loaded",
+  subsets: ["latin"],
+});
+const notoArabic = Noto_Sans_Arabic({
+  variable: "--font-noto-arabic",
+  subsets: ["arabic"],
+  weight: "variable",
+});
+const notoBengali = Noto_Sans_Bengali({
+  variable: "--font-noto-bengali",
+  subsets: ["bengali"],
+  weight: "variable",
+});
+const notoDevanagari = Noto_Sans_Devanagari({
+  variable: "--font-noto-devanagari",
+  subsets: ["devanagari"],
+  weight: "variable",
+});
+const notoSc = Noto_Sans_SC({
+  variable: "--font-noto-sc",
+  preload: false,
+  weight: "variable",
+});
+const notoKr = Noto_Sans_KR({
+  variable: "--font-noto-kr",
+  preload: false,
+  weight: "variable",
+});
 
 const themeBootstrap = `(() => {
   let theme = "light";
@@ -106,8 +129,7 @@ const softwareApplicationJsonLd = {
       name: "Essential audit",
       price: "14.99",
       priceCurrency: "EUR",
-      description:
-        "Single strategy, single asset, single timeframe audit.",
+      description: "Single strategy, single asset, single timeframe audit.",
     },
     {
       "@type": "Offer",
@@ -182,10 +204,14 @@ const professionalServiceJsonLd = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
-  const forwardedHost = requestHeaders.get("x-forwarded-host")?.split(",")[0].trim();
+  const forwardedHost = requestHeaders
+    .get("x-forwarded-host")
+    ?.split(",")[0]
+    .trim();
   const directHost = requestHeaders.get("host")?.trim();
   const candidateHost = forwardedHost || directHost || "www.stratverity.com";
-  const normalizedHost = candidateHost === "stratverity.com" ? "www.stratverity.com" : candidateHost;
+  const normalizedHost =
+    candidateHost === "stratverity.com" ? "www.stratverity.com" : candidateHost;
   const host = /^[a-zA-Z0-9.-]+(?::\d{1,5})?$/.test(normalizedHost)
     ? normalizedHost
     : "www.stratverity.com";
@@ -205,8 +231,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(baseUrl),
     title: {
-      default:
-        "StratVerity — Trading Strategy Audit & Free Health Check",
+      default: "StratVerity — Trading Strategy Audit & Free Health Check",
       template: "%s | StratVerity",
     },
     description:
@@ -217,7 +242,8 @@ export async function generateMetadata(): Promise<Metadata> {
       url: new URL("/", baseUrl),
       siteName: "StratVerity",
       title: "StratVerity — Trading Strategy Audit & Free Health Check",
-      description: "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      description:
+        "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
       images: [
         {
           url: new URL("/og.png", baseUrl),
@@ -230,7 +256,8 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "StratVerity — Trading Strategy Audit & Free Health Check",
-      description: "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      description:
+        "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
       images: [new URL("/og.png", baseUrl)],
     },
     keywords: [
@@ -275,24 +302,18 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: "/",
       languages: {
         "x-default": "/",
-        "en-US": "/",
-        "fr-FR": "/",
-        "zh-CN": "/",
-        "hi-IN": "/",
-        "es-ES": "/",
-        "ar-SA": "/",
-        "pt-PT": "/",
-        "bn-BD": "/",
-        "de-DE": "/",
-        "it-IT": "/",
-        "ru-RU": "/",
-        "ko-KR": "/",
+        en: "/",
       },
     },
     icons: {
-      icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-      shortcut: "/favicon.svg",
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
     },
+    manifest: "/site.webmanifest",
     themeColor: [
       { media: "(prefers-color-scheme: light)", color: "#f1eee5" },
       { media: "(prefers-color-scheme: dark)", color: "#07110d" },
@@ -355,11 +376,18 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
-        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Information" />
+        <link
+          rel="alternate"
+          type="text/plain"
+          href="/llms.txt"
+          title="LLM Information"
+        />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
         />
         <script
           type="application/ld+json"
@@ -367,7 +395,9 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(softwareApplicationJsonLd),
+          }}
         />
         <script
           type="application/ld+json"
@@ -375,10 +405,14 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceJsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(professionalServiceJsonLd),
+          }}
         />
       </head>
-      <body className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}>
+      <body
+        className={`${inter.variable} ${mono.variable} ${display.variable} ${notoArabic.variable} ${notoBengali.variable} ${notoDevanagari.variable} ${notoSc.variable} ${notoKr.variable}`}
+      >
         <AmbientExperience />
         <I18nProvider>
           <SiteHeader />
