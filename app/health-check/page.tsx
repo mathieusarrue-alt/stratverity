@@ -48,6 +48,7 @@ export default function HealthCheckPage() {
   const [state, setState] = useState<ScanState>("idle");
   const [result, setResult] = useState<HealthCheckResponse | null>(null);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const isReady = code.trim().length >= 10;
   const scoreLabel = (score: number) => {
@@ -113,9 +114,91 @@ export default function HealthCheckPage() {
     }
   };
 
+  const shareText = (score: number) =>
+    t("health.shareText", { score });
+
+  const shareUrl = (score: number) =>
+    `https://www.stratverity.com/health-check?score=${score}`;
+
+  const copyLink = async (score: number) => {
+    try {
+      await navigator.clipboard.writeText(shareUrl(score));
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard indisponible (permissions) : ignorer silencieusement.
+    }
+  };
+
+  const openShare = (network: "whatsapp" | "x", score: number) => {
+    const text = encodeURIComponent(shareText(score));
+    const url = encodeURIComponent(shareUrl(score));
+    const target =
+      network === "whatsapp"
+        ? `https://wa.me/?text=${text}%20${url}`
+        : `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+    window.open(target, "_blank", "noopener,noreferrer");
+  };
+
+  const downloadCard = (score: number) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 630;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const dark = "#06110d";
+    const accent = scoreColor(score);
+    ctx.fillStyle = dark;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#eaf3ee";
+    ctx.font = "bold 64px Inter, system-ui, sans-serif";
+    ctx.fillText("StratVerity · Health-Check", 64, 120);
+    ctx.font = "bold 200px Inter, system-ui, sans-serif";
+    ctx.fillStyle = accent;
+    ctx.fillText(`${score}/100`, 64, 360);
+    ctx.fillStyle = "#7b8f86";
+    ctx.font = "34px Inter, system-ui, sans-serif";
+    ctx.fillText("Teste ta stratégie gratuitement — stratverity.com", 64, 520);
+    const link = document.createElement("a");
+    link.download = `stratverity-health-check-${score}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
+  const shareStyle: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 16,
+  };
+  const shareBtn: React.CSSProperties = {
+    padding: "10px 16px",
+    borderRadius: 10,
+    border: "1px solid var(--line-2)",
+    background: "var(--surface-2)",
+    color: "var(--ink-1)",
+    cursor: "pointer",
+    fontWeight: 600,
+    fontSize: 14,
+  };
+
   return (
     <main className={styles.main}>
       <div className={styles.hero}>
+        <Link
+          href="/free-tools"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            color: "var(--ink-2)",
+            textDecoration: "none",
+            fontSize: 14,
+            marginBottom: 16,
+          }}
+        >
+          {t("health.back")}
+        </Link>
         <span className={styles.eyebrow}>{t("freeTools.eyebrow")}</span>
         <h1 className={styles.title}>{t("health.title")}</h1>
         <p className={styles.subtitle}>{t("health.subtitle")}</p>
@@ -212,15 +295,58 @@ export default function HealthCheckPage() {
               </p>
             </div>
           </div>
+
           {result.warnings.length > 0 && (
             <div className={styles.warnings}>
               <h2>{t("health.attention")}</h2>
               <ul>{result.warnings.map((warning, index) => <li key={`${warning}-${index}`}>{warning}</li>)}</ul>
             </div>
           )}
+
           <div className={styles.cta}>
             <p>{result.cta}</p>
             <Link href="/configure" className="btn btn-primary">{t("health.auditCta")}</Link>
+          </div>
+
+          {/* Boucle virale : partage du score */}
+          <div style={{ marginTop: 28 }}>
+            <h2 style={{ fontSize: 20, margin: "0 0 6px" }}>{t("health.shareTitle")}</h2>
+            <p style={{ color: "var(--ink-2)", fontSize: 14, margin: "0 0 4px" }}>
+              {t("health.shareHint")}
+            </p>
+            <div style={shareStyle}>
+              <button type="button" style={shareBtn} onClick={() => openShare("whatsapp", result.score)}>
+                WhatsApp
+              </button>
+              <button type="button" style={shareBtn} onClick={() => openShare("x", result.score)}>
+                X (Twitter)
+              </button>
+              <button type="button" style={shareBtn} onClick={() => copyLink(result.score)}>
+                {copied ? t("health.shareCopied") : t("health.shareCopy")}
+              </button>
+              <button type="button" style={shareBtn} onClick={() => downloadCard(result.score)}>
+                {t("health.shareDownload")}
+              </button>
+            </div>
+          </div>
+
+          {/* Différenciation Health-Check vs Robustness Score */}
+          <div
+            style={{
+              marginTop: 28,
+              padding: "18px 20px",
+              borderRadius: 14,
+              border: "1px solid var(--line-2)",
+              background: "var(--surface-2)",
+            }}
+          >
+            <h2 style={{ fontSize: 18, margin: "0 0 8px" }}>{t("health.diffTitle")}</h2>
+            <p style={{ color: "var(--ink-2)", fontSize: 14, lineHeight: 1.6, margin: "0 0 12px" }}>
+              {t("health.diffBody")}
+            </p>
+            <Link href="/score" className="btn btn-ghost" style={{ justifyContent: "center" }}>
+              {t("health.diffCta")}
+            </Link>
           </div>
         </div>
       )}

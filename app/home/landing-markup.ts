@@ -341,6 +341,11 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <p data-i18n="pr.p">Launch pricing. Indicative rates — final details are shown in the configurator.</p>
     </div>
     <div class="price-grid">
+      <div class="price" data-reveal><div class="name" data-i18n="pr.free.n">Free Tools</div><div class="amt" data-i18n="pr.free.amt">€0<small> / forever</small></div>
+        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.1">Code Health-Check (Pine, Python, MQL)</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Algorithm Crash-Test</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Indicative robustness score</span></li></ul>
+        <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Start for free</a></div>
       <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€14.99<small> / strategy</small></div>
         <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Net-of-fees recompute</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">1 asset · 1 timeframe</span></li>
@@ -356,6 +361,11 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Real-time scan (soon)</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Priority access</span></li></ul>
         <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Contact us</a></div>
+      <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">15%<small> / sale</small></div>
+        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.1">Sell your audited strategies</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.2">Sealed exact delivery (SHA256)</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.3">Buy certified bots</span></li></ul>
+        <a class="btn btn-primary" data-magnetic href="/marketplace" style="width:100%;justify-content:center" data-i18n="pr.mp.cta">Browse the marketplace</a></div>
     </div>
   </div>
 </section>
