@@ -106,7 +106,9 @@ p{margin:0} a{color:inherit;text-decoration:none}
   .aura,.cursor-glow{display:none!important}}
 
 /* HERO */
-.hero{position:relative;padding:70px 0 44px;overflow:hidden}
+.hero{position:relative;padding:70px 0 44px;overflow:hidden;background:
+  radial-gradient(circle at 18% 8%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 42%),
+  url('/banner-hero.webp') no-repeat 114% 50%/auto 92%}
 #fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .hero .container{z-index:2}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
@@ -310,6 +312,7 @@ p{margin:0} a{color:inherit;text-decoration:none}
 
 @media (max-width:1000px){
   .hero-grid{grid-template-columns:1fr;gap:34px}
+  .hero{background-image:none}
   .feature-grid,.div-grid,.price-grid{grid-template-columns:1fr 1fr}
   .steps{grid-template-columns:1fr 1fr}
   .compare,.matrix-wrap{grid-template-columns:1fr}
