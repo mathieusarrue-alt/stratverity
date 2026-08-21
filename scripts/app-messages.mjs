@@ -131,6 +131,7 @@ const phaseThreeRows = [
   ["freeTools.feesBody", "Mesurez l'impact des commissions, du spread et du slippage sur la performance nette.", "Measure how commissions, spread and slippage affect net performance."],
   ["freeTools.open", "Ouvrir l'outil", "Open tool"],
   ["freeTools.notice", "Ces outils fournissent un diagnostic indicatif, pas une certification ni un conseil d'investissement.", "These tools provide an indicative diagnostic, not certification or investment advice."],
+  ["freeTools.compareTitle", "Le coût de la faille", "The cost of the fault"],
   ["health.title", "Health-Check gratuit", "Free Health Check"],
   ["health.subtitle", "Scannez votre code de stratégie en quelques secondes : score de santé, erreurs probables et recommandations.", "Scan your strategy code in seconds for a health score, likely issues and recommendations."],
   ["health.scan", "Scanner mon code", "Scan my code"],

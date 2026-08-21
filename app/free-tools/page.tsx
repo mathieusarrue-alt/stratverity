@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useI18n } from "../i18n/I18nProvider";
 import styles from "./free-tools.module.css";
+import ToolCostComparison from "@/components/ui/ToolCostComparison";
+import { comparisonData } from "@/config/comparison-data";
 
 const tools = [
   { icon: "</>", title: "freeTools.healthTitle", body: "freeTools.healthBody", href: "/health-check" },
@@ -28,6 +30,10 @@ export default function FreeToolsPage() {
             <span>{t("freeTools.open")} →</span>
           </Link>
         ))}
+      </section>
+      <section className={styles.compare} aria-label="Coût de la faille">
+        <h2>{t("freeTools.compareTitle")}</h2>
+        <ToolCostComparison item={comparisonData[0]} />
       </section>
       <p className={styles.notice}>{t("freeTools.notice")}</p>
     </main>
