@@ -155,11 +155,8 @@ test("public login offers verified email and real Supabase OAuth actions", async
   assert.match(html, /SIGN IN OR CREATE ACCOUNT/i);
   assert.match(html, /Send my sign-in link/i);
   assert.match(html, /Email address/i);
-  assert.match(html, /Google/i);
-  assert.match(html, /GitHub/i);
-  assert.match(html, /Microsoft/i);
   assert.doesNotMatch(html, /via ChatGPT|Continue with ChatGPT/i);
-  assert.match(html, /Provider is being activated/i);
+  assert.match(html, /Disabled buttons activate automatically/i);
   assert.match(html, /No access to your conversations/i);
 
   const source = await readFile(
@@ -170,6 +167,11 @@ test("public login offers verified email and real Supabase OAuth actions", async
   assert.match(source, /signInWithOtp/);
   assert.match(source, /shouldCreateUser:\s*true/);
   assert.match(source, /\/auth\/callback/);
+  // Les providers sont déclarés et filtrés par activation (pas grisés au SSR) :
+  // ils n'apparaissent dans le HTML que si Supabase les active.
+  assert.match(source, /"google"/);
+  assert.match(source, /"github"/);
+  assert.match(source, /\.filter\(\(\{ value \}\) => enabled\.has\(value\)\)/);
 });
 test("contact details are public and pricing Contact Us opens them", async () => {
   const [contact, landing] = await Promise.all([render("/contact"), render("/")]);

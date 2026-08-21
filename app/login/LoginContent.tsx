@@ -127,26 +127,22 @@ export default function LoginContent({
               </form>
               <p className={styles.providerCaption}>{t("login.chooseMethod")}</p>
               <div className={styles.providers} aria-label={t("login.methods")}>
-                {providers.map(({ label, value }) => {
-                  const isEnabled = enabled.has(value);
-                  return (
+                {providers
+                  .filter(({ value }) => enabled.has(value))
+                  .map(({ label, value }) => (
                     <button
                       className={styles.providerLink}
                       type="button"
-                      disabled={!isEnabled || busy !== null}
+                      disabled={busy !== null}
                       onClick={() => signInWithProvider(value)}
                       key={value}
-                      title={!isEnabled ? t("login.providerUnavailable") : undefined}
-                      aria-label={isEnabled
-                        ? t("login.providerAria", { provider: label })
-                        : t("login.providerUnavailableAria", { provider: label })}
+                      aria-label={t("login.providerAria", { provider: label })}
                     >
                       <ProviderIcon provider={label} /><span>{label}</span>
                     </button>
-                  );
-                })}
+                  ))}
               </div>
-              {enabledProviders.length < providers.length ? <p className={styles.providerNote}>{t("login.providerNote")}</p> : null}
+              {enabledProviders.length === 0 ? <p className={styles.providerNote}>{t("login.providerNote")}</p> : null}
               {authErrorMessage ? <p className={styles.authMessage} role="alert">{authErrorMessage}</p> : null}
               {message ? <p className={styles.authMessage} role="status" aria-live="polite">{message}</p> : null}
             </>

@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
-import type { FormEvent } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import type { CSSProperties, FormEvent } from "react";
 import Link from "next/link";
-import { MessageCircle, X, Link2, Download, AlertTriangle, BadgeCheck, ShieldCheck } from "lucide-react";
 import { useI18n } from "../i18n/I18nProvider";
 import styles from "./health-check.module.css";
 
@@ -29,31 +28,97 @@ const LANGUAGE_LABELS: Record<Language, string> = {
 
 const subscribeToUrl = () => () => {};
 
-function scoreColor(score: number): string {
-  if (score >= 75) return "#00FF9D";
-  if (score >= 50) return "#F59E0B";
-  return "#EF4444";
+function scoreTone(score: number): "good" | "mid" | "bad" {
+  if (score >= 80) return "good";
+  if (score >= 50) return "mid";
+  return "bad";
 }
 
-/** Jauge circulaire animée néon (SVG) — remplace le conic-gradient statique. */
-function AnimatedGauge({ score }: { score: number }) {
-  const color = scoreColor(score);
-  const r = 52;
-  const c = 2 * Math.PI * r;
-  const filled = c * (score / 100);
+function scoreColor(score: number): string {
+  if (score >= 80) return "#00FF9D";
+  if (score >= 50) return "#F5A524";
+  return "#FF4D6A";
+}
+
+function IconAlert({ className }: { className?: string }) {
   return (
-    <svg width="140" height="140" viewBox="0 0 120 120" className={styles.gaugeSvg} role="img" aria-label={`Score ${score}/100`}>
-      <circle cx="60" cy="60" r={r} fill="none" stroke="var(--surface-2)" strokeWidth="11" />
-      <circle
-        cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="11"
-        strokeLinecap="round" strokeDasharray={`${filled} ${c - filled}`}
-        transform="rotate(-90 60 60)"
-        style={{ filter: `drop-shadow(0 0 8px ${color})` }}
-        className={styles.gaugeArc}
-      />
-      <text x="60" y="57" textAnchor="middle" fill={color} fontSize="34" fontWeight="900" fontFamily="var(--mono)">{score}</text>
-      <text x="60" y="76" textAnchor="middle" fill="var(--ink-3)" fontSize="12" fontFamily="var(--mono)">/ 100</text>
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
     </svg>
+  );
+}
+
+function IconX({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function IconWhatsApp({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
+    </svg>
+  );
+}
+
+function IconCopy({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+    </svg>
+  );
+}
+
+function IconDownload({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" x2="12" y1="15" y2="3" />
+    </svg>
+  );
+}
+
+function ScoreGauge({ score }: { score: number }) {
+  const [display, setDisplay] = useState(score);
+  const color = scoreColor(score);
+  const tone = scoreTone(score);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return; // display reste à sa valeur initiale (score), pas d'animation.
+    let frame = 0;
+    const start = performance.now();
+    const duration = 1100;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.round(score * eased));
+      if (p < 1) frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [score]);
+
+  const gaugeStyle = {
+    ["--gauge-color" as string]: color,
+    ["--gauge-pct" as string]: `${display}%`,
+  } as CSSProperties;
+
+  return (
+    <div className={`${styles.gauge} ${styles[`gauge_${tone}`]}`} style={gaugeStyle} role="img" aria-label={`Score ${score}/100`}>
+      <div className={styles.gaugeRing} />
+      <div className={styles.gaugeCore}>
+        <span className={styles.scoreValue}>{display}</span>
+        <span className={styles.scoreMax}>/100</span>
+      </div>
+    </div>
   );
 }
 
@@ -75,10 +140,17 @@ export default function HealthCheckPage() {
 
   const isReady = code.trim().length >= 10;
   const scoreLabel = (score: number) => {
-    if (score >= 75) return t("health.excellent");
+    if (score >= 80) return t("health.excellent");
     if (score >= 50) return t("health.average");
     return t("health.review");
   };
+
+  const pineBadge = useMemo(() => {
+    if (language === "pinescript") return "Verified Pine Script · v5 ready";
+    if (language === "python") return "Python strategy scan";
+    if (language === "mql5") return "MQL5 Expert scan";
+    return "MQL4 Expert scan";
+  }, [language]);
 
   const requestEmailVerification = async () => {
     const session = await fetch("/api/eligibility/session", {
@@ -124,8 +196,7 @@ export default function HealthCheckPage() {
         if (resp.status === 403) throw new Error(t("health.notEligible"));
         const body = await resp.json().catch(() => ({}));
         throw new Error(
-          (body as { detail?: { message?: string } }).detail?.message ??
-            `HTTP ${resp.status}`,
+          (body as { detail?: { message?: string } }).detail?.message ?? `HTTP ${resp.status}`,
         );
       }
       const data: HealthCheckResponse = await resp.json();
@@ -147,7 +218,7 @@ export default function HealthCheckPage() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard indisponible : ignorer silencieusement.
+      /* clipboard blocked */
     }
   };
 
@@ -167,59 +238,33 @@ export default function HealthCheckPage() {
     canvas.height = 630;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const dark = "#06110d";
-    const accent = scoreColor(score);
-    ctx.fillStyle = dark;
+    ctx.fillStyle = "#06110d";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#eaf3ee";
-    ctx.font = "bold 64px Inter, system-ui, sans-serif";
-    ctx.fillText("StratVerity · Health-Check", 64, 120);
+    ctx.font = "bold 56px Inter, system-ui, sans-serif";
+    ctx.fillText("StratVerity · Health-Check", 64, 110);
     ctx.font = "bold 200px Inter, system-ui, sans-serif";
-    ctx.fillStyle = accent;
+    ctx.fillStyle = scoreColor(score);
     ctx.fillText(`${score}/100`, 64, 360);
     ctx.fillStyle = "#7b8f86";
-    ctx.font = "34px Inter, system-ui, sans-serif";
-    ctx.fillText("Teste ta stratégie gratuitement — stratverity.com", 64, 520);
+    ctx.font = "32px Inter, system-ui, sans-serif";
+    ctx.fillText("Free strategy scan — stratverity.com", 64, 520);
     const link = document.createElement("a");
     link.download = `stratverity-health-check-${score}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
 
-  const shareBtn: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 7,
-    padding: "10px 16px",
-    borderRadius: 10,
-    border: "1px solid var(--line-2)",
-    background: "var(--surface-2)",
-    color: "var(--ink-1)",
-    cursor: "pointer",
-    fontWeight: 600,
-    fontSize: 14,
-  };
-
   return (
     <main className={styles.main}>
       <div className={styles.hero}>
-        <Link
-          href="/free-tools"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            color: "var(--ink-2)",
-            textDecoration: "none",
-            fontSize: 14,
-            marginBottom: 16,
-          }}
-        >
-          {t("health.back")}
+        <Link href="/free-tools" className={styles.backLink}>
+          ← {t("health.back")}
         </Link>
         <span className={styles.eyebrow}>{t("freeTools.eyebrow")}</span>
         <h1 className={styles.title}>{t("health.title")}</h1>
         <p className={styles.subtitle}>{t("health.subtitle")}</p>
+        <span className={styles.langBadge}>{pineBadge}</span>
       </div>
 
       {FREE_ELIGIBILITY_ENABLED && !emailVerified && (
@@ -228,7 +273,6 @@ export default function HealthCheckPage() {
           <input
             id="health-email"
             type="email"
-            autoComplete="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder={t("health.emailPlaceholder")}
@@ -252,7 +296,9 @@ export default function HealthCheckPage() {
             aria-label="Source language"
           >
             {Object.entries(LANGUAGE_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>{label}</option>
+              <option key={key} value={key}>
+                {label}
+              </option>
             ))}
           </select>
           <button
@@ -288,29 +334,23 @@ export default function HealthCheckPage() {
         </div>
       )}
       {state === "error" && (
-        <div className={styles.errorBox} role="alert"><p>{error}</p></div>
+        <div className={styles.errorBox} role="alert">
+          <p>{error}</p>
+        </div>
       )}
+
       {state === "done" && result && (
         <div className={styles.result}>
           <div className={styles.scoreSection}>
-            <AnimatedGauge score={result.score} />
+            <ScoreGauge score={result.score} />
             <div className={styles.verdictBlock}>
-              <div className={styles.badges}>
-                {result.score >= 75 ? (
-                  <>
-                    <span className={styles.achievement}><BadgeCheck size={15} /> Verified PineScript v5</span>
-                    <span className={styles.achievement}><ShieldCheck size={15} /> Certified Clean Code</span>
-                  </>
-                ) : (
-                  <span className={styles.achievementWarn}><AlertTriangle size={15} /> Review recommended</span>
-                )}
-              </div>
               <span
                 className={styles.verdictBadge}
                 style={{ borderColor: scoreColor(result.score), color: scoreColor(result.score) }}
               >
                 {result.verdict}
               </span>
+              <span className={styles.verifiedChip}>✓ {pineBadge}</span>
               <p className={styles.scoreLabel}>
                 {t("health.score", { score: result.score, label: scoreLabel(result.score) })}
               </p>
@@ -322,8 +362,10 @@ export default function HealthCheckPage() {
               <h2>{t("health.attention")}</h2>
               <ul>
                 {result.warnings.map((warning, index) => (
-                  <li key={`${warning}-${index}`}>
-                    <AlertTriangle size={16} />
+                  <li key={`${warning}-${index}`} className={styles.warningCard}>
+                    <span className={styles.warningIcon}>
+                      <IconAlert />
+                    </span>
                     <span>{warning}</span>
                   </li>
                 ))}
@@ -333,52 +375,44 @@ export default function HealthCheckPage() {
 
           <div className={styles.cta}>
             <p>{result.cta}</p>
-            <Link href="/configure" className="btn btn-primary btn-glow">{t("health.auditCta")}</Link>
+            <Link href="/configure" className={styles.ctaButton}>
+              {t("health.auditCta")}
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
 
-          {/* Boucle virale : partage du score */}
-          <div style={{ marginTop: 28 }}>
-            <h2 style={{ fontSize: 20, margin: "0 0 6px" }}>{t("health.shareTitle")}</h2>
-            <p style={{ color: "var(--ink-2)", fontSize: 14, margin: "0 0 4px" }}>
-              {t("health.shareHint")}
-            </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16 }}>
-              <button type="button" style={shareBtn} onClick={() => openShare("whatsapp", result.score)}>
-                <MessageCircle size={16} /> WhatsApp
+          <div className={styles.shareBlock}>
+            <h2>{t("health.shareTitle")}</h2>
+            <p>{t("health.shareHint")}</p>
+            <div className={styles.shareRow}>
+              <button type="button" className={styles.shareBtn} onClick={() => openShare("whatsapp", result.score)}>
+                <IconWhatsApp /> WhatsApp
               </button>
-              <button type="button" style={shareBtn} onClick={() => openShare("x", result.score)}>
-                              <X size={16} /> X (Twitter)
-                            </button>
-              <button type="button" style={shareBtn} onClick={() => copyLink(result.score)}>
-                <Link2 size={16} /> {copied ? t("health.shareCopied") : t("health.shareCopy")}
+              <button type="button" className={styles.shareBtn} onClick={() => openShare("x", result.score)}>
+                <IconX /> X
               </button>
-              <button type="button" style={shareBtn} onClick={() => downloadCard(result.score)}>
-                <Download size={16} /> {t("health.shareDownload")}
+              <button type="button" className={styles.shareBtn} onClick={() => copyLink(result.score)}>
+                <IconCopy /> {copied ? t("health.shareCopied") : t("health.shareCopy")}
+              </button>
+              <button type="button" className={styles.shareBtn} onClick={() => downloadCard(result.score)}>
+                <IconDownload /> {t("health.shareDownload")}
               </button>
             </div>
           </div>
 
-          {/* Différenciation Health-Check vs Robustness Score */}
-          <div
-            style={{
-              marginTop: 28,
-              padding: "18px 20px",
-              borderRadius: 14,
-              border: "1px solid var(--line-2)",
-              background: "var(--surface-2)",
-            }}
-          >
-            <h2 style={{ fontSize: 18, margin: "0 0 8px" }}>{t("health.diffTitle")}</h2>
-            <p style={{ color: "var(--ink-2)", fontSize: 14, lineHeight: 1.6, margin: "0 0 12px" }}>
-              {t("health.diffBody")}
-            </p>
-            <Link href="/score" className="btn btn-ghost" style={{ justifyContent: "center" }}>
+          <div className={styles.diffCard}>
+            <h2>{t("health.diffTitle")}</h2>
+            <p>{t("health.diffBody")}</p>
+            <Link href="/score" className={styles.diffLink}>
               {t("health.diffCta")}
             </Link>
           </div>
         </div>
       )}
-      <div className={styles.footer}><p>{t("health.privacy")}</p></div>
+
+      <div className={styles.footer}>
+        <p>{t("health.privacy")}</p>
+      </div>
     </main>
   );
 }

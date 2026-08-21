@@ -8,19 +8,26 @@ import { useI18n } from "../i18n/I18nProvider";
 
 export default function LandingPage() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const mountedRef = useRef(false);
   const { locale } = useI18n();
 
+  // 1) Marquer le mount — les effets DOM ne tournent qu'une seule fois.
+  useEffect(() => {
+    mountedRef.current = true;
+  }, []);
+
+  // 2) Ré-application des traductions SEULE (ne touche ni matrix, ni ticker,
+  //    ni les listeners). N'écrit jamais innerHTML si la valeur est absente.
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    if (!root || !mountedRef.current) return;
     const localized = messages[locale] as Partial<Record<MessageKey, string>>;
     root.querySelectorAll<HTMLElement>("[data-i18n]").forEach((element) => {
       const key = element.dataset.i18n as MessageKey | undefined;
-      if (key) {
-        // Fallback : locale active → anglais → français → conserve le texte rendu.
-        const value = localized[key] ?? messages.en[key] ?? messages.fr[key];
-        element.innerHTML = value ?? element.innerHTML;
-      }
+      if (!key) return;
+      // Fallback : locale active → anglais → français.
+      const value = localized[key] ?? messages.en[key] ?? messages.fr[key];
+      if (value != null) element.innerHTML = value;
     });
   }, [locale]);
 

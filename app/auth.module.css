@@ -95,6 +95,9 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: clamp(26px, 4vw, 42px);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .card h2,
@@ -105,6 +108,7 @@
   margin: 16px 0 10px;
   overflow-wrap: anywhere;
   word-break: break-word;
+  max-width: 100%;
 }
 
 .card > p,
@@ -112,6 +116,9 @@
   color: var(--ink-2);
   font-size: 14px;
   line-height: 1.65;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .primaryAction {
