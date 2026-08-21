@@ -132,6 +132,10 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <h2 data-i18n="prod.h2">Claimed performance, put to the evidence.</h2>
       <p data-i18n="prod.p">Every metric is recomputed on your data — fees and slippage included — then tied to the evidence behind it.</p>
     </div>
+    <div class="lc-chart" id="productChart" data-reveal>
+      <div class="lc-chart-head"><span>BTCUSDT · 4H</span><span class="lc-chart-tag">Recalculé net</span></div>
+      <div class="lc-chart-body" id="productChartBody"></div>
+    </div>
     <div class="feature-grid">
       <article class="card" data-tilt data-reveal><div class="viz"><svg viewBox="0 0 200 90" width="100%" height="90" preserveAspectRatio="none">
         <rect class="grow" x="14" y="52" width="26" height="34" rx="4" fill="var(--amber-500)"/>

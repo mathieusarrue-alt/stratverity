@@ -186,5 +186,77 @@ export default function LandingPage() {
     };
   }, []);
 
+  // --- Graphique bougies lightweight-charts (section #product) ---
+  // Import dynamique : la lib reste côté client, aucun impact SSR. Dessine de
+  // vraies bougies (candlesticks) + courbe d'équité, thème sombre StratVerity.
+  useEffect(() => {
+    const body = rootRef.current?.querySelector<HTMLElement>("#productChartBody");
+    if (!body) return;
+
+    let disposed = false;
+    let chart: { remove: () => void } | null = null;
+
+    (async () => {
+      const { createChart, CandlestickSeries, LineSeries } = await import(
+        "lightweight-charts"
+      );
+
+      const candles = Array.from({ length: 60 }, (_, i) => {
+        const base = 42000 + i * 55;
+        const open = base + Math.sin(i * 0.7) * 320;
+        const close = base + 140 + Math.cos(i * 0.5) * 300;
+        const high = Math.max(open, close) + 180 + (i % 7) * 40;
+        const low = Math.min(open, close) - 180 - (i % 5) * 30;
+        return { time: (2021 + i) as never, open, high, low, close };
+      });
+
+      if (disposed) return;
+
+      chart = createChart(body, {
+        width: body.clientWidth || 600,
+        height: 280,
+        layout: {
+          background: { type: "solid", color: "transparent" },
+          textColor: "#7b8f86",
+          fontFamily: "Inter, system-ui, sans-serif",
+        },
+        grid: {
+          vertLines: { color: "rgba(125,155,145,0.08)" },
+          horzLines: { color: "rgba(125,155,145,0.08)" },
+        },
+        rightPriceScale: { borderColor: "rgba(125,155,145,0.2)" },
+        timeScale: { borderColor: "rgba(125,155,145,0.2)", timeVisible: false },
+      });
+
+      const candleSeries = chart.addSeries(CandlestickSeries, {
+        upColor: "#00FF9D",
+        downColor: "#EF4444",
+        borderUpColor: "#00FF9D",
+        borderDownColor: "#EF4444",
+        wickUpColor: "#00FF9D",
+        wickDownColor: "#EF4444",
+      });
+      candleSeries.setData(candles);
+
+      const equity = candles.map((c, i) => ({
+        time: c.time,
+        value: 10000 + i * 120 + Math.sin(i * 0.4) * 600,
+      }));
+      const lineSeries = chart.addSeries(LineSeries, {
+        color: "#22D3EE",
+        lineWidth: 2,
+        priceScaleId: "left",
+      });
+      lineSeries.setData(equity);
+
+      chart.timeScale().fitContent();
+    })();
+
+    return () => {
+      disposed = true;
+      chart?.remove();
+    };
+  }, []);
+
   return <div ref={rootRef} dangerouslySetInnerHTML={{ __html: landingMarkup }} />;
 }

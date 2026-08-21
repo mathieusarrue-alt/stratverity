@@ -25,6 +25,13 @@
 .errorBox { margin-top: 20px; padding: 16px 18px; border: 1px solid color-mix(in oklab, var(--danger-500) 50%, var(--line)); border-radius: 14px; background: color-mix(in oklab, var(--danger-500) 10%, var(--surface)); color: var(--danger-500); }
 .result { margin-top: 24px; padding: clamp(20px, 4vw, 34px); }
 .scoreSection { display: flex; gap: 24px; align-items: center; }
+.gaugeSvg { flex: 0 0 auto; }
+.gaugeArc { transition: stroke-dasharray 0.9s var(--ease); animation: gauge-in 0.9s var(--ease); }
+@keyframes gauge-in { from { stroke-dasharray: 0 326.7; } }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.achievement, .achievementWarn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; font: 600 11.5px/1 var(--mono); }
+.achievement { border: 1px solid color-mix(in oklab, #00FF9D 40%, var(--line-2)); color: #00C07A; background: color-mix(in oklab, #00FF9D 8%, var(--surface-2)); }
+.achievementWarn { border: 1px solid color-mix(in oklab, var(--warning-500) 45%, var(--line-2)); color: var(--warning-500); background: color-mix(in oklab, var(--warning-500) 8%, var(--surface-2)); }
 .gauge { position: relative; display: grid; place-items: center; width: 124px; height: 124px; flex: 0 0 auto; border-radius: 50%; }
 .gauge::before { content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--surface); }
 .scoreValue { position: relative; font: 750 2.2rem/1 var(--mono); }
@@ -34,7 +41,8 @@
 .warnings { margin-top: 26px; }
 .warnings h2 { margin-bottom: 12px; font-size: 1.15rem; }
 .warnings ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.warnings li { padding: 12px 14px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--surface-2); color: var(--ink-2); }
+.warnings li { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border: 1px solid color-mix(in oklab, var(--warning-500) 35%, var(--line-2)); border-left: 3px solid var(--warning-500); border-radius: 12px; background: color-mix(in oklab, var(--warning-500) 6%, var(--surface-2)); color: var(--ink-1); }
+.warnings li svg { color: var(--warning-500); flex: 0 0 auto; margin-top: 2px; }
 .cta { margin-top: 26px; padding: 20px; border: 1px solid color-mix(in oklab, var(--brand) 25%, var(--line)); border-radius: 16px; background: color-mix(in oklab, var(--brand) 7%, var(--surface)); text-align: center; }
 .cta p { margin: 0 0 14px; color: var(--ink-2); }
 .footer { margin-top: 22px; text-align: center; color: var(--ink-3); font-size: .86rem; }

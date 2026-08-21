@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
+import { MessageCircle, X, Link2, Download, AlertTriangle, BadgeCheck, ShieldCheck } from "lucide-react";
 import { useI18n } from "../i18n/I18nProvider";
 import styles from "./health-check.module.css";
 
@@ -29,9 +30,31 @@ const LANGUAGE_LABELS: Record<Language, string> = {
 const subscribeToUrl = () => () => {};
 
 function scoreColor(score: number): string {
-  if (score >= 75) return "var(--success-500)";
-  if (score >= 50) return "var(--warning-500)";
-  return "var(--danger-500)";
+  if (score >= 75) return "#00FF9D";
+  if (score >= 50) return "#F59E0B";
+  return "#EF4444";
+}
+
+/** Jauge circulaire animée néon (SVG) — remplace le conic-gradient statique. */
+function AnimatedGauge({ score }: { score: number }) {
+  const color = scoreColor(score);
+  const r = 52;
+  const c = 2 * Math.PI * r;
+  const filled = c * (score / 100);
+  return (
+    <svg width="140" height="140" viewBox="0 0 120 120" className={styles.gaugeSvg} role="img" aria-label={`Score ${score}/100`}>
+      <circle cx="60" cy="60" r={r} fill="none" stroke="var(--surface-2)" strokeWidth="11" />
+      <circle
+        cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="11"
+        strokeLinecap="round" strokeDasharray={`${filled} ${c - filled}`}
+        transform="rotate(-90 60 60)"
+        style={{ filter: `drop-shadow(0 0 8px ${color})` }}
+        className={styles.gaugeArc}
+      />
+      <text x="60" y="57" textAnchor="middle" fill={color} fontSize="34" fontWeight="900" fontFamily="var(--mono)">{score}</text>
+      <text x="60" y="76" textAnchor="middle" fill="var(--ink-3)" fontSize="12" fontFamily="var(--mono)">/ 100</text>
+    </svg>
+  );
 }
 
 export default function HealthCheckPage() {
@@ -114,9 +137,7 @@ export default function HealthCheckPage() {
     }
   };
 
-  const shareText = (score: number) =>
-    t("health.shareText", { score });
-
+  const shareText = (score: number) => t("health.shareText", { score });
   const shareUrl = (score: number) =>
     `https://www.stratverity.com/health-check?score=${score}`;
 
@@ -126,7 +147,7 @@ export default function HealthCheckPage() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard indisponible (permissions) : ignorer silencieusement.
+      // Clipboard indisponible : ignorer silencieusement.
     }
   };
 
@@ -165,13 +186,10 @@ export default function HealthCheckPage() {
     link.click();
   };
 
-  const shareStyle: React.CSSProperties = {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 16,
-  };
   const shareBtn: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 7,
     padding: "10px 16px",
     borderRadius: 10,
     border: "1px solid var(--line-2)",
@@ -275,15 +293,18 @@ export default function HealthCheckPage() {
       {state === "done" && result && (
         <div className={styles.result}>
           <div className={styles.scoreSection}>
-            <div
-              className={styles.gauge}
-              style={{
-                background: `conic-gradient(${scoreColor(result.score)} ${result.score}%, var(--surface-2) ${result.score}%)`,
-              }}
-            >
-              <span className={styles.scoreValue}>{result.score}</span>
-            </div>
+            <AnimatedGauge score={result.score} />
             <div className={styles.verdictBlock}>
+              <div className={styles.badges}>
+                {result.score >= 75 ? (
+                  <>
+                    <span className={styles.achievement}><BadgeCheck size={15} /> Verified PineScript v5</span>
+                    <span className={styles.achievement}><ShieldCheck size={15} /> Certified Clean Code</span>
+                  </>
+                ) : (
+                  <span className={styles.achievementWarn}><AlertTriangle size={15} /> Review recommended</span>
+                )}
+              </div>
               <span
                 className={styles.verdictBadge}
                 style={{ borderColor: scoreColor(result.score), color: scoreColor(result.score) }}
@@ -299,13 +320,20 @@ export default function HealthCheckPage() {
           {result.warnings.length > 0 && (
             <div className={styles.warnings}>
               <h2>{t("health.attention")}</h2>
-              <ul>{result.warnings.map((warning, index) => <li key={`${warning}-${index}`}>{warning}</li>)}</ul>
+              <ul>
+                {result.warnings.map((warning, index) => (
+                  <li key={`${warning}-${index}`}>
+                    <AlertTriangle size={16} />
+                    <span>{warning}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
           <div className={styles.cta}>
             <p>{result.cta}</p>
-            <Link href="/configure" className="btn btn-primary">{t("health.auditCta")}</Link>
+            <Link href="/configure" className="btn btn-primary btn-glow">{t("health.auditCta")}</Link>
           </div>
 
           {/* Boucle virale : partage du score */}
@@ -314,18 +342,18 @@ export default function HealthCheckPage() {
             <p style={{ color: "var(--ink-2)", fontSize: 14, margin: "0 0 4px" }}>
               {t("health.shareHint")}
             </p>
-            <div style={shareStyle}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16 }}>
               <button type="button" style={shareBtn} onClick={() => openShare("whatsapp", result.score)}>
-                WhatsApp
+                <MessageCircle size={16} /> WhatsApp
               </button>
               <button type="button" style={shareBtn} onClick={() => openShare("x", result.score)}>
-                X (Twitter)
-              </button>
+                              <X size={16} /> X (Twitter)
+                            </button>
               <button type="button" style={shareBtn} onClick={() => copyLink(result.score)}>
-                {copied ? t("health.shareCopied") : t("health.shareCopy")}
+                <Link2 size={16} /> {copied ? t("health.shareCopied") : t("health.shareCopy")}
               </button>
               <button type="button" style={shareBtn} onClick={() => downloadCard(result.score)}>
-                {t("health.shareDownload")}
+                <Download size={16} /> {t("health.shareDownload")}
               </button>
             </div>
           </div>
