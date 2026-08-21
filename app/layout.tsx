@@ -199,12 +199,33 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(baseUrl),
     title: {
       default:
-        "StratVerity — Trading Strategy Audit, Free Health Check & Auto-Pilot",
+        "StratVerity — Trading Strategy Audit & Free Health Check",
       template: "%s | StratVerity",
     },
     description:
-      "Audit and certify algorithmic trading strategies with a free code health check, look-ahead and repainting detection, Pine Script, Python, MQL and StrategyQuant X analysis, plus optional 24/7 Auto-Pilot execution.",
+      "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
     applicationName: "StratVerity",
+    openGraph: {
+      type: "website",
+      url: new URL("/", baseUrl),
+      siteName: "StratVerity",
+      title: "StratVerity — Trading Strategy Audit & Free Health Check",
+      description: "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      images: [
+        {
+          url: new URL("/og.png", baseUrl),
+          width: 1200,
+          height: 630,
+          alt: "StratVerity — Trading Strategy Audit & Free Health Check",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "StratVerity — Trading Strategy Audit & Free Health Check",
+      description: "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      images: [new URL("/og.png", baseUrl)],
+    },
     keywords: [
       "backtest audit",
       "backtest verification service",
