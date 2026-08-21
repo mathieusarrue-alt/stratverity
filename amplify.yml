@@ -4,7 +4,7 @@ frontend:
     preBuild:
       commands:
         - nvm install 22.13.0 && nvm use 22.13.0 && node --version
-        - npm ci
+        - npm install
     build:
       commands:
         - export NITRO_PRESET=aws_amplify
