@@ -14,7 +14,7 @@ export default function ContactPage() {
         <p className={styles.lead}>{t("contact.lead")}</p>
         <section data-premium-surface>
           <h2>{t("contact.emailTitle")}</h2>
-          <p><a href="mailto:support@stratverity.com">support@stratverity.com</a></p>
+          <p><a href="mailto:contact@stratverity.com">contact@stratverity.com</a></p>
           <p>{t("contact.emailNote")}</p>
         </section>
         <section data-premium-surface>

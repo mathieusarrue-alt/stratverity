@@ -29,15 +29,13 @@ test("server-renders the StratVerity product page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /BacktestProof by StratVerity/i);
-  assert.match(html, /StratVerity/i);
-  assert.match(html, /BACKTESTPROOF/);
-  assert.match(html, /Illustrative example/i);
-  assert.match(html, /Essential audit/i);
-  assert.match(html, /€14\.99/i);
-  assert.match(html, /href="\/configure"/);
-  assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
-});
+    assert.match(html, /StratVerity/i);
+    assert.match(html, /Illustrative example/i);
+    assert.match(html, /Essential audit/i);
+    assert.match(html, /€14\.99/i);
+    assert.match(html, /href="\/configure"/);
+    assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
+  });
 
 test("every frontend response receives the shared security policy", async () => {
   for (const path of ["/", "/configure", "/login", "/legal/privacy", "/cert/demo-audit"]) {

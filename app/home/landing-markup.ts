@@ -28,12 +28,8 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   </g>
 
   <!-- TEXTE : StratVerity -->
-  <g transform="translate(155, 102)"><text font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="54" letter-spacing="-1.5"><tspan fill="#111827">Strat</tspan><tspan fill="url(#greenGradLight)">Verıty</tspan></text><use href="#spark-light" x="242" y="-42" transform="scale(0.9)" /></g>
-  
-  <!-- SOUS-TITRE : BACKTESTPROOF -->
-  <text x="157" y="138" font-family="'Inter', 'Montserrat', sans-serif" font-weight="700" font-size="20" fill="#6B7280" letter-spacing="4">
-    BACKTESTPROOF
-  </text></symbol><symbol id="lockDark"><defs>
+  <g transform="translate(155, 120)"><text font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="54" letter-spacing="-1.5"><tspan fill="#111827">Strat</tspan><tspan fill="url(#greenGradLight)">Verıty</tspan></text><use href="#spark-light" x="242" y="-42" transform="scale(0.9)" /></g>
+  </symbol><symbol id="lockDark"><defs>
     <linearGradient id="greenGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#10B981" />
       <stop offset="100%" stop-color="#34D399" />
@@ -60,12 +56,8 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   </g>
 
   <!-- TEXTE : StratVerity -->
-  <g transform="translate(155, 102)"><text font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="54" letter-spacing="-1.5"><tspan fill="#FFFFFF">Strat</tspan><tspan fill="url(#greenGradDark)">Verıty</tspan></text><use href="#spark-dark" x="242" y="-42" transform="scale(0.9)" /></g>
-  
-  <!-- SOUS-TITRE : BACKTESTPROOF -->
-  <text x="157" y="138" font-family="'Inter', 'Montserrat', sans-serif" font-weight="700" font-size="20" fill="#9CA3AF" letter-spacing="4">
-    BACKTESTPROOF
-  </text></symbol></svg>
+  <g transform="translate(155, 120)"><text font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="54" letter-spacing="-1.5"><tspan fill="#FFFFFF">Strat</tspan><tspan fill="url(#greenGradDark)">Verıty</tspan></text><use href="#spark-dark" x="242" y="-42" transform="scale(0.9)" /></g>
+  </symbol></svg>
 
 <main id="main">
 <section class="hero" id="top">
@@ -362,7 +354,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Real-time scan (soon)</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Priority access</span></li></ul>
         <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Contact us</a></div>
-      <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">15%<small> / sale</small></div>
+      <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">Free access</div>
         <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.1">Sell your audited strategies</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.2">Sealed exact delivery (SHA256)</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.3">Buy certified bots</span></li></ul>
@@ -406,13 +398,13 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   <div class="container">
     <div class="foot-grid">
       <div>
-        <a class="brand" href="#top" style="margin-bottom:12px"><svg class="brand-lock lt" viewBox="22 18 496 150" role="img" aria-label="StratVerity — BacktestProof"><use href="#lockLight"/></svg><svg class="brand-lock dk" viewBox="22 18 496 150" aria-hidden="true"><use href="#lockDark"/></svg></a>
+        <a class="brand" href="#top" style="margin-bottom:12px"><svg class="brand-lock lt" viewBox="22 18 496 150" role="img" aria-label="StratVerity"><use href="#lockLight"/></svg><svg class="brand-lock dk" viewBox="22 18 496 150" aria-hidden="true"><use href="#lockDark"/></svg></a>
         <p class="disclaimer" data-i18n="foot.disc">StratVerity provides an independent audit of trading strategies. Figures shown are illustrative and constitute neither investment advice nor a performance guarantee. Trading involves a risk of loss.</p>
       </div>
       <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/free-tools" data-i18n="nav.freeTools">Free Tools</a><a href="/crash-test" data-i18n="nav.crashTest">Crash-Test</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Verify a certificate</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
       <div><h5 data-i18n="foot.res">Research</h5><a href="#research" data-i18n="nav.research">Research</a><a href="#method" data-i18n="foot.meth">Methodology</a><a href="/faq">FAQ</a></div>
       <div><h5 data-i18n="foot.legal">Legal</h5><a href="/contact" data-i18n="common.contact">Contact</a><a href="/legal/terms" data-i18n="foot.terms">Terms</a><a href="/legal/privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal/risk" data-i18n="foot.risk">Risk notice</a><a href="/legal/refunds" data-i18n="foot.refund">Refunds</a></div>
     </div>
-    <div class="legal"><span>© <span id="year"></span> StratVerity · BacktestProof</span><span class="mono" data-i18n="foot.build">launch-v0.2 · design preview</span></div>
+    <div class="legal"><span>© <span id="year"></span> StratVerity</span></div>
   </div>
 </footer>`;

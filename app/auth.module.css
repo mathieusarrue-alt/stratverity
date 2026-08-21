@@ -103,6 +103,8 @@
   font-size: clamp(30px, 4vw, 43px);
   letter-spacing: -.04em;
   margin: 16px 0 10px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .card > p,

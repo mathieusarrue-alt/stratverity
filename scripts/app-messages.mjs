@@ -196,7 +196,7 @@ const englishFallbackRows = [
   ["pr.free.3", "Score de robustesse indicatif", "Indicative robustness score"],
   ["pr.free.cta", "Commencer gratuitement", "Start for free"],
   ["pr.mp.n", "Marketplace", "Marketplace"],
-  ["pr.mp.amt", "15%<small> / vente</small>", "15%<small> / sale</small>"],
+  ["pr.mp.amt", "Accès libre", "Free access"],
   ["pr.mp.1", "Vendre vos stratégies auditées", "Sell your audited strategies"],
   ["pr.mp.2", "Livraison exacte scellée (SHA256)", "Sealed exact delivery (SHA256)"],
   ["pr.mp.3", "Acheter des bots certifiés", "Buy certified bots"],
