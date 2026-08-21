@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "../crash-test.module.css";
 import { useCT } from "../i18n";
+import BadgeExportCard from "@/components/ui/BadgeExportCard";
 
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
@@ -215,94 +216,13 @@ export default function CrashTestVerifyPage() {
           <p style={{ color: "var(--ink-2)", fontSize: 14, margin: "0 0 12px" }}>
             {t("ct.verify.badgeExportBody")}
           </p>
-          {/* Aperçu du badge */}
-          {/* eslint-disable-next-line @next/next/no-img-element -- badge SVG embarquable (non optimisé, volontairement <img> pour le copy-paste HTML du vendeur) */}
-          <img
-            src={`/api/badge/${report.audit_hash}?score=${report.robustness_score}&label=Verified%20by%20StratVerity`}
-            alt="Badge Verified by StratVerity"
-            width={280}
-            height={70}
-            style={{ display: "block", marginBottom: 16 }}
-          />
-          <ExportBadge
-            auditHash={report.audit_hash}
+          <BadgeExportCard
+            auditId={report.audit_hash}
             score={report.robustness_score}
+            status={report.robustness_score >= 70 ? "certified" : "failed"}
           />
         </div>
       </article>
     </main>
-  );
-}
-
-function ExportBadge({ auditHash, score }: { auditHash: string; score: number }) {
-  const badgeUrl = `https://www.stratverity.com/api/badge/${auditHash}?score=${score}&label=Verified%20by%20StratVerity`;
-  const verifyUrl = `https://www.stratverity.com/crash-test/verify?hash=${auditHash}`;
-  const htmlSnippet = `<a href="${verifyUrl}"><img src="${badgeUrl}" alt="Verified by StratVerity ${score}/100" width="280" height="70" /></a>`;
-  const markdownSnippet = `[![Verified by StratVerity ${score}/100](${badgeUrl})](${verifyUrl})`;
-
-  const copy = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      /* clipboard indisponible : ignorer */
-    }
-  };
-
-  const btnStyle: React.CSSProperties = {
-    padding: "8px 14px",
-    borderRadius: 8,
-    border: "1px solid var(--line-2)",
-    background: "var(--surface-2)",
-    color: "var(--ink-1)",
-    cursor: "pointer",
-    fontSize: 13,
-    fontWeight: 600,
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div>
-        <div style={{ fontSize: 12, color: "var(--ink-3)", marginBottom: 4 }}>
-          HTML (vitrine)
-        </div>
-        <pre
-          style={{
-            background: "var(--surface-2)",
-            padding: 10,
-            borderRadius: 8,
-            fontSize: 12,
-            overflowX: "auto",
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-all",
-          }}
-        >
-          <code>{htmlSnippet}</code>
-        </pre>
-        <button type="button" style={btnStyle} onClick={() => copy(htmlSnippet)}>
-          Copier HTML
-        </button>
-      </div>
-      <div>
-        <div style={{ fontSize: 12, color: "var(--ink-3)", marginBottom: 4 }}>
-          Markdown (README GitHub)
-        </div>
-        <pre
-          style={{
-            background: "var(--surface-2)",
-            padding: 10,
-            borderRadius: 8,
-            fontSize: 12,
-            overflowX: "auto",
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-all",
-          }}
-        >
-          <code>{markdownSnippet}</code>
-        </pre>
-        <button type="button" style={btnStyle} onClick={() => copy(markdownSnippet)}>
-          Copier Markdown
-        </button>
-      </div>
-    </div>
   );
 }
