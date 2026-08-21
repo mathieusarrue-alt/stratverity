@@ -34,3 +34,21 @@
 - Recette commerciale non payante validée : preview Audit BASE à un contexte, création d'une session Stripe `cs_live_*`, URL exclusivement `checkout.stripe.com`, aucun débit exécuté.
 - Le projet Supabase configuré a été restauré après détection de son état inactif. L'authentification e-mail est activée.
 - Google, GitHub et Microsoft restent désactivés dans Supabase tant que leurs identifiants OAuth propres ne sont pas fournis ; l'interface les rend volontairement non cliquables dans cet état.
+
+## 2026-08-21 — Release 0.28.0 préparée
+
+- Phases Free Tools, Crash-Test et Marketplace consolidées derrière des flags
+  indépendants et fail-closed.
+- Health-Check : parcours e-mail vérifié et quota serveur prêt, sans activation
+  avant la recette SES production.
+- Crash-Test : code brut non conservé, Checkout signé rapproché et rapport
+  publié après webhook uniquement ; activation différée jusqu'à la recette.
+- Marketplace : identité Supabase revalidée côté backend, propriété et
+  consentement append-only, Stripe Connect, commission uniforme 15 %, artefact
+  exact et téléchargement temporaire à usage unique.
+- UI publique premium et espace vendeur authentifié ajoutés ; aucun faux produit
+  n'est présenté quand la Marketplace est fermée.
+- Quality gate local : lint, build et 24 tests frontend réussis ; 314 tests
+  backend réussis sous Python 3.12.
+- Le déploiement doit conserver les trois nouveaux produits désactivés jusqu'aux
+  portes SES, Stripe dédié, Connect/KYC et validation juridique documentées.

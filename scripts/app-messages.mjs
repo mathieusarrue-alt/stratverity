@@ -118,6 +118,40 @@ const rows = [
 
 // Operational and legal copy is kept in the same generated catalogue. English
 // is the conservative fallback until each legal translation receives native review.
+const phaseThreeRows = [
+  ["nav.freeTools", "Outils gratuits", "Free Tools"],
+  ["freeTools.eyebrow", "OUTILS GRATUITS", "FREE TOOLS"],
+  ["freeTools.title", "Testez avant de payer.", "Test before you pay."],
+  ["freeTools.lead", "Trois diagnostics rapides pour comprendre les faiblesses de votre stratégie avant un audit complet.", "Three quick diagnostics to understand your strategy's weaknesses before a full audit."],
+  ["freeTools.healthTitle", "Health-Check du code", "Code Health Check"],
+  ["freeTools.healthBody", "Analyse statique gratuite de Pine Script, Python et MQL : score, alertes et erreurs structurelles.", "Free static analysis for Pine Script, Python and MQL: score, warnings and structural issues."],
+  ["freeTools.scoreTitle", "Score de robustesse", "Robustness Score"],
+  ["freeTools.scoreBody", "Évaluez la qualité méthodologique de votre backtest et les principaux risques de biais.", "Assess your backtest methodology and its main bias risks."],
+  ["freeTools.feesTitle", "Calculateur de frais", "Fee Calculator"],
+  ["freeTools.feesBody", "Mesurez l'impact des commissions, du spread et du slippage sur la performance nette.", "Measure how commissions, spread and slippage affect net performance."],
+  ["freeTools.open", "Ouvrir l'outil", "Open tool"],
+  ["freeTools.notice", "Ces outils fournissent un diagnostic indicatif, pas une certification ni un conseil d'investissement.", "These tools provide an indicative diagnostic, not certification or investment advice."],
+  ["health.title", "Health-Check gratuit", "Free Health Check"],
+  ["health.subtitle", "Scannez votre code de stratégie en quelques secondes : score de santé, erreurs probables et recommandations.", "Scan your strategy code in seconds for a health score, likely issues and recommendations."],
+  ["health.scan", "Scanner mon code", "Scan my code"],
+  ["health.email", "Adresse e-mail vérifiable", "Verifiable email address"],
+  ["health.emailPlaceholder", "vous@exemple.com", "you@example.com"],
+  ["health.verify", "Recevoir mon lien de vérification", "Send my verification link"],
+  ["health.verifySent", "Lien envoyé. Vérifiez votre boîte e-mail puis revenez avec le lien sécurisé.", "Link sent. Check your email and return with the secure link."],
+  ["health.emailVerified", "E-mail vérifié. Votre diagnostic gratuit unique est prêt.", "Email verified. Your one-time free diagnostic is ready."],
+  ["health.notEligible", "Ce diagnostic gratuit a déjà été utilisé ou nécessite une vérification supplémentaire.", "This free diagnostic was already used or requires additional verification."],
+  ["health.scanning", "Scan en cours…", "Scanning…"],
+  ["health.placeholder", "Collez votre code {language} ici…", "Paste your {language} code here…"],
+  ["health.analyzing", "Analyse en cours…", "Analysing…"],
+  ["health.unknownError", "Erreur inconnue", "Unknown error"],
+  ["health.attention", "Points d'attention", "Points to review"],
+  ["health.score", "Score de santé : {score}/100 — {label}", "Health score: {score}/100 — {label}"],
+  ["health.excellent", "Excellent", "Excellent"],
+  ["health.average", "Moyen", "Average"],
+  ["health.review", "À vérifier", "Needs review"],
+  ["health.auditCta", "Passer à l'audit vérifiable dès 14,99 € HT", "Continue to a verifiable audit from €14.99 excl. tax"],
+  ["health.privacy", "Votre code n'est pas stocké. Analyse statique uniquement — aucune exécution.", "Your code is not stored. Static analysis only — no execution."],
+];
 const englishFallbackRows = [
   ["common.contact", "Contact", "Contact"],
   ["header.primaryNav", "Navigation principale", "Primary navigation"],
@@ -310,7 +344,7 @@ const englishFallbackRows = [
   ["legal.risk.s3p", "Aucun worker, ordre ou scan n’est déclenché directement depuis un paiement. Toute activation sensible exige une qualification, une autorisation explicite et un périmètre exact stratégie × actif × unité de temps.", "No worker, order or scan is triggered directly by payment. Any sensitive activation requires qualification, explicit approval and an exact strategy × asset × timeframe scope."],
 ];
 
-for (const [key, fr, en] of englishFallbackRows) {
+for (const [key, fr, en] of [...phaseThreeRows, ...englishFallbackRows]) {
   rows.push([key, fr, en, ...Array(localeOrder.length - 2).fill(en)]);
 }
 

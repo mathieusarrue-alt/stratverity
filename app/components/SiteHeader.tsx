@@ -43,6 +43,7 @@ const navItems = [
   ["nav.method", "/#method"],
   ["nav.research", "/#research"],
   ["nav.pricing", "/#pricing"],
+  ["nav.freeTools", "/free-tools"],
   ["nav.faq", "/#faq"],
   ["common.contact", "/contact"],
 ] as const;

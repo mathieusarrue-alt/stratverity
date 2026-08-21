@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
+import { useI18n } from "../i18n/I18nProvider";
 import styles from "./health-check.module.css";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
-  "https://api.stratverity.com";
+const FREE_ELIGIBILITY_ENABLED =
+  process.env.NEXT_PUBLIC_FREE_ELIGIBILITY_ENABLED === "true";
 
 type Language = "pinescript" | "python" | "mql4" | "mql5";
 type ScanState = "idle" | "scanning" | "done" | "error";
-
 type HealthCheckResponse = {
   score: number;
   verdict: string;
@@ -27,55 +26,89 @@ const LANGUAGE_LABELS: Record<Language, string> = {
   mql5: "MQL5 (.mq5)",
 };
 
-function scoreColor(score: number): string {
-  if (score >= 75) return "#22c55e"; // vert
-  if (score >= 50) return "#f59e0b"; // orange
-  return "#ef4444"; // rouge
-}
+const subscribeToUrl = () => () => {};
 
-function scoreLabel(score: number): string {
-  if (score >= 75) return "Excellent";
-  if (score >= 50) return "Moyen";
-  return "À vérifier";
+function scoreColor(score: number): string {
+  if (score >= 75) return "var(--success-500)";
+  if (score >= 50) return "var(--warning-500)";
+  return "var(--danger-500)";
 }
 
 export default function HealthCheckPage() {
+  const { t } = useI18n();
   const [language, setLanguage] = useState<Language>("pinescript");
   const [code, setCode] = useState("");
+  const [email, setEmail] = useState("");
+  const emailVerified = useSyncExternalStore(
+    subscribeToUrl,
+    () => new URLSearchParams(window.location.search).get("email") === "verified",
+    () => false,
+  );
+  const [verificationSent, setVerificationSent] = useState(false);
   const [state, setState] = useState<ScanState>("idle");
   const [result, setResult] = useState<HealthCheckResponse | null>(null);
   const [error, setError] = useState("");
 
   const isReady = code.trim().length >= 10;
+  const scoreLabel = (score: number) => {
+    if (score >= 75) return t("health.excellent");
+    if (score >= 50) return t("health.average");
+    return t("health.review");
+  };
+
+  const requestEmailVerification = async () => {
+    const session = await fetch("/api/eligibility/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
+    if (!session.ok) throw new Error(t("health.unknownError"));
+    const verification = await fetch("/api/eligibility/email/request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    if (!verification.ok) throw new Error(t("health.unknownError"));
+    setVerificationSent(true);
+    setState("idle");
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isReady) return;
-
     setState("scanning");
     setError("");
     setResult(null);
 
+    if (FREE_ELIGIBILITY_ENABLED && !emailVerified) {
+      try {
+        await requestEmailVerification();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : t("health.unknownError"));
+        setState("error");
+      }
+      return;
+    }
+
     try {
-      const resp = await fetch(`${API_URL}/v1/health-check`, {
+      const resp = await fetch("/api/health-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, language }),
       });
-
       if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
+        if (resp.status === 403) throw new Error(t("health.notEligible"));
+        const body = await resp.json().catch(() => ({}));
         throw new Error(
-          (err as { detail?: { message?: string } }).detail?.message ??
-            `Erreur ${resp.status}`
+          (body as { detail?: { message?: string } }).detail?.message ??
+            `HTTP ${resp.status}`,
         );
       }
-
       const data: HealthCheckResponse = await resp.json();
       setResult(data);
       setState("done");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur inconnue");
+      setError(err instanceof Error ? err.message : t("health.unknownError"));
       setState("error");
     }
   };
@@ -83,39 +116,64 @@ export default function HealthCheckPage() {
   return (
     <main className={styles.main}>
       <div className={styles.hero}>
-        <h1 className={styles.title}>Health-Check Gratuit</h1>
-        <p className={styles.subtitle}>
-          Scannez votre code de stratégie en 3 secondes. Score de santé
-          instantané, détection des erreurs, et recommandations.
-        </p>
+        <span className={styles.eyebrow}>{t("freeTools.eyebrow")}</span>
+        <h1 className={styles.title}>{t("health.title")}</h1>
+        <p className={styles.subtitle}>{t("health.subtitle")}</p>
       </div>
+
+      {FREE_ELIGIBILITY_ENABLED && !emailVerified && (
+        <div className={styles.emailGate}>
+          <label htmlFor="health-email">{t("health.email")}</label>
+          <input
+            id="health-email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder={t("health.emailPlaceholder")}
+            required
+          />
+          {verificationSent ? <p role="status">{t("health.verifySent")}</p> : null}
+        </div>
+      )}
+      {FREE_ELIGIBILITY_ENABLED && emailVerified && (
+        <p className={styles.verifiedNotice} role="status">
+          {t("health.emailVerified")}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.toolbar}>
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value as Language)}
+            onChange={(event) => setLanguage(event.target.value as Language)}
             className={styles.select}
+            aria-label="Source language"
           >
             {Object.entries(LANGUAGE_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
+              <option key={key} value={key}>{label}</option>
             ))}
           </select>
           <button
             type="submit"
-            disabled={!isReady || state === "scanning"}
+            disabled={
+              !isReady ||
+              state === "scanning" ||
+              (FREE_ELIGIBILITY_ENABLED && !emailVerified && !email)
+            }
             className={styles.scanButton}
           >
-            {state === "scanning" ? "Scan en cours..." : "Scanner mon code"}
+            {state === "scanning"
+              ? t("health.scanning")
+              : FREE_ELIGIBILITY_ENABLED && !emailVerified
+                ? t("health.verify")
+                : t("health.scan")}
           </button>
         </div>
-
         <textarea
           value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder={`Collez votre code ${LANGUAGE_LABELS[language]} ici...`}
+          onChange={(event) => setCode(event.target.value)}
+          placeholder={t("health.placeholder", { language: LANGUAGE_LABELS[language] })}
           className={styles.editor}
           rows={16}
           spellCheck={false}
@@ -123,25 +181,21 @@ export default function HealthCheckPage() {
       </form>
 
       {state === "scanning" && (
-        <div className={styles.loading}>
+        <div className={styles.loading} aria-live="polite">
           <div className={styles.spinner} />
-          <p>Analyse en cours...</p>
+          <p>{t("health.analyzing")}</p>
         </div>
       )}
-
       {state === "error" && (
-        <div className={styles.errorBox}>
-          <p>❌ {error}</p>
-        </div>
+        <div className={styles.errorBox} role="alert"><p>{error}</p></div>
       )}
-
       {state === "done" && result && (
         <div className={styles.result}>
           <div className={styles.scoreSection}>
             <div
               className={styles.gauge}
               style={{
-                background: `conic-gradient(${scoreColor(result.score)} ${result.score}%, #1e293b ${result.score}%)`,
+                background: `conic-gradient(${scoreColor(result.score)} ${result.score}%, var(--surface-2) ${result.score}%)`,
               }}
             >
               <span className={styles.scoreValue}>{result.score}</span>
@@ -149,42 +203,28 @@ export default function HealthCheckPage() {
             <div className={styles.verdictBlock}>
               <span
                 className={styles.verdictBadge}
-                style={{ background: scoreColor(result.score) }}
+                style={{ borderColor: scoreColor(result.score), color: scoreColor(result.score) }}
               >
                 {result.verdict}
               </span>
               <p className={styles.scoreLabel}>
-                Score de santé : {result.score}/100 — {scoreLabel(result.score)}
+                {t("health.score", { score: result.score, label: scoreLabel(result.score) })}
               </p>
             </div>
           </div>
-
           {result.warnings.length > 0 && (
             <div className={styles.warnings}>
-              <h3>🔍 Points d&apos;attention</h3>
-              <ul>
-                {result.warnings.map((w, i) => (
-                  <li key={i}>{w}</li>
-                ))}
-              </ul>
+              <h2>{t("health.attention")}</h2>
+              <ul>{result.warnings.map((warning, index) => <li key={`${warning}-${index}`}>{warning}</li>)}</ul>
             </div>
           )}
-
           <div className={styles.cta}>
             <p>{result.cta}</p>
-            <Link href="/crash-test" className={styles.ctaButton}>
-              Lancer le Crash-Test Express (49€)
-            </Link>
+            <Link href="/configure" className="btn btn-primary">{t("health.auditCta")}</Link>
           </div>
         </div>
       )}
-
-      <div className={styles.footer}>
-        <p>
-          🔒 Votre code n&apos;est pas stocké. Analyse statique uniquement —
-          aucune exécution.
-        </p>
-      </div>
+      <div className={styles.footer}><p>{t("health.privacy")}</p></div>
     </main>
   );
 }

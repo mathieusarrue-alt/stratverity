@@ -291,6 +291,9 @@ export default function LearnArticlePage({ params }: { params: { slug: string } 
       </div>
 
       <div className={styles.ctaRow}>
+        <Link href="/health-check" className={styles.primary}>
+          Run the free code health check
+        </Link>
         <Link href="/configure" className={styles.primary}>
           Audit my strategy
         </Link>

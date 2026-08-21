@@ -1,0 +1,17 @@
+.main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 76px 0 110px; }
+.hero { max-width: 760px; margin: 0 auto 38px; text-align: center; }
+.hero > span { color: var(--brand); font: 700 12px/1 var(--mono); letter-spacing: .14em; }
+.hero h1 { margin: 13px 0 12px; font-family: var(--display); font-size: clamp(2.5rem, 6vw, 4.8rem); letter-spacing: -.05em; }
+.hero p { margin: 0; color: var(--ink-2); font-size: 1.06rem; line-height: 1.7; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card { position: relative; min-height: 290px; padding: 28px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: color-mix(in oklab, var(--surface) 95%, transparent); box-shadow: var(--shadow-sm); color: var(--ink); text-decoration: none; transition: transform .25s var(--ease), border-color .25s, box-shadow .25s; }
+.card::after { content: ""; position: absolute; inset: auto -30% -55% 20%; height: 150px; background: radial-gradient(circle, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%); opacity: 0; transition: opacity .25s; }
+.card:hover { transform: translateY(-6px); border-color: color-mix(in oklab, var(--accent) 45%, var(--line)); box-shadow: var(--shadow-lg); }
+.card:hover::after { opacity: 1; }
+.icon { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 28px; border-radius: 15px; background: color-mix(in oklab, var(--accent) 12%, var(--surface-2)); color: var(--brand); font: 750 14px/1 var(--mono); }
+.card h2 { margin: 0 0 12px; font-size: 1.35rem; }
+.card p { margin: 0 0 28px; color: var(--ink-2); line-height: 1.65; }
+.card > span:last-child { position: absolute; bottom: 28px; color: var(--brand); font-weight: 750; }
+.notice { max-width: 760px; margin: 28px auto 0; color: var(--ink-3); text-align: center; font-size: .86rem; }
+@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } .card { min-height: 240px; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }

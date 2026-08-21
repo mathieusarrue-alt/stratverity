@@ -443,7 +443,11 @@ test("disabled product surfaces stay out of indexing and submission", async () =
       readFile(new URL("../app/gallery/layout.tsx", import.meta.url), "utf8"),
     ]);
 
-  assert.match(crashPage, /const CRASH_TEST_AVAILABLE = false/);
+  assert.match(crashPage, /NEXT_PUBLIC_CRASH_TEST_ENABLED === "true"/);
+  assert.match(crashPage, /crash-test-terms-2026-08-21-v1/);
+  assert.match(crashPage, /terms_accepted: termsAccepted/);
+  assert.match(crashPage, /public_report_consent: publicConsent/);
+  assert.match(crashPage, /result\.price_cents !== CRASH_TEST_PRICE_CENTS/);
   assert.match(crashPage, /id="crash-test-form"/);
   assert.match(crashPage, /form="crash-test-form"/);
   assert.match(crashPage, /disabled=\{!CRASH_TEST_AVAILABLE/);
@@ -453,4 +457,77 @@ test("disabled product surfaces stay out of indexing and submission", async () =
   for (const layout of [crashLayout, marketplaceLayout, galleryLayout]) {
     assert.match(layout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
   }
+});
+
+test("free tools are public, localized and linked from research", async () => {
+  const response = await render("/free-tools");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /Test before you pay/i);
+  assert.match(html, /Code Health Check/i);
+  assert.match(html, /Robustness Score/i);
+  assert.match(html, /Fee Calculator/i);
+  assert.match(html, /href="\/health-check"/);
+  assert.match(html, /href="\/score"/);
+  assert.match(html, /href="\/fees"/);
+
+  const [header, messages, sitemap, article, health] = await Promise.all([
+    readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/i18n/messages.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/learn/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/health-check/page.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.match(header, /"nav\.freeTools", "\/free-tools"/);
+  assert.match(messages, /"nav\.freeTools"/);
+  assert.match(sitemap, /path: "\/free-tools"/);
+  assert.match(article, /href="\/health-check"/);
+  assert.match(health, /useI18n/);
+  assert.match(health, /href="\/configure"/);
+  assert.doesNotMatch(health, /href="\/crash-test"/);
+});
+
+test("eligibility proxy is same-site, bounded and fail-closed", async () => {
+  const [proxy, session, requestRoute, confirm, evaluate] = await Promise.all([
+    readFile(new URL("../app/api/eligibility/proxy.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/eligibility/session/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/eligibility/email/request/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/eligibility/email/confirm/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/eligibility/evaluate/route.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(proxy, /MAX_BODY_BYTES = 2 \* 1024 \* 1024/);
+  assert.match(proxy, /incomingOrigin !== siteOrigin/);
+  assert.match(proxy, /redirect: "manual"/);
+  assert.match(proxy, /AbortController/);
+  assert.match(proxy, /ELIGIBILITY_UPSTREAM_UNAVAILABLE/);
+  assert.doesNotMatch(proxy, /authorization|x-forwarded-for|x-bot-risk/i);
+  assert.match(session, /\/v1\/eligibility\/session/);
+  assert.match(requestRoute, /\/v1\/eligibility\/email\/request/);
+  assert.match(confirm, /\/v1\/eligibility\/email\/confirm/);
+  assert.match(evaluate, /\/v1\/eligibility\/evaluate/);
+});
+test("marketplace remains fail-closed and proxies verified identity server-side", async () => {
+  const [page, client, seller, purchase, proxy, env] = await Promise.all([
+    readFile(new URL("../app/marketplace/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/marketplace/MarketplaceClient.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/marketplace/seller/SellerConsole.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/marketplace/purchase/PurchaseClient.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/marketplace/proxy.ts", import.meta.url), "utf8"),
+    readFile(new URL("../.env.example", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
+  assert.match(env, /NEXT_PUBLIC_MARKETPLACE_ENABLED=false/);
+  assert.match(client, /hostname\.endsWith\("stripe\.com"\)/);
+  assert.match(client, /No illustrative strategy is presented as a real product/);
+  assert.match(seller, /marketplace-seller-2026-08-21-v1/);
+  assert.match(seller, /commission_bps: 1500/);
+  assert.match(seller, /rights_confirmed/);
+  assert.match(proxy, /getSupabaseServerClient/);
+  assert.match(proxy, /data\.session\?\.access_token/);
+  assert.match(proxy, /Authorization.*Bearer/);
+  assert.match(proxy, /incomingOrigin|request\.headers\.get\("origin"\)/);
+  assert.match(purchase, /\/api\/marketplace\/download-links/);
+  assert.match(purchase, /target\.origin !== expected\.origin/);
+  assert.match(purchase, /expires in 10 minutes and works once/);
+  assert.doesNotMatch(proxy + client + seller + purchase, /service_role|STRIPE_SECRET_KEY|whsec_/i);
 });

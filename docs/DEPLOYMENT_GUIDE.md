@@ -227,3 +227,56 @@ Déploiement quotidien :
 - logs:GetLogEvents
 
 Séparer les droits Route 53 et domaine dans un rôle plus sensible. GitHub OIDC est recommandé. AWS_ACCESS_KEY_ID et AWS_SECRET_ACCESS_KEY sont seulement un fallback et ne doivent pas être créés si OIDC est disponible.
+
+## Release 0.28.0 — activation progressive des produits
+
+Le déploiement du code et l'ouverture d'un produit sont deux opérations
+séparées. Déployer d'abord avec les flags à `false`, vérifier les routes, puis
+n'activer qu'un produit dont la recette dédiée est terminée.
+
+### Variables publiques Amplify
+
+```text
+NEXT_PUBLIC_BACKTESTPROOF_API_URL=https://api.stratverity.com
+NEXT_PUBLIC_SITE_ORIGIN=https://www.stratverity.com
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
+NEXT_PUBLIC_FREE_ELIGIBILITY_ENABLED=false
+NEXT_PUBLIC_CRASH_TEST_ENABLED=false
+NEXT_PUBLIC_MARKETPLACE_ENABLED=false
+```
+
+Ces variables sont publiques par définition. Ne jamais ajouter de clé Stripe,
+`service_role` Supabase, secret webhook ou identifiant AWS au frontend.
+
+### Secrets backend AWS SSM
+
+```text
+/stratverity/prod/identity-secret
+/stratverity/prod/report-proof-secret
+/stratverity/prod/eligibility-proof-secret
+/stratverity/prod/paid-audit-admin-secret
+/stratverity/prod/paid-audit-access-pepper
+/stratverity/prod/marketplace-webhook-secret
+```
+
+Chaque valeur sensible est un `SecureString`. Les clés Stripe principales déjà
+présentes restent préservées par l'installateur ; ne jamais les passer en
+argument de commande ou les écrire dans Git.
+
+### Ordre d'activation
+
+1. Déployer backend et frontend avec Free eligibility, Crash-Test et Marketplace
+   à `false`.
+2. Vérifier `/health`, l'audit payé existant, la certification et les pages
+   publiques.
+3. Recetter SES puis activer ensemble les deux flags Free eligibility.
+4. Recetter le webhook Crash-Test en test, puis en live, avant les deux flags
+   Crash-Test.
+5. Activer Stripe Connect, recetter KYC, destination charge, commission 15 %,
+   remboursement et livraison avant les deux flags Marketplace.
+6. Une annonce Marketplace reste `DRAFT` tant que l'opérateur n'a pas appelé la
+   route d'activation avec l'identifiant de l'artefact source certifié.
+
+Le détail des portes est dans
+`08_RESEARCH/STAGE_GATES/2026-08-21_RELEASE_PHASES_3_5_V0_28_0.md`.

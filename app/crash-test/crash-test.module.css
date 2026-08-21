@@ -732,3 +732,8 @@
     border: 1px solid #ccc;
   }
 }
+
+.consents { display: grid; gap: 10px; margin: 18px 0; }
+.consents label { display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: start; color: var(--ink-2); font-size: .82rem; line-height: 1.45; cursor: pointer; }
+.consents input { width: 17px; height: 17px; margin-top: 2px; accent-color: var(--brand); }
+.consents input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

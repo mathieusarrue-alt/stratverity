@@ -87,7 +87,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 
     <div class="proof-card tilt" data-reveal data-delay="1" data-tilt id="heroCard">
       <div class="glare"></div>
-      <span class="gain-flag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7M9 7h8v8"/></svg>5× less than claimed</span>
+      <span class="gain-flag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M7 17 17 7M9 7h8v8"/></svg>+41% net</span>
       <div class="pc-head">
         <div class="pc-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2.2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-i18n="card.title">Verification report</span></div>
         <span class="pc-tag" data-i18n="card.example">Illustrative example</span>
@@ -362,8 +362,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <a class="brand" href="#top" style="margin-bottom:12px"><svg class="brand-lock lt" viewBox="22 18 496 150" role="img" aria-label="StratVerity — BacktestProof"><use href="#lockLight"/></svg><svg class="brand-lock dk" viewBox="22 18 496 150" aria-hidden="true"><use href="#lockDark"/></svg></a>
         <p class="disclaimer" data-i18n="foot.disc">StratVerity provides an independent audit of trading strategies. Figures shown are illustrative and constitute neither investment advice nor a performance guarantee. Trading involves a risk of loss.</p>
       </div>
-      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a><a href="/marketplace">Marketplace (soon)</a></div>
-      <div><h5>Free tools</h5><a href="/score">Credibility Score</a><a href="/fees">Fee Reality Check</a><a href="/gallery">Hall of Fame</a></div>
+      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
       <div><h5 data-i18n="foot.res">Research</h5><a href="#research" data-i18n="nav.research">Research</a><a href="#method" data-i18n="foot.meth">Methodology</a><a href="#faq">FAQ</a></div>
       <div><h5 data-i18n="foot.legal">Legal</h5><a href="/contact" data-i18n="common.contact">Contact</a><a href="/legal/terms" data-i18n="foot.terms">Terms</a><a href="/legal/privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal/risk" data-i18n="foot.risk">Risk notice</a><a href="/legal/refunds" data-i18n="foot.refund">Refunds</a></div>
     </div>

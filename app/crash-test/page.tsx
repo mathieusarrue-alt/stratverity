@@ -22,7 +22,10 @@ const ASSET_PRESETS = [
 const TIMEFRAME_PRESETS = ["5m", "15m", "1h", "4h", "1D"] as const;
 
 const CRASH_TEST_PRICE = 49;
-const CRASH_TEST_AVAILABLE = false;
+const CRASH_TEST_PRICE_CENTS = 4_900;
+const CRASH_TEST_CONTRACT_VERSION = "crash-test-terms-2026-08-21-v1";
+const CRASH_TEST_AVAILABLE =
+  process.env.NEXT_PUBLIC_CRASH_TEST_ENABLED === "true";
 
 type Language = "pinescript" | "python";
 type SubmissionState = "idle" | "submitting" | "checkout" | "error";
@@ -32,6 +35,8 @@ type CheckoutResponse = {
   checkout_session_id: string;
   checkout_url: string;
   status: string;
+  price_cents: number;
+  scope_warnings: string[];
 };
 
 function isStripeCheckoutUrl(value: string): boolean {
@@ -53,6 +58,9 @@ export default function CrashTestPage() {
   const [state, setState] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"" | "warning">("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [publicConsent, setPublicConsent] = useState(false);
+  const [pendingCheckout, setPendingCheckout] = useState<CheckoutResponse | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isReady = code.trim().length >= 10;
@@ -60,6 +68,7 @@ export default function CrashTestPage() {
   const handleFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    setPendingCheckout(null);
     setFileName(file.name);
     const text = await file.text();
     setCode(text);
@@ -71,6 +80,7 @@ export default function CrashTestPage() {
   };
 
   const clearFile = () => {
+    setPendingCheckout(null);
     setFileName("");
     setCode("");
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -83,8 +93,19 @@ export default function CrashTestPage() {
       setMessageType("warning");
       return;
     }
+    if (pendingCheckout) {
+      setState("checkout");
+      window.location.assign(pendingCheckout.checkout_url);
+      return;
+    }
     if (!isReady) {
       setMessage(t("ct.minChars"));
+      setMessageType("warning");
+      return;
+    }
+
+    if (!termsAccepted || !publicConsent) {
+      setMessage(t("ct.consentRequired"));
       setMessageType("warning");
       return;
     }
@@ -102,6 +123,9 @@ export default function CrashTestPage() {
           language,
           symbol,
           timeframe,
+          contract_version: CRASH_TEST_CONTRACT_VERSION,
+          terms_accepted: termsAccepted,
+          public_report_consent: publicConsent,
         }),
       });
 
@@ -130,6 +154,19 @@ export default function CrashTestPage() {
         result.audit_hash,
       );
 
+      if (result.price_cents !== CRASH_TEST_PRICE_CENTS) {
+        setPendingCheckout(result);
+        setState("idle");
+        setMessage(
+          t("ct.scopePrice").replace(
+            "{price}",
+            (result.price_cents / 100).toFixed(2),
+          ),
+        );
+        setMessageType("warning");
+        return;
+      }
+
       setState("checkout");
       window.location.assign(result.checkout_url);
     } catch {
@@ -148,9 +185,11 @@ export default function CrashTestPage() {
           <em>{t("ct.title2")}</em>
         </h1>
         <p>{t("ct.lead")}</p>
-        <p className={styles.maintenance} role="status">
-          {t("ct.maintenance")}
-        </p>
+        {!CRASH_TEST_AVAILABLE && (
+          <p className={styles.maintenance} role="status">
+            {t("ct.maintenance")}
+          </p>
+        )}
         <div className={styles.pricePill}>
           <b>{CRASH_TEST_PRICE}€</b>
           <small>{t("ct.price")}</small>
@@ -168,14 +207,20 @@ export default function CrashTestPage() {
                 <button
                   type="button"
                   className={language === "pinescript" ? styles.tabActive : ""}
-                  onClick={() => setLanguage("pinescript")}
+                  onClick={() => {
+                    setPendingCheckout(null);
+                    setLanguage("pinescript");
+                  }}
                 >
                   Pine Script
                 </button>
                 <button
                   type="button"
                   className={language === "python" ? styles.tabActive : ""}
-                  onClick={() => setLanguage("python")}
+                  onClick={() => {
+                    setPendingCheckout(null);
+                    setLanguage("python");
+                  }}
                 >
                   Python
                 </button>
@@ -207,7 +252,10 @@ export default function CrashTestPage() {
               <textarea
                 className={styles.textarea}
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onChange={(event) => {
+                  setPendingCheckout(null);
+                  setCode(event.target.value);
+                }}
                 placeholder={
                   language === "pinescript"
                     ? t("ct.placeholderPine")
@@ -228,7 +276,10 @@ export default function CrashTestPage() {
                   type="button"
                   key={asset}
                   className={`${styles.chip} ${symbol === asset ? styles.chipActive : ""}`}
-                  onClick={() => setSymbol(asset)}
+                  onClick={() => {
+                    setPendingCheckout(null);
+                    setSymbol(asset);
+                  }}
                 >
                   {asset.replace(/^.*:/, "")}
                 </button>
@@ -246,7 +297,10 @@ export default function CrashTestPage() {
                   type="button"
                   key={tf}
                   className={`${styles.chip} ${timeframe === tf ? styles.chipActive : ""}`}
-                  onClick={() => setTimeframe(tf)}
+                  onClick={() => {
+                    setPendingCheckout(null);
+                    setTimeframe(tf);
+                  }}
                 >
                   {tf}
                 </button>
@@ -289,11 +343,29 @@ export default function CrashTestPage() {
           </div>
           <small>{t("ct.vat")}</small>
 
+          <div className={styles.consents}>
+            <label>
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(event) => setTermsAccepted(event.target.checked)}
+              />
+              <span>{t("ct.contractConsent")}</span>
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={publicConsent}
+                onChange={(event) => setPublicConsent(event.target.checked)}
+              />
+              <span>{t("ct.publicConsent")}</span>
+            </label>
+          </div>
           <button
             className={styles.submit}
             type="submit"
             form="crash-test-form"
-            disabled={!CRASH_TEST_AVAILABLE || !isReady || state === "submitting" || state === "checkout"}
+            disabled={!CRASH_TEST_AVAILABLE || !isReady || !termsAccepted || !publicConsent || state === "submitting" || state === "checkout"}
           >
             {!CRASH_TEST_AVAILABLE
               ? t("ct.maintenanceCta")
@@ -301,7 +373,12 @@ export default function CrashTestPage() {
                 ? t("ct.preparing")
               : state === "checkout"
                 ? t("ct.redirecting")
-                : t("ct.pay")}
+: pendingCheckout
+                  ? t("ct.confirmPrice").replace(
+                      "{price}",
+                      (pendingCheckout.price_cents / 100).toFixed(2),
+                    )
+                  : t("ct.pay")}
           </button>
 
           {message && (
