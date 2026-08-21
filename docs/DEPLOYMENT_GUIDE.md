@@ -264,6 +264,26 @@ Chaque valeur sensible est un `SecureString`. Les clés Stripe principales déj�
 présentes restent préservées par l'installateur ; ne jamais les passer en
 argument de commande ou les écrire dans Git.
 
+### Arguments de l'installateur backend
+
+Après les cinq arguments obligatoires (paquet, release, origine du site, domaine
+API et origines CORS), les positions sont : certification (`6`), Free eligibility
+(`7`), Marketplace (`8`), commerce Marketplace (`9`), URL Supabase publique
+(`10`), clé Supabase publiable (`11`) et Crash-Test (`12`). Tous les nouveaux
+produits sont fermés par défaut.
+
+Exemple de déploiement fail-closed, sans transmettre de secret :
+
+```sh
+sh install_on_existing_aws_instance.sh "$PACKAGE" "$RELEASE_ID" \
+  https://www.stratverity.com api.stratverity.com \
+  https://www.stratverity.com,https://stratverity.com \
+  true false false false "" "" false
+```
+
+Ne jamais activer un flag backend sans activer le flag frontend correspondant
+dans la même release recettée, et inversement.
+
 ### Ordre d'activation
 
 1. Déployer backend et frontend avec Free eligibility, Crash-Test et Marketplace

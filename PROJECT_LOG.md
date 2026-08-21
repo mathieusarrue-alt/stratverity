@@ -52,3 +52,24 @@
   backend réussis sous Python 3.12.
 - Le déploiement doit conserver les trois nouveaux produits désactivés jusqu'aux
   portes SES, Stripe dédié, Connect/KYC et validation juridique documentées.
+## 2026-08-21 — Release 0.28.0 déployée fail-closed
+
+- Source frontend : commit `e9d45c2b3f0f03ffa4f96e78ebf018beb86c8c0e` sur `main`.
+- Amplify : jobs `21` puis `22` réussis ; BUILD, DEPLOY et VERIFY au vert.
+  Le job `22` fixe explicitement à `false` les trois flags publics Free
+  eligibility, Crash-Test et Marketplace.
+- Backend : release active
+  `/opt/backtestproof/releases/0.28.0-20260821-products`, conteneur sain.
+- Artefact S3 chiffré AES-256 :
+  `backtestproof-backend-0.28.0-20260821-products.tar.gz`, SHA-256
+  `98819989829DF495AB6D793ABC0F753162FC56C4F40B5C68299CB38B8BA5E0EB`.
+- Sauvegarde pré-déploiement créée et empreinte vérifiée avant bascule.
+- Stripe Live vérifié par lecture seule du compte depuis le conteneur ; aucun
+  Checkout ni débit n'a été créé pour cette recette.
+- Certification active. Free eligibility, Crash-Test, Marketplace et commerce
+  Marketplace restent fermés côté backend et frontend.
+- Recette publique : nouvelles routes, SEO et assets en HTTP 200 ; OpenAPI en
+  404 ; routes backend désactivées en 503 ; origine hostile refusée en 403 ;
+  HSTS, CSP, anti-framing et `nosniff` présents.
+- Aucun Pine, CURRENT RESEARCH, STABLE TRADING, entitlement Scan ou worker de
+  trading modifié ou activé.
