@@ -27,11 +27,11 @@
   --shadow-lg:0 44px 90px -34px rgba(0,0,0,.72),0 14px 30px -16px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;overflow-x:hidden}
+html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{
   margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);
-  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip;
 }
 /* animated auras (parallax to pointer+scroll) */
 .aura{position:fixed;border-radius:50%;filter:blur(48px);z-index:0;pointer-events:none;opacity:.9;will-change:transform}
