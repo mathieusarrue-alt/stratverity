@@ -75,8 +75,8 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <h1><span data-i18n="hero.h1a">Audit your strategy,</span><br><span class="accent" data-i18n="hero.h1b">not its storytelling.</span></h1>
       <p class="lead" data-i18n="hero.lead">Upload a strategy. BacktestProof recomputes its metrics, detects biases and measures robustness — proof before promise.</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="hero.cta1">Audit my strategy</a>
-        <a class="btn btn-ghost" href="#method" data-i18n="hero.cta2">See the method</a>
+        <a class="btn btn-primary" data-magnetic href="/health-check" data-i18n="hero.ctaFree">Test my strategy for free</a>
+        <a class="btn btn-ghost" href="/crash-test/verify" data-i18n="hero.ctaVerify">Verify a certificate</a>
       </div>
       <div class="trust">
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · Notebook</span></span>
@@ -286,6 +286,37 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   </div>
 </section>
 
+<!-- FREE TOOLS & DIAGNOSTIC -->
+<section class="block" id="free-tools" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
+  <div class="container">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow" data-i18n="ft.eyebrow">FREE TOOLS & DIAGNOSTICS</span>
+      <h2 data-i18n="ft.title">A quick diagnosis before the audit, in seconds.</h2>
+      <p data-i18n="ft.lead">Health-Check and Crash-Test scan your code without storing it: 3 seconds to understand your strategy's weaknesses.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="card" data-tilt data-reveal>
+        <span class="chip" style="align-self:flex-start"><span data-i18n="freeTools.healthTitle">Code Health Check</span></span>
+        <h3 data-i18n="ft.healthTitle">Free Health-Check</h3>
+        <p data-i18n="ft.healthBody">Health score, likely issues and recommendations. Instant static analysis: your code never reaches the server.</p>
+        <a class="btn btn-ghost" href="/health-check" data-i18n="freeTools.open">Open tool</a>
+      </article>
+      <article class="card" data-tilt data-reveal data-delay="1">
+        <span class="chip" style="align-self:flex-start"><span data-i18n="ft.crashTitle">Algorithm Crash-Test</span></span>
+        <h3 data-i18n="nav.crashTest">Crash-Test</h3>
+        <p data-i18n="ft.crashBody">Trade replay and robustness stress tests: what a seller never shows.</p>
+        <a class="btn btn-ghost" href="/crash-test" data-i18n="freeTools.open">Open tool</a>
+      </article>
+      <article class="card" data-tilt data-reveal data-delay="2">
+        <span class="chip" style="align-self:flex-start"><span data-i18n="ft.registryTitle">Verify a certification</span></span>
+        <h3 data-i18n="nav.verify">Verify a certificate</h3>
+        <p data-i18n="ft.registryBody">Browse the public registry of audited strategies, sealed badges and robustness scores.</p>
+        <a class="btn btn-ghost" href="/gallery" data-i18n="nav.verify">Verify a certificate</a>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section class="block">
   <div class="container">
     <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="lock.eyebrow">Your report</span><h2 data-i18n="lock.h2">A full deliverable, unlocked after validation.</h2></div>
@@ -362,7 +393,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <a class="brand" href="#top" style="margin-bottom:12px"><svg class="brand-lock lt" viewBox="22 18 496 150" role="img" aria-label="StratVerity — BacktestProof"><use href="#lockLight"/></svg><svg class="brand-lock dk" viewBox="22 18 496 150" aria-hidden="true"><use href="#lockDark"/></svg></a>
         <p class="disclaimer" data-i18n="foot.disc">StratVerity provides an independent audit of trading strategies. Figures shown are illustrative and constitute neither investment advice nor a performance guarantee. Trading involves a risk of loss.</p>
       </div>
-      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
+      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/free-tools" data-i18n="nav.freeTools">Free Tools</a><a href="/crash-test" data-i18n="nav.crashTest">Crash-Test</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Verify a certificate</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
       <div><h5 data-i18n="foot.res">Research</h5><a href="#research" data-i18n="nav.research">Research</a><a href="#method" data-i18n="foot.meth">Methodology</a><a href="#faq">FAQ</a></div>
       <div><h5 data-i18n="foot.legal">Legal</h5><a href="/contact" data-i18n="common.contact">Contact</a><a href="/legal/terms" data-i18n="foot.terms">Terms</a><a href="/legal/privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal/risk" data-i18n="foot.risk">Risk notice</a><a href="/legal/refunds" data-i18n="foot.refund">Refunds</a></div>
     </div>

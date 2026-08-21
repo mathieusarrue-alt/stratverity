@@ -16,7 +16,11 @@ export default function LandingPage() {
     const localized = messages[locale] as Partial<Record<MessageKey, string>>;
     root.querySelectorAll<HTMLElement>("[data-i18n]").forEach((element) => {
       const key = element.dataset.i18n as MessageKey | undefined;
-      if (key) element.innerHTML = localized[key] ?? messages.en[key] ?? messages.fr[key];
+      if (key) {
+        // Fallback : locale active → anglais → français → conserve le texte rendu.
+        const value = localized[key] ?? messages.en[key] ?? messages.fr[key];
+        element.innerHTML = value ?? element.innerHTML;
+      }
     });
   }, [locale]);
 

@@ -44,6 +44,7 @@ const navItems = [
   ["nav.research", "/#research"],
   ["nav.pricing", "/#pricing"],
   ["nav.freeTools", "/free-tools"],
+  ["nav.marketplace", "/marketplace"],
   ["nav.faq", "/#faq"],
   ["common.contact", "/contact"],
 ] as const;

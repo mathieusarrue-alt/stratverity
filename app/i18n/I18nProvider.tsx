@@ -42,9 +42,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, updateLocale] = useState<Locale>("en");
 
   const setLocale = useCallback((nextLocale: Locale) => {
-    updateLocale(nextLocale);
-    window.localStorage.setItem("sv-lang", nextLocale);
-  }, []);
+      updateLocale(nextLocale);
+      try {
+        window.localStorage.setItem("sv-lang", nextLocale);
+      } catch {
+        // Certains modes de navigation privée mobiles refusent localStorage.
+      }
+    }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -69,18 +73,25 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, [locale]);
 
   const t = useCallback(
-    (key: MessageKey, values?: Record<string, string | number>) => {
-      const localeMessages = messages[locale] as Partial<Record<MessageKey, string>>;
-      const template = localeMessages[key] ?? messages.en[key] ?? messages.fr[key];
-      if (!values) return template;
-      return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name: string) =>
-        Object.prototype.hasOwnProperty.call(values, name)
-          ? String(values[name])
-          : match,
-      );
-    },
-    [locale],
-  );
+      (key: MessageKey, values?: Record<string, string | number>) => {
+        // Fallback systématique : locale active → anglais → français → clé brute.
+        // Ne retourne jamais undefined, pour qu'une clé manquante ne casse pas le rendu.
+        const localeMessages = messages[locale] as Partial<Record<MessageKey, string>>;
+        const template =
+          localeMessages[key] ?? messages.en[key] ?? messages.fr[key] ?? String(key);
+        if (!values) return template;
+        try {
+          return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (match, name: string) =>
+            Object.prototype.hasOwnProperty.call(values, name)
+              ? String(values[name])
+              : match,
+          );
+        } catch {
+          return template;
+        }
+      },
+      [locale],
+    );
 
   const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
 
