@@ -184,7 +184,21 @@ export default function LandingPage() {
       });
     }
 
+    // --- Branchement des mini-charts lightweight-charts dans #product (.viz) ---
+    let chartsHandle: { unmount: () => void } | null = null;
+    let chartsCancelled = false;
+    void import("./mountProductCharts").then(({ mountProductCharts }) => {
+      if (chartsCancelled || !root) return;
+      chartsHandle = mountProductCharts({
+        root,
+        height: 90,
+        persistData: true,
+      });
+    });
+
     return () => {
+      chartsCancelled = true;
+      chartsHandle?.unmount();
       controller.abort();
       window.clearTimeout(fallbackTimer);
       revealObserver.disconnect();
