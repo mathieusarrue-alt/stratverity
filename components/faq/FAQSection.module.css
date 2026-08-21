@@ -1,0 +1,45 @@
+.section { }
+.head { margin-bottom: 28px; }
+.eyebrow {
+  color: var(--brand);
+  font: 700 12px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.head h2 {
+  margin: 12px 0 10px;
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+}
+.lead { margin: 0; color: var(--ink-2); font-size: 1.05rem; line-height: 1.7; }
+
+.list { display: flex; flex-direction: column; gap: 12px; }
+.item {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--surface) 95%, transparent);
+  overflow: hidden;
+}
+.item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  font-weight: 650;
+  font-size: 1.02rem;
+  color: var(--ink);
+}
+.item summary::-webkit-details-marker { display: none; }
+.item summary svg { flex-shrink: 0; transition: transform 0.2s var(--ease); color: var(--ink-3); }
+.item[open] summary svg { transform: rotate(180deg); }
+.item p {
+  margin: 0;
+  padding: 0 20px 20px;
+  color: var(--ink-2);
+  line-height: 1.7;
+  font-size: 0.98rem;
+}

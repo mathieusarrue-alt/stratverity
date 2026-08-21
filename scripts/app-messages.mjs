@@ -241,6 +241,8 @@ const englishFallbackRows = [
   ["login.sending", "Envoi…", "Sending…"],
   ["login.linkSent", "Lien envoyé. Vérifiez votre boîte de réception et vos indésirables.", "Link sent. Check your inbox and spam folder."],
   ["login.error", "La connexion n’a pas abouti. Réessayez dans un instant.", "Sign-in could not be completed. Please try again shortly."],
+  ["login.emailExists", "Cette adresse existe déjà avec une autre méthode de connexion. Utilisez-la directement.", "This email is already registered with another sign-in method. Use that method instead."],
+  ["login.authError", "L’authentification a échoué. Réessayez.", "Authentication failed. Please try again."],
   ["login.providerUnavailable", "Fournisseur en cours d’activation", "Provider is being activated"],
   ["login.providerUnavailableAria", "{provider} sera disponible après activation sécurisée", "{provider} will be available after secure activation"],
   ["login.providerNote", "Les boutons grisés s’activent automatiquement dès que le fournisseur est vérifié.", "Disabled buttons activate automatically once the provider is verified."],

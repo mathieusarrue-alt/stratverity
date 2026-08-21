@@ -266,6 +266,10 @@ export default function CrashTestPage() {
             </div>
           </fieldset>
 
+          <p className={styles.cguNote}>
+            {t("ct.cguArticle3")}
+          </p>
+
           <fieldset className={styles.block}>
             <legend>
               <span>02</span>{t("ct.step.asset")}

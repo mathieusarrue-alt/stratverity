@@ -33,16 +33,24 @@ export default function LoginContent({
   user,
   returnTo,
   enabledProviders,
+  authError,
 }: {
   user: LoginUser;
   returnTo: string;
   enabledProviders: SocialProvider[];
+  authError?: string | null;
 }) {
   const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const enabled = new Set(enabledProviders);
+
+  const authErrorMessage = authError
+    ? authError === "email_exists"
+      ? t("login.emailExists")
+      : t("login.authError")
+    : null;
 
   function callbackUrl() {
     const url = new URL("/auth/callback", window.location.origin);
@@ -139,6 +147,7 @@ export default function LoginContent({
                 })}
               </div>
               {enabledProviders.length < providers.length ? <p className={styles.providerNote}>{t("login.providerNote")}</p> : null}
+              {authErrorMessage ? <p className={styles.authMessage} role="alert">{authErrorMessage}</p> : null}
               {message ? <p className={styles.authMessage} role="status" aria-live="polite">{message}</p> : null}
             </>
           )}

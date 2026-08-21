@@ -189,6 +189,17 @@
   border-color: color-mix(in oklab, var(--accent) 60%, var(--line));
 }
 
+.cguNote {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 3px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in oklab, var(--accent) 6%, var(--surface-2));
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
 .fileInfo {
   display: flex;
   align-items: center;

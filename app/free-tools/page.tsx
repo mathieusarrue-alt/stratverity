@@ -5,11 +5,12 @@ import { useI18n } from "../i18n/I18nProvider";
 import styles from "./free-tools.module.css";
 import ToolCostComparison from "@/components/ui/ToolCostComparison";
 import { comparisonData } from "@/config/comparison-data";
+import { HealthCheckIcon, RobustnessIcon, FeesIcon } from "@/components/ui/ToolIcons";
 
 const tools = [
-  { icon: "</>", title: "freeTools.healthTitle", body: "freeTools.healthBody", href: "/health-check" },
-  { icon: "100", title: "freeTools.scoreTitle", body: "freeTools.scoreBody", href: "/score" },
-  { icon: "€", title: "freeTools.feesTitle", body: "freeTools.feesBody", href: "/fees" },
+  { icon: <HealthCheckIcon />, title: "freeTools.healthTitle", body: "freeTools.healthBody", href: "/health-check" },
+  { icon: <RobustnessIcon />, title: "freeTools.scoreTitle", body: "freeTools.scoreBody", href: "/score" },
+  { icon: <FeesIcon />, title: "freeTools.feesTitle", body: "freeTools.feesBody", href: "/fees" },
 ] as const;
 
 export default function FreeToolsPage() {
