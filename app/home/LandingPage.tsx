@@ -87,6 +87,35 @@ export default function LandingPage() {
     }, { threshold: 0.18 });
     root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => revealObserver.observe(element));
 
+    // --- Correctif anti-page-blanche (hydratation / accès direct) ---
+    // IntersectionObserver peut ne pas se déclencher au premier rendu (onglet
+    // en arrière-plan, accès direct à la route, SSR→CSR). Deux sécurités :
+    // 1) révéler immédiatement tout élément déjà dans le viewport ;
+    // 2) un timeout de secours force `.in` sur ce qui resterait masqué.
+    const revealNow = (element: HTMLElement) => {
+      if (element.classList.contains("in")) return;
+      element.classList.add("in");
+      element.querySelectorAll<HTMLElement>("[data-count]").forEach((counter) => {
+        if (!counter.dataset.done) {
+          counter.dataset.done = "1";
+          if (!reduced) countUp(counter);
+        }
+      });
+    };
+    const forceRevealVisible = () => {
+      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) revealNow(element);
+      });
+    };
+    forceRevealVisible();
+    const fallbackTimer = window.setTimeout(() => {
+      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+        if (!element.classList.contains("in")) element.classList.add("in");
+      });
+    }, 1500);
+
+
     const radial = root.querySelector<HTMLElement>("#radial");
     const arc = root.querySelector<SVGGeometryElement>("#radialArc");
     const radialObserver = radial && arc ? new IntersectionObserver((entries, observer) => {
@@ -150,6 +179,7 @@ export default function LandingPage() {
 
     return () => {
       controller.abort();
+      window.clearTimeout(fallbackTimer);
       revealObserver.disconnect();
       radialObserver?.disconnect();
       animationFrames.forEach((frame) => window.cancelAnimationFrame(frame));

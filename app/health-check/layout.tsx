@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireSupabaseUser } from "../supabase/server";
 
 export const metadata: Metadata = {
   title:
@@ -23,10 +24,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HealthCheckLayout({
+export default async function HealthCheckLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Gate d'authentification : l'accès aux outils exige une session.
+  await requireSupabaseUser("/health-check");
   return <>{children}</>;
 }

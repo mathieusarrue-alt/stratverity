@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireSupabaseUser } from "../supabase/server";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -18,10 +19,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CrashTestLayout({
+export default async function CrashTestLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Gate d'authentification : l'accès aux outils exige une session.
+  await requireSupabaseUser("/crash-test");
   return <>{children}</>;
 }
