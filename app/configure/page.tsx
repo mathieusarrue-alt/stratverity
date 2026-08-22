@@ -25,6 +25,17 @@ const MAX_STRATEGIES = 10;
 const MAX_ASSETS = 50;
 const MAX_CONTEXTS = 10_000;
 const REQUEST_LIMIT_BYTES = 2 * 1024 * 1024;
+/** Extensions accepted by post-payment deposit + static qualification. */
+const STRATEGY_EXTENSIONS = new Set([
+  ".pine",
+  ".py",
+  ".ipynb",
+  ".mq4",
+  ".mq5",
+  ".zip",
+]);
+const STRATEGY_ACCEPT =
+  ".pine,.py,.ipynb,.mq4,.mq5,.zip,application/zip,text/x-python";
 const CHECKOUT_CONTRACT = {
   version: "beta-fr-2026-08-12-v1",
   language: "fr",
@@ -87,6 +98,15 @@ function formatBytes(value: number, locale: Locale): string {
   return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value / 1024)} KiB`;
 }
 
+function fileExtension(name: string): string {
+  const i = name.lastIndexOf(".");
+  return i >= 0 ? name.slice(i).toLowerCase() : "";
+}
+
+function isAllowedStrategyFile(file: File): boolean {
+  return STRATEGY_EXTENSIONS.has(fileExtension(file.name));
+}
+
 async function sha256(file: File): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
   return Array.from(new Uint8Array(digest), (byte) =>
@@ -124,6 +144,7 @@ export default function ScopeConfiguratorPage() {
   const [retentionDays, setRetentionDays] = useState("30");
   const [state, setState] = useState<SubmissionState>("idle");
   const [notice, setNotice] = useState<UiNotice>(null);
+  const [fileError, setFileError] = useState("");
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
   const [contractAccepted, setContractAccepted] = useState(false);
   const checkoutAttemptRef = useRef<{
@@ -163,9 +184,11 @@ export default function ScopeConfiguratorPage() {
       currency: "EUR",
       minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
     }).format(cents / 100);
-  const message = notice
-    ? t(notice.key, notice.values)
-    : "";
+  const message = fileError
+    ? fileError
+    : notice
+      ? t(notice.key, notice.values)
+      : "";
   const translatePriceLine = (label: string) => {
     if (label.startsWith("Audit essentiel")) return t("configure.priceLine.auditEssential");
     if (label.startsWith("Audit standard")) return t("configure.priceLine.auditBase");
@@ -263,12 +286,27 @@ export default function ScopeConfiguratorPage() {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
     if (files.length === 0) return;
+
+    const rejected = files.filter((file) => !isAllowedStrategyFile(file));
+    if (rejected.length > 0) {
+      setState("error");
+      setNotice(null);
+      setFileError(
+        locale === "fr"
+          ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}. Formats : .pine, .py, .mq4, .mq5, .ipynb, .zip uniquement. Renommez un .txt en .pine seulement si le contenu est bien du Pine Script.`
+          : `Unsupported file: ${rejected.map((f) => f.name).join(", ")}. Allowed: .pine, .py, .mq4, .mq5, .ipynb, .zip only.`,
+      );
+      return;
+    }
+
     if (strategies.length + files.length > MAX_STRATEGIES) {
       setState("error");
+      setFileError("");
       setNotice({ key: "configure.msg.maxStrategies", values: { count: MAX_STRATEGIES } });
       return;
     }
     setState("submitting");
+    setFileError("");
     setNotice({ key: "configure.msg.hashing" });
     try {
       const offset = strategies.length;
@@ -375,6 +413,7 @@ export default function ScopeConfiguratorPage() {
     }
 
     setState("submitting");
+    setFileError("");
     setNotice({ key: "configure.msg.validatingScope" });
     try {
       const response = await fetch(`${API_URL}/v1/service-scopes/preview`, {
@@ -448,7 +487,7 @@ export default function ScopeConfiguratorPage() {
       const response = await fetch(`${API_URL}/v1/billing/checkout-sessions`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json" as const,
           "Idempotency-Key": idempotencyKey,
         },
         body: JSON.stringify(request),
@@ -462,7 +501,7 @@ export default function ScopeConfiguratorPage() {
         const billingUnavailable =
           response.status === 503 ||
           detail?.code === "BILLING_DISABLED" ||
-          detail?.code === "STRIPE_TEST_KEY_REQUIRED";
+          detail?.code === "STRIPE_SECRET_KEY_REQUIRED";
         setState("error");
         setNotice(
           billingUnavailable
@@ -545,14 +584,18 @@ export default function ScopeConfiguratorPage() {
             <legend><span>02</span>{t("configure.step.strategies")}</legend>
             <label className={styles.filePicker}>
               <input
-                accept=".pine,.py,.ipynb,.zip,text/plain,application/zip"
+                accept={STRATEGY_ACCEPT}
                 multiple
                 onChange={chooseStrategies}
                 type="file"
               />
               <span aria-hidden="true">＋</span>
               <strong>{t("configure.chooseFiles")}</strong>
-              <small>{t("configure.fileHelp")}</small>
+              <small>
+                {locale === "fr"
+                  ? "Pine · Python · MQL4/5 · Notebook · ZIP · max 10 · empreinte locale"
+                  : "Pine · Python · MQL4/5 · Notebook · ZIP · max 10 · local fingerprint only"}
+              </small>
             </label>
             {strategies.length > 0 ? (
               <ul className={styles.strategyList}>
@@ -843,7 +886,7 @@ export default function ScopeConfiguratorPage() {
           <p
             aria-live="polite"
             className={`${styles.message} ${
-              state === "error" || state === "fallback" ? styles.warning : ""
+              state === "error" || state === "fallback" || fileError ? styles.warning : ""
             }`}
           >
             {message ||
