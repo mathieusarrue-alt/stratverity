@@ -11,6 +11,11 @@ const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
   "https://api.stratverity.com";
 
+/** Same family as configure step 02 + MQL extensions. */
+const STRATEGY_SOURCE_ACCEPT =
+  ".pine,.py,.ipynb,.txt,.mq4,.mq5,.zip,text/plain,application/zip";
+const BACKTEST_EVIDENCE_ACCEPT = ".csv,.html,.json,.txt,.zip";
+
 type StrategyStatus = {
   strategy_version_id: string;
   expected_sha256: string;
@@ -60,7 +65,8 @@ export default function CheckoutReturnPage() {
   const [pageState, setPageState] = useState<PageState>("checking");
   const [status, setStatus] = useState<OrderStatus | null>(null);
   const [messageKey, setMessageKey] = useState<MessageKey>("success.initial");
-  const message = t(messageKey);
+  const [detailMessage, setDetailMessage] = useState("");
+  const message = detailMessage || t(messageKey);
   const [sessionId, setSessionId] = useState("");
   const [ownerToken, setOwnerToken] = useState("");
   const [strategyId, setStrategyId] = useState("");
@@ -168,12 +174,14 @@ export default function CheckoutReturnPage() {
 
   const chooseArtifact = (event: ChangeEvent<HTMLInputElement>) => {
     setArtifact(event.target.files?.[0] ?? null);
+    setDetailMessage("");
   };
 
   const submitArtifact = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!status?.order_id || !artifact || !strategyId) return;
     setUploading(true);
+    setDetailMessage("");
     setMessageKey("success.msg.inspecting");
     try {
       const body = new FormData();
@@ -210,16 +218,34 @@ export default function CheckoutReturnPage() {
         { method: "POST", body },
       );
       const result = (await response.json()) as {
-        detail?: { code?: string; message?: string };
+        detail?: { code?: string; message?: string } | string;
       };
       if (!response.ok) {
-        throw new Error(result.detail?.message ?? result.detail?.code ?? "UPLOAD_FAILED");
+        const detail =
+          typeof result.detail === "object" && result.detail
+            ? result.detail.message ?? result.detail.code
+            : typeof result.detail === "string"
+              ? result.detail
+              : undefined;
+        throw new Error(detail ?? "UPLOAD_FAILED");
       }
       setArtifact(null);
+      setDetailMessage("");
       await loadStatus(sessionId, ownerToken);
     } catch (error) {
       setPageState("error");
-      setMessageKey(error instanceof Error && error.message === "PURCHASED_CONTEXT_REQUIRED" ? "success.msg.contextRequired" : "success.msg.uploadFailed");
+      if (error instanceof Error && error.message === "PURCHASED_CONTEXT_REQUIRED") {
+        setMessageKey("success.msg.contextRequired");
+        setDetailMessage("");
+      } else {
+        setMessageKey("success.msg.uploadFailed");
+        const raw = error instanceof Error ? error.message : "";
+        setDetailMessage(
+          raw && raw !== "UPLOAD_FAILED"
+            ? `${t("success.msg.uploadFailed")} (${raw})`
+            : "",
+        );
+      }
     } finally {
       setUploading(false);
     }
@@ -425,8 +451,8 @@ export default function CheckoutReturnPage() {
                 onChange={chooseArtifact}
                 accept={
                   artifactRole === "STRATEGY_SOURCE"
-                    ? ".pine,.py,.ipynb,.zip"
-                    : ".csv,.html,.json,.txt,.zip"
+                    ? STRATEGY_SOURCE_ACCEPT
+                    : BACKTEST_EVIDENCE_ACCEPT
                 }
               />
             </label>
@@ -469,6 +495,9 @@ export default function CheckoutReturnPage() {
               {uploading ? t("success.inspecting") : t("success.uploadWithoutExecution")}
             </button>
             <p>{t("success.uploadHelp")}</p>
+            <p style={{ fontSize: 13, opacity: 0.85 }}>
+              Formats source : .pine · .py · .ipynb · .txt · .mq4 · .mq5 · .zip — même contenu (SHA-256) que l’empreinte achetée.
+            </p>
           </form>
         )}
 
