@@ -67,10 +67,11 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <h1><span data-i18n="hero.h1a">Audit your strategy,</span><br><span class="accent" data-i18n="hero.h1b">not its storytelling.</span></h1>
       <p class="lead" data-i18n="hero.lead">Upload a strategy. BacktestProof recomputes its metrics, detects biases and measures robustness — proof before promise.</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" data-magnetic href="/health-check" data-i18n="hero.ctaFree">Test my strategy for free</a>
-        <a class="btn btn-ghost" href="/crash-test/verify" data-i18n="hero.ctaVerify">Verify a certificate</a>
-      </div>
-      <div class="trust">
+              <a class="btn btn-primary" data-magnetic href="/health-check" data-i18n="hero.ctaFree">Test my strategy for free</a>
+              <a class="btn btn-ghost" href="/free-tools" data-i18n="hero.ctaTools">Explore the tools</a>
+            </div>
+            <p class="hero-proof" data-i18n="hero.proof">Free. Independent. Your code is never shared.</p>
+            <div class="trust">
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · Notebook</span></span>
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t2">Fees & slippage included</span></span>
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t3">Your code stays private</span></span>

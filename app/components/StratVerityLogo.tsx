@@ -131,11 +131,13 @@ export function StratVerityLogo({
 }) {
   const sizes = { sm: { width: 200, height: 100 }, md: { width: 400, height: 200 }, lg: { width: 600, height: 300 } };
   const { width, height } = sizes[size];
+  // Quand une className est fournie (header/footer), le CSS pilote la taille
+  // (width/height auto). Sinon la taille de reference `size` s'applique.
   return (
     <svg
       className={className}
-      width={width}
-      height={height}
+      width={className ? undefined : width}
+      height={className ? undefined : height}
       viewBox="0 0 1200 600"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

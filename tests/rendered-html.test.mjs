@@ -29,29 +29,43 @@ test("server-renders the StratVerity product page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-    assert.match(html, /StratVerity/i);
-    assert.match(html, /Illustrative example/i);
-    assert.match(html, /Essential audit/i);
-    assert.match(html, /€14\.99/i);
-    assert.match(html, /href="\/configure"/);
-    assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
-  });
+  assert.match(html, /StratVerity/i);
+  assert.match(html, /Illustrative example/i);
+  assert.match(html, /Essential audit/i);
+  assert.match(html, /€14\.99/i);
+  assert.match(html, /href="\/configure"/);
+  assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
+});
 
 test("every frontend response receives the shared security policy", async () => {
-  for (const path of ["/", "/configure", "/login", "/legal/privacy", "/cert/demo-audit"]) {
+  for (const path of [
+    "/",
+    "/configure",
+    "/login",
+    "/legal/privacy",
+    "/cert/demo-audit",
+  ]) {
     const response = await render(path);
     assert.equal(response.status, 200, path);
     const csp = response.headers.get("content-security-policy") ?? "";
     assert.match(csp, /default-src 'self'/, path);
     assert.match(csp, /object-src 'none'/, path);
     assert.match(csp, /frame-ancestors 'none'/, path);
-    assert.match(csp, /connect-src 'self' https:\/\/api\.stratverity\.com https:\/\/qxeylhrjelywtjoswyni\.supabase\.co/, path);
+    assert.match(
+      csp,
+      /connect-src 'self' https:\/\/api\.stratverity\.com https:\/\/qxeylhrjelywtjoswyni\.supabase\.co/,
+      path,
+    );
     assert.equal(
       response.headers.get("strict-transport-security"),
       "max-age=31536000; includeSubDomains",
       path,
     );
-    assert.equal(response.headers.get("x-content-type-options"), "nosniff", path);
+    assert.equal(
+      response.headers.get("x-content-type-options"),
+      "nosniff",
+      path,
+    );
     assert.equal(response.headers.get("x-frame-options"), "DENY", path);
     assert.equal(
       response.headers.get("referrer-policy"),
@@ -63,7 +77,11 @@ test("every frontend response receives the shared security policy", async () => 
       "same-origin-allow-popups",
       path,
     );
-    assert.match(response.headers.get("permissions-policy") ?? "", /camera=\(\)/, path);
+    assert.match(
+      response.headers.get("permissions-policy") ?? "",
+      /camera=\(\)/,
+      path,
+    );
     assert.equal(response.headers.get("x-xss-protection"), "0", path);
   }
 });
@@ -105,15 +123,28 @@ test("landing uses the centralized 12-language design source", async () => {
     "utf8",
   );
 
-  for (const locale of ["fr", "en", "es", "pt", "de", "it", "ru", "zh", "ko", "hi", "ar", "bn"]) {
+  for (const locale of [
+    "fr",
+    "en",
+    "es",
+    "pt",
+    "de",
+    "it",
+    "ru",
+    "zh",
+    "ko",
+    "hi",
+    "ar",
+    "bn",
+  ]) {
     assert.match(messages, new RegExp(`"${locale}"\\s*:`), locale);
   }
   assert.match(landing, /landingMarkup/);
   assert.match(landing, /prefers-reduced-motion/);
   assert.match(header, /ShieldIcon/);
-    assert.match(header, /brand-full-text/);
-    assert.match(header, /\/configure/);
-    assert.match(header, /\/login\?return_to=\/account/);
+  assert.match(header, /brand-full-text/);
+  assert.match(header, /\/configure/);
+  assert.match(header, /\/login\?return_to=\/account/);
   assert.match(layout, /<AmbientExperience \/>/);
   assert.match(ambient, /id="fx"/);
   assert.match(ambient, /data-premium-surface/);
@@ -129,19 +160,43 @@ test("application routes use the generated 12-locale catalogue with English defa
   const catalogue = await import(
     new URL(`../scripts/app-messages.mjs?test=${Date.now()}`, import.meta.url)
   );
-  const sources = await Promise.all([
-    "../app/configure/page.tsx",
-    "../app/configure/success/page.tsx",
-    "../app/admin/review-console.tsx",
-    "../app/legal/LegalPage.tsx",
-  ].map((path) => readFile(new URL(path, import.meta.url), "utf8")));
+  const sources = await Promise.all(
+    [
+      "../app/configure/page.tsx",
+      "../app/configure/success/page.tsx",
+      "../app/admin/review-console.tsx",
+      "../app/legal/LegalPage.tsx",
+    ].map((path) => readFile(new URL(path, import.meta.url), "utf8")),
+  );
 
   assert.match(provider, /useState<Locale>\("en"\)/);
   const expectedKeys = Object.keys(catalogue.appMessages.en).sort();
   assert.ok(expectedKeys.length >= 230);
-  for (const locale of ["fr", "en", "es", "pt", "de", "it", "ru", "zh", "ko", "hi", "ar", "bn"]) {
-    assert.deepEqual(Object.keys(catalogue.appMessages[locale]).sort(), expectedKeys, locale);
-    assert.ok(expectedKeys.every((key) => typeof catalogue.appMessages[locale][key] === "string"), locale);
+  for (const locale of [
+    "fr",
+    "en",
+    "es",
+    "pt",
+    "de",
+    "it",
+    "ru",
+    "zh",
+    "ko",
+    "hi",
+    "ar",
+    "bn",
+  ]) {
+    assert.deepEqual(
+      Object.keys(catalogue.appMessages[locale]).sort(),
+      expectedKeys,
+      locale,
+    );
+    assert.ok(
+      expectedKeys.every(
+        (key) => typeof catalogue.appMessages[locale][key] === "string",
+      ),
+      locale,
+    );
   }
   assert.match(sources.join("\n"), /useI18n/);
   assert.match(sources[0], /toLocaleString\(locale\)/);
@@ -174,18 +229,31 @@ test("public login offers verified email and real Supabase OAuth actions", async
   assert.match(source, /\.filter\(\(\{ value \}\) => enabled\.has\(value\)\)/);
 });
 test("contact details are public and pricing Contact Us opens them", async () => {
-  const [contact, landing] = await Promise.all([render("/contact"), render("/")]);
+  const [contact, landing] = await Promise.all([
+    render("/contact"),
+    render("/"),
+  ]);
   assert.equal(contact.status, 200);
   const contactHtml = await contact.text();
   assert.match(contactHtml, /contact@stratverity\.com/i);
   assert.match(contactHtml, /Prism Works/i);
-  assert.doesNotMatch(contactHtml, /Mathieu Sarrue|903 756 575 00028|11 avenue du Huit Mai/i);
+  assert.doesNotMatch(
+    contactHtml,
+    /Mathieu Sarrue|903 756 575 00028|11 avenue du Huit Mai/i,
+  );
   const landingHtml = await landing.text();
   assert.match(landingHtml, /href="\/contact"[^>]*data-i18n="pr\.contact"/i);
 });
 
 test("every public route receives the shared interactive art direction", async () => {
-  for (const path of ["/", "/configure", "/configure/success", "/login", "/contact", "/legal/terms"]) {
+  for (const path of [
+    "/",
+    "/configure",
+    "/configure/success",
+    "/login",
+    "/contact",
+    "/legal/terms",
+  ]) {
     const response = await render(path);
     assert.equal(response.status, 200, path);
     const html = await response.text();
@@ -197,7 +265,10 @@ test("every public route receives the shared interactive art direction", async (
 test("mobile theme follows the real document state and survives restricted storage", async () => {
   const [layout, header, css] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/components/SiteHeader.tsx", import.meta.url),
+      "utf8",
+    ),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
@@ -205,7 +276,10 @@ test("mobile theme follows the real document state and survives restricted stora
   assert.match(layout, /prefers-color-scheme: dark/);
   assert.match(layout, /dataset\.stratverityTheme/);
   assert.match(header, /document\.documentElement\.dataset\.theme === "dark"/);
-  assert.match(header, /document\.documentElement\.style\.colorScheme = nextTheme/);
+  assert.match(
+    header,
+    /document\.documentElement\.style\.colorScheme = nextTheme/,
+  );
   assert.match(header, /catch \{[\s\S]*Safari bloque le stockage local/);
   assert.match(css, /html\[data-theme="light"\]\{color-scheme:light\}/);
   assert.match(css, /\[data-theme="dark"\]\{\s*color-scheme:dark;/);
@@ -296,7 +370,10 @@ test("checkout and return page bind uploads to one browser-held owner token", as
   assert.match(returnPage, /NOT_CREATED/);
   assert.match(returnPage, /NOT_DISPATCHED/);
   assert.match(returnPage, /\/audit-reports\/\$\{draft\.draft_id\}\/access/);
-  assert.match(returnPage, /approvedReportHtml\s*\?\s*t\("success\.title\.approved"\)/);
+  assert.match(
+    returnPage,
+    /approvedReportHtml\s*\?\s*t\("success\.title\.approved"\)/,
+  );
   assert.match(returnPage, /approvedReportHtml\s*\?\s*"REPORT_APPROVED"/);
   assert.match(returnPage, /success\.deliveredTitle/);
   assert.match(returnPage, /\/audit-reports\/status/);
@@ -307,7 +384,10 @@ test("checkout and return page bind uploads to one browser-held owner token", as
 });
 
 test("private admin console keeps its bearer secret in volatile component state", async () => {
-  const page = await readFile(new URL("../app/admin/page.tsx", import.meta.url), "utf8");
+  const page = await readFile(
+    new URL("../app/admin/page.tsx", import.meta.url),
+    "utf8",
+  );
   const consoleSource = await readFile(
     new URL("../app/admin/review-console.tsx", import.meta.url),
     "utf8",
@@ -316,7 +396,10 @@ test("private admin console keeps its bearer secret in volatile component state"
   assert.match(consoleSource, /\/v1\/admin\/audit-drafts/);
   assert.match(consoleSource, /Authorization:\s*`Bearer \$\{adminSecret\}`/);
   assert.match(consoleSource, /useState\(""\)/);
-  assert.doesNotMatch(consoleSource, /localStorage|sessionStorage|NEXT_PUBLIC_.*ADMIN/);
+  assert.doesNotMatch(
+    consoleSource,
+    /localStorage|sessionStorage|NEXT_PUBLIC_.*ADMIN/,
+  );
 });
 
 test("scope configurator publishes a deterministic launch price grid", async () => {
@@ -338,10 +421,7 @@ test("scope configurator publishes a deterministic launch price grid", async () 
 
 test("deployment metadata and worker output are present", async () => {
   const hosting = JSON.parse(
-    await readFile(
-      new URL("../.openai/hosting.json", import.meta.url),
-      "utf8",
-    ),
+    await readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
   );
   assert.match(hosting.project_id, /^appgprj_/);
   await access(new URL("../dist/server/index.js", import.meta.url));
@@ -363,8 +443,14 @@ test("certification SEO indexes only genuinely sealed certificates", async () =>
     readFile(new URL("../app/cert/[id]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/cert/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/cert/certification-state.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/cert/CertificationView.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/cert/certification-state.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/cert/CertificationView.tsx", import.meta.url),
+      "utf8",
+    ),
   ]);
 
   // Métadonnées dynamiques (OpenGraph + Twitter Cards) dans la page serveur.
@@ -393,13 +479,22 @@ test("certification SEO indexes only genuinely sealed certificates", async () =>
   assert.doesNotMatch(sitemap, /\/cert\/\$\{encodeURIComponent/);
 
   // Aucun secret n'est embarqué côté public.
-  assert.doesNotMatch(page + layout + sitemap + state + view, /sk_test_|whsec_|STRIPE_SECRET_KEY|sk_live_/);
+  assert.doesNotMatch(
+    page + layout + sitemap + state + view,
+    /sk_test_|whsec_|STRIPE_SECRET_KEY|sk_live_/,
+  );
 });
 
 test("certification UI derives the three trust states from the engine", async () => {
   const [state, view, page] = await Promise.all([
-    readFile(new URL("../app/cert/certification-state.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/cert/CertificationView.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/cert/certification-state.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/cert/CertificationView.tsx", import.meta.url),
+      "utf8",
+    ),
     readFile(new URL("../app/cert/[id]/page.tsx", import.meta.url), "utf8"),
   ]);
 
@@ -438,8 +533,14 @@ test("disabled product surfaces stay out of indexing and submission", async () =
     await Promise.all([
       readFile(new URL("../app/crash-test/page.tsx", import.meta.url), "utf8"),
       readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
-      readFile(new URL("../app/crash-test/layout.tsx", import.meta.url), "utf8"),
-      readFile(new URL("../app/marketplace/layout.tsx", import.meta.url), "utf8"),
+      readFile(
+        new URL("../app/crash-test/layout.tsx", import.meta.url),
+        "utf8",
+      ),
+      readFile(
+        new URL("../app/marketplace/layout.tsx", import.meta.url),
+        "utf8",
+      ),
       readFile(new URL("../app/gallery/layout.tsx", import.meta.url), "utf8"),
     ]);
 
@@ -451,12 +552,23 @@ test("disabled product surfaces stay out of indexing and submission", async () =
   assert.match(crashPage, /id="crash-test-form"/);
   assert.match(crashPage, /form="crash-test-form"/);
   assert.match(crashPage, /disabled=\{!CRASH_TEST_AVAILABLE/);
-  assert.doesNotMatch(sitemap, /path:\s*"\/(?:crash-test|gallery|marketplace)"/);
+  assert.doesNotMatch(
+    sitemap,
+    /path:\s*"\/(?:crash-test|gallery|marketplace)"/,
+  );
   assert.doesNotMatch(sitemap, /\/v1\/certifications|\/cert\/\$\{/);
 
-  for (const layout of [crashLayout, marketplaceLayout, galleryLayout]) {
-    assert.match(layout, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
-  }
+  // Doctrine : les surfaces désactivées restent hors index (noindex conditionnel
+  // sur feature flag). Dès activée, la page devient indexable — jamais de
+  // noindex dur qui bloquerait une future mise en prod.
+  assert.match(marketplaceLayout, /index: indexable, follow: indexable/);
+  assert.match(marketplaceLayout, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
+  assert.match(crashLayout, /index: indexable, follow: indexable/);
+  assert.match(crashLayout, /NEXT_PUBLIC_CRASH_TEST_ENABLED === "true"/);
+  assert.match(
+    galleryLayout,
+    /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/,
+  );
 });
 
 test("free tools are public, localized and linked from research", async () => {
@@ -472,7 +584,10 @@ test("free tools are public, localized and linked from research", async () => {
   assert.match(html, /href="\/fees"/);
 
   const [header, messages, sitemap, article, health] = await Promise.all([
-    readFile(new URL("../app/components/SiteHeader.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/components/SiteHeader.tsx", import.meta.url),
+      "utf8",
+    ),
     readFile(new URL("../app/i18n/messages.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/learn/[slug]/page.tsx", import.meta.url), "utf8"),
@@ -489,11 +604,26 @@ test("free tools are public, localized and linked from research", async () => {
 
 test("eligibility proxy is same-site, bounded and fail-closed", async () => {
   const [proxy, session, requestRoute, confirm, evaluate] = await Promise.all([
-    readFile(new URL("../app/api/eligibility/proxy.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/eligibility/session/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/eligibility/email/request/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/eligibility/email/confirm/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/eligibility/evaluate/route.ts", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/api/eligibility/proxy.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/api/eligibility/session/route.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/api/eligibility/email/request/route.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/api/eligibility/email/confirm/route.ts", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/api/eligibility/evaluate/route.ts", import.meta.url),
+      "utf8",
+    ),
   ]);
   assert.match(proxy, /MAX_BODY_BYTES = 2 \* 1024 \* 1024/);
   assert.match(proxy, /incomingOrigin !== siteOrigin/);
@@ -509,16 +639,34 @@ test("eligibility proxy is same-site, bounded and fail-closed", async () => {
 test("marketplace remains fail-closed and proxies verified identity server-side", async () => {
   const [page, client, seller, purchase, proxy, env] = await Promise.all([
     readFile(new URL("../app/marketplace/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/marketplace/MarketplaceClient.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/marketplace/seller/SellerConsole.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/marketplace/purchase/PurchaseClient.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/marketplace/proxy.ts", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/marketplace/MarketplaceClient.tsx", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/marketplace/seller/SellerConsole.tsx", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL(
+        "../app/marketplace/purchase/PurchaseClient.tsx",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(
+      new URL("../app/api/marketplace/proxy.ts", import.meta.url),
+      "utf8",
+    ),
     readFile(new URL("../.env.example", import.meta.url), "utf8"),
   ]);
   assert.match(page, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
   assert.match(env, /NEXT_PUBLIC_MARKETPLACE_ENABLED=false/);
   assert.match(client, /hostname\.endsWith\("stripe\.com"\)/);
-  assert.match(client, /No illustrative strategy is presented as a real product/);
+  assert.match(
+    client,
+    /No illustrative strategy is presented as a real product/,
+  );
   assert.match(seller, /marketplace-seller-2026-08-21-v1/);
   assert.match(seller, /commission_bps: 1500/);
   assert.match(seller, /rights_confirmed/);
@@ -529,5 +677,8 @@ test("marketplace remains fail-closed and proxies verified identity server-side"
   assert.match(purchase, /\/api\/marketplace\/download-links/);
   assert.match(purchase, /target\.origin !== expected\.origin/);
   assert.match(purchase, /expires in 10 minutes and works once/);
-  assert.doesNotMatch(proxy + client + seller + purchase, /service_role|STRIPE_SECRET_KEY|whsec_/i);
+  assert.doesNotMatch(
+    proxy + client + seller + purchase,
+    /service_role|STRIPE_SECRET_KEY|whsec_/i,
+  );
 });
