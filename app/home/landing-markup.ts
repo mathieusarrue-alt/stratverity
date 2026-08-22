@@ -398,7 +398,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   <div class="container">
     <div class="foot-grid">
       <div>
-        <a class="brand" href="#top" style="margin-bottom:12px"><img class="brand-logo" src="/logo-officiel.png" alt="StratVerity" style="height:56px;width:auto" loading="lazy"/></a>
+        <a class="brand" href="#top" style="margin-bottom:12px"><img class="brand-logo" src="/logo-full.svg" alt="StratVerity — ALGO AUDIT & CERTIFICATION" style="height:64px;width:auto" loading="lazy"/></a>
         <p class="disclaimer" data-i18n="foot.disc">StratVerity provides an independent audit of trading strategies. Figures shown are illustrative and constitute neither investment advice nor a performance guarantee. Trading involves a risk of loss.</p>
       </div>
       <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/free-tools" data-i18n="nav.freeTools">Free Tools</a><a href="/crash-test" data-i18n="nav.crashTest">Crash-Test</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Verify a certificate</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>

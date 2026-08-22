@@ -1,0 +1,45 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="logoGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="logoShieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B121E" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#111827" stop-opacity="1"/>
+    </linearGradient>
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1E3A5F" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0B121E" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#bgGradient)"/>
+  <g transform="translate(750, 150)">
+    <path d="M75 18 L118 32 L118 72 C118 98 96 117 75 125 C54 117 32 98 32 72 L32 32 Z" fill="url(#logoShieldGradient)" stroke="#00FF9D" stroke-width="3" filter="url(#logoGlow)"/>
+    <g stroke="#00FF9D" stroke-width="1.5" opacity="0.7" fill="none">
+      <line x1="50" y1="40" x2="50" y2="60"/>
+      <line x1="60" y1="38" x2="60" y2="55"/>
+      <line x1="85" y1="40" x2="85" y2="58"/>
+      <line x1="95" y1="42" x2="95" y2="62"/>
+      <circle cx="50" cy="40" r="2" fill="#00FF9D"/>
+      <circle cx="60" cy="38" r="2" fill="#00FF9D"/>
+      <circle cx="85" cy="40" r="2" fill="#00FF9D"/>
+      <circle cx="95" cy="42" r="2" fill="#00FF9D"/>
+    </g>
+    <path d="M20 95 L60 65 L75 78 L115 28" stroke="#00FF9D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#logoGlow)"/>
+    <path d="M115 28 L98 30 L112 44 Z" fill="#00FF9D" filter="url(#logoGlow)"/>
+  </g>
+  <text x="80" y="280" font-family="Arial, sans-serif" font-size="88" font-weight="700" fill="#FFFFFF">Strat<tspan fill="#00FF9D" filter="url(#logoGlow)">Verity</tspan></text>
+  <text x="80" y="340" font-family="Arial, sans-serif" font-size="28" fill="#94A3B8" letter-spacing="2">ALGO AUDIT &amp; CERTIFICATION</text>
+  <g opacity="0.15" fill="#00FF9D">
+    <rect x="150" y="380" width="12" height="60"/>
+    <rect x="180" y="360" width="12" height="80"/>
+    <rect x="210" y="390" width="12" height="50"/>
+    <rect x="240" y="370" width="12" height="70"/>
+    <rect x="270" y="385" width="12" height="55"/>
+    <rect x="300" y="365" width="12" height="75"/>
+  </g>
+</svg>

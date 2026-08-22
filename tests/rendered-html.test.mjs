@@ -110,7 +110,7 @@ test("landing uses the centralized 12-language design source", async () => {
   }
   assert.match(landing, /landingMarkup/);
   assert.match(landing, /prefers-reduced-motion/);
-  assert.match(header, /logo-officiel\.png/);
+  assert.match(header, /StratVerityLogo/);
     assert.match(header, /\/configure/);
   assert.match(header, /\/login\?return_to=\/account/);
   assert.match(layout, /<AmbientExperience \/>/);

@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { languages } from "../i18n/messages";
 import type { Locale } from "../i18n/messages";
 import { useI18n } from "../i18n/I18nProvider";
+import { StratVerityLogo } from "./StratVerityLogo";
 
 type Theme = "light" | "dark";
 
@@ -124,7 +124,7 @@ export default function SiteHeader() {
       <div className="progress" style={{ width: `${progress}%` }} />
       <div className="container head-row">
         <Link className="brand" href="/" aria-label="StratVerity, accueil" onClick={closeMenus}>
-                  <Image className="brand-logo" src="/logo-officiel.png" alt="StratVerity" width={150} height={84} priority />
+                  <StratVerityLogo size="sm" showBackground={false} />
                 </Link>
         <nav className="nav" aria-label={t("header.primaryNav")}>
           {navItems.map(([key, href]) => (
