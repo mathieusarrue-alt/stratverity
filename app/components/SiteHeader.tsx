@@ -38,8 +38,9 @@ function applyDocumentTheme(nextTheme: Theme, persist = false) {
   }
 }
 
+/** Produit → grille tarifaire cliquable. #product = démos non cliquables. */
 const navItems = [
-  ["nav.product", "/#product"],
+  ["nav.product", "/#pricing"],
   ["nav.method", "/#method"],
   ["nav.research", "/#research"],
   ["nav.pricing", "/#pricing"],
