@@ -178,9 +178,10 @@ const englishFallbackRows = [
   ["nav.marketplace", "Marketplace", "Marketplace"],
   ["nav.verify", "Vérifier un certificat", "Verify a certificate"],
   ["nav.crashTest", "Crash-Test", "Crash-Test"],
-  ["hero.ctaFree", "Tester ma stratégie gratuitement", "Test my strategy for free"],
+  ["hero.ctaFree", "Auditez votre code en 30 secondes — Gratuit", "Audit your code in 30 seconds — Free"],
     ["hero.ctaTools", "Explorer les outils", "Explore the tools"],
-    ["hero.proof", "Gratuit. Indépendant. Votre code n'est jamais partagé.", "Free. Independent. Your code is never shared."],
+    // TODO: Remplacer "1 000+" par le compteur réel d'audits depuis le backend
+    ["hero.proof", "Déjà 1 000+ stratégies analysées · 100% indépendant · Code jamais partagé", "Over 1,000+ strategies audited · 100% independent · Code never shared"],
     ["ft.eyebrow", "OUTILS GRATUITS & DIAGNOSTIC", "FREE TOOLS & DIAGNOSTICS"],
   ["ft.title", "Un diagnostic avant l'audit, en quelques secondes.", "A quick diagnosis before the audit, in seconds."],
   ["ft.lead", "Le Health-Check et le Crash-Test scannent votre code sans le conserver : 3 secondes pour comprendre les faiblesses de votre stratégie.", "Health-Check and Crash-Test scan your code without storing it: 3 seconds to understand your strategy's weaknesses."],
