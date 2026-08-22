@@ -552,10 +552,18 @@ test("disabled product surfaces stay out of indexing and submission", async () =
   assert.match(crashPage, /id="crash-test-form"/);
   assert.match(crashPage, /form="crash-test-form"/);
   assert.match(crashPage, /disabled=\{!CRASH_TEST_AVAILABLE/);
-  assert.doesNotMatch(
-    sitemap,
-    /path:\s*"\/(?:crash-test|gallery|marketplace)"/,
-  );
+  // Marketplace & crash-test sont conditionnels au feature flag (runtime) :
+  // jamais dans le sitemap tant que leur flag est off. Gallery reste exclu.
+  assert.match(sitemap, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
+  assert.match(sitemap, /NEXT_PUBLIC_CRASH_TEST_ENABLED === "true"/);
+  assert.match(sitemap, /if \(marketplaceEnabled\)/);
+  assert.match(sitemap, /if \(crashTestEnabled\)/);
+  // Gallery n'a pas de flag : il ne figure jamais au sitemap.
+  assert.doesNotMatch(sitemap, /path:\s*"\/gallery"/);
+  // Les surfaces flaggées ne sont déclarées QUE via routes.push (dans un if) :
+  // elles ne doivent pas apparaître en entrée directe du tableau statique.
+  assert.match(sitemap, /routes\.push\(\{\s*path: "\/marketplace"/);
+  assert.match(sitemap, /routes\.push\(\{\s*path: "\/crash-test"/);
   assert.doesNotMatch(sitemap, /\/v1\/certifications|\/cert\/\$\{/);
 
   // Doctrine : les surfaces désactivées restent hors index (noindex conditionnel
