@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { languages } from "../i18n/messages";
 import type { Locale } from "../i18n/messages";
 import { useI18n } from "../i18n/I18nProvider";
-import { StratVerityLogo } from "./StratVerityLogo";
+import { ShieldIcon } from "./StratVerityLogo";
 
 type Theme = "light" | "dark";
 
@@ -124,7 +124,8 @@ export default function SiteHeader() {
       <div className="progress" style={{ width: `${progress}%` }} />
       <div className="container head-row">
         <Link className="brand" href="/" aria-label="StratVerity, accueil" onClick={closeMenus}>
-                  <StratVerityLogo size="sm" showBackground={false} />
+                  <ShieldIcon className="brand-shield" />
+                  <span className="brand-full-text">Strat<span>Verity</span></span>
                 </Link>
         <nav className="nav" aria-label={t("header.primaryNav")}>
           {navItems.map(([key, href]) => (
