@@ -1,39 +1,63 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { landingMarkup } from "./landing-markup";
 import { messages } from "../i18n/messages";
 import type { MessageKey } from "../i18n/messages";
 import { useI18n } from "../i18n/I18nProvider";
+import TrustBadges from "./TrustBadges";
+import IntegrationsGrid from "./IntegrationsGrid";
 
+/**
+ * Landing markup is owned imperatively after first paint.
+ * React must NEVER re-apply dangerouslySetInnerHTML on locale change —
+ * that wiped [data-reveal].in and left the page visually blank until F5.
+ */
 export default function LandingPage() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const mountedRef = useRef(false);
+  const bootstrappedRef = useRef(false);
   const { locale } = useI18n();
+  const [trustHost, setTrustHost] = useState<Element | null>(null);
+  const [integHost, setIntegHost] = useState<Element | null>(null);
 
-  // 1) Marquer le mount — les effets DOM ne tournent qu'une seule fois.
-  useEffect(() => {
-    mountedRef.current = true;
-  }, []);
-
-  // 2) Ré-application des traductions SEULE (ne touche ni matrix, ni ticker,
-  //    ni les listeners). N'écrit jamais innerHTML si la valeur est absente.
+  // —— Bootstrap once: inject markup, hosts, interactive effects ——
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || !mountedRef.current) return;
-    const localized = messages[locale] as Partial<Record<MessageKey, string>>;
-    root.querySelectorAll<HTMLElement>("[data-i18n]").forEach((element) => {
-      const key = element.dataset.i18n as MessageKey | undefined;
-      if (!key) return;
-      // Fallback : locale active → anglais → français.
-      const value = localized[key] ?? messages.en[key] ?? messages.fr[key];
-      if (value != null) element.innerHTML = value;
-    });
-  }, [locale]);
+    if (!root || bootstrappedRef.current) return;
+    bootstrappedRef.current = true;
 
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    // Imperative injection — React will not manage this subtree thereafter.
+    root.innerHTML = landingMarkup;
+
+    // Portal hosts (create if missing so we never edit generated landing-markup.ts)
+    let trust = root.querySelector("#trust-badges-mount");
+    if (!trust) {
+      trust = document.createElement("div");
+      trust.id = "trust-badges-mount";
+      const ticker = root.querySelector(".ticker");
+      if (ticker?.parentNode) ticker.parentNode.insertBefore(trust, ticker);
+      else {
+        const hero = root.querySelector(".hero");
+        if (hero?.parentNode) hero.parentNode.insertBefore(trust, hero.nextSibling);
+        else root.appendChild(trust);
+      }
+    }
+
+    let integ = root.querySelector("#integrations-mount");
+    if (!integ) {
+      integ = document.createElement("div");
+      integ.id = "integrations-mount";
+      const freeTools = root.querySelector("#free-tools");
+      const locked = root.querySelector(".locked")?.closest("section");
+      if (freeTools?.parentNode) freeTools.parentNode.insertBefore(integ, freeTools.nextSibling);
+      else if (locked?.parentNode) locked.parentNode.insertBefore(integ, locked);
+      else root.appendChild(integ);
+    }
+
+    setTrustHost(trust);
+    setIntegHost(integ);
+
     const controller = new AbortController();
     const { signal } = controller;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -44,19 +68,54 @@ export default function LandingPage() {
       const assets = ["BTC", "ETH", "SOL", "XRP", "ADA", "LINK", "LTC", "DOGE"];
       const timeframes = ["15m", "1H", "4H", "1D"];
       const states = [
-        ["pass", "warn", "pass", "pass"], ["pass", "pass", "pass", "warn"],
-        ["warn", "pass", "pass", "pass"], ["fail", "warn", "pass", "pass"],
-        ["warn", "pass", "pass", "fail"], ["pass", "pass", "warn", "pass"],
-        ["pass", "warn", "pass", "pass"], ["fail", "pass", "pass", "warn"],
+        ["pass", "warn", "pass", "pass"],
+        ["pass", "pass", "pass", "warn"],
+        ["warn", "pass", "pass", "pass"],
+        ["fail", "warn", "pass", "pass"],
+        ["warn", "pass", "pass", "fail"],
+        ["pass", "pass", "warn", "pass"],
+        ["pass", "warn", "pass", "pass"],
+        ["fail", "pass", "pass", "warn"],
       ];
       matrix.style.setProperty("--n", String(timeframes.length));
-      matrix.innerHTML = `<div class="collbl"></div>${timeframes.map((timeframe) => `<div class="collbl matrix-timeframe">${timeframe}</div>`).join("")}${assets.map((asset, row) => `<div class="rowlbl">${asset}</div>${timeframes.map((timeframe, column) => { const state = states[row][column]; const symbol = state === "pass" ? "✓" : state === "warn" ? "~" : "✕"; return `<div class="cell ${state}" style="transition-delay:${(row * timeframes.length + column) * 18}ms" title="${asset} ${timeframe}">${symbol}</div>`; }).join("")}`).join("")}`;
+      matrix.innerHTML = `<div class="collbl"></div>${timeframes
+        .map((tf) => `<div class="collbl matrix-timeframe">${tf}</div>`)
+        .join("")}${assets
+        .map(
+          (asset, row) =>
+            `<div class="rowlbl">${asset}</div>${timeframes
+              .map((tf, col) => {
+                const state = states[row][col];
+                const symbol = state === "pass" ? "✓" : state === "warn" ? "~" : "✕";
+                return `<div class="cell ${state}" style="transition-delay:${
+                  (row * timeframes.length + col) * 18
+                }ms" title="${asset} ${tf}">${symbol}</div>`;
+              })
+              .join("")}`,
+        )
+        .join("")}`;
     }
 
     const ticker = root.querySelector<HTMLElement>("#ticker");
     if (ticker) {
-      const data = [["BTC", "1.28", "u"], ["ETH", "1.41", "u"], ["SOL", "1.12", "u"], ["XRP", "0.94", "d"], ["ADA", "1.18", "u"], ["LINK", "1.33", "u"], ["LTC", "1.07", "u"], ["DOGE", "0.88", "d"], ["AVAX", "1.22", "u"], ["BNB", "1.05", "u"]];
-      const run = data.map(([asset, factor, trend]) => `<span class="it"><b>${asset}</b> PF <span class="${trend}">${factor}</span></span>`).join("");
+      const data = [
+        ["BTC", "1.28", "u"],
+        ["ETH", "1.41", "u"],
+        ["SOL", "1.12", "u"],
+        ["XRP", "0.94", "d"],
+        ["ADA", "1.18", "u"],
+        ["LINK", "1.33", "u"],
+        ["LTC", "1.07", "u"],
+        ["DOGE", "0.88", "d"],
+        ["AVAX", "1.22", "u"],
+        ["BNB", "1.05", "u"],
+      ];
+      const run = data
+        .map(
+          ([asset, factor, trend]) =>
+            `<span class="it"><b>${asset}</b> PF <span class="${trend}">${factor}</span></span>`,
+        )
+        .join("");
       ticker.innerHTML = run + run;
     }
 
@@ -79,26 +138,24 @@ export default function LandingPage() {
       animationFrames.add(window.requestAnimationFrame(tick));
     };
 
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("in");
-        entry.target.querySelectorAll<HTMLElement>("[data-count]").forEach((counter) => {
-          if (!counter.dataset.done) {
-            counter.dataset.done = "1";
-            if (!reduced) countUp(counter);
-          }
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("in");
+          entry.target.querySelectorAll<HTMLElement>("[data-count]").forEach((counter) => {
+            if (!counter.dataset.done) {
+              counter.dataset.done = "1";
+              if (!reduced) countUp(counter);
+            }
+          });
+          observer.unobserve(entry.target);
         });
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.18 });
-    root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => revealObserver.observe(element));
+      },
+      { threshold: 0.18 },
+    );
+    root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => revealObserver.observe(el));
 
-    // --- Correctif anti-page-blanche (hydratation / accès direct) ---
-    // IntersectionObserver peut ne pas se déclencher au premier rendu (onglet
-    // en arrière-plan, accès direct à la route, SSR→CSR). Deux sécurités :
-    // 1) révéler immédiatement tout élément déjà dans le viewport ;
-    // 2) un timeout de secours force `.in` sur ce qui resterait masqué.
     const revealNow = (element: HTMLElement) => {
       if (element.classList.contains("in")) return;
       element.classList.add("in");
@@ -109,29 +166,31 @@ export default function LandingPage() {
         }
       });
     };
-    const forceRevealVisible = () => {
-      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) revealNow(element);
-      });
-    };
-    forceRevealVisible();
+    root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) revealNow(element);
+    });
     const fallbackTimer = window.setTimeout(() => {
-      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
-        if (!element.classList.contains("in")) element.classList.add("in");
+      root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => {
+        if (!el.classList.contains("in")) el.classList.add("in");
       });
     }, 1500);
 
-
     const radial = root.querySelector<HTMLElement>("#radial");
     const arc = root.querySelector<SVGGeometryElement>("#radialArc");
-    const radialObserver = radial && arc ? new IntersectionObserver((entries, observer) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        arc.style.transition = "stroke-dashoffset 1.4s var(--ease)";
-        arc.style.strokeDashoffset = String(452 - (452 * 74) / 100);
-        observer.disconnect();
-      }
-    }, { threshold: 0.4 }) : null;
+    const radialObserver =
+      radial && arc
+        ? new IntersectionObserver(
+            (entries, observer) => {
+              if (entries.some((e) => e.isIntersecting)) {
+                arc.style.transition = "stroke-dashoffset 1.4s var(--ease)";
+                arc.style.strokeDashoffset = String(452 - (452 * 74) / 100);
+                observer.disconnect();
+              }
+            },
+            { threshold: 0.4 },
+          )
+        : null;
     if (radial && radialObserver) radialObserver.observe(radial);
 
     const chart = root.querySelector<SVGSVGElement>("#heroChart");
@@ -141,59 +200,86 @@ export default function LandingPage() {
     const tip = root.querySelector<HTMLElement>("#chartTip");
     const chartWrap = root.querySelector<HTMLElement>("#chartWrap");
     if (chart && curve && cross && dot && tip && chartWrap) {
-      const length = curve.getTotalLength();
-      chartWrap.addEventListener("pointermove", (event) => {
-        const rect = chart.getBoundingClientRect();
-        const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-        const targetX = 4 + ratio * 312;
-        let low = 0;
-        let high = length;
-        let point = curve.getPointAtLength(0);
-        for (let index = 0; index < 18; index += 1) {
-          const middle = (low + high) / 2;
-          point = curve.getPointAtLength(middle);
-          if (point.x < targetX) low = middle; else high = middle;
-        }
-        cross.setAttribute("x1", String(point.x)); cross.setAttribute("x2", String(point.x)); cross.setAttribute("opacity", ".5");
-        dot.setAttribute("cx", String(point.x)); dot.setAttribute("cy", String(point.y)); dot.setAttribute("opacity", "1");
-        tip.textContent = `×${(1 + ratio * ratio * 3.1).toFixed(2)} net`;
-        tip.style.opacity = "1"; tip.style.left = `${(point.x / 320) * rect.width}px`; tip.style.top = `${(point.y / 120) * rect.height + 8}px`;
-      }, { signal });
-      chartWrap.addEventListener("pointerleave", () => { cross.setAttribute("opacity", "0"); dot.setAttribute("opacity", "0"); tip.style.opacity = "0"; }, { signal });
+      chartWrap.addEventListener(
+        "pointermove",
+        (event) => {
+          const rect = chart.getBoundingClientRect();
+          const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+          const targetX = 4 + ratio * 312;
+          let low = 0;
+          let high = curve.getTotalLength();
+          let point = curve.getPointAtLength(0);
+          for (let i = 0; i < 18; i += 1) {
+            const mid = (low + high) / 2;
+            point = curve.getPointAtLength(mid);
+            if (point.x < targetX) low = mid;
+            else high = mid;
+          }
+          cross.setAttribute("x1", String(point.x));
+          cross.setAttribute("x2", String(point.x));
+          cross.setAttribute("opacity", ".5");
+          dot.setAttribute("cx", String(point.x));
+          dot.setAttribute("cy", String(point.y));
+          dot.setAttribute("opacity", "1");
+          tip.textContent = `×${(1 + ratio * ratio * 3.1).toFixed(2)} net`;
+          tip.style.opacity = "1";
+          tip.style.left = `${(point.x / 320) * rect.width}px`;
+          tip.style.top = `${(point.y / 120) * rect.height + 8}px`;
+        },
+        { signal },
+      );
+      chartWrap.addEventListener(
+        "pointerleave",
+        () => {
+          cross.setAttribute("opacity", "0");
+          dot.setAttribute("opacity", "0");
+          tip.style.opacity = "0";
+        },
+        { signal },
+      );
     }
 
     if (window.matchMedia("(pointer: fine)").matches && !reduced) {
       root.querySelectorAll<HTMLElement>("[data-tilt]").forEach((element) => {
-        element.addEventListener("pointermove", (event) => {
-          const rect = element.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width;
-          const y = (event.clientY - rect.top) / rect.height;
-          element.style.transform = `perspective(900px) rotateX(${(0.5 - y) * 8}deg) rotateY(${(x - 0.5) * 10}deg) translateY(-4px)`;
-          element.style.setProperty("--cx", `${x * 100}%`); element.style.setProperty("--cy", `${y * 100}%`);
-          const glare = element.querySelector<HTMLElement>(".glare");
-          glare?.style.setProperty("--gx", `${x * 100}%`); glare?.style.setProperty("--gy", `${y * 100}%`);
+        element.addEventListener(
+          "pointermove",
+          (event) => {
+            const rect = element.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width;
+            const y = (event.clientY - rect.top) / rect.height;
+            element.style.transform = `perspective(900px) rotateX(${(0.5 - y) * 8}deg) rotateY(${(x - 0.5) * 10}deg) translateY(-4px)`;
+            element.style.setProperty("--cx", `${x * 100}%`);
+            element.style.setProperty("--cy", `${y * 100}%`);
+            const glare = element.querySelector<HTMLElement>(".glare");
+            glare?.style.setProperty("--gx", `${x * 100}%`);
+            glare?.style.setProperty("--gy", `${y * 100}%`);
+          },
+          { signal },
+        );
+        element.addEventListener("pointerleave", () => {
+          element.style.transform = "";
         }, { signal });
-        element.addEventListener("pointerleave", () => { element.style.transform = ""; }, { signal });
       });
       root.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((element) => {
-        element.addEventListener("pointermove", (event) => {
-          const rect = element.getBoundingClientRect();
-          element.style.transform = `translate(${(event.clientX - rect.left - rect.width / 2) * 0.25}px, ${(event.clientY - rect.top - rect.height / 2) * 0.35}px)`;
+        element.addEventListener(
+          "pointermove",
+          (event) => {
+            const rect = element.getBoundingClientRect();
+            element.style.transform = `translate(${(event.clientX - rect.left - rect.width / 2) * 0.25}px, ${(event.clientY - rect.top - rect.height / 2) * 0.35}px)`;
+          },
+          { signal },
+        );
+        element.addEventListener("pointerleave", () => {
+          element.style.transform = "";
         }, { signal });
-        element.addEventListener("pointerleave", () => { element.style.transform = ""; }, { signal });
       });
     }
 
-    // --- Branchement des mini-charts lightweight-charts dans #product (.viz) ---
     let chartsHandle: { unmount: () => void } | null = null;
     let chartsCancelled = false;
     void import("./mountProductCharts").then(({ mountProductCharts }) => {
       if (chartsCancelled || !root) return;
-      chartsHandle = mountProductCharts({
-        root,
-        height: 90,
-        persistData: true,
-      });
+      chartsHandle = mountProductCharts({ root, height: 90, persistData: true });
     });
 
     return () => {
@@ -203,9 +289,38 @@ export default function LandingPage() {
       window.clearTimeout(fallbackTimer);
       revealObserver.disconnect();
       radialObserver?.disconnect();
-      animationFrames.forEach((frame) => window.cancelAnimationFrame(frame));
+      animationFrames.forEach((f) => window.cancelAnimationFrame(f));
     };
   }, []);
 
-  return <div ref={rootRef} dangerouslySetInnerHTML={{ __html: landingMarkup }} />;
+  // —— Locale change: patch text only + keep reveals visible ——
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || !bootstrappedRef.current) return;
+
+    const localized = messages[locale] as Partial<Record<MessageKey, string>>;
+    root.querySelectorAll<HTMLElement>("[data-i18n]").forEach((element) => {
+      const key = element.dataset.i18n as MessageKey | undefined;
+      if (!key) return;
+      const value = localized[key] ?? messages.en[key] ?? messages.fr[key];
+      if (value == null || value === "") return;
+      if (element.children.length === 0) element.textContent = value;
+      else element.innerHTML = value;
+    });
+
+    // Critical: if anything stripped .in, restore visibility immediately
+    // (no blank page, no F5 required).
+    root.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => {
+      el.classList.add("in");
+    });
+  }, [locale]);
+
+  // Empty shell — markup is injected imperatively, not via dangerouslySetInnerHTML.
+  return (
+    <>
+      <div ref={rootRef} suppressHydrationWarning />
+      {trustHost ? createPortal(<TrustBadges />, trustHost) : null}
+      {integHost ? createPortal(<IntegrationsGrid />, integHost) : null}
+    </>
+  );
 }
