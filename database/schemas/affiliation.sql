@@ -116,6 +116,38 @@ CREATE TRIGGER consent_logs_no_update BEFORE UPDATE ON consent_logs
 CREATE TRIGGER consent_logs_no_delete BEFORE DELETE ON consent_logs
   FOR EACH ROW EXECUTE FUNCTION consent_logs_no_mutation();
 
+-- 7) ⭐ Bonus one-shot DIFFÉRÉS (fenêtre anti-remboursement `encashmentConfirmed`).
+--    À l'encaissement initial, seuls la commission (immédiate) et le compte HT sont
+--    journalisés. Les bonus one-shot (prime HT, jackpot) sont EN ATTENTE ici tant que
+--    la fenêtre n'est pas confirmée :
+--      - one-off (Audit, Crash-Test, Labo) : 14 jours après paiement
+--      - abonnement (Radar, Auto-Pilot, Marketplace) : à partir du 2e mois payé (billingCycle >= 2)
+--    Le job différé `encashmentJob.js` (cron) rebascule status pending -> granted une
+--    fois la fenêtre passée, puis enregistre les bonus dans commission_ledger.
+CREATE TABLE pending_bonuses (
+  id               BIGSERIAL PRIMARY KEY,
+  influencer_id    TEXT NOT NULL REFERENCES influencers(id),
+  customer_id      TEXT NOT NULL,
+  transaction_id   TEXT NOT NULL,            -- charge / invoice Stripe
+  product          TEXT NOT NULL,
+  tier             TEXT NOT NULL,
+  -- Contexte nécessaire au RECALCUL du bonus au déblocage (état du moment) :
+  is_ht            BOOLEAN NOT NULL DEFAULT FALSE,  -- cette tx qualifie high-ticket (panier >= 98 € HT)
+  net_amount_cents BIGINT NOT NULL,          -- montant net encaissé (base commission)
+  cart_total_ht_cents BIGINT NOT NULL,       -- total HT du panier (qualifie le HT)
+  type             TEXT NOT NULL CHECK (type IN ('one_time','subscription')),
+  billing_cycle    INTEGER,                  -- N° de mois (subs) ; requis pour >= 2
+  -- Échéance de la fenêtre de rétention (one-off T+14 j ; subs 2e mois confirmé)
+  window_end_at    TIMESTAMPTZ NOT NULL,
+  status           TEXT NOT NULL DEFAULT 'pending'
+                     CHECK (status IN ('pending','granted','cancelled')),
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  granted_at       TIMESTAMPTZ,
+  -- Un même paiement ne produit qu'UN bonus différé par type de produit
+  UNIQUE (transaction_id, product)
+);
+CREATE INDEX idx_pending_bonuses_due ON pending_bonuses(status, window_end_at);
+
 -- ============================================================================
 --  NOTES D'INTÉGRATION
 --  · Idempotence : à la réception d'un webhook, INSERT dans processed_stripe_events ;
