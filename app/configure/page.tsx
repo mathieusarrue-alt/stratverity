@@ -11,6 +11,8 @@ import type { Locale, MessageKey } from "../i18n/messages";
 const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
   "https://api.stratverity.com";
+const SHOW_TEST_BANNER =
+  process.env.NEXT_PUBLIC_STRIPE_TEST_MODE === "true";
 
 const ASSET_PRESETS = [
   "BINANCE:BTCUSDT",
@@ -489,9 +491,11 @@ export default function ScopeConfiguratorPage() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.betaBanner}>
-        {t("configure.betaBanner")}
-      </div>
+      {SHOW_TEST_BANNER ? (
+        <div className={styles.betaBanner}>
+          {t("configure.betaBanner")}
+        </div>
+      ) : null}
 
       <section className={styles.intro}>
         <div>

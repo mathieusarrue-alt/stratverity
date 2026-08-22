@@ -41,12 +41,9 @@ function applyDocumentTheme(nextTheme: Theme, persist = false) {
 const navItems = [
   ["nav.product", "/#product"],
   ["nav.method", "/#method"],
-  ["nav.research", "/#research"],
-  ["nav.pricing", "/#pricing"],
   ["nav.freeTools", "/free-tools"],
-  ["nav.marketplace", "/marketplace"],
-  ["nav.faq", "/#faq"],
-  ["common.contact", "/contact"],
+  ["nav.pricing", "/#pricing"],
+  ["nav.verify", "/cert"],
 ] as const;
 
 export default function SiteHeader() {

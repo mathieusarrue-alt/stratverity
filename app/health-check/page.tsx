@@ -373,6 +373,26 @@ export default function HealthCheckPage() {
             </div>
           )}
 
+          <section className={styles.lockedReport} aria-labelledby="locked-report-title">
+            <div className={styles.lockedHeader}>
+              <span>{t("health.lockedEyebrow")}</span>
+              <span className={styles.lockedBadge}>🔒 {t("health.lockedBadge")}</span>
+            </div>
+            <h2 id="locked-report-title">{t("health.lockedTitle")}</h2>
+            <p>{t("health.lockedBody")}</p>
+            <div className={styles.lockedMetrics}>
+              {(["health.lockedMetricFees", "health.lockedMetricWalkForward", "health.lockedMetricStability"] as const).map((key) => (
+                <div className={styles.lockedMetric} key={key}>
+                  <span>{t(key)}</span>
+                  <span className={styles.lockedValue} aria-hidden="true" />
+                </div>
+              ))}
+            </div>
+            <Link href="/configure" className={styles.lockedCta}>
+              {t("health.lockedCta")} <span aria-hidden="true">→</span>
+            </Link>
+          </section>
+
           <div className={styles.cta}>
             <p>{result.cta}</p>
             <Link href="/configure" className={styles.ctaButton}>

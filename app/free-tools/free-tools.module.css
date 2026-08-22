@@ -13,7 +13,19 @@
 .card p { margin: 0 0 28px; color: var(--ink-2); line-height: 1.65; }
 .card > span:last-child { position: absolute; bottom: 28px; color: var(--brand); font-weight: 750; }
 .notice { max-width: 760px; margin: 28px auto 0; color: var(--ink-3); text-align: center; font-size: .86rem; }
-.compare { margin-top: 56px; }
-.compare h2 { margin: 0 0 20px; font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: -.03em; }
-@media (max-width: 820px) { .grid { grid-template-columns: 1fr; } .card { min-height: 240px; } }
+.comparison { margin-top: 72px; }
+.compareIntro { max-width: 720px; margin-bottom: 28px; }
+.compareIntro h2 { margin: 0 0 12px; font-size: clamp(1.9rem, 4vw, 3rem); letter-spacing: -.04em; }
+.compareIntro p { margin: 0; color: var(--ink-2); font-size: 1rem; line-height: 1.7; }
+.tierGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.tierCard { display: flex; min-height: 390px; flex-direction: column; padding: 28px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: color-mix(in oklab, var(--surface) 96%, transparent); box-shadow: var(--shadow-sm); }
+.featuredTier { border-color: color-mix(in oklab, var(--accent) 55%, var(--line)); box-shadow: var(--shadow-md); }
+.tierIndex { color: var(--brand); font: 750 11px/1 var(--mono); letter-spacing: .12em; }
+.tierCard h3 { margin: 20px 0 10px; font-size: 1.45rem; }
+.tierCard > p { min-height: 78px; margin: 0; color: var(--ink-2); line-height: 1.6; }
+.tierList { display: grid; gap: 12px; margin: 24px 0; padding: 0; list-style: none; }
+.tierList li { position: relative; padding-inline-start: 24px; color: var(--ink-2); line-height: 1.5; }
+.tierList li::before { content: "✓"; position: absolute; inset-inline-start: 0; color: var(--brand); font-weight: 800; }
+.tierCta { margin-top: auto; color: var(--brand); font-weight: 780; text-decoration: none; }
+@media (max-width: 820px) { .grid, .tierGrid { grid-template-columns: 1fr; } .card { min-height: 240px; } .tierCard { min-height: auto; } .tierCard > p { min-height: 0; } }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }

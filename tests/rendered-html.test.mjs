@@ -99,6 +99,7 @@ test("server-renders the Audit and Scan scope configurator", async () => {
   assert.match(html, /No strategy code is sent/i);
   assert.match(html, /Essential/i);
   assert.match(html, /€14\.99|€14,99/i);
+  assert.doesNotMatch(html, /STRIPE TEST ONLY|STRIPE TEST UNIQUEMENT/i);
 });
 
 test("landing uses the centralized 12-language design source", async () => {
@@ -141,6 +142,7 @@ test("landing uses the centralized 12-language design source", async () => {
   }
   assert.match(landing, /landingMarkup/);
   assert.match(landing, /prefers-reduced-motion/);
+  assert.doesNotMatch(messages, /1[,. ]000\+ (?:strategies|stratégies)/i);
   assert.match(header, /ShieldIcon/);
   assert.match(header, /brand-full-text/);
   assert.match(header, /\/configure/);
@@ -590,6 +592,10 @@ test("free tools are public, localized and linked from research", async () => {
   assert.match(html, /href="\/health-check"/);
   assert.match(html, /href="\/score"/);
   assert.match(html, /href="\/fees"/);
+  assert.match(html, /From diagnosis to proof/i);
+  assert.match(html, /Full Audit/i);
+  assert.match(html, /Certification/i);
+  assert.doesNotMatch(html, /10[,. ]000\s*€/i);
 
   const [header, messages, sitemap, article, health] = await Promise.all([
     readFile(
@@ -606,6 +612,8 @@ test("free tools are public, localized and linked from research", async () => {
   assert.match(sitemap, /path: "\/free-tools"/);
   assert.match(article, /href="\/health-check"/);
   assert.match(health, /useI18n/);
+  assert.match(health, /health\.lockedTitle/);
+  assert.match(health, /lockedMetrics/);
   assert.match(health, /href="\/configure"/);
   assert.doesNotMatch(health, /href="\/crash-test"/);
 });

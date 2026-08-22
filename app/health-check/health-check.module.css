@@ -197,6 +197,24 @@
   margin-top: 2px;
 }
 
+.lockedReport {
+  margin-top: 28px;
+  padding: clamp(20px, 4vw, 28px);
+  border: 1px solid color-mix(in oklab, var(--hc-mint) 28%, var(--hc-border));
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(0, 255, 157, 0.07), rgba(15, 23, 36, 0.78));
+}
+.lockedHeader { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.lockedHeader > span:first-child { color: var(--hc-mint); font: 700 11px/1.2 var(--mono); letter-spacing: .11em; }
+.lockedBadge { padding: 6px 9px; border: 1px solid var(--hc-border); border-radius: 999px; color: var(--hc-muted); font: 700 11px/1 var(--mono); }
+.lockedReport h2 { margin: 16px 0 8px; font-family: var(--display); font-size: clamp(1.45rem, 3vw, 2rem); }
+.lockedReport > p { margin: 0; max-width: 720px; color: var(--hc-muted); line-height: 1.65; }
+.lockedMetrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+.lockedMetric { display: grid; gap: 12px; min-height: 104px; padding: 14px; border: 1px solid var(--hc-border); border-radius: 12px; background: rgba(7, 11, 17, .52); color: var(--hc-ink); font-size: 13px; line-height: 1.4; }
+.lockedValue { display: block; width: 72%; height: 11px; border-radius: 99px; background: linear-gradient(90deg, rgba(148, 163, 184, .16), rgba(148, 163, 184, .36), rgba(148, 163, 184, .16)); filter: blur(2px); }
+.lockedCta { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; margin-top: 20px; color: var(--hc-mint); font-weight: 800; text-decoration: none; }
+.lockedCta:hover { text-decoration: underline; text-underline-offset: 4px; }
+
 /* CTA audit payant */
 .cta {
   margin-top: 28px;
@@ -298,6 +316,8 @@
   .scanButton { width: 100%; }
   .gauge { margin: 0 auto; }
   .verdictBlock { text-align: center; justify-items: center; }
+  .lockedHeader { align-items: flex-start; flex-direction: column; }
+  .lockedMetrics { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }

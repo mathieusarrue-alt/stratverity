@@ -14,8 +14,9 @@
   gap: clamp(34px, 7vw, 88px);
   grid-template-columns: minmax(0, 1fr) minmax(280px, 350px);
   margin: 0 auto;
-  max-width: var(--container);
-  padding: clamp(62px, 8vw, 100px) 24px 52px;
+  max-width: 1280px;
+  padding: clamp(62px, 8vw, 100px) 0 52px;
+  width: calc(100% - 48px);
 }
 
 .eyebrow {
@@ -64,13 +65,13 @@
 
 .privacyNote strong {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   margin: 18px 0 8px;
 }
 
 .privacyNote p {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.65;
   margin: 0;
 }
@@ -81,10 +82,12 @@
   color: var(--ink);
   display: grid;
   gap: 28px;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 410px);
+  grid-template-columns: minmax(0, 800px) minmax(320px, 360px);
+  justify-content: space-between;
   margin: 0 auto;
-  max-width: var(--container);
-  padding: 32px 24px 100px;
+  max-width: 1280px;
+  padding: 32px 0 100px;
+  width: calc(100% - 48px);
 }
 
 .builder {
@@ -151,7 +154,7 @@
 
 .productChoices small {
   color: var(--ink-2);
-  font: 650 9px var(--mono), monospace;
+  font: 650 11px var(--mono), monospace;
   text-transform: uppercase;
 }
 
@@ -163,8 +166,8 @@
 
 .productChoices p {
   color: var(--ink-2);
-  font-size: 12px;
-  line-height: 1.55;
+  font-size: 16px;
+  line-height: 1.6;
   margin: 0;
 }
 
@@ -211,13 +214,13 @@
 }
 
 .filePicker strong {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .filePicker small,
 .emptyLine {
   color: var(--ink-3);
-  font-size: 10px;
+  font-size: 14px;
   margin-top: 8px;
 }
 
@@ -247,12 +250,12 @@
 }
 
 .strategyList li strong {
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .strategyList li small {
   color: var(--ink-3);
-  font: 500 8px var(--mono), monospace;
+  font: 500 12px var(--mono), monospace;
 }
 
 .strategyList li button {
@@ -292,7 +295,7 @@
   display: flex;
   font-size: 12px;
   gap: 11px;
-  min-width: 142px;
+  min-width: 160px;
   padding: 13px 15px;
   text-align: left;
 }
@@ -320,11 +323,11 @@
 .assetIcon[data-asset="NDX"] { background: #126ca7; border-color: #126ca7; color: #fff; font-size: 17px; }
 
 .assetLabel { display: grid; gap: 3px; }
-.assetLabel strong { font-size: 11px; }
+.assetLabel strong { font-size: 13px; }
 
 .chips button small {
   color: var(--ink-3);
-  font: 600 7px var(--mono), monospace;
+  font: 600 10px var(--mono), monospace;
 }
 
 .chips .activeChip,
@@ -350,7 +353,7 @@
 .customAsset > label,
 .scanOptions > label {
   color: var(--ink-3);
-  font: 650 9px var(--mono), monospace;
+  font: 650 11px var(--mono), monospace;
   text-transform: uppercase;
 }
 
@@ -365,7 +368,7 @@
   border-radius: 11px;
   color: var(--ink);
   flex: 1;
-  font-size: 12px;
+  font-size: 16px;
   min-width: 0;
   padding: 13px;
 }
@@ -376,8 +379,9 @@
   color: var(--surface);
   cursor: pointer;
   border-radius: 11px;
-  font-size: 11px;
+  font-size: 14px;
   margin-left: 8px;
+  min-height: 44px;
   padding: 0 18px;
 }
 
@@ -400,12 +404,13 @@
 }
 
 .optionGrid button strong {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .optionGrid button small {
   color: var(--ink-3);
-  font-size: 9px;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .scanOptions {
@@ -449,7 +454,7 @@
 
 .summaryHead span,
 .summaryHead strong {
-  font: 700 8px var(--mono), monospace;
+  font: 700 10px var(--mono), monospace;
   letter-spacing: 0.12em;
 }
 
@@ -477,12 +482,12 @@
 
 .contextNumber span {
   color: #a9bcb3;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .formula {
   color: #90a49a;
-  font: 500 9px var(--mono), monospace;
+  font: 500 12px var(--mono), monospace;
   margin: 18px 0 34px;
 }
 
@@ -511,14 +516,14 @@
 
 .livePrice > strong small {
   color: #a9bcb3;
-  font: 600 10px var(--mono), monospace;
+  font: 600 12px var(--mono), monospace;
   letter-spacing: 0;
 }
 
 .livePrice > p,
 .livePrice > div {
   color: #90a49a;
-  font-size: 9px;
+  font-size: 13px;
   line-height: 1.6;
   margin: 0;
 }
@@ -547,7 +552,7 @@
 .priceBreakdown summary {
   color: #c5d8cd;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .priceBreakdown dl {
@@ -566,7 +571,7 @@
 .priceBreakdown dd,
 .priceBreakdown p {
   color: #90a49a;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.5;
   margin: 0;
 }
@@ -599,12 +604,12 @@
 .metrics dt,
 .serverProof dt {
   color: #90a49a;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .metrics dd,
 .serverProof dd {
-  font: 650 10px var(--mono), monospace;
+  font: 650 12px var(--mono), monospace;
   margin: 0;
 }
 
@@ -631,7 +636,7 @@
   color: var(--forest-900);
   cursor: pointer;
   display: flex;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 780;
   justify-content: space-between;
   padding: 18px;
@@ -651,7 +656,7 @@
 
 .message {
   color: #a9bcb3;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.55;
   margin: 14px 0 0;
 }
@@ -677,7 +682,7 @@
 
 .serverProof > strong {
   display: block;
-  font: 600 11px var(--mono), monospace;
+  font: 600 12px var(--mono), monospace;
   margin: 11px 0;
 }
 
@@ -887,7 +892,7 @@
   border-radius: 12px;
   color: var(--ink-2);
   display: flex;
-  font-size: 11px;
+  font-size: 14px;
   gap: 11px;
   line-height: 1.55;
   margin-top: 18px;
@@ -925,6 +930,7 @@
 
   .workspace {
     grid-template-columns: 1fr;
+    max-width: 800px;
   }
 
   .summary {
@@ -934,15 +940,17 @@
 
 @media (max-width: 640px) {
   .intro {
-    padding: 65px 20px 50px;
+    padding: 56px 0 42px;
+    width: calc(100% - 32px);
   }
 
   .intro h1 {
-    font-size: clamp(52px, 17vw, 72px);
+    font-size: clamp(42px, 14vw, 64px);
   }
 
   .workspace {
-    padding: 45px 20px 70px;
+    padding: 36px 0 70px;
+    width: calc(100% - 32px);
   }
 
   .productChoices,

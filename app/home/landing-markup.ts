@@ -70,7 +70,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
               <a class="btn btn-primary" data-magnetic href="/health-check" data-i18n="hero.ctaFree">Audit your code in 30 seconds — Free</a>
               <a class="btn btn-ghost" href="/free-tools" data-i18n="hero.ctaTools">Explore the tools</a>
             </div>
-            <p class="hero-proof" data-i18n="hero.proof">Over 1,000+ strategies audited · 100% independent · Code never shared</p>
+            <p class="hero-proof" data-i18n="hero.proof">Independent audits · Transparent method · Real-world fees</p>
             <div class="trust">
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · Notebook</span></span>
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t2">Fees & slippage included</span></span>
