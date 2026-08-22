@@ -5,6 +5,8 @@ import { landingMarkup } from "./landing-markup";
 import { messages } from "../i18n/messages";
 import type { MessageKey } from "../i18n/messages";
 import { useI18n } from "../i18n/I18nProvider";
+import TrustBadges from "./TrustBadges";
+import IntegrationsGrid from "./IntegrationsGrid";
 
 export default function LandingPage() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -333,6 +335,12 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div ref={rootRef} dangerouslySetInnerHTML={{ __html: landingMarkup }} />
+    <>
+      <div ref={rootRef} dangerouslySetInnerHTML={{ __html: landingMarkup }} />
+      {/* Réassurance de confiance (ledger, non-rétention, déterministe, anti look-ahead) */}
+      <TrustBadges />
+      {/* Langages / plateformes audités */}
+      <IntegrationsGrid />
+    </>
   );
 }

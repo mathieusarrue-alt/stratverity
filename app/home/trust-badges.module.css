@@ -1,0 +1,67 @@
+.wrap {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 72px 0 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  position: relative;
+  padding: 26px 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--surface) 95%, transparent);
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s var(--ease), border-color .25s, box-shadow .25s;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: auto -30% -55% 20%;
+  height: 140px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  box-shadow: var(--shadow-md);
+}
+
+.card:hover::after { opacity: 1; }
+
+.head { display: flex; align-items: flex-start; gap: 14px; }
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: color-mix(in oklab, var(--accent) 12%, var(--surface-2));
+  color: var(--brand);
+}
+
+.icon :global(svg) { width: 20px; height: 20px; }
+
+.body h3 { margin: 0 0 8px; font-size: 1rem; letter-spacing: -.01em; }
+.body p { margin: 0; color: var(--ink-2); font-size: .86rem; line-height: 1.6; }
+
+.meta { position: absolute; top: 18px; right: 18px; display: flex; align-items: center; gap: 6px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 6px var(--brand); }
+.meta span { color: var(--ink-3); font: 600 10px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; }
+
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .card, .card::after { transition: none; } }

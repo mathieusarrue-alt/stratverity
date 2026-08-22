@@ -1,0 +1,69 @@
+.wrap {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 72px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  position: relative;
+  padding: 28px 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--surface) 96%, transparent);
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s var(--ease), border-color .25s, box-shadow .25s;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--accent) 0%, transparent);
+  filter: blur(28px);
+  transition: background .5s;
+  pointer-events: none;
+}
+
+.card:hover { transform: translateY(-3px); border-color: color-mix(in oklab, var(--accent) 50%, var(--line)); box-shadow: var(--shadow-md); }
+.card:hover::before { background: color-mix(in oklab, var(--accent) 10%, transparent); }
+
+.top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--accent) 12%, var(--surface-2));
+  color: var(--brand);
+}
+
+.icon :global(svg) { width: 21px; height: 21px; }
+
+.status {
+  padding: 5px 11px;
+  border: 1px solid color-mix(in oklab, var(--brand) 32%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--brand) 9%, transparent);
+  color: var(--brand-ink);
+  font: 650 11px/1 var(--mono);
+}
+
+.body h3 { margin: 0 0 4px; font-size: 1.15rem; }
+.body .platform { margin: 0 0 12px; color: var(--ink-2); font-size: .86rem; }
+.body p { margin: 0; color: var(--ink-2); font-size: .9rem; line-height: 1.65; }
+
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .card, .card::before { transition: none; } }
