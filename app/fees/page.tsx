@@ -3,16 +3,23 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 
+/**
+ * Geometric fee drag on a declared total return.
+ * Each trade pays feePerTrade (%) once; after N trades the retained fraction is
+ * (1 - fee/100)^N. Win rate does not change this drag when the fee is a fixed
+ * % of notional per trade — so it is not an input here.
+ */
 function applyFees(declared: number, trades: number, feePerTrade: number): number {
-  // Geometric drag: each round-trip loses feePerTrade (as a fraction).
-  const perTrade = 1 - feePerTrade / 100;
-  const totalDrag = Math.pow(perTrade, trades);
+  const n = Math.max(0, Math.floor(trades));
+  const fee = Math.max(0, feePerTrade);
+  const perTrade = 1 - fee / 100;
+  if (perTrade <= 0) return 0;
+  const totalDrag = Math.pow(perTrade, n);
   return declared * totalDrag;
 }
 
 export default function FeesPage() {
   const [declared, setDeclared] = useState(212);
-  const [winRate, setWinRate] = useState(60);
   const [trades, setTrades] = useState(500);
   const [fee, setFee] = useState(0.1);
 
@@ -35,7 +42,7 @@ export default function FeesPage() {
         </h1>
         <p style={{ color: "var(--ink-2)", fontSize: 17, maxWidth: 620 }}>
           Slide the fee cursor and see what your declared return becomes once commissions,
-          spread and slippage are real.
+          spread and slippage are real. Illustrative only — not investment advice.
         </p>
       </header>
 
@@ -47,15 +54,6 @@ export default function FeesPage() {
               type="number"
               value={declared}
               onChange={(e) => setDeclared(Number(e.target.value))}
-              style={inputStyle}
-            />
-          </label>
-          <label style={{ display: "grid", gap: 6, color: "var(--ink-2)", fontSize: 13 }}>
-            Win rate (%)
-            <input
-              type="number"
-              value={winRate}
-              onChange={(e) => setWinRate(Number(e.target.value))}
               style={inputStyle}
             />
           </label>
@@ -110,7 +108,7 @@ export default function FeesPage() {
           <div style={{ height: 14, borderRadius: 8, background: "var(--line)", overflow: "hidden", display: "flex" }}>
             <div
               style={{
-                width: `${Math.max(2, (reality / Math.max(declared, 1)) * 100)}%`,
+                width: `${Math.max(2, (reality / Math.max(Math.abs(declared), 1)) * 100)}%`,
                 background: "var(--emerald-500)",
                 transition: "width .2s",
               }}
@@ -118,9 +116,13 @@ export default function FeesPage() {
           </div>
 
           <div style={{ color: "var(--ink-2)", fontSize: 14 }}>
-            That&apos;s <strong style={{ color: "var(--risk-500)" }}>{ratio}× less</strong> than declared
+            That's <strong style={{ color: "var(--risk-500)" }}>{ratio}×</strong> the declared figure
             ({lost} points lost to fees over {trades} trades).
           </div>
+          <p style={{ color: "var(--ink-3)", fontSize: 12, margin: 0 }}>
+            Model: each trade pays a fixed % fee; retained return = declared × (1 − fee%)^trades.
+            Win rate does not change this drag when fees are % of notional per trade.
+          </p>
         </div>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
