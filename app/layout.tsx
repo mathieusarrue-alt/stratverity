@@ -82,7 +82,9 @@ const organizationJsonLd = {
   "@type": "Organization",
   "@id": `${PUBLIC_SITE_URL}/#organization`,
   name: "StratVerity",
+  alternateName: ["Strat Verity", "Strat-Verity"],
   url: PUBLIC_SITE_URL,
+  slogan: "De la preuve, pas du storytelling.",
   logo: {
     "@type": "ImageObject",
     url: `${PUBLIC_SITE_URL}/favicon.svg`,
@@ -103,6 +105,7 @@ const websiteJsonLd = {
   "@type": "WebSite",
   "@id": `${PUBLIC_SITE_URL}/#website`,
   name: "StratVerity",
+  alternateName: ["Strat Verity"],
   url: PUBLIC_SITE_URL,
   publisher: { "@id": `${PUBLIC_SITE_URL}/#organization` },
   potentialAction: {
@@ -236,7 +239,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | StratVerity",
     },
     description:
-      "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      "StratVerity (also searched as \"Strat Verity\") — free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
     applicationName: "StratVerity",
     openGraph: {
       type: "website",
