@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "./scope-configurator.module.css";
+import { getSupabaseBrowserClient } from "../supabase/browser";
 import { calculatePrice } from "./pricing";
 import {
   MARKET_CATALOG,
@@ -87,6 +88,18 @@ function createOwnerToken(): string {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+async function sessionEmail(): Promise<string | null> {
+  try {
+    const {
+      data: { session },
+    } = await getSupabaseBrowserClient().auth.getSession();
+    const email = session?.user?.email;
+    return typeof email === "string" && email ? email : null;
+  } catch {
+    return null;
+  }
+}
+
 function formatBytes(value: number, locale: Locale): string {
   if (value < 1024) return `${new Intl.NumberFormat(locale).format(value)} B`;
   return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value / 1024)} KiB`;
@@ -115,6 +128,7 @@ async function uploadStrategySource(params: {
   file: File;
   sha256: string;
   strategyVersionId: string;
+  email?: string | null;
 }): Promise<
   | { ok: true; sha256: string }
   | { ok: false; status: number; code?: string }
@@ -126,6 +140,7 @@ async function uploadStrategySource(params: {
   body.set("artifact_role", "STRATEGY_SOURCE");
   body.set("strategy_version_id", params.strategyVersionId);
   body.set("expected_sha256", params.sha256);
+  if (params.email) body.set("email", params.email);
   body.set("source", params.file, params.file.name);
   let response: Response;
   try {
@@ -447,6 +462,13 @@ export default function ScopeConfiguratorPage() {
       setNotice({ key: "configure.msg.acceptContract" });
       return;
     }
+    // Email de session requis (source avant Stripe, livraison rapport).
+    const email = await sessionEmail();
+    if (!email) {
+      setState("error");
+      setNotice({ key: "configure.msg.emailMissing" });
+      return;
+    }
     const scope = buildPayload();
     const pricedRequest = {
       pricing_version: "launch-v0.2",
@@ -485,6 +507,7 @@ export default function ScopeConfiguratorPage() {
           file: strategy.file,
           sha256: strategy.sha256,
           strategyVersionId: strategy.id,
+          email,
         });
         if (!uploaded.ok) {
           setState("error");
@@ -526,7 +549,7 @@ export default function ScopeConfiguratorPage() {
         }
       }
 
-      const request = { ...pricedRequest, owner_token: ownerToken };
+      const request = { ...pricedRequest, owner_token: ownerToken, email };
       const response = await fetch(`${API_URL}/v1/billing/checkout-sessions`, {
         method: "POST",
         headers: {
