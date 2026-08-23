@@ -128,7 +128,8 @@ async function uploadStrategySource(params: {
   body.set("artifact_role", "STRATEGY_SOURCE");
   body.set("strategy_version_id", params.strategyVersionId);
   body.set("expected_sha256", params.sha256);
-  body.set("file", params.file, params.file.name);
+  // Backend expects multipart field name "source" (not "file") → else SOURCE_REQUIRED
+  body.set("source", params.file, params.file.name);
   const response = await fetch(`${params.apiUrl}/v1/checkout-artifacts`, {
     method: "POST",
     body,
@@ -289,11 +290,6 @@ export default function ScopeConfiguratorPage() {
       pricing_status: "TO_BE_DEFINED",
     };
   };
-
-  const estimatedRequestBytes =
-    strategies.length > 0
-      ? new TextEncoder().encode(JSON.stringify(buildPayload())).byteLength
-      : 0;
 
   const promoteEssentialForScope = (nextContextCount: number) => {
     if (product === "AUDIT" && auditDepth === "ESSENTIAL" && nextContextCount > 1) {
@@ -482,14 +478,38 @@ export default function ScopeConfiguratorPage() {
         if (!uploaded.ok) {
           setState("error");
           setNotice(null);
+          const code = uploaded.code || String(uploaded.status);
+          const hints: Record<string, { fr: string; en: string }> = {
+            SOURCE_REQUIRED: {
+              fr: "Le serveur n'a pas reçu le fichier source. Re-sélectionnez le fichier .pine / .py / .mq4 / .mq5 puis réessayez.",
+              en: "Server did not receive the strategy file. Re-select your .pine / .py / .mq4 / .mq5 and try again.",
+            },
+            CHECKOUT_ATTEMPT_REQUIRED: {
+              fr: "Identifiant de tentative manquant. Rechargez la page puis réessayez.",
+              en: "Checkout attempt id missing. Reload the page and try again.",
+            },
+            STRATEGY_VERSION_REQUIRED: {
+              fr: "Identifiant de stratégie manquant. Re-ajoutez votre fichier puis réessayez.",
+              en: "Strategy version id missing. Re-add your file and try again.",
+            },
+          };
+          const hint = hints[code];
           setFileError(
             uploaded.status === 404
               ? locale === "fr"
                 ? "Dépôt source indisponible (backend). Paiement bloqué."
                 : "Source deposit unavailable. Payment blocked."
-              : locale === "fr"
-                ? `Dépôt source échoué (${uploaded.code || uploaded.status}).`
-                : `Source deposit failed (${uploaded.code || uploaded.status}).`,
+              : uploaded.status >= 500
+                ? locale === "fr"
+                  ? "Erreur serveur au dépôt du code (500). Réessayez dans un instant."
+                  : "Server error storing source (500). Retry shortly."
+                : hint
+                  ? locale === "fr"
+                    ? hint.fr
+                    : hint.en
+                  : locale === "fr"
+                    ? `Dépôt source échoué (${code}). Réessayez ou contactez le support.`
+                    : `Source deposit failed (${code}). Retry or contact support.`,
           );
           return;
         }
