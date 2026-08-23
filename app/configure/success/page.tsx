@@ -11,9 +11,7 @@ const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
   "https://api.stratverity.com";
 
-/** Same family as configure step 02 + MQL extensions. */
-const STRATEGY_SOURCE_ACCEPT =
-  ".pine,.py,.ipynb,.txt,.mq4,.mq5,.zip,text/plain,application/zip";
+/** Post-paid: BACKTEST_EVIDENCE only. Never re-upload STRATEGY_SOURCE. */
 const BACKTEST_EVIDENCE_ACCEPT = ".csv,.html,.json,.txt,.zip";
 
 type StrategyStatus = {
@@ -24,11 +22,7 @@ type StrategyStatus = {
   context_count: number;
   audit_draft_count: number;
   qualification_id: string | null;
-  qualification_status:
-    | "NOT_STARTED"
-    | "STATIC_PASS"
-    | "REVIEW_REQUIRED"
-    | "STATIC_REJECTED";
+  qualification_status: string;
 };
 
 type ServiceContext = {
@@ -45,23 +39,31 @@ type OrderStatus = {
   scope_fingerprint: string;
   contexts: ServiceContext[];
   strategies: StrategyStatus[];
-  entitlement_status: "NOT_CREATED";
-  worker_status: "NOT_DISPATCHED";
+  entitlement_status?: string;
+  worker_status?: string;
+  delivery_status?: string;
+};
+
+type AutoDeliverResponse = {
+  order_id?: string;
+  status?: string;
+  delivery_status?: string;
+  report_html?: string | null;
+  report_url?: string | null;
+  message?: string;
+  detail?: { code?: string; message?: string } | string;
 };
 
 type PageState =
   | "checking"
-  | "pending"
-  | "paid"
-  | "ready"
-  | "qualified"
-  | "draft"
-  | "review"
-  | "blocked"
+  | "delivering"
+  | "delivered"
+  | "pending_evidence"
+  | "paid_waiting"
   | "error";
 
 export default function CheckoutReturnPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [pageState, setPageState] = useState<PageState>("checking");
   const [status, setStatus] = useState<OrderStatus | null>(null);
   const [messageKey, setMessageKey] = useState<MessageKey>("success.initial");
@@ -69,499 +71,457 @@ export default function CheckoutReturnPage() {
   const message = detailMessage || t(messageKey);
   const [sessionId, setSessionId] = useState("");
   const [ownerToken, setOwnerToken] = useState("");
-  const [strategyId, setStrategyId] = useState("");
-  const [artifactRole, setArtifactRole] = useState<
-    "STRATEGY_SOURCE" | "BACKTEST_EVIDENCE"
-  >("STRATEGY_SOURCE");
-  const [artifact, setArtifact] = useState<File | null>(null);
+  const [evidence, setEvidence] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [qualifying, setQualifying] = useState(false);
-  const [generatingDraft, setGeneratingDraft] = useState(false);
-  const [openingReport, setOpeningReport] = useState(false);
   const [approvedReportHtml, setApprovedReportHtml] = useState("");
-  const [contextKey, setContextKey] = useState("");
-  const [sourceTimezone, setSourceTimezone] = useState("UTC");
-  const [initialCapital, setInitialCapital] = useState("10000");
-  const [currency, setCurrency] = useState("USD");
-  const [commissionPercent, setCommissionPercent] = useState("0.1");
-  const [slippageTicks, setSlippageTicks] = useState("0");
+  const [shareUrl, setShareUrl] = useState("");
+
+  const mapDeliveryState = useCallback(
+    (orderStatus: string, deliveryStatus?: string) => {
+      const s = (deliveryStatus || orderStatus || "").toUpperCase();
+      if (
+        s === "DELIVERED" ||
+        s === "REPORT_APPROVED" ||
+        s.includes("DELIVERED")
+      ) {
+        setPageState("delivered");
+        setMessageKey("success.deliveredBody");
+        return;
+      }
+      if (
+        s === "AVAILABLE_PENDING_REPORT" ||
+        s.includes("PENDING_REPORT") ||
+        s.includes("PENDING_EVIDENCE")
+      ) {
+        setPageState("pending_evidence");
+        setDetailMessage(
+          locale === "fr"
+            ? "Paiement reçu. Rapport disponible ; export backtest optionnel pour enrichir la comparaison."
+            : "Payment received. Report available; optional backtest export can enrich the comparison.",
+        );
+        return;
+      }
+      if (
+        s.includes("PAID") ||
+        s.includes("PROVISION") ||
+        s === "STATIC_QUALIFIED_AWAITING_APPROVAL"
+      ) {
+        setPageState("paid_waiting");
+        setDetailMessage(
+          locale === "fr"
+            ? "Paiement confirmé. Préparation du rapport…"
+            : "Payment confirmed. Preparing your report…",
+        );
+        return;
+      }
+      setPageState("paid_waiting");
+    },
+    [locale],
+  );
 
   const loadStatus = useCallback(
-    async (stripeSession: string, browserOwner: string) => {
+    async (checkoutSessionId: string, browserOwner: string) => {
       const response = await fetch(`${API_URL}/v1/orders/status`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          checkout_session_id: stripeSession,
+          checkout_session_id: checkoutSessionId,
           owner_token: browserOwner,
         }),
       });
-      if (!response.ok) throw new Error("ORDER_STATUS_UNAVAILABLE");
-      const result = (await response.json()) as OrderStatus;
-      setStatus(result);
-      setStrategyId((current) =>
-        current || result.strategies[0]?.strategy_version_id || "",
-      );
-      setContextKey((current) => {
-        if (current) return current;
-        const first = result.contexts[0];
-        return first
-          ? `${first.strategy_version_id}|${first.asset_id}|${first.timeframe}`
-          : "";
-      });
-      if (result.order_status === "DRAFT_AWAITING_HUMAN_REVIEW") {
-        setPageState("draft");
-        setMessageKey("success.msg.draft");
-      } else if (result.order_status === "READY_FOR_QUALIFICATION") {
-        setPageState("ready");
-        setMessageKey("success.msg.ready");
-      } else if (result.order_status === "STATIC_QUALIFIED_AWAITING_APPROVAL") {
-        setPageState("qualified");
-        setMessageKey("success.msg.qualified");
-      } else if (result.order_status === "HUMAN_REVIEW_REQUIRED") {
-        setPageState("review");
-        setMessageKey("success.msg.review");
-      } else if (result.order_status === "QUALIFICATION_BLOCKED") {
-        setPageState("blocked");
-        setMessageKey("success.msg.blocked");
-      } else if (result.order_id) {
-        setPageState("paid");
-        setMessageKey("success.msg.paid");
-      } else {
-        setPageState("pending");
-        setMessageKey("success.msg.pending");
+      const result = (await response.json()) as OrderStatus & {
+        detail?: { message?: string } | string;
+      };
+      if (!response.ok) {
+        setPageState("error");
+        setDetailMessage(
+          typeof result.detail === "object"
+            ? result.detail?.message || t("success.msg.confirmUnavailable")
+            : t("success.msg.confirmUnavailable"),
+        );
+        return null;
       }
+      setStatus(result);
       return result;
     },
-    [],
+    [t],
+  );
+
+  const runAutoDeliver = useCallback(
+    async (orderId: string, checkoutSessionId: string, browserOwner: string) => {
+      setPageState("delivering");
+      setDetailMessage(
+        locale === "fr"
+          ? "Génération automatique du rapport…"
+          : "Generating your report automatically…",
+      );
+      try {
+        const response = await fetch(
+          `${API_URL}/v1/orders/${orderId}/auto-deliver`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              checkout_session_id: checkoutSessionId,
+              owner_token: browserOwner,
+            }),
+          },
+        );
+        const result = (await response.json()) as AutoDeliverResponse;
+        if (!response.ok) {
+          const refreshed = await loadStatus(checkoutSessionId, browserOwner);
+          if (refreshed) {
+            mapDeliveryState(
+              refreshed.order_status,
+              refreshed.delivery_status,
+            );
+          } else {
+            setPageState("error");
+            const err =
+              typeof result.detail === "object"
+                ? result.detail?.message
+                : result.message;
+            setDetailMessage(
+              err ||
+                (locale === "fr"
+                  ? "Livraison auto indisponible pour le moment (backend pas encore déployé ou erreur)."
+                  : "Auto-delivery unavailable (backend not deployed yet or error)."),
+            );
+          }
+          return;
+        }
+
+        if (result.report_html) setApprovedReportHtml(result.report_html);
+        if (result.report_url) setShareUrl(result.report_url);
+
+        const delivery =
+          result.delivery_status || result.status || "DELIVERED";
+        mapDeliveryState(delivery, delivery);
+
+        const refreshed = await loadStatus(checkoutSessionId, browserOwner);
+        if (refreshed) {
+          mapDeliveryState(refreshed.order_status, refreshed.delivery_status);
+        }
+      } catch {
+        setPageState("error");
+        setDetailMessage(
+          locale === "fr"
+            ? "Erreur réseau pendant la livraison auto."
+            : "Network error during auto-delivery.",
+        );
+      }
+    },
+    [loadStatus, locale, mapDeliveryState],
   );
 
   useEffect(() => {
-    let stopped = false;
-    const initializeAndPoll = async () => {
-      await Promise.resolve();
-      const stripeSession =
-        new URLSearchParams(window.location.search).get("session_id") ?? "";
-      const browserOwner = stripeSession
-        ? sessionStorage.getItem(`stratverity.order-owner:${stripeSession}`) ?? ""
-        : "";
-      if (!stripeSession || !browserOwner) {
-        setPageState("error");
-        setMessageKey("success.msg.session");
+    const params = new URLSearchParams(window.location.search);
+    const checkoutSessionId =
+      params.get("session_id") ||
+      params.get("checkout_session_id") ||
+      "";
+    if (!checkoutSessionId) {
+      setPageState("error");
+      setMessageKey("success.msg.session");
+      return;
+    }
+    setSessionId(checkoutSessionId);
+    const stored =
+      sessionStorage.getItem(
+        `stratverity.order-owner:${checkoutSessionId}`,
+      ) || "";
+    setOwnerToken(stored);
+    if (!stored) {
+      setPageState("error");
+      setDetailMessage(
+        locale === "fr"
+          ? "Jeton propriétaire introuvable. Reprenez depuis /configure dans le même navigateur."
+          : "Owner token missing. Restart from /configure in the same browser.",
+      );
+      return;
+    }
+
+    void (async () => {
+      const order = await loadStatus(checkoutSessionId, stored);
+      if (!order?.order_id) {
+        setPageState("paid_waiting");
+        setDetailMessage(
+          locale === "fr"
+            ? "Paiement en cours de confirmation…"
+            : "Confirming payment…",
+        );
         return;
       }
-      setSessionId(stripeSession);
-      setOwnerToken(browserOwner);
-      for (let attempt = 0; attempt < 8 && !stopped; attempt += 1) {
-        try {
-          const result = await loadStatus(stripeSession, browserOwner);
-          if (result.order_id) return;
-        } catch {
-          if (attempt === 7 && !stopped) {
-            setPageState("error");
-            setMessageKey("success.msg.confirmUnavailable");
-            return;
-          }
-        }
-        await new Promise((resolve) => window.setTimeout(resolve, 1500));
+      const s = (order.order_status || "").toUpperCase();
+      if (s === "DELIVERED" || order.delivery_status === "DELIVERED") {
+        mapDeliveryState(order.order_status, order.delivery_status);
+        return;
       }
-    };
-    void initializeAndPoll();
-    return () => {
-      stopped = true;
-    };
-  }, [loadStatus]);
+      await runAutoDeliver(order.order_id, checkoutSessionId, stored);
+    })();
+  }, [loadStatus, locale, mapDeliveryState, runAutoDeliver]);
 
-  const chooseArtifact = (event: ChangeEvent<HTMLInputElement>) => {
-    setArtifact(event.target.files?.[0] ?? null);
-    setDetailMessage("");
+  const onEvidenceChosen = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = "";
+    setEvidence(file);
   };
 
-  const submitArtifact = async (event: FormEvent<HTMLFormElement>) => {
+  const uploadEvidence = async (event: FormEvent) => {
     event.preventDefault();
-    if (!status?.order_id || !artifact || !strategyId) return;
+    if (!status?.order_id || !evidence || !sessionId || !ownerToken) return;
     setUploading(true);
-    setDetailMessage("");
-    setMessageKey("success.msg.inspecting");
+    setDetailMessage(
+      locale === "fr" ? "Envoi de l’export backtest…" : "Uploading backtest export…",
+    );
     try {
       const body = new FormData();
-      body.set("artifact", artifact);
       body.set("checkout_session_id", sessionId);
       body.set("owner_token", ownerToken);
-      body.set("strategy_version_id", strategyId);
-      body.set("artifact_role", artifactRole);
-      if (artifactRole === "BACKTEST_EVIDENCE") {
-        const selected = status.contexts.find(
-          (context) =>
-            `${context.strategy_version_id}|${context.asset_id}|${context.timeframe}` ===
-            contextKey,
-        );
-        if (!selected) throw new Error("PURCHASED_CONTEXT_REQUIRED");
+      body.set("artifact_role", "BACKTEST_EVIDENCE");
+      body.set("file", evidence);
+      if (status.strategies[0]?.strategy_version_id) {
         body.set(
-          "evidence_context_json",
-          JSON.stringify({
-            schema_version: "0.1.0",
-            evidence_kind: "TRADES_CSV",
-            asset_id: selected.asset_id,
-            timeframe: selected.timeframe,
-            source_timezone: sourceTimezone,
-            initial_capital: Number(initialCapital),
-            currency: currency.trim().toUpperCase(),
-            commission_percent: Number(commissionPercent),
-            slippage_ticks: Number(slippageTicks),
-            declared_metrics: {},
-          }),
+          "strategy_version_id",
+          status.strategies[0].strategy_version_id,
         );
       }
+
       const response = await fetch(
         `${API_URL}/v1/orders/${status.order_id}/submissions`,
         { method: "POST", body },
       );
-      const result = (await response.json()) as {
-        detail?: { code?: string; message?: string } | string;
-      };
       if (!response.ok) {
-        const detail =
-          typeof result.detail === "object" && result.detail
-            ? result.detail.message ?? result.detail.code
-            : typeof result.detail === "string"
-              ? result.detail
-              : undefined;
-        throw new Error(detail ?? "UPLOAD_FAILED");
-      }
-      setArtifact(null);
-      setDetailMessage("");
-      await loadStatus(sessionId, ownerToken);
-    } catch (error) {
-      setPageState("error");
-      if (error instanceof Error && error.message === "PURCHASED_CONTEXT_REQUIRED") {
-        setMessageKey("success.msg.contextRequired");
-        setDetailMessage("");
-      } else {
-        setMessageKey("success.msg.uploadFailed");
-        const raw = error instanceof Error ? error.message : "";
+        const raw = await response.text();
+        setPageState("error");
         setDetailMessage(
-          raw && raw !== "UPLOAD_FAILED"
-            ? `${t("success.msg.uploadFailed")} (${raw})`
-            : "",
+          locale === "fr"
+            ? `Échec envoi evidence (${raw.slice(0, 180)})`
+            : `Evidence upload failed (${raw.slice(0, 180)})`,
         );
+        setUploading(false);
+        return;
       }
+      setEvidence(null);
+      await runAutoDeliver(status.order_id, sessionId, ownerToken);
+    } catch {
+      setPageState("error");
+      setDetailMessage(
+        locale === "fr"
+          ? "Erreur réseau pendant l’upload evidence."
+          : "Network error uploading evidence.",
+      );
     } finally {
       setUploading(false);
     }
   };
 
-  const qualifyOrder = async () => {
-    if (!status?.order_id || !sessionId || !ownerToken) return;
-    setQualifying(true);
-    setMessageKey("success.msg.qualifying");
+  const copyShare = async () => {
+    const url = shareUrl || window.location.href;
     try {
-      const response = await fetch(
-        `${API_URL}/v1/orders/${status.order_id}/qualifications`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            checkout_session_id: sessionId,
-            owner_token: ownerToken,
-          }),
-        },
-      );
-      const result = (await response.json()) as {
-        detail?: { code?: string; message?: string };
-      };
-      if (!response.ok) {
-        throw new Error(
-          result.detail?.message ?? result.detail?.code ?? "QUALIFICATION_FAILED",
-        );
-      }
-      await loadStatus(sessionId, ownerToken);
+      await navigator.clipboard.writeText(url);
+      setDetailMessage(locale === "fr" ? "Lien copié." : "Link copied.");
     } catch {
-      setPageState("error");
-      setMessageKey("success.msg.qualificationUnavailable");
-    } finally {
-      setQualifying(false);
+      setDetailMessage(url);
     }
   };
 
-  const generateAuditDraft = async () => {
-    if (!status?.order_id || !sessionId || !ownerToken) return;
-    setGeneratingDraft(true);
-    setMessageKey("success.msg.drafting");
-    try {
-      const response = await fetch(
-        `${API_URL}/v1/orders/${status.order_id}/audit-drafts`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            checkout_session_id: sessionId,
-            owner_token: ownerToken,
-          }),
-        },
-      );
-      const result = (await response.json()) as {
-        detail?: { code?: string; message?: string };
-      };
-      if (!response.ok) {
-        throw new Error(
-          result.detail?.message ?? result.detail?.code ?? "AUDIT_DRAFT_FAILED",
-        );
-      }
-      await loadStatus(sessionId, ownerToken);
-    } catch {
-      setPageState("error");
-      setMessageKey("success.msg.draftUnavailable");
-    } finally {
-      setGeneratingDraft(false);
-    }
-  };
-
-  const openApprovedReport = async () => {
-    if (!status?.order_id || !sessionId || !ownerToken) return;
-    const draftId = status.strategies.find((strategy) => strategy.audit_draft_count > 0);
-    if (!draftId) return;
-    setOpeningReport(true);
-    setMessageKey("success.msg.checkingApproval");
-    try {
-      const draftsResponse = await fetch(
-        `${API_URL}/v1/orders/${status.order_id}/audit-reports/status`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ checkout_session_id: sessionId, owner_token: ownerToken }),
-        },
-      );
-      if (!draftsResponse.ok) throw new Error("AUDIT_DRAFT_UNAVAILABLE");
-      const drafts = (await draftsResponse.json()) as {
-        reports: Array<{ draft_id: string; review_decision: string }>;
-      };
-      const draft = drafts.reports.find(
-        (report) => report.review_decision === "APPROVED",
-      );
-      if (!draft) throw new Error("AUDIT_DRAFT_UNAVAILABLE");
-      const accessResponse = await fetch(
-        `${API_URL}/v1/orders/${status.order_id}/audit-reports/${draft.draft_id}/access`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ checkout_session_id: sessionId, owner_token: ownerToken }),
-        },
-      );
-      const access = (await accessResponse.json()) as {
-        access_token?: string;
-        detail?: { message?: string; code?: string };
-      };
-      if (!accessResponse.ok || !access.access_token) {
-        throw new Error(
-          access.detail?.message ?? access.detail?.code ?? "AUDIT_REPORT_NOT_APPROVED",
-        );
-      }
-      const reportResponse = await fetch(
-        `${API_URL}/v1/paid-audit-reports/${draft.draft_id}`,
-        { headers: { Authorization: `Bearer ${access.access_token}` } },
-      );
-      if (!reportResponse.ok) throw new Error("AUDIT_REPORT_UNAVAILABLE");
-      setApprovedReportHtml(await reportResponse.text());
-      setMessageKey("success.msg.reportOpened");
-    } catch {
-      setMessageKey("success.msg.reportUnavailable");
-    } finally {
-      setOpeningReport(false);
-    }
-  };
+  const title =
+    pageState === "delivered"
+      ? locale === "fr"
+        ? "Rapport prêt"
+        : "Report ready"
+      : pageState === "pending_evidence"
+        ? locale === "fr"
+          ? "Presque prêt"
+          : "Almost ready"
+        : t("success.title.paid");
 
   return (
-    <main className={`${styles.page} ${styles.successPage}`}>
-      <section className={styles.successCard} data-premium-surface>
-        <span>{t("success.badge")}</span>
-        <h1>
-          {approvedReportHtml
-            ? t("success.title.approved")
-            : pageState === "ready"
-            ? t("success.title.ready")
-            : pageState === "draft"
-              ? t("success.title.draft")
-            : pageState === "qualified"
-              ? t("success.title.qualified")
-              : pageState === "review"
-                ? t("success.title.review")
-                : pageState === "blocked"
-                  ? t("success.title.blocked")
-            : pageState === "paid"
-              ? t("success.title.paid")
-              : t("success.title.pending")}
-        </h1>
-        <p>{message}</p>
+    <main className={styles.page}>
+      <section className={styles.intro}>
+        <div>
+          <span className={styles.eyebrow}>{t("success.badge")}</span>
+          <h1>{title}</h1>
+          <p aria-live="polite">{message}</p>
+        </div>
+      </section>
 
+      <section className={styles.workspace}>
         {status?.order_id && (
-          <div className={styles.orderProof}>
+          <div className={styles.orderProof} data-premium-surface>
             <dl>
               <div>
-                <dt>{t("success.order")}</dt>
+                <dt>Order</dt>
                 <dd>{status.order_id.slice(0, 26)}…</dd>
               </div>
               <div>
-                <dt>{t("success.state")}</dt>
-                <dd>{approvedReportHtml ? "REPORT_APPROVED" : status.order_status}</dd>
+                <dt>Status</dt>
+                <dd>
+                  {pageState === "delivered"
+                    ? "DELIVERED"
+                    : pageState === "pending_evidence"
+                      ? "AVAILABLE_PENDING_REPORT"
+                      : status.order_status}
+                </dd>
               </div>
               <div>
-                <dt>{t("success.execution")}</dt>
-                <dd>{status.worker_status}</dd>
+                <dt>Worker</dt>
+                <dd>{status.worker_status || "—"}</dd>
               </div>
             </dl>
           </div>
         )}
 
-        {status?.order_id && ["paid", "qualified", "error"].includes(pageState) && (
-          <form className={styles.orderUpload} onSubmit={submitArtifact}>
-            <h2>{t("success.uploadTitle")}</h2>
-            {pageState === "qualified" && (
-              <p>{t("success.qualifiedHelp")}</p>
-            )}
-            <label>
-              {t("success.strategy")}
-              <select value={strategyId} onChange={(event) => setStrategyId(event.target.value)}>
-                {status.strategies.map((strategy) => (
-                  <option key={strategy.strategy_version_id} value={strategy.strategy_version_id}>
-                    {strategy.strategy_version_id} {strategy.source_received ? t("success.sourceReceived") : ""}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              {t("success.fileType")}
-              <select
-                value={artifactRole}
-                onChange={(event) =>
-                  setArtifactRole(
-                    event.target.value as "STRATEGY_SOURCE" | "BACKTEST_EVIDENCE",
-                  )
-                }
-              >
-                <option value="STRATEGY_SOURCE">{t("success.strategyCode")}</option>
-                <option value="BACKTEST_EVIDENCE">{t("success.backtestEvidence")}</option>
-              </select>
-            </label>
-            <label>
-              {t("success.file")}
-              <input
-                type="file"
-                required
-                onChange={chooseArtifact}
-                accept={
-                  artifactRole === "STRATEGY_SOURCE"
-                    ? STRATEGY_SOURCE_ACCEPT
-                    : BACKTEST_EVIDENCE_ACCEPT
-                }
-              />
-            </label>
-            {artifactRole === "BACKTEST_EVIDENCE" && (
-              <>
-                <label>
-                  {t("success.purchasedContext")}
-                  <select value={contextKey} onChange={(event) => setContextKey(event.target.value)}>
-                    {status.contexts
-                      .filter((context) => context.strategy_version_id === strategyId)
-                      .map((context) => {
-                        const key = `${context.strategy_version_id}|${context.asset_id}|${context.timeframe}`;
-                        return <option key={key} value={key}>{context.asset_id} · {context.timeframe}</option>;
-                      })}
-                  </select>
-                </label>
-                <label>
-                  {t("success.timezone")}
-                  <input value={sourceTimezone} onChange={(event) => setSourceTimezone(event.target.value)} required />
-                </label>
-                <label>
-                  {t("success.initialCapital")}
-                  <input type="number" min="0.01" step="0.01" value={initialCapital} onChange={(event) => setInitialCapital(event.target.value)} required />
-                </label>
-                <label>
-                  {t("success.currency")}
-                  <input minLength={3} maxLength={10} value={currency} onChange={(event) => setCurrency(event.target.value)} required />
-                </label>
-                <label>
-                  {t("success.commission")}
-                  <input type="number" min="0" max="100" step="0.001" value={commissionPercent} onChange={(event) => setCommissionPercent(event.target.value)} required />
-                </label>
-                <label>
-                  {t("success.slippage")}
-                  <input type="number" min="0" step="1" value={slippageTicks} onChange={(event) => setSlippageTicks(event.target.value)} required />
-                </label>
-              </>
-            )}
-            <button disabled={uploading || !artifact} type="submit">
-              {uploading ? t("success.inspecting") : t("success.uploadWithoutExecution")}
-            </button>
-            <p>{t("success.uploadHelp")}</p>
-            <p style={{ fontSize: 13, opacity: 0.85 }}>
-              Formats source : .pine · .py · .ipynb · .txt · .mq4 · .mq5 · .zip — même contenu (SHA-256) que l’empreinte achetée.
+        {(pageState === "checking" ||
+          pageState === "delivering" ||
+          pageState === "paid_waiting") && (
+          <div className={styles.orderUpload} data-premium-surface>
+            <h2>{locale === "fr" ? "Traitement en cours" : "Processing"}</h2>
+            <p>
+              {locale === "fr"
+                ? "Aucune action requise. Le rapport se génère automatiquement après paiement — pas de re-upload du code source."
+                : "No action required. Your report generates automatically after payment — no strategy source re-upload."}
             </p>
-          </form>
+          </div>
         )}
 
-        {status?.order_id && pageState === "ready" && (
+        {pageState === "pending_evidence" && (
           <div className={styles.orderUpload} data-premium-surface>
-            <h2>{t("success.qualifyTitle")}</h2>
-            <p>{t("success.qualifyBody")}</p>
-            <button disabled={qualifying} type="button" onClick={qualifyOrder}>
-              {qualifying ? t("success.qualifying") : t("success.qualifyAction")}
+            <h2>
+              {locale === "fr"
+                ? "Export backtest optionnel"
+                : "Optional backtest export"}
+            </h2>
+            <p>
+              {locale === "fr"
+                ? "Joignez votre export TradingView / CSV pour enrichir la comparaison. Ce n’est pas un re-upload du code source."
+                : "Attach your TradingView / CSV export to enrich the comparison. This is not a strategy source re-upload."}
+            </p>
+            <form onSubmit={uploadEvidence}>
+              <label className={styles.filePicker}>
+                <input
+                  accept={BACKTEST_EVIDENCE_ACCEPT}
+                  onChange={onEvidenceChosen}
+                  type="file"
+                />
+                <strong>
+                  {evidence
+                    ? evidence.name
+                    : locale === "fr"
+                      ? "Choisir un export (.csv, .html, .json…)"
+                      : "Choose export (.csv, .html, .json…)"}
+                </strong>
+              </label>
+              <button disabled={uploading || !evidence} type="submit">
+                {uploading
+                  ? locale === "fr"
+                    ? "Envoi…"
+                    : "Uploading…"
+                  : locale === "fr"
+                    ? "Envoyer l’evidence et relancer"
+                    : "Upload evidence and retry"}
+              </button>
+            </form>
+            <button
+              type="button"
+              disabled={!status?.order_id || !ownerToken}
+              onClick={() =>
+                status?.order_id &&
+                void runAutoDeliver(status.order_id, sessionId, ownerToken)
+              }
+            >
+              {locale === "fr"
+                ? "Relancer la livraison sans evidence"
+                : "Retry delivery without evidence"}
             </button>
           </div>
         )}
 
-        {status?.order_id && pageState === "qualified" && status.product === "AUDIT" && (
-          <div className={styles.orderUpload} data-premium-surface>
-            <h2>{t("success.draftTitle")}</h2>
-            <p>{t("success.draftBody")}</p>
-            <button disabled={generatingDraft} type="button" onClick={generateAuditDraft}>
-              {generatingDraft ? t("success.calculating") : t("success.draftAction")}
-            </button>
-          </div>
-        )}
-
-        {status?.order_id && pageState === "draft" && !approvedReportHtml && (
-          <div className={styles.orderUpload} data-premium-surface>
-            <h2>{t("success.humanTitle")}</h2>
-            <p>{t("success.humanBody")}</p>
-            <button disabled={openingReport} type="button" onClick={openApprovedReport}>
-              {openingReport ? t("success.checking") : t("success.openApproved")}
-            </button>
-          </div>
-        )}
-
-        {approvedReportHtml && (
+        {pageState === "delivered" && (
           <div className={styles.orderUpload} data-premium-surface>
             <h2>{t("success.deliveredTitle")}</h2>
-            <p>{t("success.deliveredBody")}</p>
-            <iframe
-              className={styles.approvedReport}
-              sandbox=""
-              srcDoc={approvedReportHtml}
-              title={t("success.iframeTitle")}
-            />
+            <p>
+              {locale === "fr"
+                ? "Copie email si l’adresse a été collectée au checkout. Partage ci-dessous."
+                : "Email copy if an address was collected at checkout. Share below."}
+            </p>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+              <button type="button" onClick={() => void copyShare()}>
+                {locale === "fr" ? "Copier le lien" : "Copy link"}
+              </button>
+              <a
+                className={styles.checkoutButton}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                  "StratVerity audit — proof, not storytelling",
+                )}&url=${encodeURIComponent(
+                  shareUrl ||
+                    (typeof window !== "undefined"
+                      ? window.location.href
+                      : "https://www.stratverity.com"),
+                )}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Share X
+              </a>
+              <a
+                className={styles.checkoutButton}
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  (shareUrl ||
+                    (typeof window !== "undefined"
+                      ? window.location.href
+                      : "https://www.stratverity.com")) + " — StratVerity",
+                )}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                WhatsApp
+              </a>
+            </div>
+            {approvedReportHtml ? (
+              <iframe
+                className={styles.approvedReport}
+                sandbox=""
+                srcDoc={approvedReportHtml}
+                title={locale === "fr" ? "Rapport d’audit" : "Audit report"}
+              />
+            ) : (
+              <p>
+                {locale === "fr"
+                  ? "Statut DELIVERED. Si le HTML n’apparaît pas, utilisez le lien email ou réessayez."
+                  : "Status DELIVERED. If HTML is missing, use the email link or retry."}
+              </p>
+            )}
           </div>
         )}
 
-        {status?.strategies.some(
-          (strategy) => strategy.qualification_status !== "NOT_STARTED",
-        ) && (
-          <div className={styles.orderProof}>
-            <dl>
-              {status.strategies.map((strategy) => (
-                <div key={strategy.strategy_version_id}>
-                  <dt>{strategy.strategy_version_id}</dt>
-                  <dd>{strategy.qualification_status}</dd>
-                </div>
-              ))}
-            </dl>
+        {pageState === "error" && (
+          <div className={styles.orderUpload} data-premium-surface>
+            <h2>{locale === "fr" ? "Incident" : "Issue"}</h2>
+            <p>{message}</p>
+            {status?.order_id && ownerToken ? (
+              <button
+                type="button"
+                onClick={() =>
+                  void runAutoDeliver(status.order_id!, sessionId, ownerToken)
+                }
+              >
+                {locale === "fr" ? "Réessayer la livraison" : "Retry delivery"}
+              </button>
+            ) : null}
           </div>
         )}
 
         <p>
-          <strong>{t("success.safetyStrong")}</strong>{" "}
-          {t("success.safetyBody")}
+          <strong>
+            {locale === "fr"
+              ? "Zéro revue humaine sur le chemin client."
+              : "Zero human review on the client path."}
+          </strong>{" "}
+          {locale === "fr"
+            ? "La livraison est automatique dès que le paiement et le token propriétaire sont valides."
+            : "Delivery runs automatically once payment and owner token are valid."}
         </p>
         <Link href="/configure">{t("success.back")}</Link>
       </section>

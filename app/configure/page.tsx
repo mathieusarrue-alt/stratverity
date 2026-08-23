@@ -5,6 +5,11 @@ import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "./scope-configurator.module.css";
 import { calculatePrice } from "./pricing";
+import {
+  MARKET_CATALOG,
+  MARKET_ASSET_IDS,
+  timeframesForAssets,
+} from "../config/market-catalog";
 import { useI18n } from "../i18n/I18nProvider";
 import type { Locale, MessageKey } from "../i18n/messages";
 
@@ -12,17 +17,10 @@ const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
   "https://api.stratverity.com";
 
-const ASSET_PRESETS = [
-  "BINANCE:BTCUSDT",
-  "BINANCE:ETHUSDT",
-  "OANDA:EURUSD",
-  "OANDA:XAUUSD",
-  "SP:SPX",
-  "NASDAQ:NDX",
-] as const;
-const TIMEFRAME_PRESETS = ["5m", "15m", "1h", "4h"] as const;
+/** Closed catalog only — no free-text symbols (data-backed whitelist). */
+const ASSET_PRESETS = MARKET_ASSET_IDS;
 const MAX_STRATEGIES = 10;
-const MAX_ASSETS = 50;
+const MAX_ASSETS = MARKET_ASSET_IDS.length;
 const MAX_CONTEXTS = 10_000;
 const REQUEST_LIMIT_BYTES = 2 * 1024 * 1024;
 /** Extensions accepted by post-payment deposit + static qualification. */
@@ -135,9 +133,9 @@ export default function ScopeConfiguratorPage() {
   const { locale, t } = useI18n();
   const [product, setProduct] = useState<Product>("AUDIT");
   const [strategies, setStrategies] = useState<StrategyVersion[]>([]);
-  const [assets, setAssets] = useState<string[]>(["BINANCE:BTCUSDT"]);
+  const [assets, setAssets] = useState<string[]>(["BTCUSDT"]);
   const [timeframes, setTimeframes] = useState<string[]>(["15m"]);
-  const [assetDraft, setAssetDraft] = useState("");
+  // assetDraft removed — custom symbols disabled
   const [auditDepth, setAuditDepth] = useState<AuditDepth>("ESSENTIAL");
   const [evaluationMode, setEvaluationMode] =
     useState<EvaluationMode>("BAR_CLOSE");
@@ -235,7 +233,7 @@ export default function ScopeConfiguratorPage() {
               historical_windows: 3,
               stress_scenarios: 3,
               parameter_variants: 5,
-              human_review: true,
+              human_review: false,
             };
 
     return {
@@ -293,7 +291,7 @@ export default function ScopeConfiguratorPage() {
       setNotice(null);
       setFileError(
         locale === "fr"
-          ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}. Formats : .pine, .py, .mq4, .mq5, .ipynb, .zip uniquement. Renommez un .txt en .pine seulement si le contenu est bien du Pine Script.`
+          ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}. Formats : .pine, .py, .mq4, .mq5, .ipynb, .zip uniquement.`
           : `Unsupported file: ${rejected.map((f) => f.name).join(", ")}. Allowed: .pine, .py, .mq4, .mq5, .ipynb, .zip only.`,
       );
       return;
@@ -345,34 +343,21 @@ export default function ScopeConfiguratorPage() {
       ? Math.max(1, assets.length - 1)
       : Math.min(MAX_ASSETS, assets.length + 1);
     promoteEssentialForScope(projectedStrategyCount * nextAssetCount * timeframes.length);
-    setAssets((current) =>
-      current.includes(asset)
+    setAssets((current) => {
+      const next = current.includes(asset)
         ? current.length === 1
           ? current
           : current.filter((item) => item !== asset)
         : current.length >= MAX_ASSETS
           ? current
-          : [...current, asset],
-    );
-  };
-
-  const addAsset = () => {
-    const asset = assetDraft.trim().toUpperCase();
-    if (!/^[A-Z0-9][A-Z0-9._:/-]{0,99}$/.test(asset)) {
-      setState("error");
-      setNotice({ key: "configure.msg.invalidSymbol" });
-      return;
-    }
-    if (!assets.includes(asset) && assets.length < MAX_ASSETS) {
-      setAssets((current) => [...current, asset]);
-      promoteEssentialForScope(
-        projectedStrategyCount * (assets.length + 1) * timeframes.length,
-      );
-    }
-    setAssetDraft("");
-    setPreview(null);
-    setState("idle");
-    setNotice(null);
+          : [...current, asset];
+      const allowed = timeframesForAssets(next);
+      setTimeframes((tfs) => {
+        const kept = tfs.filter((t) => allowed.includes(t));
+        return kept.length ? kept : allowed.slice(0, 1);
+      });
+      return next;
+    });
   };
 
   const toggleTimeframe = (timeframe: string) => {
@@ -634,42 +619,31 @@ export default function ScopeConfiguratorPage() {
           <fieldset className={styles.block} data-premium-surface>
             <legend><span>03</span>{t("configure.step.assets")}</legend>
             <div className={styles.chips}>
-              {ASSET_PRESETS.map((asset) => (
+              {MARKET_CATALOG.map((asset) => (
                 <button
-                  aria-pressed={assets.includes(asset)}
-                  className={assets.includes(asset) ? styles.activeChip : ""}
-                  key={asset}
-                  onClick={() => toggleAsset(asset)}
+                  aria-pressed={assets.includes(asset.id)}
+                  className={assets.includes(asset.id) ? styles.activeChip : ""}
+                  key={asset.id}
+                  onClick={() => toggleAsset(asset.id)}
                   type="button"
+                  title={asset.display}
                 >
-                  <span className={styles.assetIcon} data-asset={asset.replace(/^.*:/, "")} aria-hidden="true">
-                    {asset === "BINANCE:BTCUSDT" ? "₿" : asset === "BINANCE:ETHUSDT" ? "◆" : asset === "OANDA:EURUSD" ? "€$" : asset === "OANDA:XAUUSD" ? "Au" : asset === "SP:SPX" ? "S&P" : "N"}
+                  <span className={styles.assetIcon} data-asset={asset.id} aria-hidden="true">
+                    {asset.class === "crypto" ? "₿" : asset.class === "fx" ? "€$" : asset.class === "commodity" ? "◆" : asset.class === "equity" ? "▣" : "📈"}
                   </span>
                   <span className={styles.assetLabel}>
-                    <strong>{asset.replace(/^.*:/, "")}</strong>
-                    <small>{asset.split(":")[0]}</small>
+                    <strong>{asset.id}</strong>
+                    <small>{asset.class}</small>
                   </span>
                 </button>
               ))}
-            </div>
-            <div className={styles.customAsset}>
-              <label htmlFor="custom-asset">{t("configure.customSymbol")}</label>
-              <div>
-                <input
-                  id="custom-asset"
-                  onChange={(event) => setAssetDraft(event.target.value)}
-                  placeholder="EXCHANGE:SYMBOL"
-                  value={assetDraft}
-                />
-                <button onClick={addAsset} type="button">{t("configure.add")}</button>
-              </div>
             </div>
           </fieldset>
 
           <fieldset className={styles.block} data-premium-surface>
             <legend><span>04</span>{t("configure.step.timeframes")}</legend>
             <div className={styles.timeframes}>
-              {TIMEFRAME_PRESETS.map((timeframe) => (
+              {timeframesForAssets(assets).map((timeframe) => (
                 <button
                   aria-pressed={timeframes.includes(timeframe)}
                   className={
