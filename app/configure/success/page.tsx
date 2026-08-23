@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import styles from "../scope-configurator.module.css";
@@ -11,8 +11,9 @@ const API_URL =
   process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
   "https://api.stratverity.com";
 
-/** Post-paid: BACKTEST_EVIDENCE only. Never re-upload STRATEGY_SOURCE. */
 const BACKTEST_EVIDENCE_ACCEPT = ".csv,.html,.json,.txt,.zip";
+const POLL_MS = 3500;
+const MAX_POLLS = 24;
 
 type StrategyStatus = {
   strategy_version_id: string;
@@ -55,16 +56,35 @@ type AutoDeliverResponse = {
 };
 
 type PageState =
-  | "checking"
+  | "booting"
   | "delivering"
   | "delivered"
   | "pending_evidence"
-  | "paid_waiting"
+  | "stuck"
   | "error";
+
+type StepId = "paid" | "pipeline" | "report";
+
+function stepIndex(state: PageState): number {
+  if (state === "delivered") return 3;
+  if (state === "pending_evidence") return 2;
+  if (state === "delivering" || state === "booting") return 1;
+  return 1;
+}
+
+function isTerminalDelivered(orderStatus: string, deliveryStatus?: string) {
+  const s = `${deliveryStatus || ""} ${orderStatus || ""}`.toUpperCase();
+  return (
+    s.includes("DELIVERED") ||
+    s.includes("REPORT_APPROVED") ||
+    s.includes("AVAILABLE_PENDING_REPORT")
+  );
+}
 
 export default function CheckoutReturnPage() {
   const { t, locale } = useI18n();
-  const [pageState, setPageState] = useState<PageState>("checking");
+  const fr = locale === "fr";
+  const [pageState, setPageState] = useState<PageState>("booting");
   const [status, setStatus] = useState<OrderStatus | null>(null);
   const [messageKey, setMessageKey] = useState<MessageKey>("success.initial");
   const [detailMessage, setDetailMessage] = useState("");
@@ -75,48 +95,46 @@ export default function CheckoutReturnPage() {
   const [uploading, setUploading] = useState(false);
   const [approvedReportHtml, setApprovedReportHtml] = useState("");
   const [shareUrl, setShareUrl] = useState("");
+  const [pollCount, setPollCount] = useState(0);
+  const pollRef = useRef(0);
+  const stoppedRef = useRef(false);
 
   const mapDeliveryState = useCallback(
-    (orderStatus: string, deliveryStatus?: string) => {
+    (orderStatus: string, deliveryStatus?: string, workerStatus?: string) => {
       const s = (deliveryStatus || orderStatus || "").toUpperCase();
-      if (
-        s === "DELIVERED" ||
-        s === "REPORT_APPROVED" ||
-        s.includes("DELIVERED")
-      ) {
+      const w = (workerStatus || "").toUpperCase();
+
+      if (s.includes("DELIVERED") || s.includes("REPORT_APPROVED")) {
         setPageState("delivered");
-        setMessageKey("success.deliveredBody");
+        setDetailMessage(
+          fr ? "Votre rapport d’audit est prêt." : "Your audit report is ready.",
+        );
         return;
       }
-      if (
-        s === "AVAILABLE_PENDING_REPORT" ||
-        s.includes("PENDING_REPORT") ||
-        s.includes("PENDING_EVIDENCE")
-      ) {
+      if (s.includes("PENDING_REPORT") || s.includes("PENDING_EVIDENCE")) {
         setPageState("pending_evidence");
         setDetailMessage(
-          locale === "fr"
-            ? "Paiement reçu. Rapport disponible ; export backtest optionnel pour enrichir la comparaison."
-            : "Payment received. Report available; optional backtest export can enrich the comparison.",
+          fr
+            ? "Rapport disponible. Vous pouvez joindre un export backtest (optionnel)."
+            : "Report available. You can attach a backtest export (optional).",
         );
         return;
       }
-      if (
-        s.includes("PAID") ||
-        s.includes("PROVISION") ||
-        s === "STATIC_QUALIFIED_AWAITING_APPROVAL"
-      ) {
-        setPageState("paid_waiting");
+      if (s.includes("AWAITING_SUBMISSION") || w === "NOT_DISPATCHED") {
+        setPageState("delivering");
         setDetailMessage(
-          locale === "fr"
-            ? "Paiement confirmé. Préparation du rapport…"
-            : "Payment confirmed. Preparing your report…",
+          fr
+            ? "Paiement reçu. Préparation de l’audit sur vos données…"
+            : "Payment received. Preparing the audit on your data…",
         );
         return;
       }
-      setPageState("paid_waiting");
+      setPageState("delivering");
+      setDetailMessage(
+        fr ? "Génération du rapport en cours…" : "Generating your report…",
+      );
     },
-    [locale],
+    [fr],
   );
 
   const loadStatus = useCallback(
@@ -129,32 +147,16 @@ export default function CheckoutReturnPage() {
           owner_token: browserOwner,
         }),
       });
-      const result = (await response.json()) as OrderStatus & {
-        detail?: { message?: string } | string;
-      };
-      if (!response.ok) {
-        setPageState("error");
-        setDetailMessage(
-          typeof result.detail === "object"
-            ? result.detail?.message || t("success.msg.confirmUnavailable")
-            : t("success.msg.confirmUnavailable"),
-        );
-        return null;
-      }
+      const result = (await response.json()) as OrderStatus;
+      if (!response.ok) return null;
       setStatus(result);
       return result;
     },
-    [t],
+    [],
   );
 
   const runAutoDeliver = useCallback(
     async (orderId: string, checkoutSessionId: string, browserOwner: string) => {
-      setPageState("delivering");
-      setDetailMessage(
-        locale === "fr"
-          ? "Génération automatique du rapport…"
-          : "Generating your report automatically…",
-      );
       try {
         const response = await fetch(
           `${API_URL}/v1/orders/${orderId}/auto-deliver`,
@@ -168,58 +170,26 @@ export default function CheckoutReturnPage() {
           },
         );
         const result = (await response.json()) as AutoDeliverResponse;
-        if (!response.ok) {
-          const refreshed = await loadStatus(checkoutSessionId, browserOwner);
-          if (refreshed) {
-            mapDeliveryState(
-              refreshed.order_status,
-              refreshed.delivery_status,
-            );
-          } else {
-            setPageState("error");
-            const err =
-              typeof result.detail === "object"
-                ? result.detail?.message
-                : result.message;
-            setDetailMessage(
-              err ||
-                (locale === "fr"
-                  ? "Livraison auto indisponible pour le moment (backend pas encore déployé ou erreur)."
-                  : "Auto-delivery unavailable (backend not deployed yet or error)."),
-            );
-          }
-          return;
+        if (response.ok) {
+          if (result.report_html) setApprovedReportHtml(result.report_html);
+          if (result.report_url) setShareUrl(result.report_url);
+          const delivery =
+            result.delivery_status || result.status || "DELIVERED";
+          mapDeliveryState(delivery, delivery);
         }
-
-        if (result.report_html) setApprovedReportHtml(result.report_html);
-        if (result.report_url) setShareUrl(result.report_url);
-
-        const delivery =
-          result.delivery_status || result.status || "DELIVERED";
-        mapDeliveryState(delivery, delivery);
-
-        const refreshed = await loadStatus(checkoutSessionId, browserOwner);
-        if (refreshed) {
-          mapDeliveryState(refreshed.order_status, refreshed.delivery_status);
-        }
+        return result;
       } catch {
-        setPageState("error");
-        setDetailMessage(
-          locale === "fr"
-            ? "Erreur réseau pendant la livraison auto."
-            : "Network error during auto-delivery.",
-        );
+        return null;
       }
     },
-    [loadStatus, locale, mapDeliveryState],
+    [mapDeliveryState],
   );
 
   useEffect(() => {
+    stoppedRef.current = false;
     const params = new URLSearchParams(window.location.search);
     const checkoutSessionId =
-      params.get("session_id") ||
-      params.get("checkout_session_id") ||
-      "";
+      params.get("session_id") || params.get("checkout_session_id") || "";
     if (!checkoutSessionId) {
       setPageState("error");
       setMessageKey("success.msg.session");
@@ -227,39 +197,77 @@ export default function CheckoutReturnPage() {
     }
     setSessionId(checkoutSessionId);
     const stored =
-      sessionStorage.getItem(
-        `stratverity.order-owner:${checkoutSessionId}`,
-      ) || "";
+      sessionStorage.getItem(`stratverity.order-owner:${checkoutSessionId}`) ||
+      "";
     setOwnerToken(stored);
     if (!stored) {
       setPageState("error");
       setDetailMessage(
-        locale === "fr"
-          ? "Jeton propriétaire introuvable. Reprenez depuis /configure dans le même navigateur."
-          : "Owner token missing. Restart from /configure in the same browser.",
+        fr
+          ? "Session navigateur incomplète. Reprenez depuis /configure dans le même navigateur."
+          : "Browser session incomplete. Restart from /configure in the same browser.",
       );
       return;
     }
 
-    void (async () => {
+    const tick = async () => {
+      if (stoppedRef.current) return;
+      pollRef.current += 1;
+      setPollCount(pollRef.current);
+
       const order = await loadStatus(checkoutSessionId, stored);
       if (!order?.order_id) {
-        setPageState("paid_waiting");
+        setPageState("delivering");
         setDetailMessage(
-          locale === "fr"
-            ? "Paiement en cours de confirmation…"
-            : "Confirming payment…",
+          fr ? "Confirmation du paiement en cours…" : "Confirming payment…",
+        );
+      } else if (!isTerminalDelivered(order.order_status, order.delivery_status)) {
+        await runAutoDeliver(order.order_id, checkoutSessionId, stored);
+        const refreshed = await loadStatus(checkoutSessionId, stored);
+        if (refreshed) {
+          mapDeliveryState(
+            refreshed.order_status,
+            refreshed.delivery_status,
+            refreshed.worker_status,
+          );
+        }
+      } else {
+        mapDeliveryState(
+          order.order_status,
+          order.delivery_status,
+          order.worker_status,
+        );
+      }
+
+      const latest = await loadStatus(checkoutSessionId, stored);
+      const done =
+        latest &&
+        isTerminalDelivered(latest.order_status, latest.delivery_status);
+
+      if (done) {
+        stoppedRef.current = true;
+        return;
+      }
+
+      if (pollRef.current >= MAX_POLLS) {
+        stoppedRef.current = true;
+        setPageState("stuck");
+        setDetailMessage(
+          fr
+            ? "La génération prend plus de temps que prévu. Votre paiement est enregistré — réessayez ou contactez le support avec l’ID de commande."
+            : "Generation is taking longer than expected. Your payment is recorded — retry or contact support with your order ID.",
         );
         return;
       }
-      const s = (order.order_status || "").toUpperCase();
-      if (s === "DELIVERED" || order.delivery_status === "DELIVERED") {
-        mapDeliveryState(order.order_status, order.delivery_status);
-        return;
-      }
-      await runAutoDeliver(order.order_id, checkoutSessionId, stored);
-    })();
-  }, [loadStatus, locale, mapDeliveryState, runAutoDeliver]);
+
+      window.setTimeout(() => void tick(), POLL_MS);
+    };
+
+    void tick();
+    return () => {
+      stoppedRef.current = true;
+    };
+  }, [fr, loadStatus, mapDeliveryState, runAutoDeliver]);
 
   const onEvidenceChosen = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
@@ -271,9 +279,6 @@ export default function CheckoutReturnPage() {
     event.preventDefault();
     if (!status?.order_id || !evidence || !sessionId || !ownerToken) return;
     setUploading(true);
-    setDetailMessage(
-      locale === "fr" ? "Envoi de l’export backtest…" : "Uploading backtest export…",
-    );
     try {
       const body = new FormData();
       body.set("checkout_session_id", sessionId);
@@ -286,33 +291,45 @@ export default function CheckoutReturnPage() {
           status.strategies[0].strategy_version_id,
         );
       }
-
       const response = await fetch(
         `${API_URL}/v1/orders/${status.order_id}/submissions`,
         { method: "POST", body },
       );
       if (!response.ok) {
-        const raw = await response.text();
         setPageState("error");
         setDetailMessage(
-          locale === "fr"
-            ? `Échec envoi evidence (${raw.slice(0, 180)})`
-            : `Evidence upload failed (${raw.slice(0, 180)})`,
+          fr ? "Échec de l’envoi de l’export." : "Evidence upload failed.",
         );
         setUploading(false);
         return;
       }
       setEvidence(null);
+      setPageState("delivering");
       await runAutoDeliver(status.order_id, sessionId, ownerToken);
     } catch {
       setPageState("error");
-      setDetailMessage(
-        locale === "fr"
-          ? "Erreur réseau pendant l’upload evidence."
-          : "Network error uploading evidence.",
-      );
+      setDetailMessage(fr ? "Erreur réseau." : "Network error.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const retryDelivery = async () => {
+    if (!status?.order_id || !ownerToken || !sessionId) return;
+    pollRef.current = 0;
+    stoppedRef.current = false;
+    setPageState("delivering");
+    setDetailMessage(
+      fr ? "Nouvelle tentative de génération…" : "Retrying generation…",
+    );
+    await runAutoDeliver(status.order_id, sessionId, ownerToken);
+    const refreshed = await loadStatus(sessionId, ownerToken);
+    if (refreshed) {
+      mapDeliveryState(
+        refreshed.order_status,
+        refreshed.delivery_status,
+        refreshed.worker_status,
+      );
     }
   };
 
@@ -320,40 +337,82 @@ export default function CheckoutReturnPage() {
     const url = shareUrl || window.location.href;
     try {
       await navigator.clipboard.writeText(url);
-      setDetailMessage(locale === "fr" ? "Lien copié." : "Link copied.");
+      setDetailMessage(fr ? "Lien copié." : "Link copied.");
     } catch {
       setDetailMessage(url);
     }
   };
 
+  const activeStep = stepIndex(pageState);
+  const steps: { id: StepId; label: string }[] = [
+    { id: "paid", label: fr ? "Paiement" : "Payment" },
+    { id: "pipeline", label: fr ? "Audit" : "Audit" },
+    { id: "report", label: fr ? "Rapport" : "Report" },
+  ];
+
   const title =
     pageState === "delivered"
-      ? locale === "fr"
+      ? fr
         ? "Rapport prêt"
         : "Report ready"
       : pageState === "pending_evidence"
-        ? locale === "fr"
-          ? "Presque prêt"
-          : "Almost ready"
-        : t("success.title.paid");
+        ? fr
+          ? "Presque terminé"
+          : "Almost done"
+        : pageState === "stuck"
+          ? fr
+            ? "Toujours en cours"
+            : "Still processing"
+          : pageState === "error"
+            ? fr
+              ? "Un problème est survenu"
+              : "Something went wrong"
+            : fr
+              ? "Préparation de votre audit"
+              : "Preparing your audit";
 
   return (
-    <main className={styles.page}>
-      <section className={styles.intro}>
-        <div>
-          <span className={styles.eyebrow}>{t("success.badge")}</span>
-          <h1>{title}</h1>
-          <p aria-live="polite">{message}</p>
-        </div>
+    <main className={`${styles.page} ${styles.successPage}`}>
+      <section className={styles.successHero}>
+        <span className={styles.eyebrow}>{t("success.badge")}</span>
+        <h1>{title}</h1>
+        <p className={styles.successLead} aria-live="polite">
+          {message}
+        </p>
+
+        <ol className={styles.successSteps} aria-label={fr ? "Progression" : "Progress"}>
+          {steps.map((step, i) => {
+            const n = i + 1;
+            const done = activeStep > n || pageState === "delivered";
+            const current = activeStep === n && pageState !== "delivered";
+            return (
+              <li
+                key={step.id}
+                className={
+                  done
+                    ? styles.successStepDone
+                    : current
+                      ? styles.successStepCurrent
+                      : styles.successStepTodo
+                }
+              >
+                <span className={styles.successStepDot} aria-hidden="true">
+                  {done ? "✓" : n}
+                </span>
+                <span>{step.label}</span>
+              </li>
+            );
+          })}
+        </ol>
       </section>
 
-      <section className={styles.workspace}>
-        {status?.order_id && (
+      <section className={styles.successBody}>
+        {status?.order_id ? (
           <div className={styles.orderProof} data-premium-surface>
             <dl>
               <div>
-                <dt>Order</dt>
-                <dd>{status.order_id.slice(0, 26)}…</dd>
+                <dt>{fr ? "Commande" : "Order"}</dt>
+                <dd title={status.order_id}>{status.order_id.slice(0, 22)}…</dd>
               </div>
               <div>
                 <dt>Status</dt>
@@ -361,7 +420,7 @@ export default function CheckoutReturnPage() {
                   {pageState === "delivered"
                     ? "DELIVERED"
                     : pageState === "pending_evidence"
-                      ? "AVAILABLE_PENDING_REPORT"
+                      ? "PENDING_REPORT"
                       : status.order_status}
                 </dd>
               </div>
@@ -371,32 +430,58 @@ export default function CheckoutReturnPage() {
               </div>
             </dl>
           </div>
+        ) : null}
+
+        {(pageState === "booting" || pageState === "delivering") && (
+          <div className={styles.successWait} data-premium-surface>
+            <div className={styles.successOrbit} aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </div>
+            <h2>{fr ? "Analyse en cours" : "Analysis running"}</h2>
+            <p>
+              {fr
+                ? "Nous confrontons votre stratégie aux données de marché. Cela peut prendre de quelques secondes à deux minutes selon le périmètre."
+                : "We are running your strategy against market data. This can take a few seconds to about two minutes depending on scope."}
+            </p>
+            <div className={styles.successPulseBar} aria-hidden="true">
+              <span style={{ width: `${Math.min(95, 12 + pollCount * 4)}%` }} />
+            </div>
+            <small>
+              {fr
+                ? `Étape ${Math.min(pollCount, MAX_POLLS)} / ${MAX_POLLS}`
+                : `Step ${Math.min(pollCount, MAX_POLLS)} / ${MAX_POLLS}`}
+            </small>
+          </div>
         )}
 
-        {(pageState === "checking" ||
-          pageState === "delivering" ||
-          pageState === "paid_waiting") && (
-          <div className={styles.orderUpload} data-premium-surface>
-            <h2>{locale === "fr" ? "Traitement en cours" : "Processing"}</h2>
+        {pageState === "stuck" && (
+          <div className={styles.successWait} data-premium-surface>
+            <h2>{fr ? "Toujours en traitement" : "Still processing"}</h2>
+            <p>{message}</p>
             <p>
-              {locale === "fr"
-                ? "Aucune action requise. Le rapport se génère automatiquement après paiement — pas de re-upload du code source."
-                : "No action required. Your report generates automatically after payment — no strategy source re-upload."}
+              {fr
+                ? "Votre carte a bien été débitée. Aucune action n’est requise de votre côté pour l’instant."
+                : "Your card was charged successfully. No action is required from you right now."}
             </p>
+            <button
+              type="button"
+              className={styles.checkoutButton}
+              onClick={() => void retryDelivery()}
+            >
+              {fr ? "Relancer la génération" : "Retry generation"}
+            </button>
           </div>
         )}
 
         {pageState === "pending_evidence" && (
           <div className={styles.orderUpload} data-premium-surface>
-            <h2>
-              {locale === "fr"
-                ? "Export backtest optionnel"
-                : "Optional backtest export"}
-            </h2>
+            <h2>{fr ? "Export backtest (optionnel)" : "Backtest export (optional)"}</h2>
             <p>
-              {locale === "fr"
-                ? "Joignez votre export TradingView / CSV pour enrichir la comparaison. Ce n’est pas un re-upload du code source."
-                : "Attach your TradingView / CSV export to enrich the comparison. This is not a strategy source re-upload."}
+              {fr
+                ? "Joignez un CSV / HTML TradingView pour enrichir la comparaison. Ce n’est pas un re-upload du code source."
+                : "Attach a TradingView CSV / HTML to enrich the comparison. This is not a strategy source re-upload."}
             </p>
             <form onSubmit={uploadEvidence}>
               <label className={styles.filePicker}>
@@ -408,47 +493,35 @@ export default function CheckoutReturnPage() {
                 <strong>
                   {evidence
                     ? evidence.name
-                    : locale === "fr"
-                      ? "Choisir un export (.csv, .html, .json…)"
-                      : "Choose export (.csv, .html, .json…)"}
+                    : fr
+                      ? "Choisir un export"
+                      : "Choose an export"}
                 </strong>
               </label>
               <button disabled={uploading || !evidence} type="submit">
                 {uploading
-                  ? locale === "fr"
+                  ? fr
                     ? "Envoi…"
                     : "Uploading…"
-                  : locale === "fr"
-                    ? "Envoyer l’evidence et relancer"
-                    : "Upload evidence and retry"}
+                  : fr
+                    ? "Envoyer"
+                    : "Upload"}
               </button>
             </form>
-            <button
-              type="button"
-              disabled={!status?.order_id || !ownerToken}
-              onClick={() =>
-                status?.order_id &&
-                void runAutoDeliver(status.order_id, sessionId, ownerToken)
-              }
-            >
-              {locale === "fr"
-                ? "Relancer la livraison sans evidence"
-                : "Retry delivery without evidence"}
-            </button>
           </div>
         )}
 
         {pageState === "delivered" && (
           <div className={styles.orderUpload} data-premium-surface>
-            <h2>{t("success.deliveredTitle")}</h2>
+            <h2>{fr ? "Votre rapport" : "Your report"}</h2>
             <p>
-              {locale === "fr"
-                ? "Copie email si l’adresse a été collectée au checkout. Partage ci-dessous."
-                : "Email copy if an address was collected at checkout. Share below."}
+              {fr
+                ? "Partagez le résultat ou conservez le lien de cette page."
+                : "Share the result or keep this page link."}
             </p>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+            <div className={styles.successShareRow}>
               <button type="button" onClick={() => void copyShare()}>
-                {locale === "fr" ? "Copier le lien" : "Copy link"}
+                {fr ? "Copier le lien" : "Copy link"}
               </button>
               <a
                 className={styles.checkoutButton}
@@ -468,10 +541,12 @@ export default function CheckoutReturnPage() {
               <a
                 className={styles.checkoutButton}
                 href={`https://wa.me/?text=${encodeURIComponent(
-                  (shareUrl ||
+                  `${
+                    shareUrl ||
                     (typeof window !== "undefined"
                       ? window.location.href
-                      : "https://www.stratverity.com")) + " — StratVerity",
+                      : "https://www.stratverity.com")
+                  } — StratVerity`,
                 )}`}
                 rel="noreferrer"
                 target="_blank"
@@ -484,13 +559,13 @@ export default function CheckoutReturnPage() {
                 className={styles.approvedReport}
                 sandbox=""
                 srcDoc={approvedReportHtml}
-                title={locale === "fr" ? "Rapport d’audit" : "Audit report"}
+                title={fr ? "Rapport d’audit" : "Audit report"}
               />
             ) : (
               <p>
-                {locale === "fr"
-                  ? "Statut DELIVERED. Si le HTML n’apparaît pas, utilisez le lien email ou réessayez."
-                  : "Status DELIVERED. If HTML is missing, use the email link or retry."}
+                {fr
+                  ? "Statut livré. Si le rapport n’apparaît pas ici, utilisez le lien e-mail ou relancez."
+                  : "Marked delivered. If the report is missing here, use the email link or retry."}
               </p>
             )}
           </div>
@@ -498,32 +573,21 @@ export default function CheckoutReturnPage() {
 
         {pageState === "error" && (
           <div className={styles.orderUpload} data-premium-surface>
-            <h2>{locale === "fr" ? "Incident" : "Issue"}</h2>
+            <h2>{fr ? "Incident" : "Issue"}</h2>
             <p>{message}</p>
             {status?.order_id && ownerToken ? (
-              <button
-                type="button"
-                onClick={() =>
-                  void runAutoDeliver(status.order_id!, sessionId, ownerToken)
-                }
-              >
-                {locale === "fr" ? "Réessayer la livraison" : "Retry delivery"}
+              <button type="button" onClick={() => void retryDelivery()}>
+                {fr ? "Réessayer" : "Retry"}
               </button>
             ) : null}
           </div>
         )}
 
-        <p>
-          <strong>
-            {locale === "fr"
-              ? "Zéro revue humaine sur le chemin client."
-              : "Zero human review on the client path."}
-          </strong>{" "}
-          {locale === "fr"
-            ? "La livraison est automatique dès que le paiement et le token propriétaire sont valides."
-            : "Delivery runs automatically once payment and owner token are valid."}
+        <p className={styles.successFoot}>
+          <Link href="/configure">{t("success.back")}</Link>
+          {" · "}
+          <Link href="/contact">{fr ? "Support" : "Support"}</Link>
         </p>
-        <Link href="/configure">{t("success.back")}</Link>
       </section>
     </main>
   );
