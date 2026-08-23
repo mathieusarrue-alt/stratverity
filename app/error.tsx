@@ -1,14 +1,9 @@
 "use client";
 
-import Link from "next/link";
-
 /**
- * Error boundary racine (route-level, Natif Next.js App Router).
- *
- * Si un composant client jette une exception lors du rendu ou d'un clic,
- * Next.js achemine l'erreur ici au lieu de vider la page. L'utilisateur
- * voit un écran de secours avec une action "Réessayer" et des liens sûrs,
- * jamais un écran blanc.
+ * Route-level error boundary (App Router).
+ * Recovery must NOT rely only on React reset()/Link: after a hard client crash,
+ * event handlers can be dead. Prefer full navigation.
  */
 export default function GlobalError({
   error,
@@ -17,6 +12,24 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const hardRetry = () => {
+    try {
+      reset();
+    } catch {
+      /* ignore */
+    }
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
+  };
+
+  const goHome = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/");
+      return;
+    }
+  };
+
   return (
     <main
       style={{
@@ -45,11 +58,17 @@ export default function GlobalError({
         stratégies restent locales et inchangées.
       </p>
       <div
-        style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 24 }}
+        style={{
+          display: "flex",
+          gap: 12,
+          flexWrap: "wrap",
+          marginTop: 24,
+          justifyContent: "center",
+        }}
       >
         <button
           type="button"
-          onClick={() => reset()}
+          onClick={hardRetry}
           style={{
             padding: "12px 20px",
             borderRadius: 10,
@@ -62,7 +81,22 @@ export default function GlobalError({
         >
           Réessayer
         </button>
-        <Link
+        <button
+          type="button"
+          onClick={goHome}
+          style={{
+            padding: "12px 20px",
+            borderRadius: 10,
+            fontWeight: 700,
+            cursor: "pointer",
+            border: "1px solid var(--line-2)",
+            background: "transparent",
+            color: "var(--ink-1)",
+          }}
+        >
+          Retour à l&rsquo;accueil
+        </button>
+        <a
           href="/"
           style={{
             padding: "12px 20px",
@@ -73,8 +107,8 @@ export default function GlobalError({
             color: "var(--ink-1)",
           }}
         >
-          Retour à l&rsquo;accueil
-        </Link>
+          Accueil (lien direct)
+        </a>
       </div>
       {error.digest ? (
         <p style={{ color: "var(--ink-3)", fontSize: 12, marginTop: 18 }}>
