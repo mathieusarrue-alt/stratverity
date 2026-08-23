@@ -38,12 +38,11 @@ function applyDocumentTheme(nextTheme: Theme, persist = false) {
   }
 }
 
-/** Produit → grille tarifaire cliquable. #product = démos non cliquables. */
+/** Produit → grille tarifaire (un seul lien, plus de doublon Tarifs). */
 const navItems = [
   ["nav.product", "/#pricing"],
   ["nav.method", "/#method"],
   ["nav.research", "/#research"],
-  ["nav.pricing", "/#pricing"],
   ["nav.freeTools", "/free-tools"],
   ["nav.marketplace", "/marketplace"],
   ["nav.faq", "/#faq"],
