@@ -420,3 +420,174 @@
 @media (max-width: 640px) {
   .productChoices, .optionGrid { grid-template-columns: 1fr; }
 }
+
+/* ---- Success (configure/success) ---- */
+.successPage {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: clamp(40px, 7vw, 88px) 24px 64px;
+}
+.successHero {
+  text-align: center;
+  max-width: 640px;
+}
+.successHero h1 {
+  font-family: var(--display);
+  font-size: clamp(34px, 5vw, 54px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  margin: 16px 0;
+}
+.successLead {
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0 auto 28px;
+  max-width: 560px;
+}
+.successSteps {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+.successSteps li {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  font: 650 11px var(--mono), monospace;
+  color: var(--ink-2);
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: color-mix(in oklab, var(--paper) 60%, transparent);
+}
+.successStepDot {
+  align-items: center;
+  background: color-mix(in oklab, var(--ink-2) 14%, transparent);
+  border-radius: 50%;
+  color: var(--ink-2);
+  display: inline-flex;
+  font: 760 10px var(--mono), monospace;
+  height: 22px;
+  justify-content: center;
+  width: 22px;
+}
+.successStepDone {
+  border-color: color-mix(in oklab, var(--emerald-500) 55%, transparent);
+  color: var(--emerald-600);
+}
+.successStepDone .successStepDot {
+  background: var(--emerald-500);
+  color: #fff;
+}
+.successStepCurrent {
+  border-color: color-mix(in oklab, var(--accent) 60%, transparent);
+  color: var(--accent);
+}
+.successStepCurrent .successStepDot {
+  background: color-mix(in oklab, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+.successStepTodo {
+  opacity: 0.62;
+}
+.successBody {
+  max-width: 660px;
+  width: 100%;
+}
+.successWait {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: center;
+  padding: 38px 12px;
+  text-align: center;
+}
+.successOrbit {
+  animation: spin 2.4s linear infinite;
+  border: 2px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  height: 56px;
+  width: 56px;
+}
+.successPulseBar {
+  animation: successPulse 1.4s ease-in-out infinite;
+  background: linear-gradient(90deg, var(--accent), var(--emerald-500));
+  border-radius: 999px;
+  height: 6px;
+  width: 200px;
+}
+@keyframes successPulse {
+  0%, 100% { opacity: 0.45; transform: scaleX(0.86); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+.orderProof {
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--paper) 70%, transparent);
+  padding: 20px 24px;
+}
+.orderProof dl {
+  display: grid;
+  gap: 10px 26px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin: 0;
+}
+.orderProof dl > div { display: flex; flex-direction: column; gap: 3px; }
+.orderProof dt {
+  color: var(--ink-2);
+  font: 700 10px var(--mono), monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.orderProof dd {
+  color: var(--ink);
+  font: 650 14px var(--mono), monospace;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.orderUpload {
+  border: 1px dashed var(--line-2);
+  border-radius: 14px;
+  margin-top: 18px;
+  padding: 18px;
+}
+.successShareRow {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.approvedReport {
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  margin-top: 18px;
+  overflow: hidden;
+  text-align: center;
+}
+.approvedReport iframe {
+  border: 0;
+  display: block;
+  min-height: 540px;
+  width: 100%;
+}
+.successFoot {
+  color: var(--ink-2);
+  font: 600 12px var(--mono), monospace;
+  margin-top: 10px;
+  text-align: center;
+}
