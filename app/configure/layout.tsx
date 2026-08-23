@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireSupabaseUser } from "../supabase/server";
 
 export const metadata: Metadata = {
   title: "Configure your strategy audit",
@@ -17,10 +18,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ConfigureLayout({
+export default async function ConfigureLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Login obligatoire avant /configure : source avant Stripe, session requise.
+  await requireSupabaseUser("/configure");
   return <>{children}</>;
 }
