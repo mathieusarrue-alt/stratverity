@@ -14,14 +14,22 @@ export type MarketAsset = {
   tfs: readonly string[];
 };
 
+type CatalogSeed = {
+  id: string;
+  class: MarketAssetClass;
+  display: string;
+  icon: string;
+  tfs: readonly string[];
+};
+
 /** Ensure 1d + 1w always present; keep existing lower TFs. */
 function withDailyWeekly(tfs: readonly string[]): readonly string[] {
   const order = ["1m", "5m", "15m", "1h", "4h", "1d", "1w"] as const;
-  const set = new Set([...tfs, "1d", "1w"]);
+  const set = new Set<string>([...tfs, "1d", "1w"]);
   return order.filter((t) => set.has(t));
 }
 
-const RAW_CATALOG: readonly Omit<MarketAsset, "tfs"> & { tfs: readonly string[] }[] = [
+const RAW_CATALOG: readonly CatalogSeed[] = [
   { id: "BTCUSDT", class: "crypto", display: "BTC / USDT", icon: "₿", tfs: ["1m", "5m", "15m", "1h", "4h"] },
   { id: "ETHUSDT", class: "crypto", display: "ETH / USDT", icon: "Ξ", tfs: ["1m", "5m", "15m", "1h", "4h"] },
   { id: "SOLUSDT", class: "crypto", display: "SOL / USDT", icon: "◎", tfs: ["1m", "5m", "15m", "1h", "4h", "1d"] },
@@ -56,7 +64,7 @@ const RAW_CATALOG: readonly Omit<MarketAsset, "tfs"> & { tfs: readonly string[] 
   { id: "XOM", class: "equity", display: "Exxon Mobil", icon: "XO", tfs: ["1m", "15m", "1h"] },
   { id: "KO", class: "equity", display: "Coca-Cola", icon: "KO", tfs: ["1m", "15m", "1h"] },
   { id: "JNJ", class: "equity", display: "Johnson & Johnson", icon: "J&J", tfs: ["1m", "15m", "1h"] },
-] as const;
+];
 
 export const MARKET_CATALOG: readonly MarketAsset[] = RAW_CATALOG.map((a) => ({
   ...a,
