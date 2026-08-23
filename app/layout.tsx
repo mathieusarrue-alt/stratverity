@@ -85,7 +85,7 @@ const organizationJsonLd = {
   url: PUBLIC_SITE_URL,
   logo: {
     "@type": "ImageObject",
-    url: `${PUBLIC_SITE_URL}/favicon.svg`,
+    url: `${PUBLIC_SITE_URL}/icon-512.png`,
   },
   image: `${PUBLIC_SITE_URL}/og.png`,
   description:
@@ -238,29 +238,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
     applicationName: "StratVerity",
-    openGraph: {
-      type: "website",
-      url: new URL("/", baseUrl),
-      siteName: "StratVerity",
-      title: "StratVerity — Trading Strategy Audit & Free Health Check",
-      description:
-        "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
-      images: [
-        {
-          url: new URL("/og.png", baseUrl),
-          width: 1200,
-          height: 630,
-          alt: "StratVerity — Trading Strategy Audit & Free Health Check",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "StratVerity — Trading Strategy Audit & Free Health Check",
-      description:
-        "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
-      images: [new URL("/og.png", baseUrl)],
-    },
     keywords: [
       "backtest audit",
       "backtest verification service",
@@ -307,10 +284,12 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
+      // Prefer SVG (brand shield). Old favicon.ico / 96px PNG were near-empty (241B / 474B) → blank tab.
       icon: [
         { url: "/favicon.svg", type: "image/svg+xml" },
-        { url: "/favicon.ico", sizes: "any" },
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
         { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+        { url: "/favicon.ico", sizes: "48x48" },
       ],
       apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
     },
