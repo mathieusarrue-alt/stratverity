@@ -90,7 +90,7 @@ const organizationJsonLd = {
   image: `${PUBLIC_SITE_URL}/og.png`,
   description:
     "Independent strategy audit and validation for Pine Script and Python trading systems.",
-  email: "contact@stratverity.com",
+  email: "stratverity@gmail.com",
   brand: {
     "@type": "Brand",
     name: "StratVerity",
@@ -195,7 +195,7 @@ const professionalServiceJsonLd = {
   "@type": "ProfessionalService",
   name: "StratVerity",
   url: PUBLIC_SITE_URL,
-  email: "contact@stratverity.com",
+  email: "stratverity@gmail.com",
   image: `${PUBLIC_SITE_URL}/og.png`,
   priceRange: "€14.99 - €149",
   areaServed: "Worldwide",
