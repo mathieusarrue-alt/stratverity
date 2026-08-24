@@ -363,6 +363,21 @@ export default function ScopeConfiguratorPage() {
       const hashed = await Promise.all(
         files.map(async (file, index) => {
           const digest = await sha256(file);
+          // Python (labo v1) : font bloqué si import non-stdlib hors périmètre.
+          if (fileExtension(file.name) === ".py") {
+            const src = await file.text();
+            if (
+              /^\s*(import|from)\s+(numpy|pandas|talib|sklearn)\b/m.test(src)
+            ) {
+              setState("error");
+              setFileError(
+                locale === "fr"
+                  ? "Fichier .py avec dépendance non-stdlib (numpy/pandas/talib). Python labo v1 accepte stdlib uniquement."
+                  : ".py with non-stdlib dependency (numpy/pandas/talib). LAB_PYTHON v1 accepts stdlib only.",
+              );
+              return;
+            }
+          }
           return {
             id: `strategy-${offset + index + 1}-${digest.slice(0, 12)}`,
             name: file.name,
@@ -373,7 +388,8 @@ export default function ScopeConfiguratorPage() {
         }),
       );
       const seen = new Set(strategies.map((s) => s.sha256));
-      const unique = hashed.filter((s) => {
+      const unique = hashed.filter((s): s is NonNullable<typeof s> => {
+        if (!s) return false;
         if (seen.has(s.sha256)) return false;
         seen.add(s.sha256);
         return true;
