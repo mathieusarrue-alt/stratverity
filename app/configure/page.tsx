@@ -507,7 +507,7 @@ export default function ScopeConfiguratorPage() {
     setNotice({ key: "configure.msg.preparingPayment" });
     try {
       const scopeHash = await checkoutScopeHash(pricedRequest);
-      if (!checkoutAttemptRef.current?.idempotencyKey) {
+      if (checkoutAttemptRef.current?.scopeHash !== scopeHash) {
         checkoutAttemptRef.current = {
           scopeHash,
           idempotencyKey: `checkout-${crypto.randomUUID().replaceAll("-", "")}`,
