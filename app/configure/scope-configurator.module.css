@@ -591,3 +591,13 @@
   margin-top: 10px;
   text-align: center;
 }
+
+/* Disclaimer (success) */
+.disclaimer {
+  color: var(--ink-2);
+  font: 600 12px var(--mono), monospace;
+  line-height: 1.6;
+  margin: 16px auto 0;
+  max-width: 560px;
+  text-align: center;
+}

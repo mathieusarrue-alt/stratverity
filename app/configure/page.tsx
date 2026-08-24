@@ -24,12 +24,12 @@ const STRATEGY_EXTENSIONS = new Set([
   ".pine",
   ".py",
   ".ipynb",
-  ".mq4",
-  ".mq5",
   ".zip",
 ]);
 const STRATEGY_ACCEPT =
-  ".pine,.py,.ipynb,.mq4,.mq5,.zip,application/zip,text/x-python";
+  ".pine,.py,.ipynb,.zip,application/zip,text/x-python";
+// MQL (MetaTrader) : pas encore de rejeu labo -> ce format n'est pas facturé.
+const LAB_MQL_ENABLED = false;
 const CHECKOUT_CONTRACT = {
   version: "beta-fr-2026-08-12-v1",
   language: "fr",
@@ -326,13 +326,25 @@ export default function ScopeConfiguratorPage() {
     if (files.length === 0) return;
     const rejected = files.filter((file) => !isAllowedStrategyFile(file));
     if (rejected.length > 0) {
+      const hasMql = rejected.some((f) => {
+        const ext = fileExtension(f.name);
+        return ext === ".mq4" || ext === ".mq5";
+      });
       setState("error");
       setNotice(null);
-      setFileError(
-        locale === "fr"
-          ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}.`
-          : `Unsupported file: ${rejected.map((f) => f.name).join(", ")}.`,
-      );
+      if (hasMql) {
+        setFileError(
+          locale === "fr"
+            ? "Le rejeu labo pour MQL (MetaTrader) n'est pas encore disponible. Aucun paiement n'est proposé pour ce format. Pine et Python sont acceptés."
+            : "Lab replay for MQL (MetaTrader) is not available yet. Checkout is disabled for this format. Pine and Python are accepted.",
+        );
+      } else {
+        setFileError(
+          locale === "fr"
+            ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}.`
+            : `Unsupported file: ${rejected.map((f) => f.name).join(", ")}.`,
+        );
+      }
       return;
     }
     if (strategies.length + files.length > MAX_STRATEGIES) {
