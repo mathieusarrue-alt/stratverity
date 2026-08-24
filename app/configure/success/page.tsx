@@ -588,6 +588,11 @@ export default function CheckoutReturnPage() {
           {" · "}
           <Link href="/contact">{fr ? "Support" : "Support"}</Link>
         </p>
+        <p className={styles.disclaimer}>
+          {fr
+            ? "Un backtest (labo ou broker) ne garantit pas les performances futures. Les marchés évoluent ; l’audit valide la logique et le risque, pas un rendement."
+            : "A backtest (lab or broker) does not guarantee future performance. Markets evolve; the audit validates logic and risk, not a return."}
+        </p>
       </section>
     </main>
   );
