@@ -22,10 +22,10 @@ export default function ReportPage({
 
   useEffect(() => {
     let active = true;
-    fetch(`${API_URL}/reports/${encodeURIComponent(report_id)}`)
-      .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+    fetch(`${API_URL}/v1/reports/${encodeURIComponent(report_id)}`)
+      .then((r) => (r.ok ? r.text() : Promise.reject(`HTTP ${r.status}`)))
       .then((h) => active && setHtml(h))
-      .catch(() => active && setError("Rapport introuvable / inaccessible."));
+      .catch((err) => active && setError(`Rapport introuvable / inaccessible (${err}).`));
     return () => {
       active = false;
     };
