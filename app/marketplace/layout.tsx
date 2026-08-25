@@ -1,38 +1,23 @@
 import "./marketplace.css";
 import type { Metadata } from "next";
 
-const MARKETPLACE_ENABLED =
-  process.env.NEXT_PUBLIC_MARKETPLACE_ENABLED === "true";
+// Phase 1 : galerie lecture seule, aucune vente. MARKETPLACE_ENABLED reste OFF
+// (pas de commerce). Page noindex tant que rien à indexer.
 
 export function generateMetadata(): Metadata {
-  // Noindex conditionnel : tant que le marketplace est désactivé (flag off),
-  // on évite d'indexer une vitrine vide ("coming soon") qui nuirait à
-  // l'autorité du domaine. Dès activation, la page devient indexable.
-  const indexable = MARKETPLACE_ENABLED;
   return {
-    robots: { index: indexable, follow: indexable },
-    title: "Verified Strategy Marketplace",
-    description: indexable
-      ? "Buy independently audited trading strategies. Every listing verified with real recomputed numbers."
-      : "A marketplace of independently audited trading strategies and bots. Every listing verified with real recomputed numbers. Coming soon.",
-    alternates: {
-      canonical: "/marketplace",
-    },
+    robots: { index: false, follow: false },
+    title: "Catalogue des audits certifiés — StratVerity",
+    description:
+      "Stratégies auditées par le labo StratVerity, chiffres vérifiés (fees inclus). Aucune vente encore : les preuves publiées suivent un audit réel.",
+    alternates: { canonical: "/marketplace" },
     openGraph: {
-      title: "Verified Strategy Marketplace | StratVerity",
+      title: "Catalogue des audits certifiés | StratVerity",
       description:
-        "Buy strategies with proof. Every bot independently audited — declared vs recomputed performance, visible.",
+        "Audit de backtest vérifié par le labo StratVerity — Proof, not storytelling.",
       type: "website",
       url: "https://www.stratverity.com/marketplace",
       siteName: "StratVerity",
     },
   };
-}
-
-export default function MarketplaceLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <>{children}</>;
 }

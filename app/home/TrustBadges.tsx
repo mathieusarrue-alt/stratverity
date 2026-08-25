@@ -15,8 +15,8 @@ const LOCAL: Record<string, { fr: string; en: string }> = {
   "trust.eyebrow": { fr: "PREUVES DE CONFIANCE", en: "TRUST SIGNALS" },
   "trust.title": { fr: "Des preuves, pas des promesses.", en: "Evidence, not promises." },
   "trust.lead": {
-    fr: "Chaque audit est indépendant, le code reste privé, les badges sont scellés et une revue humaine précède toute livraison.",
-    en: "Every audit is independent, code stays private, badges are sealed, and human review precedes delivery.",
+    fr: "Chaque audit est indépendant, le code reste privé, les badges sont scellés et une validation automatique précède toute livraison.",
+    en: "Every audit is independent, code stays private, badges are sealed, and automatic audit precedes delivery.",
   },
   "trust.independent.t": { fr: "Audit indépendant", en: "Independent audit" },
   "trust.independent.p": {
@@ -33,10 +33,10 @@ const LOCAL: Record<string, { fr: string; en: string }> = {
     fr: "Chaque certification est liée à l’empreinte immuable du code audité.",
     en: "Each certification is tied to the immutable fingerprint of the audited code.",
   },
-  "trust.human.t": { fr: "Revue humaine obligatoire", en: "Mandatory human review" },
+  "trust.human.t": { fr: "Validation automatique obligatoire", en: "Mandatory automatic audit" },
   "trust.human.p": {
-    fr: "Aucun rapport livré sans validation humaine des preuves et des limites.",
-    en: "No report is delivered without human validation of evidence and limits.",
+    fr: "Aucun rapport livré sans validation automatique des preuves et des limites.",
+    en: "No report is delivered without automatic validation of evidence and limits.",
   },
 };
 

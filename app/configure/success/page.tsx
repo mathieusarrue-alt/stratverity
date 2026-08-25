@@ -334,14 +334,16 @@ export default function CheckoutReturnPage() {
   };
 
   const copyShare = async () => {
-    const url = shareUrl || window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      setDetailMessage(fr ? "Lien copié." : "Link copied.");
-    } catch {
-      setDetailMessage(url);
-    }
-  };
+      // JAMAIS window.location.href (peut contenir session_id Stripe). Seul un
+      // shareUrl public (/report/{id}) est copiable.
+      if (!shareUrl) return;
+      try {
+              await navigator.clipboard.writeText(shareUrl);
+              setDetailMessage(fr ? "Lien copié." : "Link copied.");
+            } catch {
+              setDetailMessage(fr ? "Impossible de copier." : "Could not copy.");
+            }
+          };
 
   const activeStep = stepIndex(pageState);
   const steps: { id: StepId; label: string }[] = [
@@ -513,47 +515,47 @@ export default function CheckoutReturnPage() {
 
         {pageState === "delivered" && (
           <div className={styles.orderUpload} data-premium-surface>
-            <h2>{fr ? "Votre rapport" : "Your report"}</h2>
-            <p>
-              {fr
-                ? "Partagez le résultat ou conservez le lien de cette page."
-                : "Share the result or keep this page link."}
-            </p>
-            <div className={styles.successShareRow}>
-              <button type="button" onClick={() => void copyShare()}>
-                {fr ? "Copier le lien" : "Copy link"}
-              </button>
-              <a
-                className={styles.checkoutButton}
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                  "StratVerity audit — proof, not storytelling",
-                )}&url=${encodeURIComponent(
-                  shareUrl ||
-                    (typeof window !== "undefined"
-                      ? window.location.href
-                      : "https://www.stratverity.com"),
-                )}`}
-                rel="noreferrer"
-                target="_blank"
-              >
-                Share X
-              </a>
-              <a
-                className={styles.checkoutButton}
-                href={`https://wa.me/?text=${encodeURIComponent(
-                  `${
-                    shareUrl ||
-                    (typeof window !== "undefined"
-                      ? window.location.href
-                      : "https://www.stratverity.com")
-                  } — StratVerity`,
-                )}`}
-                rel="noreferrer"
-                target="_blank"
-              >
-                WhatsApp
-              </a>
-            </div>
+                      <h2>{fr ? "Votre rapport" : "Your report"}</h2>
+                      {shareUrl ? (
+                        <>
+                          <p>
+                            {fr
+                              ? "Partagez le rapport public vérifié."
+                              : "Share the verified public report."}
+                          </p>
+                          <div className={styles.successShareRow}>
+                            <button type="button" onClick={() => void copyShare()}>
+                              {fr ? "Copier le lien" : "Copy link"}
+                            </button>
+                            <a
+                              className={styles.checkoutButton}
+                              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                                "StratVerity audit — proof, not storytelling",
+                              )}&url=${encodeURIComponent(shareUrl)}`}
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              Share X
+                            </a>
+                            <a
+                              className={styles.checkoutButton}
+                              href={`https://wa.me/?text=${encodeURIComponent(
+                                `Voir l’audit — ${shareUrl} — StratVerity`,
+                              )}`}
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              WhatsApp
+                            </a>
+                          </div>
+                        </>
+                      ) : (
+                        <p>
+                          {fr
+                            ? "Disponible dès que le rapport public est prêt."
+                            : "Available as soon as the public report is ready."}
+                        </p>
+                      )}
             {approvedReportHtml ? (
               <iframe
                 className={styles.approvedReport}

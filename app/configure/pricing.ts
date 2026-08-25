@@ -125,7 +125,7 @@ export function calculatePrice(input: PricingInput): PricingResult {
 
     if (input.auditDepth === "CUSTOM") {
       lines.push({
-        label: `Revue humaine · ${strategyCount} stratégie${
+        label: `Validation automatique · ${strategyCount} stratégie${
           strategyCount > 1 ? "s" : ""
         }`,
         amountExVatCents: 14_900 * strategyCount,
