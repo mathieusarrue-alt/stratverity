@@ -507,6 +507,10 @@ export default function ScopeConfiguratorPage() {
     setNotice({ key: "configure.msg.preparingPayment" });
     try {
       const scopeHash = await checkoutScopeHash(pricedRequest);
+      // UN SEUL attempt_id pour tout le parcours (upload source -> checkout ->
+      // Stripe). Ne JAMAIS recréer l'id/owner une fois créé, meme si le scope
+      // change apres le depot source : sinon la source reposee sous attempt A
+      // est perdue quand le paiement porte attempt B (le bug A!=B).
       if (!checkoutAttemptRef.current?.idempotencyKey) {
         checkoutAttemptRef.current = {
           scopeHash,
