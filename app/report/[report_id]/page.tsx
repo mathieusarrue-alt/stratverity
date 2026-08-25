@@ -31,10 +31,7 @@ export default function ReportPage({
     };
   }, [report_id]);
 
-  const url =
-    typeof window !== "undefined"
-      ? window.location.href
-      : `https://www.stratverity.com/report/${report_id}`;
+  const url = `https://www.stratverity.com/report/${encodeURIComponent(report_id)}`;
   const shareText = "Audit backtest StratVerity — métriques vérifiées. Aucune promesse de gain.";
 
   const links = {
