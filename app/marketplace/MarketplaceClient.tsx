@@ -3,14 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ShieldCheck,
-  TrendingUp,
-  Activity,
-  X,
-} from "lucide-react";
-import { modelStrategies, formatSha, scoreTone } from "./model-strategies";
-import type { ModelStrategy } from "./model-strategies";
+import { TrendingUp, Activity, X } from "lucide-react";
 
 type Listing = {
   listing_id: string;
@@ -21,56 +14,6 @@ type Listing = {
   commission_bps: number;
   stats?: Record<string, unknown> | null;
 };
-
-function ScoreGauge({ score }: { score: number }) {
-  const tone = scoreTone(score);
-  const color = tone === "good" ? "#00FF9D" : tone === "warn" ? "#F59E0B" : "#EF4444";
-  const r = 26;
-  const c = 2 * Math.PI * r;
-  const filled = c * (score / 100);
-  return (
-    <svg width="72" height="72" viewBox="0 0 72 72" className="mp-gauge" role="img" aria-label={`Robustness ${score}/100`}>
-      <circle cx="36" cy="36" r={r} fill="none" stroke="var(--line-2)" strokeWidth="6" />
-      <circle
-        cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="6"
-        strokeLinecap="round" strokeDasharray={`${filled} ${c - filled}`}
-        transform="rotate(-90 36 36)"
-        style={{ filter: `drop-shadow(0 0 6px ${color})`, transition: "stroke-dasharray 0.8s ease" }}
-      />
-      <text x="36" y="40" textAnchor="middle" fill={color} fontSize="18" fontWeight="800" fontFamily="var(--mono)">{score}</text>
-    </svg>
-  );
-}
-
-function StrategyCard({ s }: { s: ModelStrategy }) {
-  const tone = scoreTone(s.robustnessScore);
-  return (
-    <article className={`mp-card mp-tone-${tone}`}>
-      <div className="mp-card-top">
-        <span className="mp-engine">{s.engine}</span>
-        <ScoreGauge score={s.robustnessScore} />
-      </div>
-      <h3>{s.title}</h3>
-      <p className="mp-summary">{s.summary}</p>
-      <div className="mp-meta">
-        <span>{s.asset} · {s.timeframe}</span>
-        <span className="mp-period">{s.period}</span>
-      </div>
-      <dl className="mp-stats">
-        <div><dt>Net return</dt><dd className="mp-good">{s.netReturn}</dd></div>
-        <div><dt>Max DD</dt><dd className={s.maxDrawdown.startsWith("1") || s.maxDrawdown.startsWith("2") ? "mp-warn" : "mp-bad"}>{s.maxDrawdown}</dd></div>
-        <div><dt>Win rate</dt><dd>{s.winRate}</dd></div>
-        <div><dt>Profit factor</dt><dd>{s.profitFactor}</dd></div>
-      </dl>
-      <div className="mp-badges">
-        {s.badges.map((b) => (
-          <span key={b} className="mp-badge">{b}</span>
-        ))}
-      </div>
-      <p className="mp-sha" title={s.sha256}><ShieldCheck size={13} /> SHA256 · {formatSha(s.sha256)}</p>
-    </article>
-  );
-}
 
 function LaunchListModal({ onClose }: { onClose: () => void }) {
   const [profile, setProfile] = useState<"buyer" | "seller">("buyer");
@@ -85,7 +28,7 @@ function LaunchListModal({ onClose }: { onClose: () => void }) {
     }
     setState("sending");
     try {
-      const response = await fetch("/api/leads/capture", {
+      const response = await fetch("/api/marketplace/launch-list", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: normalized, profile, source: "marketplace-launch-list" }),
@@ -99,7 +42,9 @@ function LaunchListModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="mp-modal-backdrop" role="dialog" aria-modal="true" aria-label="Join the launch list">
       <div className="mp-modal">
-        <button className="mp-modal-close" type="button" onClick={onClose} aria-label="Close"><X size={18} /></button>
+        <button className="mp-modal-close" type="button" onClick={onClose} aria-label="Close">
+          <X size={18} />
+        </button>
         <h3>Join the launch list</h3>
         <p className="mp-modal-sub">Be the first to access certified strategies when the marketplace opens.</p>
         <div className="mp-profile-toggle" role="radiogroup" aria-label="I am a…">
@@ -173,36 +118,52 @@ export default function MarketplaceClient({ enabled }: { enabled: boolean }) {
     <>
       {message ? <p className="marketplace-message" role="status">{message}</p> : null}
 
-      {/* Vitrine des stratégies modèles auditées (toujours visible, clairement illustrative). */}
-      <section aria-label="Audited model strategies" className="mp-models">
-        <div className="mp-models-head">
+      {/* Catalogue public — certifications réelles uniquement (aucun exemple fictif). */}
+      <section aria-label="Certified public catalogue" className="mp-public">
+        <div className="mp-public-head">
           <div>
-            <span className="marketplace-proof">Model catalogue</span>
-            <h2>Audited strategies, <em>for reference.</em></h2>
+            <span className="marketplace-proof">Certified catalogue</span>
+            <h2>Stratégies auditées, chiffres vérifiés.</h2>
           </div>
-          <p>These are illustrative examples showing the final certified format — not live products for sale. No illustrative strategy is presented as a real product.</p>
+          <p>
+            Aucune stratégie n&apos;est présentée ici sans audit StratVerity réel et
+            consentement de publication. Les performances ne sont jamais saisies
+            par le vendeur ni inventées.
+          </p>
         </div>
-        <div className="mp-grid">
-          {modelStrategies.map((s) => <StrategyCard key={s.id} s={s} />)}
-        </div>
+        {enabled ? (
+          <div className="marketplace-grid">
+            {listings.map((listing) => (
+              <article className="marketplace-card" key={listing.listing_id}>
+                <span className="marketplace-proof">Certified exact version</span>
+                <h2>{listing.title}</h2>
+                <p>SHA256 · {listing.audit_hash.slice(0, 18)}…</p>
+                <strong>{(listing.price_cents / 100).toLocaleString("en", { style: "currency", currency: listing.currency })}</strong>
+                <button className="btn btn-primary" type="button" onClick={() => buy(listing.listing_id)}>Buy securely</button>
+              </article>
+            ))}
+            {!message && listings.length === 0 ? (
+              <div className="marketplace-state">
+                <strong>Aucune stratégie certifiée publique pour l&apos;instant.</strong>
+                <p>
+                  Les fiches apparaissent après audit DELIVERED, consentement de
+                  publication et vérification. Faites auditer la vôtre dès maintenant.
+                </p>
+                <Link className="btn btn-primary" href="/configure">Faire auditer ma stratégie →</Link>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+                  <div className="marketplace-state">
+                    <strong>Le catalogue certifié est en préparation.</strong>
+                    <p>
+                      Aucune vente ouverte pour le moment. Faites auditer votre stratégie :
+                      elle pourra rejoindre la galerie publique avec ses preuves.
+                    </p>
+                    <Link className="btn btn-primary" href="/configure">Faire auditer ma stratégie →</Link>
+                  </div>
+                )}
       </section>
-
-      {enabled ? (
-        <div className="marketplace-grid">
-          {listings.map((listing) => (
-            <article className="marketplace-card" key={listing.listing_id}>
-              <span className="marketplace-proof">Certified exact version</span>
-              <h2>{listing.title}</h2>
-              <p>SHA256 · {listing.audit_hash.slice(0, 18)}…</p>
-              <strong>{(listing.price_cents / 100).toLocaleString("en", { style: "currency", currency: listing.currency })}</strong>
-              <button className="btn btn-primary" type="button" onClick={() => buy(listing.listing_id)}>Buy securely</button>
-            </article>
-          ))}
-          {!message && listings.length === 0 ? (
-            <div className="marketplace-state"><strong>No strategy for sale yet.</strong><p>Listings only appear after certification, seller verification, KYC and exact-file approval.</p></div>
-          ) : null}
-        </div>
-      ) : null}
 
       {/* CTA conversion : join the launch list. */}
       <div className="mp-launch-cta">
