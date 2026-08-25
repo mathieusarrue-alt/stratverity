@@ -705,8 +705,8 @@ export default function ScopeConfiguratorPage() {
               <strong>{t("configure.chooseFiles")}</strong>
               <small>
                 {locale === "fr"
-                  ? "Pine · Python · MQL · ZIP · dépôt source avant paiement"
-                  : "Pine · Python · MQL · ZIP · source before payment"}
+                                  ? "Pine · Python · ZIP · dépôt source avant paiement"
+                                  : "Pine · Python · ZIP · source before payment"}
               </small>
             </label>
             {strategies.length > 0 ? (

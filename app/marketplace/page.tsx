@@ -1,20 +1,25 @@
+import { Metadata } from "next";
 import MarketplaceClient from "./MarketplaceClient";
 
-export default function MarketplacePage() {
-  const enabled = process.env.NEXT_PUBLIC_MARKETPLACE_ENABLED === "true";
+export const metadata: Metadata = {
+  title: "Catalogue des audits certifiés — StratVerity",
+  description:
+    "Stratégies auditées par le labo StratVerity, chiffres vérifiés. Aucune vente encore : publiez une preuve après audit.",
+  robots: { index: false, follow: false },
+};
+
+export default async function MarketplacePage() {
   return (
-    <main className="marketplace-shell">
-      <header className="marketplace-hero">
-        <span>STRATVERITY MARKETPLACE</span>
-        <h1>Buy strategies with <em>proof.</em></h1>
-        <p>Every listing is tied to an independently audited code version. Declared performance never replaces recomputed evidence.</p>
-      </header>
-      <section className="marketplace-principles" aria-label="Marketplace safeguards">
-        <article><strong>For buyers</strong><p>Fees, look-ahead risk, robustness and code version are checked before listing.</p></article>
-        <article><strong>For sellers</strong><p>Verified account, ownership consent and Stripe KYC are mandatory. Platform commission: 15%.</p></article>
-        <article><strong>Exact delivery</strong><p>The downloadable file must match the SHA256 hash sealed by the certification.</p></article>
+    <main className="mp-page">
+      <section className="mp-hero">
+        <h1>Stratégies auditées, <em>preuves vérifiées.</em></h1>
+        <p>
+          Le labo StratVerity audite le code des stratégies (fees inclus,
+          look-ahead, robustesse). Les fiches ci-dessous ne présentent que des
+          certifications réelles — aucune donnée inventée ni exemple fictif.
+        </p>
       </section>
-      <MarketplaceClient enabled={enabled} />
+      <MarketplaceClient enabled={false} />
     </main>
   );
 }
