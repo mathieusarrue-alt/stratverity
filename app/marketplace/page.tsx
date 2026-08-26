@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import MarketplaceClient from "./MarketplaceClient";
 
 export const metadata: Metadata = {
-  title: "Catalogue des audits certifiés — StratVerity",
+  title: "Vitrine labo — StratVerity",
   description:
-    "Stratégies auditées par le labo StratVerity, chiffres vérifiés. Aucune vente encore : publiez une preuve après audit.",
+    "Goldens de laboratoire StratVerity (ILLUSTRATIVE). Pas un catalogue vendeur. Proof, not storytelling.",
   robots: { index: false, follow: false },
 };
 
@@ -12,11 +12,13 @@ export default async function MarketplacePage() {
   return (
     <main className="mp-page">
       <section className="mp-hero">
-        <h1>Stratégies auditées, <em>preuves vérifiées.</em></h1>
+        <h1>
+          Preuves de labo, <em>pas un store.</em>
+        </h1>
         <p>
-          Le labo StratVerity audite le code des stratégies (fees inclus,
-          look-ahead, robustesse). Les fiches ci-dessous ne présentent que des
-          certifications réelles — aucune donnée inventée ni exemple fictif.
+          Trois fixtures versionnées du laboratoire (XRP, SOL, contrôle
+          négatif ETH). Chiffres issus des fichiers de référence — pas
+          d&apos;invention, pas de promesse de gain, pas de vente.
         </p>
       </section>
       <MarketplaceClient enabled={false} />

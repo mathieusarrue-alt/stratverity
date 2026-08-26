@@ -4,35 +4,34 @@ import Link from "next/link";
 import { TrendingUp } from "lucide-react";
 import IllustrativeModelCards from "./IllustrativeModelCards";
 
-// Phase 1 : galerie lecture seule, certifications réelles uniquement.
-// Aucune vente / commission / seller area / checkout. MARKETPLACE_ENABLED OFF.
+// Vitrine lecture seule. MARKETPLACE_ENABLED OFF — aucune vente.
+// Catalogue client réel = vide. Goldens labo = ILLUSTRATIVE uniquement.
 
 export default function MarketplaceClient(_props: { enabled: boolean }) {
   return (
     <>
-      {/* Catalogue public — certifications réelles uniquement, en préparation. */}
-      <section aria-label="Certified public catalogue" className="mp-public">
+      <IllustrativeModelCards />
+
+      <section aria-label="Catalogue certifié public" className="mp-public">
         <div className="mp-public-head">
           <div>
             <span className="marketplace-proof">Certified catalogue</span>
-            <h2>Stratégies auditées, chiffres vérifiés.</h2>
+            <h2>Aucune fiche cliente publique pour l&apos;instant.</h2>
           </div>
           <p>
-            Aucune stratégie n&apos;est présentée ici sans audit StratVerity réel et
-            consentement de publication. Les performances ne sont jamais saisies
-            par le vendeur ni inventées.
+            Une stratégie n&apos;entre dans ce catalogue qu&apos;après audit
+            StratVerity et consentement de publication. Les trois cartes
+            ci-dessus sont des goldens de laboratoire, pas des listings
+            vendeurs.
           </p>
         </div>
 
-        {/* Vitrine illustrative — cartes modèles du labo, au-dessus de l'état vide. */}
-        <IllustrativeModelCards />
-
         <div className="marketplace-state">
-          <strong>Aucune stratégie certifiée publique pour l&apos;instant.</strong>
+          <strong>Catalogue réel : vide, volontairement.</strong>
           <p>
-            Les fiches apparaissent après audit du code, consentement de
-            publication et vérification. Faites auditer la vôtre : une preuve
-            vérifiée pourra ensuite être publiée.
+            Faites auditer la vôtre. Si vous le souhaitez ensuite, une preuve
+            vérifiée pourra être publiée ici — jamais une courbe saisie à la
+            main.
           </p>
           <Link className="btn btn-primary" href="/configure">
             Faire auditer ma stratégie →
@@ -40,11 +39,10 @@ export default function MarketplaceClient(_props: { enabled: boolean }) {
         </div>
       </section>
 
-      {/* CTA acquisition : auditer puis publier une preuve. */}
       <div className="mp-launch-cta">
         <div>
           <TrendingUp size={18} />
-          <span>Publier une preuve vérifiée après audit ? Commencez par auditer.</span>
+          <span>Publier une preuve après audit ? Commencez par le labo.</span>
         </div>
       </div>
     </>
