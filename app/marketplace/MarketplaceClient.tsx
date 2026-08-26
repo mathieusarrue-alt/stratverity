@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { TrendingUp } from "lucide-react";
+import IllustrativeModelCards from "./IllustrativeModelCards";
 
 // Phase 1 : galerie lecture seule, certifications réelles uniquement.
 // Aucune vente / commission / seller area / checkout. MARKETPLACE_ENABLED OFF.
@@ -22,6 +23,9 @@ export default function MarketplaceClient(_props: { enabled: boolean }) {
             par le vendeur ni inventées.
           </p>
         </div>
+
+        {/* Vitrine illustrative — cartes modèles du labo, au-dessus de l'état vide. */}
+        <IllustrativeModelCards />
 
         <div className="marketplace-state">
           <strong>Aucune stratégie certifiée publique pour l&apos;instant.</strong>
