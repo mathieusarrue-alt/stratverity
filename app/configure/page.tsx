@@ -41,7 +41,7 @@ const CHECKOUT_CONTRACT = {
 } as const;
 
 type Product = "AUDIT" | "SCAN";
-type AuditDepth = "ESSENTIAL" | "STANDARD" | "ROBUSTNESS" | "CUSTOM";
+type AuditDepth = "ESSENTIAL" | "PREMIUM" | "CUSTOM";
 type EvaluationMode = "BAR_CLOSE" | "INTRABAR";
 type SubmissionState =
   | "idle"
@@ -215,19 +215,17 @@ export default function ScopeConfiguratorPage() {
   const contextCount =
     projectedStrategyCount * assets.length * timeframes.length;
   const offerFamily =
-    product === "AUDIT"
-      ? auditDepth === "CUSTOM"
-        ? "CUSTOM"
-        : auditDepth === "ROBUSTNESS"
-          ? "PRO"
+      product === "AUDIT"
+        ? auditDepth === "CUSTOM"
+          ? "CUSTOM"
           : contextCount === 1
             ? "BASE"
             : "MATRIX"
-      : evaluationMode === "INTRABAR"
-        ? "PRO"
-        : contextCount === 1
-          ? "BASE"
-          : "MATRIX";
+        : evaluationMode === "INTRABAR"
+          ? "PRO"
+          : contextCount === 1
+            ? "BASE"
+            : "MATRIX";
   const price = calculatePrice({
     product,
     contextCount,
@@ -249,29 +247,21 @@ export default function ScopeConfiguratorPage() {
       : "";
 
   const buildPayload = () => {
-    const auditOptions =
-      auditDepth === "ESSENTIAL"
-        ? {
-            depth: "ESSENTIAL",
-            historical_windows: 1,
-            stress_scenarios: 1,
-            parameter_variants: 1,
-            human_review: false,
-          }
-        : auditDepth === "STANDARD"
+      const auditOptions =
+        auditDepth === "ESSENTIAL"
           ? {
-              depth: "STANDARD",
+              depth: "ESSENTIAL",
               historical_windows: 1,
               stress_scenarios: 1,
               parameter_variants: 1,
               human_review: false,
             }
-          : auditDepth === "ROBUSTNESS"
+          : auditDepth === "PREMIUM"
             ? {
-                depth: "ROBUSTNESS",
-                historical_windows: 3,
-                stress_scenarios: 3,
-                parameter_variants: 5,
+                depth: "PREMIUM",
+                historical_windows: 1,
+                stress_scenarios: 1,
+                parameter_variants: 1,
                 human_review: false,
               }
             : {
@@ -315,10 +305,16 @@ export default function ScopeConfiguratorPage() {
   };
 
   const promoteEssentialForScope = (nextContextCount: number) => {
-    if (product === "AUDIT" && auditDepth === "ESSENTIAL" && nextContextCount > 1) {
-      setAuditDepth("STANDARD");
-    }
-  };
+      // ESSENTIAL et PREMIUM sont mono-contexte : si l'utilisateur ajoute un
+      // 2e contexte, on bascule automatiquement en CUSTOM (multi-contexte).
+      if (
+        product === "AUDIT" &&
+        (auditDepth === "ESSENTIAL" || auditDepth === "PREMIUM") &&
+        nextContextCount > 1
+      ) {
+        setAuditDepth("CUSTOM");
+      }
+    };
 
   const chooseStrategies = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -800,41 +796,40 @@ export default function ScopeConfiguratorPage() {
             </legend>
             {product === "AUDIT" ? (
               <div className={styles.optionGrid}>
-                {(
-                  ["ESSENTIAL", "STANDARD", "ROBUSTNESS", "CUSTOM"] as AuditDepth[]
-                ).map((depth) => (
-                  <button
-                    aria-pressed={auditDepth === depth}
-                    className={auditDepth === depth ? styles.activeOption : ""}
-                    disabled={depth === "ESSENTIAL" && contextCount > 1}
-                    key={depth}
-                    onClick={() => {
-                      setAuditDepth(depth);
-                      setPreview(null);
-                    }}
-                    type="button"
-                  >
-                    <strong>
-                      {depth === "ESSENTIAL"
-                        ? t("configure.depth.essential")
-                        : depth === "STANDARD"
-                          ? t("configure.depth.standard")
-                          : depth === "ROBUSTNESS"
-                            ? t("configure.depth.robustness")
-                            : t("configure.depth.custom")}
-                    </strong>
-                    <small>
-                      {depth === "ESSENTIAL"
-                        ? t("configure.depth.essentialHelp")
-                        : depth === "STANDARD"
-                          ? t("configure.depth.standardHelp")
-                          : depth === "ROBUSTNESS"
-                            ? t("configure.depth.robustnessHelp")
-                            : t("configure.depth.customHelp")}
-                    </small>
-                  </button>
-                ))}
-              </div>
+                              {(
+                                ["ESSENTIAL", "PREMIUM", "CUSTOM"] as AuditDepth[]
+                              ).map((depth) => (
+                                <button
+                                  aria-pressed={auditDepth === depth}
+                                  className={auditDepth === depth ? styles.activeOption : ""}
+                                  disabled={
+                                    (depth === "ESSENTIAL" || depth === "PREMIUM") &&
+                                    contextCount > 1
+                                  }
+                                  key={depth}
+                                  onClick={() => {
+                                    setAuditDepth(depth);
+                                    setPreview(null);
+                                  }}
+                                  type="button"
+                                >
+                                  <strong>
+                                    {depth === "ESSENTIAL"
+                                      ? t("configure.depth.essential")
+                                      : depth === "PREMIUM"
+                                        ? t("configure.depth.premium")
+                                        : t("configure.depth.custom")}
+                                  </strong>
+                                  <small>
+                                    {depth === "ESSENTIAL"
+                                      ? t("configure.depth.essentialHelp")
+                                      : depth === "PREMIUM"
+                                        ? t("configure.depth.premiumHelp")
+                                        : t("configure.depth.customHelp")}
+                                  </small>
+                                </button>
+                              ))}
+                            </div>
             ) : (
               <p className={styles.emptyLine}>{t("configure.invitationSoon")}</p>
             )}
