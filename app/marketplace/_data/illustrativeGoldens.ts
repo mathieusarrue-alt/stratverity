@@ -1,19 +1,17 @@
-/**
- * Lab goldens shown on /marketplace as an ILLUSTRATIVE vitrine.
- * Numbers come only from artifacts/goldens/*/metrics_ref.json.
- * Not a live seller catalogue. Not a performance promise.
- *
- * Lab score (documented, deterministic, 0–100):
- *   0.45 * pfScore + 0.25 * wrScore + 0.20 * ddScore + 0.10 * nScore
- *   pfScore = clamp((PF / 2) * 100, 0, 100)   // PF 2.0 → 100
- *   wrScore = clamp(winratePct, 0, 100)
- *   ddScore = DD missing → 50
- *             else clamp((50 - |DD|) / 40 * 100, 0, 100)  // |DD| 10 → 100, 50 → 0
- *   nScore  = clamp(nTrades, 0, 100)
- *
- * NEGATIVE_CONTROL never uses that formula as a quality claim:
- * the card exists to show Python vs TradingView divergence.
- */
+// Lab goldens shown on /marketplace as an ILLUSTRATIVE vitrine.
+// Numbers come only from artifacts/goldens/*/metrics_ref.json.
+// Not a live seller catalogue. Not a performance promise.
+//
+// Lab score (documented, deterministic, 0-100):
+//   0.45 * pfScore + 0.25 * wrScore + 0.20 * ddScore + 0.10 * nScore
+//   pfScore = clamp((PF / 2) * 100, 0, 100)   // PF 2.0 -> 100
+//   wrScore = clamp(winratePct, 0, 100)
+//   ddScore = DD missing -> 50
+//             else clamp((50 - |DD|) / 40 * 100, 0, 100)  // |DD| 10 -> 100, 50 -> 0
+//   nScore  = clamp(nTrades, 0, 100)
+//
+// NEGATIVE_CONTROL never uses that formula as a quality claim:
+// the card exists to show Python vs TradingView divergence.
 
 export type HaloTone = "good" | "warn" | "bad";
 
