@@ -172,7 +172,10 @@ export default function CheckoutReturnPage() {
         const result = (await response.json()) as AutoDeliverResponse;
         if (response.ok) {
           if (result.report_html) setApprovedReportHtml(result.report_html);
-          if (result.report_url) setShareUrl(result.report_url);
+                    if (result.report_url) {
+                      // report_url est relatif (/report/{id}) -> URL publique absolue.
+                      setShareUrl(`https://www.stratverity.com${result.report_url}`);
+                    }
           const delivery =
             result.delivery_status || result.status || "DELIVERED";
           mapDeliveryState(delivery, delivery);
