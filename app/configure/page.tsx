@@ -214,9 +214,15 @@ export default function ScopeConfiguratorPage() {
   const projectedStrategyCount = Math.max(strategies.length, 1);
   const contextCount =
     projectedStrategyCount * assets.length * timeframes.length;
+  const effectiveAuditDepth =
+    product === "AUDIT" &&
+    contextCount > 1 &&
+    (auditDepth === "ESSENTIAL" || auditDepth === "PREMIUM")
+      ? "CUSTOM"
+      : auditDepth;
   const offerFamily =
       product === "AUDIT"
-        ? auditDepth === "CUSTOM"
+        ? effectiveAuditDepth === "CUSTOM"
           ? "CUSTOM"
           : contextCount === 1
             ? "BASE"
@@ -230,7 +236,7 @@ export default function ScopeConfiguratorPage() {
     product,
     contextCount,
     strategyCount: projectedStrategyCount,
-    auditDepth,
+    auditDepth: effectiveAuditDepth,
     evaluationMode,
     retentionDays: Number(retentionDays),
   });
@@ -248,7 +254,7 @@ export default function ScopeConfiguratorPage() {
 
   const buildPayload = () => {
       const auditOptions =
-        auditDepth === "ESSENTIAL"
+        effectiveAuditDepth === "ESSENTIAL"
           ? {
               depth: "ESSENTIAL",
               historical_windows: 1,
@@ -256,7 +262,7 @@ export default function ScopeConfiguratorPage() {
               parameter_variants: 1,
               human_review: false,
             }
-          : auditDepth === "PREMIUM"
+          : effectiveAuditDepth === "PREMIUM"
             ? {
                 depth: "PREMIUM",
                 historical_windows: 1,
@@ -426,13 +432,17 @@ export default function ScopeConfiguratorPage() {
 
   const toggleTimeframe = (timeframe: string) => {
     setPreview(null);
-    setTimeframes((current) =>
-      current.includes(timeframe)
+    setTimeframes((current) => {
+      const next = current.includes(timeframe)
         ? current.length === 1
           ? current
           : current.filter((item) => item !== timeframe)
-        : [...current, timeframe],
-    );
+        : [...current, timeframe];
+      promoteEssentialForScope(
+        projectedStrategyCount * assets.length * next.length,
+      );
+      return next;
+    });
   };
 
   const submitPreview = async (event: FormEvent<HTMLFormElement>) => {
@@ -495,7 +505,7 @@ export default function ScopeConfiguratorPage() {
     }
     const scope = buildPayload();
     const pricedRequest = {
-      pricing_version: "launch-v0.2",
+      pricing_version: "launch-v0.3",
       scope,
       contract_acceptance: CHECKOUT_CONTRACT,
     };
@@ -880,7 +890,11 @@ export default function ScopeConfiguratorPage() {
               state === "error" || fileError ? styles.warning : ""
             }`}
           >
-            {message || t("configure.defaultMessage")}
+            {contextCount > 1 &&
+            product === "AUDIT" &&
+            (auditDepth === "ESSENTIAL" || auditDepth === "PREMIUM")
+              ? t("configure.msg.multicontextAutoCustom")
+              : message || t("configure.defaultMessage")}
           </p>
           {preview ? (
             <div className={styles.serverProof}>
