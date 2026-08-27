@@ -5,12 +5,11 @@ import { useI18n } from "../i18n/I18nProvider";
 import styles from "./free-tools.module.css";
 import ToolCostComparison from "@/components/ui/ToolCostComparison";
 import { comparisonData } from "@/config/comparison-data";
-import { HealthCheckIcon, RobustnessIcon, FeesIcon } from "@/components/ui/ToolIcons";
 
 const tools = [
-  { icon: <HealthCheckIcon />, title: "freeTools.healthTitle", body: "freeTools.healthBody", href: "/health-check" },
-  { icon: <RobustnessIcon />, title: "freeTools.scoreTitle", body: "freeTools.scoreBody", href: "/score" },
-  { icon: <FeesIcon />, title: "freeTools.feesTitle", body: "freeTools.feesBody", href: "/fees" },
+  { icon: "/icons/health-check.png", title: "freeTools.healthTitle", body: "freeTools.healthBody", href: "/health-check" },
+  { icon: "/icons/robustness.png", title: "freeTools.scoreTitle", body: "freeTools.scoreBody", href: "/score" },
+  { icon: "/icons/fees.png", title: "freeTools.feesTitle", body: "freeTools.feesBody", href: "/fees" },
 ] as const;
 
 export default function FreeToolsPage() {
@@ -25,7 +24,9 @@ export default function FreeToolsPage() {
       <section className={styles.grid} aria-label={t("freeTools.eyebrow")}>
         {tools.map((tool) => (
           <Link className={styles.card} href={tool.href} key={tool.href}>
-            <strong className={styles.icon} aria-hidden="true">{tool.icon}</strong>
+            <strong className={styles.icon} aria-hidden="true">
+              <img src={tool.icon} width={52} height={52} alt="" />
+            </strong>
             <h2>{t(tool.title)}</h2>
             <p>{t(tool.body)}</p>
             <span>{t("freeTools.open")} →</span>
