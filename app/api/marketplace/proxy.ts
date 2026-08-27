@@ -11,6 +11,13 @@ const PATHS = new Set([
   "/v1/marketplace/connect/status",
   "/v1/marketplace/checkout-sessions",
   "/v1/marketplace/download-links",
+  "/v1/marketplace/sell",
+  "/v1/marketplace/sell/listings",
+  "/v1/marketplace/sell/dashboard",
+  "/v1/marketplace/licenses",
+  "/v1/marketplace/favorites",
+  "/v1/marketplace/grants",
+  "/v1/marketplace/operator-listings",
 ]);
 
 function safeOrigin(raw: string): string {
