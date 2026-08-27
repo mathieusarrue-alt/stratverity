@@ -51,44 +51,45 @@ for (const language of languages) {
 }
 
 // Les cartes restent indicatives, mais leurs montants doivent refléter la
-// grille launch-v0.2 déjà en vigueur dans pricing.ts.
+// grille launch-v0.3 déjà en vigueur dans pricing.ts.
 for (const language of Object.keys(messages)) {
   messages[language]["pr.a.n"] = "Essential audit";
-  messages[language]["pr.a.amt"] = "€14.99<small> / strategy</small>";
-  messages[language]["pr.b.n"] = "Standard audit";
-  messages[language]["pr.b.amt"] = "from €39<small> / strategy</small>";
+  messages[language]["pr.a.amt"] = "€19<small> / strategy</small>";
+  messages[language]["pr.b.n"] = "Premium audit";
+  messages[language]["pr.b.amt"] = "€49<small> / strategy</small>";
   messages[language]["pr.b.1"] = "Multiple explicit contexts";
   messages[language]["pr.b.2"] = "Deeper evidence comparison";
-  messages[language]["pr.b.3"] = "€14.99 Essential fee credited";
-  messages[language]["pr.c.n"] = "Radar";
-  messages[language]["pr.c.amt"] = "from €19<small> / month</small>";
-  messages[language]["foot.build"] = "launch-v0.2 · design preview";
+  messages[language]["pr.b.3"] = "Robustness + divergence leads";
+  messages[language]["pr.c.n"] = "Custom";
+  messages[language]["pr.c.amt"] = "from €79<small> / strategy</small>";
+  messages[language]["foot.build"] = "launch-v0.3 · design preview";
 }
 
 Object.assign(messages.fr, {
   "pr.a.n": "Audit essentiel",
-  "pr.a.amt": "14,99€<small> / stratégie</small>",
-  "pr.b.n": "Audit standard",
-  "pr.b.amt": "dès 39€<small> / stratégie</small>",
+  "pr.a.amt": "19€<small> / stratégie</small>",
+  "pr.b.n": "Audit Premium",
+  "pr.b.amt": "49€<small> / stratégie</small>",
   "pr.b.1": "Plusieurs contextes explicites",
   "pr.b.2": "Comparaison de preuves approfondie",
-  "pr.b.3": "14,99€ de l’Essentiel déduits",
-  "pr.c.amt": "dès 19€<small> / mois</small>",
-  "foot.build": "launch-v0.2 · aperçu design",
+  "pr.b.3": "Score de robustesse + pistes",
+  "pr.c.n": "Custom",
+  "pr.c.amt": "dès 79€<small> / stratégie</small>",
+  "foot.build": "launch-v0.3 · aperçu design",
 });
 Object.assign(messages.en, {
-  "pr.c.amt": "from €19<small> / month</small>",
+  "pr.c.amt": "from €79<small> / strategy</small>",
 });
-Object.assign(messages.es, { "pr.c.amt": "desde 19€<small> / mes</small>" });
-Object.assign(messages.pt, { "pr.c.amt": "desde 19€<small> / mês</small>" });
-Object.assign(messages.de, { "pr.c.amt": "ab 19€<small> / Monat</small>" });
-Object.assign(messages.it, { "pr.c.amt": "da 19€<small> / mese</small>" });
-Object.assign(messages.ru, { "pr.c.amt": "от 19€<small> / месяц</small>" });
-Object.assign(messages.zh, { "pr.c.amt": "€19 起<small> / 月</small>" });
-Object.assign(messages.ko, { "pr.c.amt": "€19부터<small> / 월</small>" });
-Object.assign(messages.hi, { "pr.c.amt": "€19 से<small> / माह</small>" });
-Object.assign(messages.ar, { "pr.c.amt": "من €19<small> / شهر</small>" });
-Object.assign(messages.bn, { "pr.c.amt": "€19 থেকে<small> / মাস</small>" });
+Object.assign(messages.es, { "pr.c.amt": "desde 79€<small> / estrategia</small>" });
+Object.assign(messages.pt, { "pr.c.amt": "desde 79€<small> / estratégia</small>" });
+Object.assign(messages.de, { "pr.c.amt": "ab 79€<small> / Strategie</small>" });
+Object.assign(messages.it, { "pr.c.amt": "da 79€<small> / strategia</small>" });
+Object.assign(messages.ru, { "pr.c.amt": "от 79€<small> / стратегию</small>" });
+Object.assign(messages.zh, { "pr.c.amt": "€79 起<small> / 每策略</small>" });
+Object.assign(messages.ko, { "pr.c.amt": "€79부터<small> / 전략</small>" });
+Object.assign(messages.hi, { "pr.c.amt": "€79 से<small> / रणनीति</small>" });
+Object.assign(messages.ar, { "pr.c.amt": "من €79<small> / استراتيجية</small>" });
+Object.assign(messages.bn, { "pr.c.amt": "€79 থেকে<small> / কৌশল</small>" });
 
 const frenchKeys = Object.keys(french);
 for (const language of languages) {

@@ -297,8 +297,8 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .price{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);position:relative;transition:transform .28s var(--ease),box-shadow .3s}
 .price:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
-.price.feat{border-color:color-mix(in oklab,var(--brand) 55%,var(--line));box-shadow:var(--shadow-md)}
-.price.feat::after{content:"★";position:absolute;top:18px;right:18px;color:var(--emerald-500)}
+.price.feat{border-color:color-mix(in oklab,var(--brand) 55%,var(--line));box-shadow:var(--shadow-md);transform:scale(1.02)}
+.price.feat::after{content:"Recommandé";position:absolute;top:-11px;right:16px;background:var(--emerald-500);color:#06251a;font:700 10.5px var(--mono),monospace;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px;box-shadow:var(--shadow-sm)}
 .price .name{font-weight:700;font-size:17px}
 .price .amt{font-family:var(--mono);font-size:34px;font-weight:700;margin:8px 0 2px}
 .price .amt small{font-size:14px;color:var(--ink-3);font-weight:600}

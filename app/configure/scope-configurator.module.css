@@ -36,9 +36,9 @@
   box-shadow: var(--shadow-sm);
   padding: 22px 24px;
 }
-.privacyNote > span { color: var(--accent); font: 700 9px var(--mono), monospace; }
+.privacyNote > span { color: var(--accent); font: 700 11px var(--mono), monospace; letter-spacing: .08em; }
 .privacyNote strong { display: block; font-size: 14px; margin: 18px 0 8px; }
-.privacyNote p { color: var(--muted); font-size: 12px; line-height: 1.65; margin: 0; }
+.privacyNote p { color: var(--muted); font-size: 13.5px; line-height: 1.65; margin: 0; }
 .workspace {
   align-items: start;
   background: color-mix(in oklab, var(--paper) 82%, transparent);
@@ -69,7 +69,7 @@
   letter-spacing: -0.03em;
   padding: 0 20px 0 0;
 }
-.block legend span { color: var(--forest-600); font: 700 9px var(--mono), monospace; }
+.block legend span { color: var(--forest-600); font: 700 11px var(--mono), monospace; letter-spacing: .06em; }
 .productChoices {
   display: grid;
   gap: 12px;
@@ -129,10 +129,10 @@
   border: 1px solid color-mix(in oklab, #0ea5e9 30%, var(--line));
 }
 .productChoices strong { display: block; font-size: 24px; margin: 18px 0 9px; }
-.productChoices p { color: var(--ink-2); font-size: 12px; line-height: 1.55; margin: 0; }
+.productChoices p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0; }
 .productChoices button em {
   color: var(--warning-500);
-  font: 700 8px var(--mono), monospace;
+  font: 700 10.5px var(--mono), monospace;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -164,7 +164,7 @@
   width: 44px;
 }
 .filePicker strong { font-size: 14px; }
-.filePicker small, .emptyLine { color: var(--ink-3); font-size: 10px; margin-top: 8px; }
+.filePicker small, .emptyLine { color: var(--ink-2); font-size: 13px; margin-top: 8px; }
 .strategyList { list-style: none; margin: 12px 0 0; padding: 0; }
 .strategyList li {
   align-items: center;
@@ -174,9 +174,9 @@
   grid-template-columns: 28px 1fr 32px;
   padding: 15px 4px;
 }
-.strategyList li > span { color: var(--forest-500); font: 700 9px var(--mono), monospace; }
-.strategyList li strong { font-size: 12px; }
-.strategyList li small { color: var(--ink-3); font: 500 8px var(--mono), monospace; }
+.strategyList li > span { color: var(--forest-500); font: 700 10.5px var(--mono), monospace; }
+.strategyList li strong { font-size: 13px; }
+.strategyList li small { color: var(--ink-2); font: 500 10.5px var(--mono), monospace; }
 .strategyList li button { background: transparent; border: 0; color: var(--ink-2); cursor: pointer; font-size: 20px; }
 .chips, .timeframes, .optionGrid { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 27px; }
 .chips button, .timeframes button, .optionGrid button {
@@ -259,9 +259,9 @@
 .chips .activeChip small, .optionGrid .activeOption small { color: #b9dfcb; }
 .timeframes button { font: 700 15px var(--mono), monospace; min-width: 72px; padding: 17px; }
 .optionGrid { display: grid; grid-template-columns: repeat(3, 1fr); }
-.optionGrid button { display: grid; gap: 7px; padding: 17px; text-align: left; min-height: 96px; }
-.optionGrid button strong { font-size: 12px; }
-.optionGrid button small { color: var(--ink-3); font-size: 9px; }
+.optionGrid button { display: grid; gap: 8px; padding: 17px; text-align: left; min-height: 104px; }
+.optionGrid button strong { font-size: 15px; }
+.optionGrid button small { color: var(--ink-2); font-size: 13px; line-height: 1.55; }
 .summary {
   --line: rgba(234, 243, 238, .16);
   background:
@@ -285,7 +285,7 @@
   padding-bottom: 18px;
 }
 .summaryHead span, .summaryHead strong {
-  font: 700 9px var(--mono), monospace;
+  font: 700 11px var(--mono), monospace;
   letter-spacing: 0.12em;
 }
 .summaryHead strong {
@@ -361,7 +361,7 @@
 .serverProof > span {
   color: #7dffc0;
   display: block;
-  font: 700 9px var(--mono), monospace;
+  font: 700 11px var(--mono), monospace;
   letter-spacing: 0.12em;
 }
 .serverProof > strong {

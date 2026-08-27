@@ -65,12 +65,12 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
     <div data-reveal>
       <span class="badge"><span class="dot"></span><span data-i18n="hero.badge">Independent audit · Pine & Python</span></span>
       <h1><span data-i18n="hero.h1a">Audit your strategy,</span><br><span class="accent" data-i18n="hero.h1b">not its storytelling.</span></h1>
-      <p class="lead" data-i18n="hero.lead">Upload a strategy. BacktestProof recomputes its metrics, detects biases and measures robustness — proof before promise.</p>
+      <p class="lead" data-i18n="hero.lead">Upload a strategy. StratVerity recomputes its metrics, detects biases and measures robustness — proof before promise.</p>
       <div class="hero-cta">
               <a class="btn btn-primary" data-magnetic href="/health-check" data-i18n="hero.ctaFree">Audit your code in 30 seconds — Free</a>
               <a class="btn btn-ghost" href="/free-tools" data-i18n="hero.ctaTools">Explore the tools</a>
             </div>
-            <p class="hero-proof" data-i18n="hero.proof">Over 1,000+ strategies audited · 100% independent · Code never shared</p>
+            <p class="hero-proof" data-i18n="hero.proof">100% independent · Code never shared · Fees included</p>
             <div class="trust">
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · Notebook</span></span>
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t2">Fees & slippage included</span></span>
@@ -129,7 +129,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="block" id="product">
   <div class="container">
     <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="prod.eyebrow">What BacktestProof verifies</span>
+      <span class="eyebrow" data-i18n="prod.eyebrow">What StratVerity verifies</span>
       <h2 data-i18n="prod.h2">Claimed performance, put to the evidence.</h2>
       <p data-i18n="prod.p">Every metric is recomputed on your data — fees and slippage included — then tied to the evidence behind it.</p>
     </div>
@@ -315,12 +315,12 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   <div class="container">
     <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="lock.eyebrow">Your report</span><h2 data-i18n="lock.h2">A full deliverable, unlocked after validation.</h2></div>
     <div class="locked" data-reveal>
-      <div class="doc"><h3>BacktestProof — BTCUSDT · 4H · Wolfe+RSI</h3><div class="lines"><span></span><span></span><span></span></div>
+      <div class="doc"><h3>StratVerity — BTCUSDT · 4H · Wolfe+RSI</h3><div class="lines"><span></span><span></span><span></span></div>
         <div class="grid3"><div></div><div></div><div></div></div><div class="lines" style="margin-top:16px"><span></span><span></span></div></div>
       <div class="veil"><div class="unlock">
         <div class="lock"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
         <h3 data-i18n="lock.t">Report ready — action required</h3>
-        <p data-i18n="lock.p">Blurred preview of a demo report. The full report unlocks after payment and automatic validation.</p>
+        <p data-i18n="lock.p">Blurred preview of a demo report. The full report unlocks after payment and human validation.</p>
         <a class="btn btn-primary" data-magnetic href="/configure" data-i18n="lock.cta">Unlock an example report</a>
       </div></div>
     </div>
@@ -340,25 +340,25 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Algorithm Crash-Test</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Indicative robustness score</span></li></ul>
         <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Start for free</a></div>
-      <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€14.99<small> / strategy</small></div>
+      <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€19<small> / strategy</small></div>
         <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Net-of-fees recompute</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">1 asset · 1 timeframe</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Divergence report</span></li></ul>
         <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
-      <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Standard audit</div><div class="amt" data-i18n="pr.b.amt">from €39<small> / strategy</small></div>
+      <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Premium audit</div><div class="amt" data-i18n="pr.b.amt">€49<small> / strategy</small></div>
         <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">Multiple explicit contexts</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Deeper evidence comparison</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">€14.99 Essential fee credited</span></li></ul>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Robustness + divergence leads</span></li></ul>
         <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
-      <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Radar</div><div class="amt" data-i18n="pr.c.amt">from €19<small> / month</small></div>
+      <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Custom</div><div class="amt" data-i18n="pr.c.amt">from €79<small> / strategy</small></div>
         <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">Volume of strategies</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Real-time scan (soon)</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Priority access</span></li></ul>
         <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Contact us</a></div>
       <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">Free access</div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.1">Sell your audited strategies</span></li>
+        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.1">Lab strategy showcase</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.2">Sealed exact delivery (SHA256)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.3">Buy certified bots</span></li></ul>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.3">Lab showcase, not a store</span></li></ul>
         <a class="btn btn-primary" data-magnetic href="/marketplace" style="width:100%;justify-content:center" data-i18n="pr.mp.cta">Browse the marketplace</a></div>
     </div>
   </div>
@@ -371,7 +371,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <details class="qa" data-reveal open><summary><span data-i18n="faq.q1">Is my strategy code shared or stored?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a1">No. Your code powers the audit computation and is never published or resold. You keep ownership of your strategy.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q2">Which formats can I upload?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a2">Pine Script, Python scripts, notebooks or a compatible folder. You can also provide your exported trades.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q3">Are the site numbers real client results?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a3">No. All figures shown here are illustrative examples. An audit guarantees no future performance.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q4">How is the report unlocked?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a4">After payment, your request goes through automatic validation before the full report becomes accessible via a temporary link.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q4">How is the report unlocked?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a4">After payment, your request goes through human validation before the full report becomes accessible via a temporary link.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q5">How does the audit detect look-ahead bias and overfitting?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a5">The engine recomputes every metric out-of-sample (70/30 walk-forward), replays trades on real candles and compares the declared result against the recomputed one. Look-ahead (info used before bar close), missing fees and single-window overfitting are flagged as divergences.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q6">How is the robustness score calculated?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a6">The score (0-100) weights out-of-sample stability (40%), net Profit Factor (>1.5 = 30%), drawdown (<20% = 20%) and trade count (>100 = 10%). A green badge is issued only when the engine verdict is CERTIFIED (score ≥ 70).</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q7">What does backtest certification guarantee?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a7">Certification attests that declared metrics were recomputed and sealed by an independent third party, with bias detection. It guarantees neither future returns nor absence of loss. Each badge is tied to an immutable SHA256 hash of the audited code.</div></details>
