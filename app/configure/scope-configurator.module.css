@@ -73,7 +73,7 @@
 .productChoices {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   margin-top: 27px;
 }
 .productChoices button {
@@ -99,14 +99,14 @@
 }
 .productChoices small {
   color: var(--ink-2);
-  font: 650 9px var(--mono), monospace;
+  font: 650 10.5px var(--mono), monospace;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
-.productChoices button:first-child > small::before,
-.productChoices button:last-child > small::before {
+.productChoices button > small::before {
   content: "A";
   display: inline-flex;
   align-items: center;
@@ -115,18 +115,9 @@
   height: 28px;
   border-radius: 8px;
   font: 750 12px var(--mono), monospace;
-}
-.productChoices button:first-child > small::before {
-  content: "A";
   background: color-mix(in oklab, var(--forest-700) 14%, var(--surface));
   color: var(--forest-700);
   border: 1px solid color-mix(in oklab, var(--forest-700) 28%, var(--line));
-}
-.productChoices button:last-child > small::before {
-  content: "S";
-  background: color-mix(in oklab, #0ea5e9 14%, var(--surface));
-  color: #0369a1;
-  border: 1px solid color-mix(in oklab, #0ea5e9 30%, var(--line));
 }
 .productChoices strong { display: block; font-size: 24px; margin: 18px 0 9px; }
 .productChoices p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0; }
@@ -249,7 +240,7 @@
 .assetIcon[data-asset="JNJ"] { background: #d51900; border-color: #d51900; color: #fff; font-size: 10px; }
 .assetLabel { display: grid; gap: 3px; }
 .assetLabel strong { font-size: 11px; }
-.chips button small { color: var(--ink-3); font: 600 7px var(--mono), monospace; }
+.chips button small { color: var(--ink-3); font: 650 10.5px var(--mono), monospace; letter-spacing: 0.02em; }
 .chips .activeChip, .timeframes .activeTimeframe, .optionGrid .activeOption {
   background: var(--forest-700);
   border-color: var(--forest-700);

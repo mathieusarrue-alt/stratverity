@@ -352,7 +352,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
       <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Custom</div><div class="amt" data-i18n="pr.c.amt">from €79<small> / strategy</small></div>
         <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">Volume of strategies</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Real-time scan (soon)</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Turnkey deployment (Auto-Pilot)</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Priority access</span></li></ul>
         <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Contact us</a></div>
       <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">Free access</div>

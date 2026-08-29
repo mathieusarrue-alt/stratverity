@@ -661,7 +661,7 @@ export default function ScopeConfiguratorPage() {
               {t("configure.step.service")}
             </legend>
             <div className={styles.productChoices}>
-              {(["AUDIT", "SCAN"] as Product[]).map((choice) => (
+              {(["AUDIT"] as Product[]).map((choice) => (
                 <button
                   aria-pressed={product === choice}
                   className={product === choice ? styles.selectedCard : ""}
@@ -672,27 +672,15 @@ export default function ScopeConfiguratorPage() {
                   }}
                   type="button"
                 >
-                  <small>
-                    {choice === "AUDIT"
-                      ? t("configure.kind.oneTime")
-                      : t("configure.kind.recurring")}
-                  </small>
-                  <strong>
-                    {choice === "AUDIT"
-                      ? t("configure.audit")
-                      : t("configure.scanLive")}
-                  </strong>
-                  <p>
-                    {choice === "AUDIT"
-                      ? t("configure.auditDescription")
-                      : t("configure.scanDescription")}
-                  </p>
-                  {choice === "SCAN" ? (
-                    <em>{t("configure.invitationSoon")}</em>
-                  ) : null}
+                  <small>{t("configure.kind.oneTime")}</small>
+                  <strong>{t("configure.audit")}</strong>
+                  <p>{t("configure.auditDescription")}</p>
                 </button>
               ))}
             </div>
+            {/* Scan live retiré du choix produit : le checkout est bloqué
+                (configure.msg.scanUnavailable, invitation seule pendant la
+                bêta) — l'afficher comme option active induisait en erreur. */}
           </fieldset>
 
           <fieldset className={styles.block} data-premium-surface>
