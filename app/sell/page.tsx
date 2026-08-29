@@ -5,7 +5,10 @@ import { FormEvent, useMemo, useState } from "react";
 import {
   COMMISSION_PCT,
   MIN_ONE_SHOT_CENTS,
-  MIN_RENT_CENTS,
+  MIN_RENT_MONTHLY_CENTS,
+  MIN_RENT_YEARLY_CENTS,
+  degressivePricingError,
+  yearlySavingsPct,
 } from "../marketplace/commerce";
 import styles from "./sell.module.css";
 
@@ -17,6 +20,11 @@ import styles from "./sell.module.css";
  * "toolkit" est une valeur backend déjà supportée
  * (marketplace_v1_http.py: kind pattern "^(indicator|strategy|toolkit)$") —
  * utilisée ici pour les outils d'optimisation / scripts utilitaires.
+ *
+ * Principe marketplace (décision fondateur 2026-08-30) : c'est le VENDEUR qui
+ * fixe ses 3 prix (achat définitif / location mensuelle / location annuelle),
+ * la plateforme n'impose que des planchers anti-abus et une règle bloquante :
+ * le prix annuel doit être strictement inférieur à 12× le prix mensuel.
  */
 
 const KINDS = [
@@ -78,13 +86,18 @@ export default function SellListing() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [markets, setMarkets] = useState<string[]>(["crypto"]);
-  const [oneShot, setOneShot] = useState(false);
-  // Prix saisis en EUROS (unité humaine) ; convertis en centimes uniquement à la
-  // soumission. Le formulaire précédent affichait des centimes bruts dans un
-  // champ sans indication d'unité (ex. "1900" pour 19€) — source de sous-tarification.
-  const [oneShotPriceEur, setOneShotPriceEur] = useState(String(MIN_ONE_SHOT_CENTS / 100 + 10));
-  const [rent, setRent] = useState(true);
-  const [rentPriceEur, setRentPriceEur] = useState(String(MIN_RENT_CENTS / 100 + 5));
+
+  // Prix saisis en EUROS (unité humaine) ; convertis en centimes uniquement à
+  // la soumission. 3 offres possibles, chacune activable indépendamment —
+  // c'est le vendeur qui fixe ses prix, la plateforme ne fait qu'appliquer
+  // des planchers et la règle de dégressivité annuel < 12×mensuel.
+  const [oneShot, setOneShot] = useState(true);
+  const [oneShotPriceEur, setOneShotPriceEur] = useState(String(MIN_ONE_SHOT_CENTS / 100));
+  const [rentMonthly, setRentMonthly] = useState(false);
+  const [rentMonthlyPriceEur, setRentMonthlyPriceEur] = useState(String(MIN_RENT_MONTHLY_CENTS / 100));
+  const [rentYearly, setRentYearly] = useState(false);
+  const [rentYearlyPriceEur, setRentYearlyPriceEur] = useState(String(MIN_RENT_YEARLY_CENTS / 100));
+
   const [sellerHandle, setSellerHandle] = useState("");
   const [fileName, setFileName] = useState("");
   const [cgu, setCgu] = useState(false);
@@ -103,10 +116,31 @@ export default function SellListing() {
     const eur = Number(oneShotPriceEur) || 0;
     return Math.round(eur * (100 - COMMISSION_PCT)) / 100;
   }, [oneShotPriceEur]);
-  const netRent = useMemo(() => {
-    const eur = Number(rentPriceEur) || 0;
+  const netRentMonthly = useMemo(() => {
+    const eur = Number(rentMonthlyPriceEur) || 0;
     return Math.round(eur * (100 - COMMISSION_PCT)) / 100;
-  }, [rentPriceEur]);
+  }, [rentMonthlyPriceEur]);
+  const netRentYearly = useMemo(() => {
+    const eur = Number(rentYearlyPriceEur) || 0;
+    return Math.round(eur * (100 - COMMISSION_PCT)) / 100;
+  }, [rentYearlyPriceEur]);
+
+  // Dégressivité annuel < 12×mensuel — bloquant seulement quand les deux
+  // offres de location sont actives (décision fondateur 2026-08-30).
+  const degressiveError = useMemo(() => {
+    if (!rentMonthly || !rentYearly) return null;
+    const monthlyCents = Math.round((Number(rentMonthlyPriceEur) || 0) * 100);
+    const yearlyCents = Math.round((Number(rentYearlyPriceEur) || 0) * 100);
+    return degressivePricingError(monthlyCents, yearlyCents);
+  }, [rentMonthly, rentYearly, rentMonthlyPriceEur, rentYearlyPriceEur]);
+
+  const savingsPct = useMemo(() => {
+    if (!rentMonthly || !rentYearly || degressiveError) return null;
+    const monthlyCents = Math.round((Number(rentMonthlyPriceEur) || 0) * 100);
+    const yearlyCents = Math.round((Number(rentYearlyPriceEur) || 0) * 100);
+    if (monthlyCents <= 0 || yearlyCents <= 0) return null;
+    return yearlySavingsPct(monthlyCents, yearlyCents);
+  }, [rentMonthly, rentYearly, degressiveError, rentMonthlyPriceEur, rentYearlyPriceEur]);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -115,8 +149,12 @@ export default function SellListing() {
       setError("Titre, description et handle vendeur sont obligatoires.");
       return;
     }
-    if (!oneShot && !rent) {
-      setError("Choisissez au moins un mode de vente (achat ou location).");
+    if (!oneShot && !rentMonthly && !rentYearly) {
+      setError("Choisissez au moins un mode de vente (achat, location mensuelle ou annuelle).");
+      return;
+    }
+    if (degressiveError) {
+      setError(degressiveError);
       return;
     }
     if (!cgu || !noGain) {
@@ -130,9 +168,19 @@ export default function SellListing() {
         const cents = Math.round((Number(oneShotPriceEur) || 0) * 100);
         offers.push({ mode: "one_shot", price_cents: cents >= MIN_ONE_SHOT_CENTS ? cents : MIN_ONE_SHOT_CENTS });
       }
-      if (rent) {
-        const cents = Math.round((Number(rentPriceEur) || 0) * 100);
-        offers.push({ mode: "rent_monthly", price_cents: cents >= MIN_RENT_CENTS ? cents : MIN_RENT_CENTS });
+      if (rentMonthly) {
+        const cents = Math.round((Number(rentMonthlyPriceEur) || 0) * 100);
+        offers.push({
+          mode: "rent_monthly",
+          price_cents: cents >= MIN_RENT_MONTHLY_CENTS ? cents : MIN_RENT_MONTHLY_CENTS,
+        });
+      }
+      if (rentYearly) {
+        const cents = Math.round((Number(rentYearlyPriceEur) || 0) * 100);
+        offers.push({
+          mode: "rent_yearly",
+          price_cents: cents >= MIN_RENT_YEARLY_CENTS ? cents : MIN_RENT_YEARLY_CENTS,
+        });
       }
       const payload = {
         kind,
@@ -208,14 +256,15 @@ export default function SellListing() {
         </h1>
         <p>
           L&apos;acheteur reçoit un accès invité sur sa propre plateforme (TradingView
-          ou MetaTrader) — jamais votre fichier source. StratVerity prélève{" "}
-          {COMMISSION_PCT} % à l&apos;encaissement, sur les ventes à l&apos;unité comme
-          sur les abonnements ; le reste part directement chez vous.
+          ou MetaTrader) — jamais votre fichier source. Vous fixez librement vos
+          prix — achat définitif, location mensuelle et/ou annuelle. StratVerity
+          prélève {COMMISSION_PCT} % à l&apos;encaissement, sur chaque mode ; le
+          reste part directement chez vous.
         </p>
         <div className={styles.trustRow}>
           <span className={styles.trustItem}><IconLock /> Code jamais transmis à l&apos;acheteur</span>
           <span className={styles.trustItem}><IconCheck /> Chaque dépôt passe en file d&apos;audit</span>
-          <span className={styles.trustItem}><IconCheck /> Paiement sécurisé, revenu suivi</span>
+          <span className={styles.trustItem}><IconCheck /> Vous fixez vos prix, paiement sécurisé</span>
         </div>
       </section>
 
@@ -302,12 +351,17 @@ export default function SellListing() {
           </fieldset>
 
           <fieldset className={styles.block}>
-            <legend><span>04</span> Comment vous êtes payé</legend>
-            <p className={styles.blockHint}>Activez au moins un mode — vous pouvez cumuler les deux.</p>
+            <legend><span>04</span> Vos prix</legend>
+            <p className={styles.blockHint}>
+              Principe marketplace : vous fixez vous-même chaque prix, au-dessus du
+              plancher indiqué. Activez au moins un mode — vous pouvez cumuler les
+              trois. Si location mensuelle ET annuelle sont actives, l&apos;annuel doit
+              rester strictement moins cher que 12 mensualités.
+            </p>
             <div className={styles.offerGrid}>
               <div className={`${styles.offerCard} ${oneShot ? styles.active : ""}`}>
                 <div className={styles.offerCardHead} onClick={() => setOneShot((v) => !v)}>
-                  <strong>Accès permanent</strong>
+                  <strong>Achat définitif</strong>
                   <span className={styles.toggleDot} />
                 </div>
                 <p>Paiement unique, minimum {MIN_ONE_SHOT_CENTS / 100} €.</p>
@@ -323,22 +377,48 @@ export default function SellListing() {
                   </div>
                 )}
               </div>
-              <div className={`${styles.offerCard} ${rent ? styles.active : ""}`}>
-                <div className={styles.offerCardHead} onClick={() => setRent((v) => !v)}>
+              <div className={`${styles.offerCard} ${rentMonthly ? styles.active : ""}`}>
+                <div className={styles.offerCardHead} onClick={() => setRentMonthly((v) => !v)}>
                   <strong>Location mensuelle</strong>
                   <span className={styles.toggleDot} />
                 </div>
-                <p>Abonnement récurrent, minimum {MIN_RENT_CENTS / 100} €/mois.</p>
-                {rent && (
+                <p>Abonnement récurrent, minimum {MIN_RENT_MONTHLY_CENTS / 100} €/mois.</p>
+                {rentMonthly && (
                   <div className={styles.priceRow}>
                     <input
                       type="number"
-                      min={MIN_RENT_CENTS / 100}
-                      value={rentPriceEur}
-                      onChange={(e) => setRentPriceEur(e.target.value)}
+                      min={MIN_RENT_MONTHLY_CENTS / 100}
+                      value={rentMonthlyPriceEur}
+                      onChange={(e) => setRentMonthlyPriceEur(e.target.value)}
                     />
-                    <span>vous touchez ≈ {netRent.toFixed(2)} €/mois</span>
+                    <span>vous touchez ≈ {netRentMonthly.toFixed(2)} €/mois</span>
                   </div>
+                )}
+              </div>
+              <div className={`${styles.offerCard} ${rentYearly ? styles.active : ""}`}>
+                <div className={styles.offerCardHead} onClick={() => setRentYearly((v) => !v)}>
+                  <strong>Location annuelle</strong>
+                  <span className={styles.toggleDot} />
+                </div>
+                <p>Abonnement annuel dégressif, minimum {MIN_RENT_YEARLY_CENTS / 100} €/an.</p>
+                {rentYearly && (
+                  <div className={styles.priceRow}>
+                    <input
+                      type="number"
+                      min={MIN_RENT_YEARLY_CENTS / 100}
+                      value={rentYearlyPriceEur}
+                      onChange={(e) => setRentYearlyPriceEur(e.target.value)}
+                    />
+                    <span>vous touchez ≈ {netRentYearly.toFixed(2)} €/an</span>
+                  </div>
+                )}
+                {rentYearly && rentMonthly && savingsPct !== null && savingsPct > 0 && (
+                  <p className={styles.savingsBadge}>
+                    Économie affichée à l&apos;acheteur : −{savingsPct} % vs 12 mensualités
+                  </p>
+                )}
+                {rentYearly && rentMonthly && degressiveError && (
+                  <p className={styles.errorNote} style={{ marginTop: 10 }}>{degressiveError}</p>
                 )}
               </div>
             </div>
@@ -392,17 +472,23 @@ export default function SellListing() {
           <div className={styles.summaryBody}>
             {oneShot && (
               <div className={styles.summaryLine}>
-                <span>Accès permanent, net vendeur</span>
+                <span>Achat définitif, net vendeur</span>
                 <strong>{netOneShot.toFixed(2)} €</strong>
               </div>
             )}
-            {rent && (
+            {rentMonthly && (
               <div className={styles.summaryLine}>
-                <span>Location, net vendeur</span>
-                <strong>{netRent.toFixed(2)} €/mois</strong>
+                <span>Location mensuelle, net vendeur</span>
+                <strong>{netRentMonthly.toFixed(2)} €/mois</strong>
               </div>
             )}
-            {!oneShot && !rent && (
+            {rentYearly && (
+              <div className={styles.summaryLine}>
+                <span>Location annuelle, net vendeur</span>
+                <strong>{netRentYearly.toFixed(2)} €/an</strong>
+              </div>
+            )}
+            {!oneShot && !rentMonthly && !rentYearly && (
               <div className={styles.summaryLine}>
                 <span>Activez un mode de vente</span>
                 <strong>—</strong>
@@ -416,9 +502,9 @@ export default function SellListing() {
           <ul className={styles.summaryPoints}>
             <li><IconCheck /> Code source jamais transmis — accès invite uniquement.</li>
             <li><IconCheck /> Chaque dépôt passe en file d&apos;audit avant publication.</li>
-            <li><IconCheck /> Revenus versés directement, commission prélevée à la source.</li>
+            <li><IconCheck /> C&apos;est vous qui fixez vos 3 prix, commission prélevée à la source.</li>
           </ul>
-          <button className={styles.ctaButton} type="submit" disabled={busy}>
+          <button className={styles.ctaButton} type="submit" disabled={busy || !!degressiveError}>
             {busy ? "Dépôt en cours…" : "Déposer le listing"}
           </button>
         </aside>

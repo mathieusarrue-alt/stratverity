@@ -17,7 +17,7 @@ export type ListingState =
   | "SUSPENDED"
   | "DELISTED";
 
-export type SaleMode = "one_shot" | "rent_monthly";
+export type SaleMode = "one_shot" | "rent_monthly" | "rent_yearly";
 
 export interface ListingOffer {
   mode: SaleMode;
@@ -78,8 +78,37 @@ export const COMMERCE_ENABLED =
 
 export const COMMISSION_PCT = 15;
 
-export const MIN_ONE_SHOT_CENTS = 900; // 9 €
-export const MIN_RENT_CENTS = 400; // 4 €/mo
+// Planchers produit (décision fondateur 2026-08-30). Chaque vendeur fixe
+// librement ses 3 prix au-dessus de ces planchers — principe marketplace :
+// c'est le vendeur qui décide, la plateforme ne fait qu'empêcher les
+// listings à prix dérisoire.
+export const MIN_ONE_SHOT_CENTS = 30_000; // 300 €
+export const MIN_RENT_MONTHLY_CENTS = 2_000; // 20 €/mois
+export const MIN_RENT_YEARLY_CENTS = 20_000; // 200 €/an (plancher autonome ;
+// si une offre mensuelle existe aussi, la vraie contrainte est la
+// dégressivité ci-dessous, toujours plus stricte que ce plancher seul).
+
+/** Règle bloquante : si les deux offres coexistent, l'annuel doit être
+ * strictement moins cher que 12× le mensuel (sinon "économisez en payant
+ * annuel" serait faux pour l'acheteur). Retourne un message d'erreur ou null. */
+export function degressivePricingError(
+  monthlyCents: number | null,
+  yearlyCents: number | null,
+): string | null {
+  if (monthlyCents === null || yearlyCents === null) return null;
+  if (yearlyCents >= monthlyCents * 12) {
+    return "Le prix annuel doit être strictement inférieur à 12× le prix mensuel (au moins 1 mois offert).";
+  }
+  return null;
+}
+
+/** % d'économie affiché à l'acheteur pour l'offre annuelle vs 12 mensualités. */
+export function yearlySavingsPct(monthlyCents: number, yearlyCents: number): number {
+  if (monthlyCents <= 0) return 0;
+  const fullYear = monthlyCents * 12;
+  if (fullYear <= 0) return 0;
+  return Math.round((1 - yearlyCents / fullYear) * 100);
+}
 
 export function formatCents(cents: number): string {
   const euros = (cents / 100).toLocaleString("en-IE", {
@@ -89,6 +118,25 @@ export function formatCents(cents: number): string {
   });
   return euros;
 }
+
+export const MODE_LABEL: Record<SaleMode, string> = {
+  one_shot: "Accès permanent",
+  rent_monthly: "Location mensuelle",
+  rent_yearly: "Location annuelle",
+};
+
+/** Suffixe court à accoler à un prix formaté (ex. "19 €" + " /mois"). */
+export const MODE_PRICE_SUFFIX: Record<SaleMode, string> = {
+  one_shot: "",
+  rent_monthly: " /mois",
+  rent_yearly: " /an",
+};
+
+export const MODE_SUMMARY_SUFFIX: Record<SaleMode, string> = {
+  one_shot: " — licence à vie",
+  rent_monthly: " /mois, résiliable à tout moment",
+  rent_yearly: " /an, résiliable à tout moment",
+};
 
 export const KIND_LABEL: Record<ListingKind, string> = {
   indicator: "Indicateur",

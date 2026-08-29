@@ -7,6 +7,7 @@ import {
   COMMERCE_ENABLED,
   KIND_LABEL,
   MarketplaceListing,
+  MODE_PRICE_SUFFIX,
   formatCents,
   STATE_LABEL,
 } from "./commerce";
@@ -94,7 +95,7 @@ export default function CommerceCatalogue() {
       {listings.map((listing) => {
         const first = listing.offers?.[0];
         const priceLabel = first
-          ? `${formatCents(first.price_cents)}${first.mode === "rent_monthly" ? " /mois" : ""}`
+          ? `${formatCents(first.price_cents)}${MODE_PRICE_SUFFIX[first.mode]}`
           : "—";
         return (
           <Link

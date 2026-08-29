@@ -8,11 +8,14 @@ import {
   deliveryLabel,
   formatCents,
   KIND_LABEL,
+  MODE_LABEL,
+  MODE_PRICE_SUFFIX,
+  MODE_SUMMARY_SUFFIX,
   type MarketplaceListing,
   type SaleMode,
 } from "../commerce";
 
-/** /marketplace/[slug] — détail + checkout (one_shot | rent_monthly). */
+/** /marketplace/[slug] — détail + checkout (one_shot | rent_monthly | rent_yearly). */
 
 export default function ListingDetail() {
   const params = useParams<{ slug: string }>();
@@ -35,6 +38,7 @@ export default function ListingDetail() {
         if (!found) throw new Error();
         setListing(found);
         if (found.offers?.some((o) => o.mode === "rent_monthly")) setMode("rent_monthly");
+        else if (found.offers?.some((o) => o.mode === "rent_yearly")) setMode("rent_yearly");
       } catch {
         setError("Listing introuvable.");
       }
@@ -112,9 +116,9 @@ export default function ListingDetail() {
                 className={mode === offer.mode ? "active" : ""}
                 onClick={() => setMode(offer.mode)}
               >
-                {offer.mode === "one_shot" ? "Accès permanent" : "Location mensuelle"}
+                {MODE_LABEL[offer.mode]}
                 <br />
-                <span className="mono">{formatCents(offer.price_cents)}{offer.mode === "rent_monthly" ? " /mois" : ""}</span>
+                <span className="mono">{formatCents(offer.price_cents)}{MODE_PRICE_SUFFIX[offer.mode]}</span>
               </button>
             ))}
           </div>
@@ -132,7 +136,7 @@ export default function ListingDetail() {
           {selected && (
             <p className="mp-summary" style={{ marginTop: 10 }}>
               Total : <strong className="mono">{formatCents(selected.price_cents)}</strong>
-              {selected.mode === "rent_monthly" ? " /mois, résiliable à tout moment" : " — licence à vie"}
+              {MODE_SUMMARY_SUFFIX[selected.mode]}
               {" · commission StratVerity 15 % incluse (vendeur reçoit 85 %)."}
             </p>
           )}

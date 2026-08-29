@@ -148,8 +148,10 @@
 .field textarea { resize: vertical; min-height: 100px; }
 .field small { color: var(--ink-3); font-size: 12px; line-height: 1.5; }
 
-/* Offer cards (one-shot / rent) */
-.offerGrid { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); margin-top: 6px; }
+/* Offer cards (one-shot / rent monthly / rent yearly — 3 prix fixés par le vendeur).
+   auto-fit plutôt qu'un repeat(3,1fr) fixe : évite l'écrasement des cartes sur les
+   largeurs intermédiaires (colonne builder ~600-700px) sans média-requête dédiée. */
+.offerGrid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 6px; }
 .offerCard {
   background: var(--surface-2);
   border: 1px solid var(--line);
@@ -187,9 +189,18 @@
   width: 10px;
 }
 .offerCard p { color: var(--ink-2); font-size: 12px; line-height: 1.5; margin: 6px 0 0; }
-.offerCard .priceRow { align-items: center; display: flex; gap: 8px; margin-top: 12px; }
+.offerCard .priceRow { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .offerCard .priceRow input { max-width: 100px; }
 .offerCard .priceRow span { color: var(--ink-2); font-size: 12.5px; }
+.savingsBadge {
+  background: color-mix(in oklab, var(--emerald-500) 14%, transparent);
+  border-radius: 8px;
+  color: var(--forest-700);
+  font-size: 11.5px;
+  font-weight: 650;
+  margin-top: 10px;
+  padding: 6px 9px;
+}
 
 .filePicker {
   align-items: center;
