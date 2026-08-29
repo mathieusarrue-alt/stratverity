@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Direction B — Sceaux institutionnels</title>
+  <desc id="desc">Comparaison des pictogrammes Audit, Marketplace et Optimiseur en modes sombre et clair.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#00150f" flood-opacity=".28"/></filter>
+    <symbol id="audit-b" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="60" cy="55" r="36" stroke-width="3" stroke-dasharray="41 9"/>
+        <circle cx="60" cy="55" r="26" stroke-width="2" opacity=".55"/>
+        <path d="M45 55l10 10 22-25" stroke-width="5"/>
+        <path d="M44 87l-6 18 22-10 22 10-6-18" stroke-width="3"/>
+        <path d="M60 13v8M102 55h-8M18 55h8" stroke-width="3"/>
+      </g>
+    </symbol>
+    <symbol id="market-b" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="19" y="27" width="60" height="70" rx="12" stroke-width="3" opacity=".6"/>
+        <rect x="41" y="17" width="60" height="70" rx="12" stroke-width="3"/>
+        <path d="M54 38h34M54 49h22M54 72l8 8 17-20" stroke-width="4"/>
+        <circle cx="90" cy="89" r="14" stroke-width="3"/>
+        <path d="M84 89l4 4 7-9" stroke-width="3"/>
+      </g>
+    </symbol>
+    <symbol id="optimizer-b" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 82a45 45 0 0 1 78 0" stroke-width="4"/>
+        <path d="M28 72l-8-5M42 48l-5-8M60 39V27M78 48l5-8M92 72l8-5" stroke-width="3" opacity=".65"/>
+        <path d="M60 80l24-29" stroke-width="5"/>
+        <circle cx="60" cy="80" r="11" stroke-width="4"/>
+        <circle cx="84" cy="51" r="4" fill="currentColor" stroke="none"/>
+        <path d="M35 98h50" stroke-width="3"/>
+      </g>
+    </symbol>
+    <style>.display{font-family:Fraunces,Georgia,serif}.ui{font-family:Inter,Arial,sans-serif}.card{fill:#0c2b21;stroke:#245543;stroke-width:1.5}.paperCard{fill:#fffdf8;stroke:#d8d5cb;stroke-width:1.5}.title{font-size:34px;font-weight:650;fill:#f6f3ec}.sub{font-size:15px;fill:#b7ccc2}.label{font-size:20px;font-weight:700;fill:#f6f3ec}.copy{font-size:13px;fill:#9fbaad}.lightLabel{font-size:16px;font-weight:700;fill:#083326}.tag{font-size:12px;font-weight:800;letter-spacing:.14em;fill:#5fe3b0}</style>
+  </defs>
+  <rect width="1200" height="500" fill="#071e17"/><rect y="500" width="1200" height="220" fill="#f6f3ec"/>
+  <text x="48" y="58" class="ui tag">DIRECTION B</text><text x="48" y="105" class="display title">Sceaux institutionnels</text><text x="48" y="136" class="ui sub">Autorité, certification et accès contrôlé — plus statutaire.</text>
+  <g filter="url(#shadow)"><rect class="card" x="48" y="175" width="320" height="275" rx="24"/><rect class="card" x="440" y="175" width="320" height="275" rx="24"/><rect class="card" x="832" y="175" width="320" height="275" rx="24"/></g>
+  <g color="#5fe3b0"><use href="#audit-b" x="148" y="196" width="120" height="120"/></g><g color="#16b981"><use href="#market-b" x="540" y="196" width="120" height="120"/></g><g color="#5fe3b0"><use href="#optimizer-b" x="932" y="196" width="120" height="120"/></g>
+  <text x="208" y="350" text-anchor="middle" class="ui label">Audit</text><text x="208" y="378" text-anchor="middle" class="ui copy">Sceau de diagnostic vérifié</text>
+  <text x="600" y="350" text-anchor="middle" class="ui label">Marketplace</text><text x="600" y="378" text-anchor="middle" class="ui copy">Accès certifié, source protégée</text>
+  <text x="992" y="350" text-anchor="middle" class="ui label">Optimiseur</text><text x="992" y="378" text-anchor="middle" class="ui copy">Réglage vers une consigne</text>
+  <text x="48" y="548" class="ui" font-size="13" font-weight="800" letter-spacing=".12em" fill="#12604a">APERÇU MODE CLAIR · 24–48 PX</text>
+  <g><rect class="paperCard" x="48" y="574" width="320" height="102" rx="18"/><rect class="paperCard" x="440" y="574" width="320" height="102" rx="18"/><rect class="paperCard" x="832" y="574" width="320" height="102" rx="18"/></g>
+  <g color="#0e4a38"><use href="#audit-b" x="70" y="593" width="64" height="64"/><use href="#market-b" x="462" y="593" width="64" height="64"/><use href="#optimizer-b" x="854" y="593" width="64" height="64"/></g>
+  <text x="154" y="632" class="ui lightLabel">Audit</text><text x="546" y="632" class="ui lightLabel">Marketplace</text><text x="938" y="632" class="ui lightLabel">Optimiseur</text>
+</svg>

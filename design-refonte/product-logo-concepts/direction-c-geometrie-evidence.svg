@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Direction C — Géométrie de l'évidence</title>
+  <desc id="desc">Comparaison des pictogrammes Audit, Marketplace et Optimiseur en modes sombre et clair.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#00150f" flood-opacity=".28"/></filter>
+    <symbol id="audit-c" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M39 23H22v74h17M81 23h17v74H81" stroke-width="5"/>
+        <circle cx="53" cy="60" r="8" stroke-width="4"/>
+        <path d="M62 62l9 9 18-24" stroke-width="5"/>
+        <path d="M45 38h30M45 82h30" stroke-width="2.5" opacity=".5"/>
+      </g>
+    </symbol>
+    <symbol id="market-c" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 28a11 11 0 0 1 11-11h43v25H42v29H17V28z" stroke-width="4"/>
+        <path d="M103 92a11 11 0 0 1-11 11H49V78h29V49h25v43z" stroke-width="4"/>
+        <path d="M48 49h30v29H48z" stroke-width="3" opacity=".55"/>
+        <path d="M54 63l7 7 13-17" stroke-width="4"/>
+      </g>
+    </symbol>
+    <symbol id="optimizer-c" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 31h82M19 60h82M19 89h82" stroke-width="3" opacity=".55"/>
+        <circle cx="42" cy="31" r="9" fill="#071e17" stroke-width="4"/>
+        <circle cx="76" cy="60" r="9" fill="#071e17" stroke-width="4"/>
+        <circle cx="58" cy="89" r="9" fill="#071e17" stroke-width="4"/>
+        <path d="M42 40l31 13M72 69L60 80" stroke-width="3"/>
+        <circle cx="76" cy="60" r="16" stroke-width="2" stroke-dasharray="5 6"/>
+      </g>
+    </symbol>
+    <style>.display{font-family:Fraunces,Georgia,serif}.ui{font-family:Inter,Arial,sans-serif}.card{fill:#0c2b21;stroke:#245543;stroke-width:1.5}.paperCard{fill:#fffdf8;stroke:#d8d5cb;stroke-width:1.5}.title{font-size:34px;font-weight:650;fill:#f6f3ec}.sub{font-size:15px;fill:#b7ccc2}.label{font-size:20px;font-weight:700;fill:#f6f3ec}.copy{font-size:13px;fill:#9fbaad}.lightLabel{font-size:16px;font-weight:700;fill:#083326}.tag{font-size:12px;font-weight:800;letter-spacing:.14em;fill:#5fe3b0}</style>
+  </defs>
+  <rect width="1200" height="500" fill="#071e17"/><rect y="500" width="1200" height="220" fill="#f6f3ec"/>
+  <text x="48" y="58" class="ui tag">DIRECTION C</text><text x="48" y="105" class="display title">Géométrie de l'évidence</text><text x="48" y="136" class="ui sub">Un langage produit minimal, net et orienté développeurs.</text>
+  <g filter="url(#shadow)"><rect class="card" x="48" y="175" width="320" height="275" rx="24"/><rect class="card" x="440" y="175" width="320" height="275" rx="24"/><rect class="card" x="832" y="175" width="320" height="275" rx="24"/></g>
+  <g color="#5fe3b0"><use href="#audit-c" x="148" y="196" width="120" height="120"/></g><g color="#16b981"><use href="#market-c" x="540" y="196" width="120" height="120"/></g><g color="#5fe3b0"><use href="#optimizer-c" x="932" y="196" width="120" height="120"/></g>
+  <text x="208" y="350" text-anchor="middle" class="ui label">Audit</text><text x="208" y="378" text-anchor="middle" class="ui copy">Code encadré, preuve validée</text>
+  <text x="600" y="350" text-anchor="middle" class="ui label">Marketplace</text><text x="600" y="378" text-anchor="middle" class="ui copy">Deux accès reliés par la preuve</text>
+  <text x="992" y="350" text-anchor="middle" class="ui label">Optimiseur</text><text x="992" y="378" text-anchor="middle" class="ui copy">Paramètres convergeant vers la cible</text>
+  <text x="48" y="548" class="ui" font-size="13" font-weight="800" letter-spacing=".12em" fill="#12604a">APERÇU MODE CLAIR · 24–48 PX</text>
+  <g><rect class="paperCard" x="48" y="574" width="320" height="102" rx="18"/><rect class="paperCard" x="440" y="574" width="320" height="102" rx="18"/><rect class="paperCard" x="832" y="574" width="320" height="102" rx="18"/></g>
+  <g color="#0e4a38"><use href="#audit-c" x="70" y="593" width="64" height="64"/><use href="#market-c" x="462" y="593" width="64" height="64"/><use href="#optimizer-c" x="854" y="593" width="64" height="64"/></g>
+  <text x="154" y="632" class="ui lightLabel">Audit</text><text x="546" y="632" class="ui lightLabel">Marketplace</text><text x="938" y="632" class="ui lightLabel">Optimiseur</text>
+</svg>
