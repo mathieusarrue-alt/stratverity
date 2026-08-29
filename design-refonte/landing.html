@@ -443,6 +443,7 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
       <a href="#product" data-i18n="nav.product">Produit</a>
       <a href="#method" data-i18n="nav.method">Méthode</a>
       <a href="#research" data-i18n="nav.research">Recherche</a>
+      <a href="#optimizer" data-i18n="nav.optimizer">Optimiseur</a>
       <a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
     </nav>
@@ -463,7 +464,7 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
   </div>
   <nav class="mobile-nav" id="mobileNav">
     <a href="#product" data-i18n="nav.product">Produit</a><a href="#method" data-i18n="nav.method">Méthode</a>
-    <a href="#research" data-i18n="nav.research">Recherche</a><a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
+    <a href="#research" data-i18n="nav.research">Recherche</a><a href="#optimizer" data-i18n="nav.optimizer">Optimiseur</a><a href="#pricing" data-i18n="nav.pricing">Tarifs</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a><a href="#login" data-i18n="nav.login">Connexion</a><a class="btn btn-primary" href="#audit" data-i18n="nav.cta" style="justify-content:center;margin-top:8px">Auditer une stratégie</a>
   </nav>
 </header>
@@ -689,13 +690,32 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
   </div>
 </section>
 
+<!-- OPTIMISEUR / LAB -->
+<section class="block" id="optimizer" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
+  <div class="container">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow" data-i18n="opt.eyebrow">Optimiseur / Lab</span>
+      <h2 data-i18n="opt.h2">L'optimisation qui ne se ment pas à elle-même.</h2>
+      <p data-i18n="opt.p">L'optimisation native de MetaTrader ou TradingView cherche les meilleurs paramètres sur l'historique qu'elle vient de voir : le piège classique du surapprentissage. L'Optimiseur StratVerity applique la même discipline que notre propre recherche interne avant de vous proposer un jeu de paramètres.</p>
+    </div>
+    <div class="div-grid">
+      <article class="div-card" data-reveal><div class="sev" data-i18n="opt.d1.s">Garde-fou</div><h4 data-i18n="opt.d1.t">Anti-surapprentissage intégré</h4><p data-i18n="opt.d1.p">Recherche de paramètres avec validation hors-échantillon obligatoire, jamais juste « le meilleur résultat trouvé ».</p></article>
+      <article class="div-card" data-reveal data-delay="1"><div class="sev" data-i18n="opt.d2.s">Détection</div><h4 data-i18n="opt.d2.t">Faux gagnants démasqués</h4><p data-i18n="opt.d2.p">Les jeux de paramètres qui s'effondrent une fois testés sur des données jamais vues sont écartés avant de vous être proposés.</p></article>
+      <article class="div-card" data-reveal data-delay="2"><div class="sev" data-i18n="opt.d3.s">Cohérence</div><h4 data-i18n="opt.d3.t">Même moteur que l'Audit</h4><p data-i18n="opt.d3.p">Optimiser et auditer avec la même définition du robuste, pas deux outils qui se contredisent.</p></article>
+    </div>
+    <div style="margin-top:28px;text-align:center" data-reveal>
+      <a class="btn btn-primary" data-magnetic href="/contact" data-i18n="opt.cta">Parler de votre stratégie à optimiser</a>
+    </div>
+  </div>
+</section>
+
 <!-- FREE TOOLS & DIAGNOSTIC -->
 <section class="block" id="free-tools" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
     <div class="sec-head" data-reveal>
       <span class="eyebrow" data-i18n="ft.eyebrow">OUTILS GRATUITS & DIAGNOSTIC</span>
       <h2 data-i18n="ft.title">Un diagnostic avant l'audit, en quelques secondes.</h2>
-      <p data-i18n="ft.lead">Le Health-Check et le Crash-Test scannent votre code sans le conserver : 3 secondes pour comprendre les faiblesses de votre stratégie.</p>
+      <p data-i18n="ft.lead">Le Health-Check et le calculateur de frais scannent votre stratégie sans conserver votre code : quelques secondes pour repérer ses faiblesses avant de payer un audit complet.</p>
     </div>
     <div class="feature-grid">
       <article class="card" data-tilt data-reveal>
@@ -705,10 +725,10 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
         <a class="btn btn-ghost" href="/health-check" data-i18n="freeTools.open">Ouvrir l'outil</a>
       </article>
       <article class="card" data-tilt data-reveal data-delay="1">
-        <span class="chip" style="align-self:flex-start"><span data-i18n="ft.crashTitle">Crash-Test d'algorithme</span></span>
-        <h3 data-i18n="nav.crashTest">Crash-Test</h3>
-        <p data-i18n="ft.crashBody">Reproduction de trades et stress tests de robustesse : ce qu'un vendeur ne montre pas.</p>
-        <a class="btn btn-ghost" href="/crash-test" data-i18n="freeTools.open">Ouvrir l'outil</a>
+        <span class="chip" style="align-self:flex-start"><span data-i18n="freeTools.feesTitle">Calculateur de frais</span></span>
+        <h3 data-i18n="freeTools.feesTitle">Calculateur de frais</h3>
+        <p data-i18n="freeTools.feesBody">Mesurez l'impact des commissions, du spread et du slippage sur la performance nette.</p>
+        <a class="btn btn-ghost" href="/fees" data-i18n="freeTools.open">Ouvrir l'outil</a>
       </article>
       <article class="card" data-tilt data-reveal data-delay="2">
         <span class="chip" style="align-self:flex-start"><span data-i18n="ft.registryTitle">Vérifier une certification</span></span>

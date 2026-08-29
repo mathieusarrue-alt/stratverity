@@ -280,13 +280,32 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   </div>
 </section>
 
+<!-- OPTIMISEUR / LAB -->
+<section class="block" id="optimizer" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
+  <div class="container">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow" data-i18n="opt.eyebrow">Optimizer / Lab</span>
+      <h2 data-i18n="opt.h2">Optimization that doesn't lie to itself.</h2>
+      <p data-i18n="opt.p">Native MetaTrader or TradingView optimization hunts for the best parameters on the history it just saw — the classic overfitting trap. The StratVerity Optimizer applies the same discipline as our own internal research before handing you a parameter set.</p>
+    </div>
+    <div class="div-grid">
+      <article class="div-card" data-reveal><div class="sev" data-i18n="opt.d1.s">Safeguard</div><h4 data-i18n="opt.d1.t">Built-in anti-overfitting</h4><p data-i18n="opt.d1.p">Parameter search with mandatory out-of-sample validation, never just "the best result found".</p></article>
+      <article class="div-card" data-reveal data-delay="1"><div class="sev" data-i18n="opt.d2.s">Detection</div><h4 data-i18n="opt.d2.t">False winners exposed</h4><p data-i18n="opt.d2.p">Parameter sets that collapse once tested on data they've never seen are discarded before they ever reach you.</p></article>
+      <article class="div-card" data-reveal data-delay="2"><div class="sev" data-i18n="opt.d3.s">Consistency</div><h4 data-i18n="opt.d3.t">Same engine as the Audit</h4><p data-i18n="opt.d3.p">Optimizing and auditing share the same definition of robust — not two tools contradicting each other.</p></article>
+    </div>
+    <div style="margin-top:28px;text-align:center" data-reveal>
+      <a class="btn btn-primary" data-magnetic href="/contact" data-i18n="opt.cta">Talk to us about the strategy you want to optimize</a>
+    </div>
+  </div>
+</section>
+
 <!-- FREE TOOLS & DIAGNOSTIC -->
 <section class="block" id="free-tools" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
     <div class="sec-head" data-reveal>
       <span class="eyebrow" data-i18n="ft.eyebrow">FREE TOOLS & DIAGNOSTICS</span>
       <h2 data-i18n="ft.title">A quick diagnosis before the audit, in seconds.</h2>
-      <p data-i18n="ft.lead">Health-Check and Crash-Test scan your code without storing it: 3 seconds to understand your strategy's weaknesses.</p>
+      <p data-i18n="ft.lead">The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.</p>
     </div>
     <div class="feature-grid">
       <article class="card" data-tilt data-reveal>
@@ -296,10 +315,10 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <a class="btn btn-ghost" href="/health-check" data-i18n="freeTools.open">Open tool</a>
       </article>
       <article class="card" data-tilt data-reveal data-delay="1">
-        <span class="chip" style="align-self:flex-start"><span data-i18n="ft.crashTitle">Algorithm Crash-Test</span></span>
-        <h3 data-i18n="nav.crashTest">Crash-Test</h3>
-        <p data-i18n="ft.crashBody">Trade replay and robustness stress tests: what a seller never shows.</p>
-        <a class="btn btn-ghost" href="/crash-test" data-i18n="freeTools.open">Open tool</a>
+        <span class="chip" style="align-self:flex-start"><span data-i18n="freeTools.feesTitle">Fee Calculator</span></span>
+        <h3 data-i18n="freeTools.feesTitle">Fee Calculator</h3>
+        <p data-i18n="freeTools.feesBody">Measure how commissions, spread and slippage affect net performance.</p>
+        <a class="btn btn-ghost" href="/fees" data-i18n="freeTools.open">Open tool</a>
       </article>
       <article class="card" data-tilt data-reveal data-delay="2">
         <span class="chip" style="align-self:flex-start"><span data-i18n="ft.registryTitle">Verify a certification</span></span>
