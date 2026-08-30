@@ -60,7 +60,7 @@ for (const language of Object.keys(messages)) {
   messages[language]["pr.b.1"] = "Multiple explicit contexts";
   messages[language]["pr.b.2"] = "Deeper evidence comparison";
   messages[language]["pr.b.3"] = "Robustness + divergence leads";
-  messages[language]["pr.c.n"] = "Custom";
+  messages[language]["pr.c.n"] = "Custom audit";
   messages[language]["pr.c.amt"] = "from €79<small> / strategy</small>";
   messages[language]["foot.build"] = "launch-v0.3 · design preview";
 }
@@ -90,6 +90,67 @@ Object.assign(messages.ko, { "pr.c.amt": "€79부터<small> / 전략</small>" }
 Object.assign(messages.hi, { "pr.c.amt": "€79 से<small> / रणनीति</small>" });
 Object.assign(messages.ar, { "pr.c.amt": "من €79<small> / استراتيجية</small>" });
 Object.assign(messages.bn, { "pr.c.amt": "€79 থেকে<small> / কৌশল</small>" });
+
+// Tableau comparatif pricing : chaque langue hérite de l'anglais pour toute clé
+// non traduite (en), et `fr` reçoit ses libellés depuis le HTML inline (déjà
+// injecté via `french`). Pattern « recopier l'anglais » pour les locales.
+const compare_keys = [
+  "pr.c.cta", "pr.compare.h", "pr.compare.col0", "pr.compare.col1",
+  "pr.compare.col2", "pr.compare.col3", "pr.compare.col4", "pr.compare.yes",
+  "pr.compare.r0c0", "pr.compare.r1c0", "pr.compare.r2c0", "pr.compare.r3c0",
+  "pr.compare.r3c2", "pr.compare.r3c3", "pr.compare.r3c4", "pr.compare.r4c0",
+  "pr.compare.r4c2", "pr.compare.r4c3", "pr.compare.r4c4", "pr.compare.r5c0",
+  "pr.compare.r5c2", "pr.compare.r5c3", "pr.compare.r5c4", "pr.compare.r6c0",
+  "pr.compare.r6c2", "pr.compare.r6c3", "pr.compare.r6c4", "pr.compare.r7c0",
+  "pr.compare.r7c2", "pr.compare.r7c3", "pr.compare.r7c4", "pr.compare.r8c0",
+  "pr.compare.r8c2", "pr.compare.r8c4", "pr.compare.r9c0", "pr.compare.r10c0",
+  "pr.compare.r10c3", "pr.compare.r10c4", "pr.compare.r11c0",
+];
+// Bullets de cartes : purge des contenus anciens (Radar/Auto-Pilot/Crash-Test)
+// dans toutes les locales — on force l'anglais (catégorie SKU), `fr` reste
+// servi depuis le HTML inline.
+const pricing_bullet_keys = [
+  "pr.a.1", "pr.a.2", "pr.a.3",
+  "pr.b.1", "pr.b.2", "pr.b.3",
+  "pr.c.1", "pr.c.2", "pr.c.3",
+];
+const pricing_bullets_en = {
+  "pr.a.1": "Independent net-of-fees recompute",
+  "pr.a.2": "2-year history · 1 asset · 1 timeframe",
+  "pr.a.3": "Divergence report",
+  "pr.b.1": "8-year history · single context",
+  "pr.b.2": "Multiple windows and stress scenarios",
+  "pr.b.3": "Walk-forward + score and pointers",
+  "pr.c.1": "10-year history · multi-context",
+  "pr.c.2": "Monte-Carlo · PBO / DSR",
+  "pr.c.3": "Extended robustness matrix",
+};
+for (const language of languages) {
+  for (const key of compare_keys) {
+    if (!(key in messages[language.code])) {
+      messages[language.code][key] = messages.en[key];
+    }
+  }
+  for (const key of pricing_bullet_keys) {
+    messages[language.code][key] = pricing_bullets_en[key];
+  }
+}
+// FR : restaurer les libellés français des bullets (servis depuis le HTML inline).
+Object.assign(messages.fr, {
+  "pr.a.1": "Recalcul indépendant net de frais",
+  "pr.a.2": "2 ans d'historique · 1 actif · 1 unité de temps",
+  "pr.a.3": "Rapport des divergences",
+  "pr.b.1": "8 ans d'historique · 1 seul contexte",
+  "pr.b.2": "Plusieurs fenêtres et scénarios de stress",
+  "pr.b.3": "Walk-forward + score et pistes",
+  "pr.c.1": "10 ans d'historique · multi-contextes",
+  "pr.c.2": "Monte-Carlo · PBO / DSR",
+  "pr.c.3": "Matrice de robustesse étendue",
+  "pr.c.cta": "Configurer",
+  "pr.a.n": "Audit essentiel",
+  "pr.b.n": "Audit Premium",
+  "pr.c.n": "Audit Custom",
+});
 
 const frenchKeys = Object.keys(french);
 for (const language of languages) {

@@ -306,7 +306,7 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .unlock .lock{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin:0 auto 12px;background:linear-gradient(180deg,var(--forest-600),var(--forest-800));color:#eafbf3;box-shadow:var(--shadow-md)}
 .unlock h3{font-size:20px;margin-bottom:6px} .unlock p{color:var(--ink-2);font-size:14px;margin-bottom:14px}
 
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .price{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);position:relative;transition:transform .28s var(--ease),box-shadow .3s}
 .price:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
 .price.feat{border-color:color-mix(in oklab,var(--brand) 55%,var(--line));box-shadow:var(--shadow-md);transform:scale(1.02)}
@@ -317,6 +317,17 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .price ul{list-style:none;padding:0;margin:16px 0;display:grid;gap:9px}
 .price li{display:flex;gap:9px;font-size:14px;color:var(--ink-2)}
 .price li svg{color:var(--emerald-500);flex:0 0 auto;margin-top:3px}
+
+.price-compare{margin-top:38px}
+.price-compare h3{font-size:clamp(1.1rem,2.2vw,1.4rem);letter-spacing:-.02em;margin:0 0 14px}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.compare-table{width:100%;min-width:720px;border-collapse:collapse;font-size:13.5px}
+.compare-table th,.compare-table td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.compare-table td:nth-child(n+2){text-align:center}
+.compare-table th:first-child,.compare-table td:first-child{white-space:normal;color:var(--ink-2)}
+.compare-table thead th{font:700 12px var(--mono),monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);border-top:0}
+.compare-table tbody tr:last-child td{border-bottom:0}
+.compare-table tbody tr:hover{background:color-mix(in oklab,var(--surface-2) 70%,transparent)}
 
 .faq{display:grid;gap:10px;max-width:820px}
 .qa{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden;transition:border-color .2s}
@@ -761,37 +772,62 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
     <div class="sec-head" data-reveal>
       <span class="eyebrow" data-i18n="pr.eyebrow">Tarifs</span>
       <h2 data-i18n="pr.h2">Un audit, pas un abonnement à des promesses.</h2>
-      <p data-i18n="pr.p">Grille de lancement. Tarifs indicatifs — le détail définitif est présenté dans le configurateur.</p>
-    </div>
-    <div class="price-grid">
-      <div class="price" data-reveal><div class="name" data-i18n="pr.free.n">Outils gratuits</div><div class="amt" data-i18n="pr.free.amt">0€<small> / pour toujours</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.1">Health-Check du code (Pine, Python, MQL)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Calculateur de frais &amp; slippage</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Score de robustesse indicatif</span></li></ul>
-        <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Commencer gratuitement</a></div>
-      <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Audit unique</div><div class="amt" data-i18n="pr.a.amt">dès 19€<small> / stratégie</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Recalcul net de frais</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">1 actif · 1 unité de temps</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Rapport de divergences</span></li></ul>
-        <a class="btn btn-ghost" href="#audit" style="width:100%;justify-content:center" data-i18n="pr.choose">Choisir</a></div>
-      <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Audit Pro</div><div class="amt" data-i18n="pr.b.amt">dès 79€<small> / stratégie</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">Panier multi-actifs × UT</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Walk-forward & stress tests</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Score de robustesse + pistes</span></li></ul>
-        <a class="btn btn-primary" data-magnetic href="#audit" style="width:100%;justify-content:center" data-i18n="pr.choose">Choisir</a></div>
-      <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Équipe</div><div class="amt" data-i18n="pr.c.amt">sur devis</div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">Volume de stratégies</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Déploiement clé en main (Auto-Pilot)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Accès prioritaire</span></li></ul>
-        <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Nous contacter</a></div>
-      <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">Accès libre</div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.1">Vendre vos stratégies auditées</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.2">Livraison exacte scellée (SHA256)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.3">Acheter des bots certifiés</span></li></ul>
-        <a class="btn btn-primary" data-magnetic href="/marketplace" style="width:100%;justify-content:center" data-i18n="pr.mp.cta">Explorer la marketplace</a></div>
-    </div>
-  </div>
-</section>
+      <p data-i18n="pr.p">Tarifs de lancement. Le détail final s'affiche dans le configurateur.</p>
+          </div>
+          <div class="price-grid">
+            <div class="price" data-reveal><div class="name" data-i18n="pr.free.n">Outils gratuits</div><div class="amt" data-i18n="pr.free.amt">0€<small> / pour toujours</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.1">Health-Check du code (Pine, Python, MQL)</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Calculateur de frais &amp; slippage</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Score de robustesse indicatif</span></li></ul>
+              <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Commencer gratuitement</a></div>
+            <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Audit essentiel</div><div class="amt" data-i18n="pr.a.amt">19€<small> / stratégie</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Recalcul indépendant net de frais</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">2 ans d'historique · 1 actif · 1 unité de temps</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Rapport des divergences</span></li></ul>
+              <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choisir</a></div>
+            <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Audit Premium</div><div class="amt" data-i18n="pr.b.amt">49€<small> / stratégie</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">8 ans d'historique · 1 seul contexte</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Plusieurs fenêtres et scénarios de stress</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Walk-forward + score et pistes</span></li></ul>
+              <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choisir</a></div>
+            <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Audit Custom</div><div class="amt" data-i18n="pr.c.amt">dès 79€<small> / périmètre</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">10 ans d'historique · multi-contextes</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Monte-Carlo · PBO / DSR</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Matrice de robustesse étendue</span></li></ul>
+              <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.c.cta">Configurer</a></div>
+          </div>
+          <div class="price-compare" data-reveal>
+            <h3 data-i18n="pr.compare.h">Ce que chaque tarif inclut</h3>
+            <div class="table-scroll">
+              <table class="compare-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="pr.compare.col0">Ce que j'achète</th>
+                    <th data-i18n="pr.compare.col1">Gratuit</th>
+                    <th data-i18n="pr.compare.col2">Essentiel 19 €</th>
+                    <th data-i18n="pr.compare.col3">Premium 49 €</th>
+                    <th data-i18n="pr.compare.col4">Custom dès 79 €</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td data-i18n="pr.compare.r0c0">Health-Check, Fee Calc, score indicatif</td><td data-i18n="pr.compare.yes">Oui</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><td data-i18n="pr.compare.r1c0">Recalcul indépendant net de frais</td><td>—</td><td data-i18n="pr.compare.yes">Oui</td><td data-i18n="pr.compare.yes">Oui</td><td data-i18n="pr.compare.yes">Oui</td></tr>
+                  <tr><td data-i18n="pr.compare.r2c0">Rapport déclaré vs recalculé</td><td>—</td><td data-i18n="pr.compare.yes">Oui</td><td data-i18n="pr.compare.yes">Oui</td><td data-i18n="pr.compare.yes">Oui</td></tr>
+                  <tr><td data-i18n="pr.compare.r3c0">Historique</td><td>—</td><td data-i18n="pr.compare.r3c2">2 ans</td><td data-i18n="pr.compare.r3c3">8 ans</td><td data-i18n="pr.compare.r3c4">10 ans</td></tr>
+                  <tr><td data-i18n="pr.compare.r4c0">Contextes (stratégie × actif × UT)</td><td>—</td><td data-i18n="pr.compare.r4c2">1</td><td data-i18n="pr.compare.r4c3">1</td><td data-i18n="pr.compare.r4c4">Plusieurs</td></tr>
+                  <tr><td data-i18n="pr.compare.r5c0">Fenêtres / régimes</td><td>—</td><td data-i18n="pr.compare.r5c2">1</td><td data-i18n="pr.compare.r5c3">Plusieurs</td><td data-i18n="pr.compare.r5c4">Étendu</td></tr>
+                  <tr><td data-i18n="pr.compare.r6c0">Stress frais / slippage</td><td>—</td><td data-i18n="pr.compare.r6c2">1</td><td data-i18n="pr.compare.r6c3">Plusieurs</td><td data-i18n="pr.compare.r6c4">Étendu</td></tr>
+                  <tr><td data-i18n="pr.compare.r7c0">Variantes de paramètres</td><td>—</td><td data-i18n="pr.compare.r7c2">1</td><td data-i18n="pr.compare.r7c3">Plusieurs</td><td data-i18n="pr.compare.r7c4">Étendu</td></tr>
+                  <tr><td data-i18n="pr.compare.r8c0">Walk-forward / hors-échantillon</td><td>—</td><td data-i18n="pr.compare.r8c2">Minimal</td><td data-i18n="pr.compare.yes">Oui</td><td data-i18n="pr.compare.r8c4">Oui + matrice</td></tr>
+                  <tr><td data-i18n="pr.compare.r9c0">Monte-Carlo</td><td>—</td><td>—</td><td>—</td><td data-i18n="pr.compare.yes">Oui</td></tr>
+                  <tr><td data-i18n="pr.compare.r10c0">PBO / DSR / flags anti-scam</td><td>—</td><td>—</td><td data-i18n="pr.compare.r10c3">Score + pistes</td><td data-i18n="pr.compare.r10c4">Complet</td></tr>
+                  <tr><td data-i18n="pr.compare.r11c0">Actifs de contrôle</td><td>—</td><td>—</td><td>—</td><td data-i18n="pr.compare.yes">Oui</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
 
 <section class="block" id="faq">
   <div class="container">
@@ -800,12 +836,12 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
       <details class="qa" data-reveal open><summary><span data-i18n="faq.q1">Mon code de stratégie est-il partagé ou stocké ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a1">Non. Votre code sert au calcul de l'audit et n'est jamais publié ni revendu. Vous gardez la propriété de votre stratégie.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q2">Quels formats puis-je déposer ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a2">Pine Script, scripts Python, notebooks ou un dossier compatible. Vous pouvez aussi fournir vos trades exportés.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q3">Les chiffres du site sont-ils des résultats clients ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a3">Non. Toutes les données affichées ici sont des exemples illustratifs. Un audit ne garantit aucune performance future.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q4">Comment se débloque le rapport ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a4">Après paiement, votre demande passe une validation humaine avant que le rapport complet ne soit accessible, via un lien temporaire.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q4">Comment se débloque le rapport ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a4">Après paiement, votre audit est traité automatiquement. Le rapport complet devient accessible via un lien sécurisé et temporaire, sans validation manuelle.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q5">Comment l'audit détecte-t-il le look-ahead bias et la sur-optimisation ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a5">Le moteur recalcule chaque métrique hors échantillon (walk-forward 70/30), rejoue les trades sur les bougies réelles et compare le résultat déclaré au résultat recalculé. Le look-ahead (information utilisée avant la clôture de la bougie), les frais omis et la fenêtre unique de sur-optimisation sont signalés comme divergences.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q6">Comment est calculé le score de robustesse ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a6">Le score (0-100) pondère la stabilité hors échantillon (40%), le Profit Factor net (&gt;1.5 = 30%), le drawdown (&lt;20% = 20%) et le nombre de trades (&gt;100 = 10%). Un badge vert n'est délivré que si le verdict du moteur est CERTIFIED (score ≥ 70).</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q7">Qu'est-ce que la certification d'un backtest garantit ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a7">La certification atteste que les métriques déclarées ont été recalculées et scellées par un tiers indépendant, avec détection des biais. Elle ne garantit pas un rendement futur ni l'absence de perte. Chaque badge est lié à un hash SHA256 immuable du code audité.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q8">Mon code source est-il partagé ou conservé ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a8">Non. Votre code alimente le calcul d'audit en lecture seule et n'est jamais publié, revendu ni exécuté avec des ordres réels. L'analyse est statique ; les fichiers opérationnels sont supprimés selon la politique de conservation, seules les empreintes et preuves de commande sont gardées.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q9">Comment fonctionnent les abonnements et l'accès au Scan live ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a9">L'audit est un paiement unique (aucun renouvellement automatique). Le Scan live récurrent est sur invitation pendant la bêta ; aucun abonnement ne peut être débité avant validation. L'accès au rapport livré est temporaire et lié à votre commande.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q9">L'audit est-il un abonnement ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a9">Non. L'audit est un paiement unique par stratégie (Essentiel 19&nbsp;€, Premium 49&nbsp;€, Custom dès 79&nbsp;€), sans renouvellement automatique. Aucun abonnement n'est proposé sur les cartes d'audit.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q10">Pourquoi pas juste MetaTrader ou TradingView ?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a10">MetaTrader et TradingView vous laissent lancer votre backtest sur leur moteur&nbsp;: vous êtes juge et partie. StratVerity fait l'inverse&nbsp;: un audit indépendant qui recalcule vos métriques, traque le look-ahead bias et le sur-ajustement qu'un simple backtest ne révèle jamais, et scelle un verdict (empreinte SHA-256) que vous pouvez montrer à un tiers&nbsp;: partenaire, investisseur, communauté. Lisible quel que soit le langage source (Pine Script, Python, MQL). Et contrairement à une idée reçue&nbsp;: une stratégie n'a pas besoin de fonctionner sur plusieurs actifs pour être valable — si elle est efficace sur celui que vous tradez, c'est suffisant.</div></details>
     </div>
   </div>
@@ -832,7 +868,7 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
         <a class="brand" href="#top" style="margin-bottom:12px"><img class="brand-logo" src="/logo-full.svg" alt="StratVerity — ALGO AUDIT & CERTIFICATION" style="height:64px;width:auto" loading="lazy"/></a>
         <p class="disclaimer" data-i18n="foot.disc">StratVerity fournit un audit indépendant de stratégies de trading. Les données affichées sont illustratives et ne constituent ni un conseil en investissement ni une garantie de performance. Le trading comporte un risque de perte.</p>
       </div>
-      <div><h5 data-i18n="foot.prod">Produit</h5><a href="#product" data-i18n="nav.product">Produit</a><a href="#method" data-i18n="nav.method">Méthode</a><a href="#pricing" data-i18n="nav.pricing">Tarifs</a><a href="/free-tools" data-i18n="nav.freeTools">Outils gratuits</a><a href="/crash-test" data-i18n="nav.crashTest">Crash-Test</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Vérifier un certificat</a><a href="#audit" data-i18n="nav.cta">Auditer</a></div>
+      <div><h5 data-i18n="foot.prod">Produit</h5><a href="#product" data-i18n="nav.product">Produit</a><a href="#method" data-i18n="nav.method">Méthode</a><a href="#pricing" data-i18n="nav.pricing">Tarifs</a><a href="/free-tools" data-i18n="nav.freeTools">Outils gratuits</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Vérifier un certificat</a><a href="#audit" data-i18n="nav.cta">Auditer</a></div>
       <div><h5 data-i18n="foot.res">Recherche</h5><a href="#research" data-i18n="nav.research">Biais détectés</a><a href="#method" data-i18n="foot.meth">Méthodologie</a><a href="/faq">FAQ</a></div>
       <div><h5 data-i18n="foot.legal">Légal</h5><a href="/contact" data-i18n="common.contact">Contact</a><a href="#" data-i18n="foot.terms">Conditions</a><a href="#" data-i18n="foot.privacy">Confidentialité</a><a href="#" data-i18n="foot.risk">Avertissement risque</a><a href="#" data-i18n="foot.refund">Remboursements</a></div>
     </div>
@@ -877,9 +913,14 @@ const I18N={fr:{},en:{
   'rs.d3.s':'Overfitting','rs.d3.t':'Single window','rs.d3.p':'Performance carried by one favourable period, invisible in walk-forward.',
   'lock.eyebrow':'Your report','lock.h2':'A full deliverable, unlocked after validation.','lock.t':'Report ready — action required','lock.p':'Blurred preview of a demo report. The full report unlocks after payment and human validation.','lock.cta':'Unlock an example report',
   'pr.eyebrow':'Pricing','pr.h2':'An audit, not a subscription to promises.','pr.p':'Launch pricing. Indicative rates — final details are shown in the configurator.',
-  'pr.a.n':'Single audit','pr.a.amt':'from €19<small> / strategy</small>','pr.a.1':'Net-of-fees recompute','pr.a.2':'1 asset · 1 timeframe','pr.a.3':'Divergence report',
-  'pr.b.n':'Pro audit','pr.b.amt':'from €79<small> / strategy</small>','pr.b.1':'Multi-asset × TF basket','pr.b.2':'Walk-forward & stress tests','pr.b.3':'Robustness score + leads',
-  'pr.c.n':'Team','pr.c.amt':'on request','pr.c.1':'Volume of strategies','pr.c.2':'Turnkey deployment (Auto-Pilot)','pr.c.3':'Priority access','pr.choose':'Choose','pr.contact':'Contact us',
+  'pr.a.n':'Essential audit','pr.a.amt':'€19<small> / strategy</small>','pr.a.1':'Independent net-of-fees recompute','pr.a.2':'2-year history · 1 asset · 1 timeframe','pr.a.3':'Explicit context',
+  'pr.b.n':'Premium audit','pr.b.amt':'€49<small> / strategy</small>','pr.b.1':'8-year history · single context','pr.b.2':'Multiple windows and stress scenarios','pr.b.3':'Walk-forward + score and pointers',
+  'pr.c.n':'Custom audit','pr.c.amt':'from €79<small> / scope</small>','pr.c.1':'10-year history · multi-context','pr.c.2':'Monte-Carlo · PBO / DSR','pr.c.3':'Extended robustness matrix','pr.choose':'Choose','pr.contact':'Contact us','pr.c.cta':'Configure',
+  'pr.compare.h':'What each plan includes','pr.compare.col0':'What you get','pr.compare.col1':'Free','pr.compare.col2':'Essential €19','pr.compare.col3':'Premium €49','pr.compare.col4':'Custom from €79','pr.compare.yes':'Yes',
+  'pr.compare.r0c0':'Health-Check, Fee Calc, indicative score','pr.compare.r1c0':'Independent net-of-fees recompute','pr.compare.r2c0':'Declared vs recomputed report','pr.compare.r3c0':'History','pr.compare.r3c2':'2 years','pr.compare.r3c3':'8 years','pr.compare.r3c4':'10 years',
+  'pr.compare.r4c0':'Contexts (strategy × asset × TF)','pr.compare.r4c2':'1','pr.compare.r4c3':'1','pr.compare.r4c4':'Several','pr.compare.r5c0':'Windows / regimes','pr.compare.r5c2':'1','pr.compare.r5c3':'Several','pr.compare.r5c4':'Extended',
+  'pr.compare.r6c0':'Fee / slippage stress','pr.compare.r6c2':'1','pr.compare.r6c3':'Several','pr.compare.r6c4':'Extended','pr.compare.r7c0':'Parameter variants','pr.compare.r7c2':'1','pr.compare.r7c3':'Several','pr.compare.r7c4':'Extended',
+  'pr.compare.r8c0':'Walk-forward / out-of-sample','pr.compare.r8c2':'Minimal','pr.compare.r8c4':'Yes + matrix','pr.compare.r9c0':'Monte-Carlo','pr.compare.r10c0':'PBO / DSR / anti-scam flags','pr.compare.r10c3':'Score + pointers','pr.compare.r10c4':'Complete','pr.compare.r11c0':'Control assets',
   'faq.h2':'Frequently asked questions','faq.q1':'Is my strategy code shared or stored?','faq.a1':'No. Your code powers the audit computation and is never published or resold. You keep ownership of your strategy.',
   'faq.q2':'Which formats can I upload?','faq.a2':'Pine Script, Python scripts, notebooks or a compatible folder. You can also provide your exported trades.',
   'faq.q3':'Are the site numbers real client results?','faq.a3':'No. All figures shown here are illustrative examples. An audit guarantees no future performance.',

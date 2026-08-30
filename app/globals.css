@@ -294,7 +294,7 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .unlock .lock{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin:0 auto 12px;background:linear-gradient(180deg,var(--forest-600),var(--forest-800));color:#eafbf3;box-shadow:var(--shadow-md)}
 .unlock h3{font-size:20px;margin-bottom:6px} .unlock p{color:var(--ink-2);font-size:14px;margin-bottom:14px}
 
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .price{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);position:relative;transition:transform .28s var(--ease),box-shadow .3s}
 .price:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
 .price.feat{border-color:color-mix(in oklab,var(--brand) 55%,var(--line));box-shadow:var(--shadow-md);transform:scale(1.02)}
@@ -305,6 +305,17 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .price ul{list-style:none;padding:0;margin:16px 0;display:grid;gap:9px}
 .price li{display:flex;gap:9px;font-size:14px;color:var(--ink-2)}
 .price li svg{color:var(--emerald-500);flex:0 0 auto;margin-top:3px}
+
+.price-compare{margin-top:38px}
+.price-compare h3{font-size:clamp(1.1rem,2.2vw,1.4rem);letter-spacing:-.02em;margin:0 0 14px}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.compare-table{width:100%;min-width:720px;border-collapse:collapse;font-size:13.5px}
+.compare-table th,.compare-table td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.compare-table td:nth-child(n+2){text-align:center}
+.compare-table th:first-child,.compare-table td:first-child{white-space:normal;color:var(--ink-2)}
+.compare-table thead th{font:700 12px var(--mono),monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);border-top:0}
+.compare-table tbody tr:last-child td{border-bottom:0}
+.compare-table tbody tr:hover{background:color-mix(in oklab,var(--surface-2) 70%,transparent)}
 
 .faq{display:grid;gap:10px;max-width:820px}
 .qa{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden;transition:border-color .2s}
