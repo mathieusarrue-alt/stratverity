@@ -1,6 +1,6 @@
 // Données FAQ StratVerity — nativement en anglais (canonique SEO).
-// Couvrent : backtest verification/look-ahead, Auto-Pilot & API security,
-// Affiliate program, certification, pricing, code confidentiality.
+// Couvrent uniquement les capacités publiquement défendables : périmètre
+// compatible, isolation, preuves, livraison et tarification launch-v0.3.
 
 export type FaqEntry = {
   question: string;
@@ -11,52 +11,52 @@ export const faqEntries: FaqEntry[] = [
   {
     question: "How does StratVerity verify a backtest and avoid look-ahead bias?",
     answer:
-      "StratVerity recomputes every declared metric out-of-sample using a 70/30 walk-forward split, replays trades on real candles, and compares the declared result against the recomputed one. Look-ahead bias (information used before bar close), missing fees, and single-window curve-fitting are flagged as divergences between what you claimed and what the data actually supports.",
+      "For a compatible paid strategy, StratVerity replays the selected scope on catalogue data and reports the checks that were actually performed. The report can compare declared and recomputed metrics, costs and timing assumptions; it also states every unsupported or untested condition instead of silently treating it as verified.",
   },
   {
     question: "What is the difference between the free Health-Check and a full audit?",
     answer:
-      "The free Health-Check is an instant static scan of your source code that returns a 0–100 health score and likely issues in seconds. A full audit recomputes your metrics from raw trades, detects look-ahead and overfitting, and issues an evidence-linked report sealed by a robustness score.",
+      "The free Health Check is a static source-code diagnostic. It can flag suspicious patterns but is not a backtest or certification. A paid audit is available only for compatible strategies and produces an evidence-linked report from the replayed scope.",
   },
   {
     question: "How is the robustness score calculated?",
     answer:
-      "The 0–100 robustness score weights out-of-sample stability (40%), net Profit Factor above 1.5 (30%), drawdown below 20% (20%), and trade count above 100 (10%). A green 'Verified by StratVerity' badge is only issued when the engine verdict is CERTIFIED (score ≥ 70).",
+      "The report identifies the inputs, checks and limits behind every displayed score. StratVerity does not publish a universal score as proof when the required data or test was not available, and a score never guarantees future performance.",
   },
   {
-    question: "Does StratVerity execute trades or hold my funds (Auto-Pilot)?",
+    question: "Does StratVerity execute live trades or hold my funds?",
     answer:
-      "No. Auto-Pilot is strictly non-custodial and technical-only: it executes predefined strategy actions through restricted, read-scoped API keys you control. StratVerity never holds client funds and provides no investment advice, in accordance with Article 4.2 of our terms.",
+      "No. The current audit service replays compatible strategy code against catalogue data in an isolated environment. It does not connect the paid audit path to a brokerage account, place live orders, hold client funds or provide investment advice.",
   },
   {
-    question: "How is API security handled for Auto-Pilot execution?",
+    question: "Does the paid delivery depend on keeping my browser open?",
     answer:
-      "Auto-Pilot uses API keys with the minimum required scopes and no withdrawal permission. Keys are restricted to the specific exchange or broker account you authorize, and you can revoke access at any time. Execution is purely technical — no discretionary advice is provided.",
+      "No. Once Stripe confirms a compatible paid order, the server-side delivery pipeline processes it independently of the success page. The browser only displays status and the delivered report.",
   },
   {
     question: "Is my strategy source code shared, stored, or resold?",
     answer:
-      "No. Your code powers read-only audit computation and is never published, resold, or executed with real orders. Analysis is static; operational files are deleted under our retention policy, and only fingerprints and order evidence are kept.",
+      "Your source is not published or sold. Free checks are static. Compatible paid Python code may be replayed inside a network-disabled isolated container, never with live orders. The applicable retention and evidence rules are stated in the terms and order scope.",
   },
   {
-    question: "How does the Affiliate Program and payout work?",
+    question: "Is the marketplace or an affiliate programme active?",
     answer:
-      "Affiliates earn a commission on referred sales. High-ticket carts of $100 or more qualify for the elevated payout tier. Commissions are paid automatically through Stripe Connect once your account reaches the payout threshold, with no manual approval step.",
+      "Not as a generally available production service unless the corresponding surface explicitly says it is enabled. Illustrative listings are not customer results, and no seller payout or affiliate commission should be assumed from a public preview.",
   },
   {
     question: "What does backtest certification actually guarantee?",
     answer:
-      "Certification attests that the declared metrics were recomputed and sealed by an independent third party, with bias detection. It guarantees neither future returns nor the absence of loss. Every badge is tied to an immutable SHA-256 hash of the audited code.",
+      "A published StratVerity proof attests only the scope, inputs and checks listed in that report. It does not guarantee future returns or the absence of loss. A badge or fingerprint must link back to the corresponding public evidence to be independently checked.",
   },
   {
     question: "How much does an audit cost and how do subscriptions work?",
     answer:
-      "The audit is a one-time payment (European 49 euro crash-test, or 14.99 EUR Essential / 39 EUR Standard), with no auto-renewal. The recurring Live Scan is invitation-only during beta and can never be charged without your explicit validation. Access to a delivered report is proof-based and tied to your order.",
+      "Essential costs 19 EUR for one supported strategy, asset and timeframe. The single-context Premium audit costs 49 EUR. Explicit multi-context Custom audits start at 79 EUR. The configurator shows the exact one-time price and scope before Stripe Checkout.",
   },
   {
     question: "Which formats can I submit for an audit?",
     answer:
-      "Pine Script, Python scripts, Jupyter notebooks, or a compatible project folder. You can also provide your exported trade list. MQL4 and MQL5 sources are supported for the crash-test and marketplace verification flows.",
+      "Paid audits currently accept only Python strategies that pass the compatibility gate. Pine Script, MQL and notebooks can receive a static diagnostic where offered, but they are not sold as replayed audits until their dedicated engine path and parity tests are validated.",
   },
 ];
 

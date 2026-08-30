@@ -52,8 +52,8 @@ export default function FAQSection({ entries = faqEntries, compact = false }: Pr
           <h2 id="faq-heading">Frequently asked questions</h2>
           {!compact ? (
             <p className={styles.lead}>
-              Everything about backtest verification, Auto-Pilot security, and the
-              Affiliate Program — answered directly.
+              Supported audit scope, source isolation, evidence, delivery and
+              pricing — answered directly.
             </p>
           ) : null}
         </div>

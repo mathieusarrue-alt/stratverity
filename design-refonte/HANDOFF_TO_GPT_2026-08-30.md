@@ -138,3 +138,45 @@ divergence.
    handoff frontend) : activer Crash-Test Express en prod, accès SES
    production, `TimeBasedTrader_v4.37.1_BetterExit.mq5` non testé via
    MetaTrader.
+
+## Bloc Codex — alignement vérité produit / SEO (branche isolée)
+
+Branche : `codex/v4-truth-alignment`, basée sur `e682354`. Ce bloc n'est pas
+déployé et ne modifie ni le backend, ni Stripe, ni les flags de production.
+
+Décisions prises après audit du « Pack complet StratVerity v4 » :
+
+- **ADAPTER** : remplacement du montant fictif « -10 000 EUR » de
+  `/free-tools` par un diagnostic qualitatif sans extrapolation financière ;
+  toutes les chaînes passent par la pipeline i18n.
+- **ADAPTER** : ajout de `/pricing` comme redirection permanente vers la section
+  canonique `/#pricing`.
+- **ADAPTER** : JSON-LD, métadonnées, FAQ et README alignés sur
+  `launch-v0.3` (19 / 49 / 79+) et sur le périmètre réellement facturable :
+  Python compatible seulement pour l'audit rejoué.
+- **ADAPTER** : retrait des messages de validation humaine du chemin client au
+  profit du pipeline automatisé, conformément à la doctrine produit.
+- **REJETER** : compteur d'audits sans endpoint prouvé, métriques d'audit
+  présentées comme réelles sans source, Crash-Test présenté gratuit, MQL/Pine
+  présentés comme audits rejoués, Auto-Pilot/affiliation présentés actifs,
+  pictogrammes néon `#00FF9D` hors système de marque.
+- **DIFFÉRER** : `/glossaire`, `/guides`, Hall of Shame et nouvelles pages SEO ;
+  aucune publication avant preuves, sources et périmètre éditorial validés.
+
+Preuves locales :
+
+- `node scripts/port-design-refonte.mjs` : 584 chaînes françaises, 12 langues.
+- `npm run build` : succès ; route `/pricing` détectée.
+- `npm run lint` : succès, zéro erreur.
+- `tsc --noEmit` : six diagnostics préexistants sur cinq sources
+  (`I18nErrorBoundary`, sa conséquence dans `layout`, `market-catalog`, D1 et
+  types Worker) ; aucun diagnostic ne vise un fichier fonctionnel modifié par
+  ce bloc.
+- Tests ciblés doctrine/pricing/free-tools : 3/3 succès.
+- Suite rendue complète : 11 échecs préexistants de tests devenus obsolètes
+  après les changements parallèles marketplace/configurateur (même baseline
+  avant ce bloc). Ne pas les masquer en assouplissant les assertions : faire un
+  chantier séparé de réconciliation des tests avec l'état produit courant.
+
+Fichiers générés régénérés, jamais édités manuellement :
+`app/home/landing-markup.ts`, `app/i18n/messages.ts`, `app/globals.css`.

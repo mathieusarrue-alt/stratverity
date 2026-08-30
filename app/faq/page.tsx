@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import FAQSection from "@/components/faq/FAQSection";
 
 export const metadata: Metadata = {
-  title: "FAQ — Backtest Verification, Auto-Pilot & Affiliate Program | StratVerity",
+  title: "FAQ — Backtest Audit Scope, Evidence & Pricing | StratVerity",
   description:
-    "How StratVerity verifies backtests, detects look-ahead bias, secures non-custodial Auto-Pilot execution, and pays affiliate commissions. Answers to the most common questions.",
+    "How StratVerity handles supported strategy audits, source isolation, evidence, delivery, pricing and current format limitations.",
   alternates: { canonical: "/faq" },
   openGraph: {
     title: "FAQ — StratVerity backtest verification & security",
     description:
-      "Backtest verification, look-ahead bias detection, Auto-Pilot API security, and the Affiliate Program — answered.",
+      "Supported audit scope, source isolation, evidence, delivery and current pricing — answered directly.",
     type: "website",
     url: "https://www.stratverity.com/faq",
     siteName: "StratVerity",
