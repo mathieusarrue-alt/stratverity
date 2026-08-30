@@ -141,8 +141,9 @@ divergence.
 
 ## Bloc Codex — alignement vérité produit / SEO (branche isolée)
 
-Branche : `codex/v4-truth-alignment`, basée sur `e682354`. Ce bloc n'est pas
-déployé et ne modifie ni le backend, ni Stripe, ni les flags de production.
+Branche : `codex/v4-truth-alignment`, basée sur `e682354` ; commit fonctionnel
+`9c757e3` ; PR GitHub `#29`. Ce bloc n'est pas déployé et ne modifie ni le
+backend, ni Stripe, ni les flags de production.
 
 Décisions prises après audit du « Pack complet StratVerity v4 » :
 
