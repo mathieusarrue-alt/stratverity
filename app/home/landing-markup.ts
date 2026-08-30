@@ -283,10 +283,22 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <!-- OPTIMISEUR / LAB -->
 <section class="block" id="optimizer" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
-    <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="opt.eyebrow">Optimizer / Lab</span>
-      <h2 data-i18n="opt.h2">Optimization that doesn't lie to itself.</h2>
-      <p data-i18n="opt.p">Native MetaTrader or TradingView optimization hunts for the best parameters on the history it just saw — the classic overfitting trap. The StratVerity Optimizer applies the same discipline as our own internal research before handing you a parameter set.</p>
+    <div class="sec-head product-head" data-reveal>
+      <span class="product-mark-frame" aria-hidden="true">
+        <svg class="product-mark" data-product-mark="optimizer" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 31h80M20 60h80M20 89h80" opacity=".42"/>
+          <path d="m38 31 40 29-26 29" opacity=".55"/>
+          <circle cx="38" cy="31" r="8"/><circle cx="78" cy="60" r="10"/>
+          <circle cx="78" cy="60" r="16" opacity=".34" stroke-dasharray="3 6"/>
+          <circle cx="52" cy="89" r="8"/>
+          <path d="M38 27v8M78 55v10M52 85v8" stroke-width="3.5"/>
+        </svg>
+      </span>
+      <div>
+        <span class="eyebrow" data-i18n="opt.eyebrow">Optimizer / Lab</span>
+        <h2 data-i18n="opt.h2">Optimization that doesn't lie to itself.</h2>
+        <p data-i18n="opt.p">Native MetaTrader or TradingView optimization hunts for the best parameters on the history it just saw — the classic overfitting trap. The StratVerity Optimizer applies the same discipline as our own internal research before handing you a parameter set.</p>
+      </div>
     </div>
     <div class="div-grid">
       <article class="div-card" data-reveal><div class="sev" data-i18n="opt.d1.s">Safeguard</div><h4 data-i18n="opt.d1.t">Built-in anti-overfitting</h4><p data-i18n="opt.d1.p">Parameter search with mandatory out-of-sample validation, never just "the best result found".</p></article>

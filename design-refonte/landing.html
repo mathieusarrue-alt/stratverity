@@ -221,6 +221,9 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .sec-head{max-width:56ch;margin-bottom:34px}
 .sec-head h2{font-size:clamp(26px,3.2vw,40px)}
 .sec-head p{color:var(--ink-2);margin-top:12px;font-size:17px}
+.product-head{align-items:start;display:grid;gap:18px;grid-template-columns:72px minmax(0,1fr);max-width:70ch}
+.product-mark-frame{align-items:center;background:color-mix(in oklab,var(--accent) 8%,var(--surface));border:1px solid color-mix(in oklab,var(--accent) 24%,var(--line));border-radius:18px;color:var(--accent);display:inline-flex;height:72px;justify-content:center;width:72px}
+.product-mark{height:58px;overflow:visible;width:58px}
 
 .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);
@@ -367,6 +370,9 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
   .matrix{grid-template-columns:52px repeat(4,1fr);font-size:10px}
   .hero h1{font-size:30px}
   .sec-head p{font-size:15px}
+  .product-head{gap:12px;grid-template-columns:56px minmax(0,1fr)}
+  .product-mark-frame{border-radius:14px;height:56px;width:56px}
+  .product-mark{height:44px;width:44px}
 }
 .mobile-nav{display:none;flex-direction:column;gap:4px;padding:12px 24px 18px;border-bottom:1px solid var(--line-2);background:var(--surface)}
 .mobile-nav a{padding:.8em .2em;color:var(--ink-2);font-weight:600}
@@ -693,10 +699,22 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 <!-- OPTIMISEUR / LAB -->
 <section class="block" id="optimizer" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
   <div class="container">
-    <div class="sec-head" data-reveal>
-      <span class="eyebrow" data-i18n="opt.eyebrow">Optimiseur / Lab</span>
-      <h2 data-i18n="opt.h2">L'optimisation qui ne se ment pas à elle-même.</h2>
-      <p data-i18n="opt.p">L'optimisation native de MetaTrader ou TradingView cherche les meilleurs paramètres sur l'historique qu'elle vient de voir : le piège classique du surapprentissage. L'Optimiseur StratVerity applique la même discipline que notre propre recherche interne avant de vous proposer un jeu de paramètres.</p>
+    <div class="sec-head product-head" data-reveal>
+      <span class="product-mark-frame" aria-hidden="true">
+        <svg class="product-mark" data-product-mark="optimizer" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 31h80M20 60h80M20 89h80" opacity=".42"/>
+          <path d="m38 31 40 29-26 29" opacity=".55"/>
+          <circle cx="38" cy="31" r="8"/><circle cx="78" cy="60" r="10"/>
+          <circle cx="78" cy="60" r="16" opacity=".34" stroke-dasharray="3 6"/>
+          <circle cx="52" cy="89" r="8"/>
+          <path d="M38 27v8M78 55v10M52 85v8" stroke-width="3.5"/>
+        </svg>
+      </span>
+      <div>
+        <span class="eyebrow" data-i18n="opt.eyebrow">Optimiseur / Lab</span>
+        <h2 data-i18n="opt.h2">L'optimisation qui ne se ment pas à elle-même.</h2>
+        <p data-i18n="opt.p">L'optimisation native de MetaTrader ou TradingView cherche les meilleurs paramètres sur l'historique qu'elle vient de voir : le piège classique du surapprentissage. L'Optimiseur StratVerity applique la même discipline que notre propre recherche interne avant de vous proposer un jeu de paramètres.</p>
+      </div>
     </div>
     <div class="div-grid">
       <article class="div-card" data-reveal><div class="sev" data-i18n="opt.d1.s">Garde-fou</div><h4 data-i18n="opt.d1.t">Anti-surapprentissage intégré</h4><p data-i18n="opt.d1.p">Recherche de paramètres avec validation hors-échantillon obligatoire, jamais juste « le meilleur résultat trouvé ».</p></article>

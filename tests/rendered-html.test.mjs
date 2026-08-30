@@ -690,3 +690,23 @@ test("marketplace remains fail-closed and proxies verified identity server-side"
     /service_role|STRIPE_SECRET_KEY|whsec_/i,
   );
 });
+
+test("validated product marks are centralized and used on their product surfaces", async () => {
+  const [marks, configure, marketplace, landing] = await Promise.all([
+    readFile(new URL("../app/components/ProductMark.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/configure/page.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../app/marketplace/MarketplaceClient.tsx", import.meta.url),
+      "utf8",
+    ),
+    readFile(new URL("../design-refonte/landing.html", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(marks, /"audit" \| "marketplace" \| "optimizer"/);
+  assert.match(marks, /stroke="currentColor"/);
+  assert.match(marks, /aria-hidden=\{label \? undefined : true\}/);
+  assert.match(configure, /ProductMark product="audit"/);
+  assert.match(marketplace, /ProductMark product="marketplace"/);
+  assert.match(landing, /data-product-mark="optimizer"/);
+  assert.doesNotMatch(marks, /StratVerityLogo|ShieldIcon/);
+});

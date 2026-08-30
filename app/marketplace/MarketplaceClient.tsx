@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { TrendingUp } from "lucide-react";
+import ProductMark from "../components/ProductMark";
 import IllustrativeModelCards from "./IllustrativeModelCards";
 import CommerceCatalogue from "./CommerceCatalogue";
 
@@ -38,9 +39,14 @@ export default function MarketplaceClient(_props: { enabled: boolean }) {
       {/* Catalogue commerce — seulement LISTED / OPERATOR_LISTED. */}
       <section aria-label="Catalogue vendeurs" className="mp-public">
         <div className="mp-public-head">
-          <div>
-            <span className="marketplace-proof">Catalogue vendeurs</span>
-            <h2>Stratégies en accès protégé.</h2>
+          <div className="mp-public-title">
+            <span className="mp-product-mark" aria-hidden="true">
+              <ProductMark product="marketplace" size="md" />
+            </span>
+            <div>
+              <span className="marketplace-proof">Catalogue vendeurs</span>
+              <h2>Stratégies en accès protégé.</h2>
+            </div>
           </div>
           <p>
             L&apos;achat donne un accès plateforme en invite (TradingView,
