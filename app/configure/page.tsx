@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
+import ProductMark from "../components/ProductMark";
 import styles from "./scope-configurator.module.css";
 import { getSupabaseBrowserClient } from "../supabase/browser";
 import { calculatePrice } from "./pricing";
@@ -672,7 +673,12 @@ export default function ScopeConfiguratorPage() {
                   }}
                   type="button"
                 >
-                  <small>{t("configure.kind.oneTime")}</small>
+                  <div className={styles.productChoiceHeader}>
+                    <span className={styles.productMarkFrame} aria-hidden="true">
+                      <ProductMark product="audit" size="md" />
+                    </span>
+                    <small>{t("configure.kind.oneTime")}</small>
+                  </div>
                   <strong>{t("configure.audit")}</strong>
                   <p>{t("configure.auditDescription")}</p>
                 </button>

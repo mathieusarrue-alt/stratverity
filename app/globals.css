@@ -209,6 +209,9 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
 .sec-head{max-width:56ch;margin-bottom:34px}
 .sec-head h2{font-size:clamp(26px,3.2vw,40px)}
 .sec-head p{color:var(--ink-2);margin-top:12px;font-size:17px}
+.product-head{align-items:start;display:grid;gap:18px;grid-template-columns:72px minmax(0,1fr);max-width:70ch}
+.product-mark-frame{align-items:center;background:color-mix(in oklab,var(--accent) 8%,var(--surface));border:1px solid color-mix(in oklab,var(--accent) 24%,var(--line));border-radius:18px;color:var(--accent);display:inline-flex;height:72px;justify-content:center;width:72px}
+.product-mark{height:58px;overflow:visible;width:58px}
 
 .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);
@@ -355,6 +358,9 @@ html[data-theme="light"] .brand-word span{color:#00a86b}
   .matrix{grid-template-columns:52px repeat(4,1fr);font-size:10px}
   .hero h1{font-size:30px}
   .sec-head p{font-size:15px}
+  .product-head{gap:12px;grid-template-columns:56px minmax(0,1fr)}
+  .product-mark-frame{border-radius:14px;height:56px;width:56px}
+  .product-mark{height:44px;width:44px}
 }
 .mobile-nav{display:none;flex-direction:column;gap:4px;padding:12px 24px 18px;border-bottom:1px solid var(--line-2);background:var(--surface)}
 .mobile-nav a{padding:.8em .2em;color:var(--ink-2);font-weight:600}

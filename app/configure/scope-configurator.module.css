@@ -106,20 +106,27 @@
   align-items: center;
   gap: 8px;
 }
-.productChoices button > small::before {
-  content: "A";
-  display: inline-flex;
+.productChoiceHeader {
   align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  font: 750 12px var(--mono), monospace;
-  background: color-mix(in oklab, var(--forest-700) 14%, var(--surface));
-  color: var(--forest-700);
-  border: 1px solid color-mix(in oklab, var(--forest-700) 28%, var(--line));
+  display: flex;
+  gap: 14px;
 }
-.productChoices strong { display: block; font-size: 24px; margin: 18px 0 9px; }
+.productMarkFrame {
+  align-items: center;
+  background: color-mix(in oklab, var(--forest-700) 10%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--forest-700) 24%, var(--line));
+  border-radius: 14px;
+  color: var(--forest-600);
+  display: inline-flex;
+  height: 58px;
+  justify-content: center;
+  width: 58px;
+}
+.productChoices button:hover .productMarkFrame,
+.productChoices .selectedCard .productMarkFrame {
+  color: var(--emerald-500);
+}
+.productChoices strong { display: block; font-size: 24px; margin: 16px 0 9px; }
 .productChoices p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0; }
 .productChoices button em {
   color: var(--warning-500);
