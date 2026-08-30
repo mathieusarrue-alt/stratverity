@@ -129,6 +129,21 @@ export default function CheckoutReturnPage() {
         );
         return;
       }
+      if (
+        s.includes("LAB_UNSUPPORTED") ||
+        s.includes("ENGINE_RESOLVER_MISSING") ||
+        s.includes("SOURCE_NOT_FOUND")
+      ) {
+        // Format/source non livrable pour le moment : message clair, pas une
+        // barre de progression trompeuse.
+        setPageState("error");
+        setDetailMessage(
+          fr
+            ? "Ce format de stratégie n’est pas encore pris en charge par le labo (Pine/MQL/Python avec dépendances non-stdlib). Aucun paiement supplémentaire. Contactez le support avec votre ID de commande."
+            : "This strategy format is not yet supported by the lab (Pine/MQL/Python with non-stdlib deps). No further charge. Contact support with your order ID.",
+        );
+        return;
+      }
       setPageState("delivering");
       setDetailMessage(
         fr ? "Génération du rapport en cours…" : "Generating your report…",
