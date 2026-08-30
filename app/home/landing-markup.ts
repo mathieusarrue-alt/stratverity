@@ -352,36 +352,61 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <span class="eyebrow" data-i18n="pr.eyebrow">Pricing</span>
       <h2 data-i18n="pr.h2">An audit, not a subscription to promises.</h2>
       <p data-i18n="pr.p">Launch pricing. Indicative rates — final details are shown in the configurator.</p>
-    </div>
-    <div class="price-grid">
-      <div class="price" data-reveal><div class="name" data-i18n="pr.free.n">Free Tools</div><div class="amt" data-i18n="pr.free.amt">€0<small> / forever</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.1">Code Health-Check (Pine, Python, MQL)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Algorithm Crash-Test</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Indicative robustness score</span></li></ul>
-        <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Start for free</a></div>
-      <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€19<small> / strategy</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Net-of-fees recompute</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">1 asset · 1 timeframe</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Divergence report</span></li></ul>
-        <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
-      <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Premium audit</div><div class="amt" data-i18n="pr.b.amt">€49<small> / strategy</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">Multiple explicit contexts</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Deeper evidence comparison</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Robustness + divergence leads</span></li></ul>
-        <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
-      <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Custom</div><div class="amt" data-i18n="pr.c.amt">from €79<small> / strategy</small></div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">Volume of strategies</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Turnkey deployment (Auto-Pilot)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Priority access</span></li></ul>
-        <a class="btn btn-ghost" href="/contact" style="width:100%;justify-content:center" data-i18n="pr.contact">Contact us</a></div>
-      <div class="price" data-reveal data-delay="3"><div class="name" data-i18n="pr.mp.n">Marketplace</div><div class="amt" data-i18n="pr.mp.amt">Free access</div>
-        <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.1">Lab strategy showcase</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.2">Sealed exact delivery (SHA256)</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.mp.3">Lab showcase, not a store</span></li></ul>
-        <a class="btn btn-primary" data-magnetic href="/marketplace" style="width:100%;justify-content:center" data-i18n="pr.mp.cta">Browse the marketplace</a></div>
-    </div>
-  </div>
-</section>
+          </div>
+          <div class="price-grid">
+            <div class="price" data-reveal><div class="name" data-i18n="pr.free.n">Free Tools</div><div class="amt" data-i18n="pr.free.amt">€0<small> / forever</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.1">Code Health-Check (Pine, Python, MQL)</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Fee & slippage calculator</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Indicative robustness score</span></li></ul>
+              <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Start for free</a></div>
+            <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€19<small> / strategy</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Independent net-of-fees recompute</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">2-year history · 1 asset · 1 timeframe</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Divergence report</span></li></ul>
+              <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
+            <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Premium audit</div><div class="amt" data-i18n="pr.b.amt">€49<small> / strategy</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">8-year history · single context</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Multiple windows and stress scenarios</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Walk-forward + score and pointers</span></li></ul>
+              <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
+            <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Custom audit</div><div class="amt" data-i18n="pr.c.amt">from €79<small> / strategy</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">10-year history · multi-context</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Monte-Carlo · PBO / DSR</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Extended robustness matrix</span></li></ul>
+              <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.c.cta">Configure</a></div>
+          </div>
+          <div class="price-compare" data-reveal>
+            <h3 data-i18n="pr.compare.h">What each plan includes</h3>
+            <div class="table-scroll">
+              <table class="compare-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="pr.compare.col0">What you get</th>
+                    <th data-i18n="pr.compare.col1">Free</th>
+                    <th data-i18n="pr.compare.col2">Essential €19</th>
+                    <th data-i18n="pr.compare.col3">Premium €49</th>
+                    <th data-i18n="pr.compare.col4">Custom from €79</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td data-i18n="pr.compare.r0c0">Health-Check, Fee Calc, indicative score</td><td data-i18n="pr.compare.yes">Yes</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><td data-i18n="pr.compare.r1c0">Independent net-of-fees recompute</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                  <tr><td data-i18n="pr.compare.r2c0">Declared vs recomputed report</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                  <tr><td data-i18n="pr.compare.r3c0">History</td><td>—</td><td data-i18n="pr.compare.r3c2">2 years</td><td data-i18n="pr.compare.r3c3">8 years</td><td data-i18n="pr.compare.r3c4">10 years</td></tr>
+                  <tr><td data-i18n="pr.compare.r4c0">Contexts (strategy × asset × TF)</td><td>—</td><td data-i18n="pr.compare.r4c2">1</td><td data-i18n="pr.compare.r4c3">1</td><td data-i18n="pr.compare.r4c4">Several</td></tr>
+                  <tr><td data-i18n="pr.compare.r5c0">Windows / regimes</td><td>—</td><td data-i18n="pr.compare.r5c2">1</td><td data-i18n="pr.compare.r5c3">Several</td><td data-i18n="pr.compare.r5c4">Extended</td></tr>
+                  <tr><td data-i18n="pr.compare.r6c0">Fee / slippage stress</td><td>—</td><td data-i18n="pr.compare.r6c2">1</td><td data-i18n="pr.compare.r6c3">Several</td><td data-i18n="pr.compare.r6c4">Extended</td></tr>
+                  <tr><td data-i18n="pr.compare.r7c0">Parameter variants</td><td>—</td><td data-i18n="pr.compare.r7c2">1</td><td data-i18n="pr.compare.r7c3">Several</td><td data-i18n="pr.compare.r7c4">Extended</td></tr>
+                  <tr><td data-i18n="pr.compare.r8c0">Walk-forward / out-of-sample</td><td>—</td><td data-i18n="pr.compare.r8c2">Minimal</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.r8c4">Yes + matrix</td></tr>
+                  <tr><td data-i18n="pr.compare.r9c0">Monte-Carlo</td><td>—</td><td>—</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                  <tr><td data-i18n="pr.compare.r10c0">PBO / DSR / anti-scam flags</td><td>—</td><td>—</td><td data-i18n="pr.compare.r10c3">Score + pointers</td><td data-i18n="pr.compare.r10c4">Complete</td></tr>
+                  <tr><td data-i18n="pr.compare.r11c0">Control assets</td><td>—</td><td>—</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
 
 <section class="block" id="faq">
   <div class="container">
@@ -395,7 +420,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <details class="qa" data-reveal><summary><span data-i18n="faq.q6">How is the robustness score calculated?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a6">The score (0-100) weights out-of-sample stability (40%), net Profit Factor (>1.5 = 30%), drawdown (<20% = 20%) and trade count (>100 = 10%). A green badge is issued only when the engine verdict is CERTIFIED (score ≥ 70).</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q7">What does backtest certification guarantee?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a7">Certification attests that declared metrics were recomputed and sealed by an independent third party, with bias detection. It guarantees neither future returns nor absence of loss. Each badge is tied to an immutable SHA256 hash of the audited code.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q8">Is my source code shared or stored?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a8">No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.</div></details>
-      <details class="qa" data-reveal><summary><span data-i18n="faq.q9">How do subscriptions and Live Scan access work?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a9">The audit is a one-time payment (no auto-renewal). The recurring Live Scan is invitation-only during beta; no subscription can be charged before validation. Access to a delivered report is temporary and tied to your order.</div></details>
+      <details class="qa" data-reveal><summary><span data-i18n="faq.q9">Is the audit a subscription?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a9">No. The audit is a one-time payment per strategy (Essential €19, Premium €49, Custom from €79), with no auto-renewal. No subscription is offered on the audit plans.</div></details>
       <details class="qa" data-reveal><summary><span data-i18n="faq.q10">Why not just use MetaTrader or TradingView?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary><div class="a" data-i18n="faq.a10">MetaTrader and TradingView let you run your own backtest on their engine — you end up grading your own homework. StratVerity does the opposite: an independent audit that recomputes your metrics, flags the look-ahead bias and over-optimization a simple backtest never reveals, and seals a verdict (SHA-256 fingerprint) you can actually show someone else — a partner, an investor, your community. Readable no matter the source language (Pine Script, Python, MQL). And contrary to a common assumption: a strategy doesn't need to work across multiple assets to be valid — if it performs on the one you actually trade, that's enough.</div></details>
     </div>
   </div>
@@ -422,7 +447,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
         <a class="brand" href="#top" style="margin-bottom:12px"><img class="brand-logo" src="/logo-full.svg" alt="StratVerity — ALGO AUDIT & CERTIFICATION" style="height:64px;width:auto" loading="lazy"/></a>
         <p class="disclaimer" data-i18n="foot.disc">StratVerity provides an independent audit of trading strategies. Figures shown are illustrative and constitute neither investment advice nor a performance guarantee. Trading involves a risk of loss.</p>
       </div>
-      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/free-tools" data-i18n="nav.freeTools">Free Tools</a><a href="/crash-test" data-i18n="nav.crashTest">Crash-Test</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Verify a certificate</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
+      <div><h5 data-i18n="foot.prod">Product</h5><a href="#product" data-i18n="nav.product">Product</a><a href="#method" data-i18n="nav.method">Method</a><a href="#pricing" data-i18n="nav.pricing">Pricing</a><a href="/free-tools" data-i18n="nav.freeTools">Free Tools</a><a href="/marketplace" data-i18n="nav.marketplace">Marketplace</a><a href="/gallery" data-i18n="nav.verify">Verify a certificate</a><a href="/configure" data-i18n="nav.cta">Audit a strategy</a></div>
       <div><h5 data-i18n="foot.res">Research</h5><a href="#research" data-i18n="nav.research">Research</a><a href="#method" data-i18n="foot.meth">Methodology</a><a href="/faq">FAQ</a></div>
       <div><h5 data-i18n="foot.legal">Legal</h5><a href="/contact" data-i18n="common.contact">Contact</a><a href="/legal/terms" data-i18n="foot.terms">Terms</a><a href="/legal/privacy" data-i18n="foot.privacy">Privacy</a><a href="/legal/risk" data-i18n="foot.risk">Risk notice</a><a href="/legal/refunds" data-i18n="foot.refund">Refunds</a></div>
     </div>
