@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useI18n } from "../i18n/I18nProvider";
 import styles from "./free-tools.module.css";
-import ToolCostComparison from "@/components/ui/ToolCostComparison";
-import { comparisonData } from "@/config/comparison-data";
+import ToolCostComparison, {
+  type ComparisonItem,
+} from "@/components/ui/ToolCostComparison";
 
 const tools = [
   { icon: "/icons/health-check.png", title: "freeTools.healthTitle", body: "freeTools.healthBody", href: "/health-check" },
@@ -14,6 +15,19 @@ const tools = [
 
 export default function FreeToolsPage() {
   const { t } = useI18n();
+  const comparison: ComparisonItem = {
+    id: "look-ahead-bias",
+    tool: "Look-Ahead Bias",
+    dangerTitle: t("freeTools.compareRiskTitle"),
+    dangerBody: t("freeTools.compareRiskBody"),
+    dangerCost: t("freeTools.compareRiskSignal"),
+    solutionLabel: t("freeTools.compareSolutionLabel"),
+    solutionBody: t("freeTools.compareMethodBody"),
+    solutionCost: t("freeTools.compareMethodSignal"),
+    ctaLabel: t("freeTools.compareCta"),
+    ctaHref: "/health-check",
+  };
+
   return (
     <main className={styles.main}>
       <header className={styles.hero}>
@@ -33,9 +47,9 @@ export default function FreeToolsPage() {
           </Link>
         ))}
       </section>
-      <section className={styles.compare} aria-label="Coût de la faille">
+      <section className={styles.compare} aria-label={t("freeTools.compareTitle")}>
         <h2>{t("freeTools.compareTitle")}</h2>
-        <ToolCostComparison item={comparisonData[0]} />
+        <ToolCostComparison item={comparison} />
       </section>
       <p className={styles.notice}>{t("freeTools.notice")}</p>
     </main>

@@ -1,13 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import type { ComparisonItem } from "@/config/comparison-data";
 import styles from "./ToolCostComparison.module.css";
 
+export type ComparisonItem = {
+  id: string;
+  tool: string;
+  dangerTitle: string;
+  dangerBody: string;
+  dangerCost: string;
+  solutionLabel: string;
+  solutionBody: string;
+  solutionCost: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
 /**
- * ToolCostComparison — composant "Coût de la faille".
- * Layout côte à côte (empilé sur mobile <720px) : carte Danger (rouge) vs
- * carte Solution StratVerity (vert néon #00FF9D). Utilise les tokens CSS du thème.
+ * Comparaison factuelle entre un risque détectable et le périmètre réel du
+ * diagnostic. Aucun montant de perte ni résultat client n'est extrapolé.
  */
 export default function ToolCostComparison({ item }: { item: ComparisonItem }) {
   return (
@@ -24,7 +35,7 @@ export default function ToolCostComparison({ item }: { item: ComparisonItem }) {
 
       {/* Carte solution */}
       <div className={styles.solution}>
-        <span className={styles.badge}>Solution recommandée</span>
+        <span className={styles.badge}>{item.solutionLabel}</span>
         <p className={styles.solutionBody}>{item.solutionBody}</p>
         <p className={styles.solutionCost}>{item.solutionCost}</p>
         <Link href={item.ctaHref} className={styles.cta}>

@@ -32,7 +32,9 @@ test("server-renders the StratVerity product page", async () => {
   assert.match(html, /StratVerity/i);
   assert.match(html, /Illustrative example/i);
   assert.match(html, /Essential audit/i);
-  assert.match(html, /€14\.99/i);
+  assert.match(html, /€19/i);
+  assert.match(html, /€49/i);
+  assert.match(html, /€79/i);
   assert.match(html, /href="\/configure"/);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
 });
@@ -98,7 +100,7 @@ test("server-renders the Audit and Scan scope configurator", async () => {
   assert.match(html, /no quote/i);
   assert.match(html, /No strategy code is sent/i);
   assert.match(html, /Essential/i);
-  assert.match(html, /€14\.99|€14,99/i);
+  assert.match(html, /€19/i);
 });
 
 test("landing uses the centralized 12-language design source", async () => {
@@ -590,6 +592,9 @@ test("free tools are public, localized and linked from research", async () => {
   assert.match(html, /href="\/health-check"/);
   assert.match(html, /href="\/score"/);
   assert.match(html, /href="\/fees"/);
+  assert.match(html, /What the diagnostic can establish/i);
+  assert.match(html, /financial impact not quantified/i);
+  assert.doesNotMatch(html, /10[\s,.]?000.*(?:lost|perdu)/i);
 
   const [header, messages, sitemap, article, health] = await Promise.all([
     readFile(
@@ -608,6 +613,30 @@ test("free tools are public, localized and linked from research", async () => {
   assert.match(health, /useI18n/);
   assert.match(health, /href="\/configure"/);
   assert.doesNotMatch(health, /href="\/crash-test"/);
+});
+
+test("public product copy stays aligned with launch-v0.3 and current capabilities", async () => {
+  const [layout, faq, faqPage, messages] = await Promise.all([
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../components/faq/faq-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/faq/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/i18n/messages.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(layout + faq + faqPage, /14\.99|39\.00|StrategyQuant X|Auto-Pilot/i);
+  assert.match(layout + faq, /19(?:\.00)? EUR|price: "19\.00"/i);
+  assert.match(layout + faq, /49(?:\.00)? EUR|price: "49\.00"/i);
+  assert.match(layout + faq, /79(?:\.00)? EUR|price: "79\.00"/i);
+  assert.match(faq, /Paid audits currently accept only Python strategies/i);
+  assert.match(messages, /"freeTools\.compareRiskSignal"/);
+  assert.match(messages, /"trust\.human\.t": "Automated delivery"/);
+  await assert.rejects(access(new URL("../config/comparison-data.ts", import.meta.url)));
+});
+
+test("pricing route permanently redirects to the canonical pricing section", async () => {
+  const response = await render("/pricing");
+  assert.ok([307, 308].includes(response.status), String(response.status));
+  assert.equal(response.headers.get("location"), "http://localhost/#pricing");
 });
 
 test("eligibility proxy is same-site, bounded and fail-closed", async () => {

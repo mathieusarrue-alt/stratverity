@@ -89,7 +89,7 @@ const organizationJsonLd = {
   },
   image: `${PUBLIC_SITE_URL}/og.png`,
   description:
-    "Independent strategy audit and validation for Pine Script and Python trading systems.",
+    "Independent, evidence-based audits for supported algorithmic trading strategies.",
   email: "stratverity@gmail.com",
   brand: {
     "@type": "Brand",
@@ -123,22 +123,31 @@ const softwareApplicationJsonLd = {
   operatingSystem: "Web",
   url: PUBLIC_SITE_URL,
   description:
-    "Independent backtest audit platform that recomputes trading strategy metrics, detects look-ahead bias and overfitting, and ties results to the evidence for Pine Script and Python systems.",
+    "Independent backtest audit platform that recomputes metrics for supported strategies and ties every reported result to its evidence.",
   offers: [
     {
       "@type": "Offer",
       name: "Essential audit",
-      price: "14.99",
+      price: "19.00",
       priceCurrency: "EUR",
-      description: "Single strategy, single asset, single timeframe audit.",
+      description:
+        "One supported strategy, one asset, one timeframe, and two years of history.",
     },
     {
       "@type": "Offer",
-      name: "Standard audit",
-      price: "39.00",
+      name: "Premium audit",
+      price: "49.00",
       priceCurrency: "EUR",
       description:
-        "Full audit with recomputed metrics, bias detection, and evidence-linked report.",
+        "One supported strategy and context, with eight years of history and deeper evidence.",
+    },
+    {
+      "@type": "Offer",
+      name: "Custom audit",
+      price: "79.00",
+      priceCurrency: "EUR",
+      description:
+        "Multi-context audit starting at 79 EUR, configured from an explicit scope.",
     },
   ],
   featureList: [
@@ -146,7 +155,8 @@ const softwareApplicationJsonLd = {
     "Overfitting & curve-fitting audit",
     "Robustness Score computation",
     "Verified Backtest Badge (SVG, SHA256-sealed)",
-    "Pine Script, MQL4/5 and Python strategy verification",
+    "Static code health checks for Pine Script, Python and MQL",
+    "Isolated replay for compatible Python strategies",
   ],
   aggregateRating: undefined,
 };
@@ -160,7 +170,7 @@ const faqJsonLd = {
       name: "What does StratVerity audit?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "StratVerity audits trading strategies and backtests written in Pine Script or Python. It recomputes performance metrics, detects biases such as look-ahead and overfitting, and ties every result to the evidence in your code and data.",
+        text: "StratVerity currently delivers evidence-based paid audits for supported Python strategies. Its free tools can statically screen Pine Script, Python and MQL code without presenting that diagnostic as a certified backtest.",
       },
     },
     {
@@ -168,7 +178,7 @@ const faqJsonLd = {
       name: "How is my strategy code handled?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Your code is analysed statically and is never executed with live orders. The audit pipeline recomputes declared metrics from your manifest, Pine code, and CSV export without running client code.",
+        text: "Free code checks are static. A compatible paid Python strategy may be replayed only inside an isolated, network-disabled container against catalogue data. StratVerity never places live orders from customer code.",
       },
     },
     {
@@ -176,7 +186,7 @@ const faqJsonLd = {
       name: "Which biases can the audit detect?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The audit focuses on look-ahead bias, overfitting and curve-fitting, survivorship issues, and robustness problems. Walk-forward validation is used to separate a real edge from a curve-fit story.",
+        text: "Depending on the compatible strategy and selected audit scope, the report can flag look-ahead patterns, omitted costs, overfitting risks and robustness issues. Every performed check and limitation is stated in the report.",
       },
     },
     {
@@ -184,7 +194,7 @@ const faqJsonLd = {
       name: "How much does a strategy audit cost?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The Essential audit is 14.99 EUR for one strategy, asset, and timeframe. The Standard audit is 39 EUR and includes a full recomputation, bias detection, and an evidence-linked report.",
+        text: "The Essential audit costs 19 EUR, the single-context Premium audit costs 49 EUR, and explicit multi-context Custom audits start at 79 EUR. The configurator shows the exact scope and price before checkout.",
       },
     },
   ],
@@ -197,10 +207,10 @@ const professionalServiceJsonLd = {
   url: PUBLIC_SITE_URL,
   email: "stratverity@gmail.com",
   image: `${PUBLIC_SITE_URL}/og.png`,
-  priceRange: "€14.99 - €149",
+  priceRange: "€19 - €79+",
   areaServed: "Worldwide",
   description:
-    "Independent backtest audit and strategy verification service for Pine Script and Python trading systems.",
+    "Independent backtest audit service for compatible algorithmic trading strategies.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -236,7 +246,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | StratVerity",
     },
     description:
-      "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      "Free static strategy health checks and evidence-based paid audits for supported Python strategies. No profit promises, no live-order execution.",
     applicationName: "StratVerity",
     keywords: [
       "backtest audit",
@@ -262,12 +272,8 @@ export async function generateMetadata(): Promise<Metadata> {
       "detecter lookahead bias",
       "MQL5 static code analyzer free",
       "MQL4 code analyzer",
-      "StrategyQuant X import",
       "anti repaint verified",
       "repainting detection TradingView",
-      "auto pilot MT5",
-      "deploiement EA MT5 automatique",
-      "execution automatique EA",
       "testeur de bug robot de trading",
     ],
     category: "finance",
@@ -308,9 +314,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title:
-        "StratVerity — Trading Strategy Audit, Free Health Check & Auto-Pilot",
+        "StratVerity — Trading Strategy Audit & Free Health Check",
       description:
-        "Free strategy code health check, look-ahead and repainting detection, Pine Script, Python, MQL and StrategyQuant X audits, plus optional 24/7 Auto-Pilot execution.",
+        "Free static code health checks and evidence-based audits for supported strategies, with explicit scope, costs and limitations.",
       type: "website",
       locale: "en_US",
       alternateLocale: [
@@ -340,9 +346,9 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title:
-        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
+        "StratVerity — Evidence-based Backtest Audit",
       description:
-        "Independent, evidence-based audit of Pine and Python strategies. Detect look-ahead bias and overfitting before you trade.",
+        "Independent audits for supported strategies. Recomputed metrics, explicit limitations, and no promise of future performance.",
       images: [socialImage],
     },
   };
