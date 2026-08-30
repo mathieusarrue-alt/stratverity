@@ -138,3 +138,50 @@ divergence.
    handoff frontend) : activer Crash-Test Express en prod, accès SES
    production, `TimeBasedTrader_v4.37.1_BetterExit.mq5` non testé via
    MetaTrader.
+
+## Continuation Codex — marques produits validées
+
+Décision fondateur confirmée le 30 août 2026 :
+
+- **Audit** : direction B, sceau institutionnel ;
+- **Marketplace** : direction A, modules reliés à une preuve centrale ;
+- **Optimizer** : direction C, réglages reliés à une convergence.
+
+Implémentation isolée sur la branche
+`codex/product-marks-audit-b-market-a-optimizer-c`, commit
+`57bc7f7f58dfd64cf23d060ba66c36c1f1100e55`.
+
+Périmètre :
+
+- nouveau composant `app/components/ProductMark.tsx` et module CSS associé ;
+- marque Audit dans `/configure` ;
+- marque Marketplace dans l'en-tête du catalogue `/marketplace` ;
+- marque Optimizer dans la section `#optimizer` de la source
+  `design-refonte/landing.html`, puis régénération officielle de
+  `app/home/landing-markup.ts` et `app/globals.css` ;
+- test source de non-régression dans `tests/rendered-html.test.mjs`.
+
+Garanties :
+
+- géométrie SVG native, `currentColor`, compatible clair/sombre/monochrome ;
+- les SVG décoratifs restent cachés aux lecteurs d'écran ; le composant accepte
+  aussi un `label` lorsqu'il porte une information autonome ;
+- aucun changement du logo principal `StratVerityLogo.tsx` ;
+- aucun changement de Stripe, du pricing, des routes, du backend ou des clés
+  i18n.
+
+Preuves :
+
+- `node scripts/port-design-refonte.mjs` : 577 chaînes françaises, 12 langues ;
+- build `vinext build` : réussi, toutes les routes produites ;
+- test ciblé marques produits : 1/1 réussi ;
+- scan NUL : OK ; `git diff --check` : OK ;
+- TypeScript : aucune nouvelle erreur ; les 5 erreurs historiques documentées
+  restent présentes ;
+- suite complète : build réussi, 14/25 assertions réussies, 11 assertions
+  historiques obsolètes déjà rouges sur cette base (anciens prix/flags/copies).
+
+Limite : l'inspection interactive dans le navigateur intégré n'a pas pu être
+réalisée à cause d'une erreur d'isolation Windows de l'outil. Ne pas présenter
+ce point comme une recette visuelle navigateur réussie ; une capture desktop +
+mobile clair/sombre reste recommandée après intégration de la branche.
