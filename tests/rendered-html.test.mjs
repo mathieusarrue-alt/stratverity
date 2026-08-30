@@ -690,3 +690,89 @@ test("marketplace remains fail-closed and proxies verified identity server-side"
     /service_role|STRIPE_SECRET_KEY|whsec_/i,
   );
 });
+
+test("TBO checkout and success flow stay authenticated and fail closed", async () => {
+  const [productPage, product, productLayout, success, proxy, statusRoute, env] =
+    await Promise.all([
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/page.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/TboProductClient.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/layout.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/success/page.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL("../app/api/marketplace/proxy.ts", import.meta.url),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/api/marketplace/license-for-session/route.ts",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(new URL("../.env.example", import.meta.url), "utf8"),
+    ]);
+
+  assert.match(env, /NEXT_PUBLIC_TBO_ENABLED=false/);
+  assert.match(productLayout, /NEXT_PUBLIC_TBO_ENABLED !== "true"/);
+  assert.match(productLayout, /notFound\(\)/);
+  assert.match(
+    productPage,
+    /requireSupabaseUser\("\/marketplace\/top-bottom-oscillator"\)/,
+  );
+  assert.match(product, /priceCents:\s*5000/);
+  assert.match(product, /priceCents:\s*13000/);
+  assert.match(product, /priceCents:\s*48000/);
+  assert.match(product, /priceCents:\s*140000/);
+  assert.match(
+    product,
+    /url\.origin === "https:\/\/checkout\.stripe\.com"/,
+  );
+  assert.match(product, /window\.location\.assign\(payload\.checkout_url\)/);
+  assert.doesNotMatch(
+    product,
+    /window\.location\.href\s*=\s*payload\.checkout_url/,
+  );
+
+  assert.match(statusRoute, /SESSION_ID_RE/);
+  assert.match(statusRoute, /queryKeys:\s*\["session_id"\]/);
+  assert.match(statusRoute, /requireAuth:\s*true/);
+  assert.match(proxy, /options\.requireAuth/);
+  assert.match(proxy, /upstreamUrl\.searchParams\.set/);
+
+  assert.match(success, /MAX_POLLS\s*=\s*8/);
+  assert.match(success, /payload\.tv_username/);
+  assert.match(success, /AbortController/);
+  assert.match(success, /window\.location\.pathname/);
+  assert.match(success, /window\.location\.search/);
+  assert.match(success, /router\.replace\(`\/login\?return_to=/);
+  assert.match(success, /aria-live="polite"/);
+  assert.doesNotMatch(success, /search\.get\("tv_username"\)/);
+  assert.doesNotMatch(
+    success,
+    /e-mail de confirmation|e-mail de confirmation a été envoyé/i,
+  );
+});

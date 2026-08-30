@@ -21,6 +21,11 @@ const PATHS = new Set([
   "/v1/marketplace/license-for-session",
 ]);
 
+type ProxyMarketplaceOptions = {
+  queryKeys?: readonly string[];
+  requireAuth?: boolean;
+};
+
 function safeOrigin(raw: string): string {
   const parsed = new URL(raw);
   if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.pathname !== "/") {
@@ -29,7 +34,11 @@ function safeOrigin(raw: string): string {
   return parsed.origin;
 }
 
-export async function proxyMarketplace(request: Request, path: string): Promise<Response> {
+export async function proxyMarketplace(
+  request: Request,
+  path: string,
+  options: ProxyMarketplaceOptions = {},
+): Promise<Response> {
   if (!PATHS.has(path)) return Response.json({ error: "NOT_FOUND" }, { status: 404 });
   const siteOrigin = safeOrigin(SITE_ORIGIN);
   if (request.method !== "GET" && request.headers.get("origin") !== siteOrigin) {
@@ -38,7 +47,7 @@ export async function proxyMarketplace(request: Request, path: string): Promise<
   const supabase = await getSupabaseServerClient();
   const { data } = await supabase.auth.getSession();
   const accessToken = data.session?.access_token;
-  if (request.method !== "GET" && !accessToken) {
+  if ((request.method !== "GET" || options.requireAuth) && !accessToken) {
     return Response.json({ error: "AUTH_REQUIRED" }, { status: 401 });
   }
   const body = request.method === "GET" ? undefined : await request.arrayBuffer();
@@ -51,7 +60,13 @@ export async function proxyMarketplace(request: Request, path: string): Promise<
     const headers = new Headers({ Origin: siteOrigin });
     if (body) headers.set("Content-Type", "application/json");
     if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
-    const response = await fetch(new URL(path, safeOrigin(API_ORIGIN)), {
+    const upstreamUrl = new URL(path, safeOrigin(API_ORIGIN));
+    const requestUrl = new URL(request.url);
+    for (const key of options.queryKeys ?? []) {
+      const value = requestUrl.searchParams.get(key);
+      if (value !== null) upstreamUrl.searchParams.set(key, value);
+    }
+    const response = await fetch(upstreamUrl, {
       method: request.method,
       headers,
       body,
