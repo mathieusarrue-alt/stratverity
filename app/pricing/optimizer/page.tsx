@@ -90,6 +90,8 @@ const GROUPS: FeatureGroup[] = [
       { label: "Fréquence de trading affichée (trades / an)", values: [true, true, true] },
       { label: "Filtres et paramètres rejetés listés (transparence)", values: [true, true, true] },
       { label: "Artefact prêt à déployer (Pine / EA / bot Python)", values: [false, false, true] },
+      { label: "Votre stratégie réécrite avec la config gagnante", values: [false, false, true] },
+      { label: "Prompt d'édition fourni (ajuster vous-même, sans coder)", values: [false, false, true] },
       { label: "Paper-trading avant mise en réel", values: [false, false, true] },
       { label: "Passerelle vers Auto-Pilot (exécution automatisée)", values: [false, false, true] },
     ],

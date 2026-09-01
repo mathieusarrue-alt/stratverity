@@ -49,6 +49,12 @@ const navItems = [
   ["common.contact", "/contact"],
 ] as const;
 
+/**
+ * "Produits" — vue d'ensemble des catégories, ajoutée avant les 4 items produit.
+ * Local (pas dans messages.ts, fichier généré) : même pattern que IntegrationsGrid.
+ */
+const PRODUCTS_LABEL: Record<string, string> = { fr: "Produits", en: "Products" };
+
 export default function SiteHeader() {
   const { locale, setLocale, t } = useI18n();
   const [theme, setTheme] = useState<Theme>("light");
@@ -128,6 +134,7 @@ export default function SiteHeader() {
                   <span className="brand-full-text">Strat<span>Verity</span></span>
                 </Link>
         <nav className="nav" aria-label={t("header.primaryNav")}>
+          <Link href="/produits">{locale === "fr" ? PRODUCTS_LABEL.fr : PRODUCTS_LABEL.en}</Link>
           {navItems.map(([key, href]) => (
             <Link href={href} key={key}>{t(key)}</Link>
           ))}
@@ -183,6 +190,7 @@ export default function SiteHeader() {
         </div>
       </div>
       <nav className={`mobile-nav${mobileOpen ? " open" : ""}`} aria-label={t("header.mobileNav")}>
+        <Link href="/produits" onClick={closeMenus}>{locale === "fr" ? PRODUCTS_LABEL.fr : PRODUCTS_LABEL.en}</Link>
         {navItems.map(([key, href]) => <Link href={href} key={key} onClick={closeMenus}>{t(key)}</Link>)}
         <Link href="/login?return_to=/account" onClick={closeMenus}>{t("nav.login")}</Link>
         <div className="mobile-lang" aria-label={t("header.chooseLanguage")}>

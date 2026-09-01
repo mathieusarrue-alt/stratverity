@@ -8,6 +8,7 @@ import type { MessageKey } from "../i18n/messages";
 import { useI18n } from "../i18n/I18nProvider";
 import TrustBadges from "./TrustBadges";
 import IntegrationsGrid from "./IntegrationsGrid";
+import ProductsOverview from "./ProductsOverview";
 
 /**
  * Landing markup is owned imperatively after first paint.
@@ -20,6 +21,7 @@ export default function LandingPage() {
   const { locale } = useI18n();
   const [trustHost, setTrustHost] = useState<Element | null>(null);
   const [integHost, setIntegHost] = useState<Element | null>(null);
+  const [productsHost, setProductsHost] = useState<Element | null>(null);
 
   // —— Bootstrap once: inject markup, hosts, interactive effects ——
   useEffect(() => {
@@ -55,8 +57,18 @@ export default function LandingPage() {
       else root.appendChild(integ);
     }
 
+    let products = root.querySelector("#products-overview-mount");
+    if (!products) {
+      products = document.createElement("div");
+      products.id = "products-overview-mount";
+      const pricing = root.querySelector("#pricing");
+      if (pricing) pricing.appendChild(products);
+      else root.appendChild(products);
+    }
+
     setTrustHost(trust);
     setIntegHost(integ);
+    setProductsHost(products);
 
     const controller = new AbortController();
     const { signal } = controller;
@@ -321,6 +333,7 @@ export default function LandingPage() {
       <div ref={rootRef} suppressHydrationWarning />
       {trustHost ? createPortal(<TrustBadges />, trustHost) : null}
       {integHost ? createPortal(<IntegrationsGrid />, integHost) : null}
+      {productsHost ? createPortal(<ProductsOverview />, productsHost) : null}
     </>
   );
 }
