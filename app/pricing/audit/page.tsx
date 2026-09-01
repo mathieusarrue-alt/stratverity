@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ComparisonTable, { type ComparisonTier, type FeatureGroup } from "../ComparisonTable";
+import ReportExample from "../ReportExample";
 import styles from "../pricing.module.css";
 
 /**
@@ -106,6 +107,8 @@ export default function AuditPricingPage() {
         groups={GROUPS}
         footNote="Prix hors TVA (franchise en base). Paiement unique, sans reconduction automatique. Un backtest reste une mesure historique — aucune garantie de performance future."
       />
+
+      <ReportExample variant="audit" />
 
       <section className={styles.ctaBand}>
         <h2 style={{ fontFamily: "var(--display)", fontSize: "clamp(22px,2.6vw,32px)" }}>

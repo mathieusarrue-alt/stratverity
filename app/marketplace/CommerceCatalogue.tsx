@@ -11,6 +11,7 @@ import {
   formatCents,
   STATE_LABEL,
 } from "./commerce";
+import StrategyAvatar from "./StrategyAvatar";
 
 function isBuyable(state?: string) {
   return state === "LISTED" || state === "OPERATOR_LISTED";
@@ -103,6 +104,7 @@ export default function CommerceCatalogue() {
             href={`/marketplace/${listing.slug}`}
             key={listing.id}
           >
+            <StrategyAvatar seed={listing.id} label={listing.title} size={36} />
             <span className="mp-engine">
               {KIND_LABEL[listing.kind] ?? listing.kind} ·{" "}
               {listing.platform.join(" / ")}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ComparisonTable, { type ComparisonTier, type FeatureGroup } from "../ComparisonTable";
+import ReportExample from "../ReportExample";
 import styles from "../pricing.module.css";
 
 /**
@@ -121,6 +122,8 @@ export default function OptimizerPricingPage() {
         groups={GROUPS}
         footNote="Prix hors TVA (franchise en base), paiement unique par stratégie. Pas de checkout automatique pour l'instant : chaque commande démarre par un échange direct pour cadrer le drawdown max, le capital et les actifs autorisés. Outil analytique, aucun conseil en investissement, performance passée ≠ performance future."
       />
+
+      <ReportExample variant="optimizer" />
 
       <section className={styles.ctaBand}>
         <h2 style={{ fontFamily: "var(--display)", fontSize: "clamp(22px,2.6vw,32px)" }}>

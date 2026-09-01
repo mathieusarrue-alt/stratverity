@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ILLUSTRATIVE_GOLDENS, type HaloTone, type IllustrativeGolden } from "./_data/illustrativeGoldens";
+import StrategyAvatar from "./StrategyAvatar";
 
 function toneClass(tone?: HaloTone) {
   if (tone === "good") return "mp-good";
@@ -14,6 +15,7 @@ function Card({ g }: { g: IllustrativeGolden }) {
   return (
     <article className={`mp-card mp-tone-${g.halo}`}>
       <div className="mp-card-top">
+        <StrategyAvatar seed={g.id} label={g.title} size={36} />
         <span className="mp-engine">{g.engine}</span>
         <div className="mp-gauge" aria-label={`Score labo ${g.scoreLabel}`}>
           <span className={`mp-score mp-score-${g.halo}`}>{g.scoreLabel}</span>

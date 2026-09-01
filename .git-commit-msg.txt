@@ -1,0 +1,35 @@
+feat(marketing): visual examples for pricing tiers, strategy avatars, TV screenshots
+
+Pricing (/pricing/audit, /pricing/optimizer):
+- New ReportExample component: 3 "exemple illustratif" report-preview cards
+  per page (one per pricing tier), styled to match the existing dark
+  comparison surface (same tokens as pricing.module.css: forest-900,
+  emerald-500/400, radius-lg, dot-grid background, highlight tier card).
+- Audit variant: PF net / Perf / Max DD / trades chips, bias-detection
+  checklist, robustness tips, multi-context badges — depth increases per
+  tier (Essential -> Premium -> Custom).
+- Optimizer variant: top-3 configs, PBO / walk-forward, Monte-Carlo
+  p5/p50/p95, multi-asset generalization, regime stress-test — depth
+  increases per tier (Essentiel -> Pro -> Elite).
+- All figures are illustrative, reused from the trading research project's
+  documented backtest schemas (never fabricated), clearly labeled
+  "EXEMPLE ILLUSTRATIF" throughout.
+
+Marketplace (/marketplace):
+- New StrategyAvatar component: deterministic SVG monogram avatar
+  (seed -> hash -> one of 6 gradient pairs, initials from title), used as
+  a per-listing "profile picture" on both the illustrative lab cards
+  (IllustrativeModelCards.tsx) and the real seller catalogue
+  (CommerceCatalogue.tsx).
+- New public/marketing/ TradingView screenshots: a real indicator overlay
+  (Top/Bottom Oscillator by Stratverity, live chart) and an annotated
+  example long-position (entry/SL/TP zones drawn on real ETHUSDT.P price
+  history) — both captured live via the TradingView MCP, cropped to
+  remove app chrome.
+
+Verified: npx tsc --noEmit clean (only pre-existing, unrelated errors);
+visually verified all 3 new surfaces in-browser (pricing/audit,
+pricing/optimizer render pixel-perfect against the design system;
+marketplace avatars render with correct gradient/initials — the
+page-wide unstyled CSS on /marketplace in dev is pre-existing and
+unrelated, confirmed by the other two pages rendering correctly).
