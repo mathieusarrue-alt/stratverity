@@ -81,7 +81,7 @@ export default function IllustrativeModelCards() {
       <p className="mp-illust-disclaimer">
         Score labo = 45&nbsp;% PF + 25&nbsp;% winrate + 20&nbsp;% drawdown + 10&nbsp;%
         nombre de trades. Un drawdown manquant vaut 50/100 (neutre). Le contrôle
-        négatif n'affiche pas ce score : il documente une divergence Python /
+        négatif n&apos;affiche pas ce score : il documente une divergence Python /
         TradingView. Passé ≠ futur. CTA unique : audit de votre propre code.
       </p>
 

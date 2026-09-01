@@ -96,6 +96,8 @@ export default function GlobalError({
         >
           Retour à l&rsquo;accueil
         </button>
+        {/* A hard-navigation fallback is intentional in an error boundary. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href="/"
           style={{

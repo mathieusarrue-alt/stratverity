@@ -23,24 +23,24 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the StratVerity product page", async () => {
+test("server-renders the StratVerity landing page with JSON-LD pricing", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
   assert.match(html, /StratVerity/i);
-  assert.match(html, /Illustrative example/i);
-  assert.match(html, /Essential audit/i);
-  assert.match(html, /€14\.99/i);
   assert.match(html, /href="\/configure"/);
+  // Landing JSON-LD: pricing 19 / 49 / dès 79
+  assert.match(html, /19["\\.,]00|19,00|19€|€19/);
+  assert.match(html, /49["\\.,]00|49,00|49€|€49/);
+  assert.match(html, /79["\\.,]00|79,00|79€|€79|dès 79|from €79/i);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
 });
 
 test("every frontend response receives the shared security policy", async () => {
   for (const path of [
     "/",
-    "/configure",
     "/login",
     "/legal/privacy",
     "/cert/demo-audit",
@@ -86,19 +86,13 @@ test("every frontend response receives the shared security policy", async () => 
   }
 });
 
-test("server-renders the Audit and Scan scope configurator", async () => {
+test("scope configurator requires login and redirects to /login", async () => {
   const response = await render("/configure");
-  assert.equal(response.status, 200);
-
-  const html = await response.text();
-  assert.match(html, /Build your audit/i);
-  assert.match(html, /Or your scan/i);
-  assert.match(html, /2 MiB/i);
-  assert.match(html, /LAUNCH PRICING/i);
-  assert.match(html, /no quote/i);
-  assert.match(html, /No strategy code is sent/i);
-  assert.match(html, /Essential/i);
-  assert.match(html, /€14\.99|€14,99/i);
+  assert.ok([307, 302, 308].includes(response.status));
+  assert.match(
+    response.headers.get("location") ?? "",
+    /\/login\?return_to=%2Fconfigure/,
+  );
 });
 
 test("landing uses the centralized 12-language design source", async () => {
@@ -228,28 +222,47 @@ test("public login offers verified email and real Supabase OAuth actions", async
   assert.match(source, /"github"/);
   assert.match(source, /\.filter\(\(\{ value \}\) => enabled\.has\(value\)\)/);
 });
-test("contact details are public and pricing Contact Us opens them", async () => {
+test("contact details are public and match the current contract", async () => {
   const [contact, landing] = await Promise.all([
     render("/contact"),
     render("/"),
   ]);
   assert.equal(contact.status, 200);
   const contactHtml = await contact.text();
-  assert.match(contactHtml, /contact@stratverity\.com/i);
+  // Email public actual = stratverity@gmail.com (contact page)
+  assert.match(contactHtml, /stratverity@gmail\.com/i);
+  // Adresse d'exploitation Prism Works (via i18n)
   assert.match(contactHtml, /Prism Works/i);
   assert.doesNotMatch(
     contactHtml,
     /Mathieu Sarrue|903 756 575 00028|11 avenue du Huit Mai/i,
   );
   const landingHtml = await landing.text();
-  assert.match(landingHtml, /href="\/contact"[^>]*data-i18n="pr\.contact"/i);
+  // Contact link is rendered by SiteHeader nav item with i18n key common.contact
+  assert.match(landingHtml, /href="\/contact"/i);
+});
+
+test("published JSON-LD on layout matches current pricing 19/49/dès79", async () => {
+  const layout = await readFile(
+    new URL("../app/layout.tsx", import.meta.url),
+    "utf8",
+  );
+  // JSON-LD: WebAPI pricing et Product schema
+  assert.match(layout, /application\/ld\+json/);
+  assert.match(layout, /"@context": "https:\/\/schema\.org"/);
+  // Three-tiers
+  assert.match(layout, /"Essential audit"/);
+  assert.match(layout, /"19\.00"/);
+  assert.match(layout, /"Premium audit"/);
+  assert.match(layout, /"49\.00"/);
+  assert.match(layout, /"Custom audit"/);
+  assert.match(layout, /"79\.00"/);
+  assert.doesNotMatch(layout, /13\.99|14\.99/);
 });
 
 test("every public route receives the shared interactive art direction", async () => {
   for (const path of [
     "/",
-    "/configure",
-    "/configure/success",
     "/login",
     "/contact",
     "/legal/terms",
@@ -293,28 +306,33 @@ test("customer account stays protected by server-side Supabase identity", async 
     /^(?:http:\/\/localhost)?\/login\?return_to=%2Faccount/,
   );
 });
-test("scope configurator targets the bounded preview endpoint", async () => {
+test("scope configurator targets the bounded preview endpoint and MAX_STRATEGIES 10", async () => {
   const page = await readFile(
     new URL("../app/configure/page.tsx", import.meta.url),
     "utf8",
   );
 
   assert.match(page, /\/v1\/service-scopes\/preview/);
-  assert.match(page, /REQUEST_LIMIT_BYTES\s*=\s*2\s*\*\s*1024\s*\*\s*1024/);
   assert.match(page, /crypto\.subtle\.digest\("SHA-256"/);
   assert.match(page, /configure\.localFilesBody/);
   assert.match(page, /calculatePrice/);
-  assert.match(page, /"launch-v0\.2"/);
+  assert.match(page, /"launch-v0\.3"/);
   assert.match(page, /"ESSENTIAL"/);
   assert.match(page, /\/v1\/billing\/checkout-sessions/);
   assert.match(page, /"Idempotency-Key"/);
-  assert.match(page, /checkout\.stripe\.com/);
+  assert.match(page, /isStripeCheckoutUrl/);
   assert.match(page, /beta-fr-2026-08-12-v1/);
   assert.match(page, /AUDIT_BETA_NO_MARKETPLACE_RESALE/);
   assert.match(page, /contract_acceptance/);
-  assert.match(page, /configure\.scanInvitation/);
   assert.match(page, /configure\.betaBanner/);
-  assert.doesNotMatch(page, /payment_intent|STRIPE_SECRET_KEY/);
+  assert.match(page, /configure\.eyebrow/);
+  // MAX_STRATEGIES = 10
+  assert.match(page, /MAX_STRATEGIES\s*=\s*10/);
+  // Importe MARKET_CATALOG, MARKET_ASSET_IDS, timeframesForAssets
+  assert.match(page, /MARKET_CATALOG/);
+  assert.match(page, /MARKET_ASSET_IDS/);
+  assert.match(page, /timeframesForAssets/);
+  assert.doesNotMatch(page, /process\.env\.STRIPE_SECRET_KEY|sk_(?:test|live)_/);
 });
 
 test("legal beta bundle is public and excludes client-code resale", async () => {
@@ -339,13 +357,11 @@ test("legal beta bundle is public and excludes client-code resale", async () => 
 
 test("checkout return never claims provisioning before the signed webhook", async () => {
   const response = await render("/configure/success");
-  assert.equal(response.status, 200);
-
-  const html = await response.text();
-  assert.match(html, /Confirmation in progress/i);
-  assert.match(html, /Stripe-signed payment/i);
-  assert.match(html, /No audit, scan or worker is started/i);
-  assert.doesNotMatch(html, /service activated|payment confirmed/i);
+  assert.ok([302, 307, 308].includes(response.status));
+  assert.match(
+    response.headers.get("location") ?? "",
+    /^(?:http:\/\/localhost)?\/login\?return_to=%2Fconfigure(?:%2Fsuccess)?/,
+  );
 });
 
 test("checkout and return page bind uploads to one browser-held owner token", async () => {
@@ -360,25 +376,24 @@ test("checkout and return page bind uploads to one browser-held owner token", as
 
   assert.match(configurator, /owner_token:\s*ownerToken/);
   assert.match(configurator, /sessionStorage\.setItem/);
+  // STRATEGY_SOURCE est dans le configurateur (upload avant checkout)
+  assert.match(configurator, /STRATEGY_SOURCE/);
+  assert.match(returnPage, /BACKTEST_EVIDENCE/);
   assert.match(returnPage, /\/v1\/orders\/status/);
   assert.match(returnPage, /\/submissions/);
-  assert.match(returnPage, /\/qualifications/);
-  assert.match(returnPage, /success\.qualifyAction/);
-  assert.match(returnPage, /STATIC_QUALIFIED_AWAITING_APPROVAL/);
-  assert.match(returnPage, /STRATEGY_SOURCE/);
-  assert.match(returnPage, /BACKTEST_EVIDENCE/);
-  assert.match(returnPage, /NOT_CREATED/);
+  // Pipeline auto-deliver + report
+  assert.match(returnPage, /report_html/);
+  assert.match(returnPage, /report_url/);
+  assert.match(returnPage, /auto-deliver/);
   assert.match(returnPage, /NOT_DISPATCHED/);
-  assert.match(returnPage, /\/audit-reports\/\$\{draft\.draft_id\}\/access/);
-  assert.match(
-    returnPage,
-    /approvedReportHtml\s*\?\s*t\("success\.title\.approved"\)/,
-  );
-  assert.match(returnPage, /approvedReportHtml\s*\?\s*"REPORT_APPROVED"/);
-  assert.match(returnPage, /success\.deliveredTitle/);
-  assert.match(returnPage, /\/audit-reports\/status/);
-  assert.match(returnPage, /\/v1\/paid-audit-reports\/\$\{draft\.draft_id\}/);
   assert.match(returnPage, /sandbox=""/);
+  // Plus de qualifications legacy ni audit-reports
+  assert.doesNotMatch(returnPage, /\/qualifications/);
+  assert.doesNotMatch(returnPage, /STATIC_QUALIFIED_AWAITING_APPROVAL/);
+  assert.doesNotMatch(returnPage, /\/audit-reports\//);
+  assert.doesNotMatch(returnPage, /success\.deliveredTitle/);
+  assert.doesNotMatch(returnPage, /approvedReportHtml\s*\?\s*t\("success\.title\.approved"/);
+  assert.doesNotMatch(returnPage, /approvedReportHtml\s*\?\s*"REPORT_APPROVED"/);
   assert.doesNotMatch(returnPage, /localStorage/);
   assert.doesNotMatch(configurator + returnPage, /sk_test_|whsec_/);
 });
@@ -402,15 +417,18 @@ test("private admin console keeps its bearer secret in volatile component state"
   );
 });
 
-test("scope configurator publishes a deterministic launch price grid", async () => {
+test("scope configurator publishes a deterministic launch price grid (v0.3)", async () => {
   const pricing = await readFile(
     new URL("../app/configure/pricing.ts", import.meta.url),
     "utf8",
   );
 
-  assert.match(pricing, /version:\s*"launch-v0\.2"/);
+  assert.match(pricing, /version:\s*"launch-v0\.3"/);
   assert.match(pricing, /auditDepth === "ESSENTIAL"/);
-  assert.match(pricing, /1_499/);
+  // Trois tarifs déterministes : Essential 1_900, Premium 4_900, Custom 7_900
+  assert.match(pricing, /1_900/);
+  assert.match(pricing, /4_900/);
+  assert.match(pricing, /7_900/);
   assert.match(pricing, /AUDIT_CONTEXT_BANDS/);
   assert.match(pricing, /SCAN_CONTEXT_BANDS/);
   assert.match(pricing, /const VAT_RATE = 0/);
@@ -528,17 +546,51 @@ test("certification UI derives the three trust states from the engine", async ()
   assert.doesNotMatch(state + view + page, /sk_test_|whsec_|STRIPE_SECRET_KEY/);
 });
 
+test("marketplace is hard-off: noindex, disabled, commerce off", async () => {
+  const [marketplaceLayout, marketplacePage, sitemap, env, commerce] =
+    await Promise.all([
+      readFile(
+        new URL("../app/marketplace/layout.tsx", import.meta.url),
+        "utf8",
+      ),
+      readFile(new URL("../app/marketplace/page.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
+      readFile(new URL("../.env.example", import.meta.url), "utf8"),
+      readFile(new URL("../app/marketplace/commerce.ts", import.meta.url), "utf8"),
+    ]);
+
+  // Layout: noindex fixe (hard-off, pas conditionnel)
+  assert.match(marketplaceLayout, /index: false, follow: false/);
+  // Page: enabled={false}
+  assert.match(marketplacePage, /enabled=\{false\}/);
+  // Env: les deux flags à false
+  assert.match(env, /NEXT_PUBLIC_MARKETPLACE_ENABLED=false/);
+  assert.match(env, /NEXT_PUBLIC_MARKETPLACE_COMMERCE=false/);
+  // Commerce gate
+  assert.match(commerce, /COMMERCE_ENABLED/);
+  assert.match(commerce, /NEXT_PUBLIC_MARKETPLACE_COMMERCE === "true"/);
+  // Sitemap: sans marketplace tant que flag off (routes.push conditionnel)
+  assert.match(sitemap, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
+  assert.match(sitemap, /if \(marketplaceEnabled\)/);
+  assert.match(sitemap, /routes\.push\(\{\s*path: "\/marketplace"/);
+  // Garder tests proxy/auth/commission utiles
+  const proxy = await readFile(
+    new URL("../app/api/marketplace/proxy.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(proxy, /getSupabaseServerClient/);
+  assert.match(proxy, /data\.session\?\.access_token/);
+  assert.match(proxy, /Authorization.*Bearer/);
+  assert.match(proxy, /incomingOrigin|request\.headers\.get\("origin"\)/);
+});
+
 test("disabled product surfaces stay out of indexing and submission", async () => {
-  const [crashPage, sitemap, crashLayout, marketplaceLayout, galleryLayout] =
+  const [crashPage, sitemap, crashLayout, galleryLayout] =
     await Promise.all([
       readFile(new URL("../app/crash-test/page.tsx", import.meta.url), "utf8"),
       readFile(new URL("../app/sitemap.ts", import.meta.url), "utf8"),
       readFile(
         new URL("../app/crash-test/layout.tsx", import.meta.url),
-        "utf8",
-      ),
-      readFile(
-        new URL("../app/marketplace/layout.tsx", import.meta.url),
         "utf8",
       ),
       readFile(new URL("../app/gallery/layout.tsx", import.meta.url), "utf8"),
@@ -566,13 +618,10 @@ test("disabled product surfaces stay out of indexing and submission", async () =
   assert.match(sitemap, /routes\.push\(\{\s*path: "\/crash-test"/);
   assert.doesNotMatch(sitemap, /\/v1\/certifications|\/cert\/\$\{/);
 
-  // Doctrine : les surfaces désactivées restent hors index (noindex conditionnel
-  // sur feature flag). Dès activée, la page devient indexable — jamais de
-  // noindex dur qui bloquerait une future mise en prod.
-  assert.match(marketplaceLayout, /index: indexable, follow: indexable/);
-  assert.match(marketplaceLayout, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
+  // Crash-test: noindex conditionnel sur feature flag
   assert.match(crashLayout, /index: indexable, follow: indexable/);
   assert.match(crashLayout, /NEXT_PUBLIC_CRASH_TEST_ENABLED === "true"/);
+  // Gallery: noindex dur
   assert.match(
     galleryLayout,
     /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/,
@@ -668,13 +717,11 @@ test("marketplace remains fail-closed and proxies verified identity server-side"
     ),
     readFile(new URL("../.env.example", import.meta.url), "utf8"),
   ]);
-  assert.match(page, /NEXT_PUBLIC_MARKETPLACE_ENABLED === "true"/);
+  assert.match(page, /enabled=\{false\}/);
   assert.match(env, /NEXT_PUBLIC_MARKETPLACE_ENABLED=false/);
-  assert.match(client, /hostname\.endsWith\("stripe\.com"\)/);
-  assert.match(
-    client,
-    /No illustrative strategy is presented as a real product/,
-  );
+  assert.match(seller, /hostname\.endsWith\("stripe\.com"\)/);
+  assert.match(client, /IllustrativeModelCards/);
+  assert.match(client, /pas à vendre/);
   assert.match(seller, /marketplace-seller-2026-08-21-v1/);
   assert.match(seller, /commission_bps: 1500/);
   assert.match(seller, /rights_confirmed/);

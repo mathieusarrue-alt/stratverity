@@ -1,7 +1,7 @@
 # StratVerity
 
 > StratVerity is the independent auditing and verification engine for algorithmic
-> trading strategies, backtests, Pine Script, and MQL5. It recomputes declared
+> trading strategies, backtests, Pine Script, and Python. It recomputes declared
 > metrics, detects look-ahead bias and overfitting, and seals verified results
 > with a tamper-evident badge.
 
@@ -17,8 +17,7 @@
 ## Public tools
 
 - `/free-tools` — free diagnostics hub (health check, robustness score, fee calculator).
-- `/health-check` — free static code health check for Pine Script, MQL4/5 and Python (0–100 score).
-- `/crash-test` — one-time €49 audit with a certified robustness report.
+- `/health-check` — free static code health check for Pine Script, Python, and MQL (0–100 score).
 - `/score` — free backtest credibility score (look-ahead, missing fees, overfitting).
 - `/fees` — fee & slippage reality check for declared returns.
 - `/learn` — methodology articles (look-ahead bias, overfitting, walk-forward, survivorship).
@@ -35,9 +34,9 @@
 ## Getting an audit
 
 1. Open `/configure`, select strategy, assets and timeframes.
-2. Upload Pine Script, Python, or MQL source (read-only, never executed with real orders).
-3. Pay once (€14.99 Essential / €39 Standard) — no subscription.
-4. Receive a sealed report after human review.
+2. Upload a supported Pine Script or Python source file (never executed with real orders).
+3. Confirm the scope before checkout: €19 Essential, €49 Premium, or Custom from €79.
+4. Receive an evidence-linked audit report produced by the audit pipeline.
 
 ## Verification
 
