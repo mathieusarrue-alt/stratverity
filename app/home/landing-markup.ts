@@ -63,7 +63,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 <section class="hero" id="top">
   <div class="container hero-grid">
     <div data-reveal>
-      <span class="badge"><span class="dot"></span><span data-i18n="hero.badge">Independent audit · Pine & Python</span></span>
+      <span class="badge"><span class="dot"></span><span data-i18n="hero.badge">Independent audit · Pine, Python & MQL</span></span>
       <h1><span data-i18n="hero.h1a">Audit your strategy,</span><br><span class="accent" data-i18n="hero.h1b">not its storytelling.</span></h1>
       <p class="lead" data-i18n="hero.lead">Upload a strategy. StratVerity recomputes its metrics, detects biases and measures robustness — proof before promise.</p>
       <div class="hero-cta">
@@ -72,7 +72,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
             </div>
             <p class="hero-proof" data-i18n="hero.proof">100% independent · Code never shared · Fees included</p>
             <div class="trust">
-        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · Notebook</span></span>
+        <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t1">Pine · Python · MQL · Notebook</span></span>
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t2">Fees & slippage included</span></span>
         <span class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="hero.t3">Your code stays private</span></span>
       </div>
@@ -125,6 +125,32 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
   </div>
   <div class="sb-note" data-i18n="sb.note">Illustrative example · net of fees · walk-forward</div>
 </div></section>
+
+<section class="block" id="tools" style="padding-top:8px">
+  <div class="container">
+    <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="strip.eyebrow">Our tools</span><h2 data-i18n="strip.h2">Three tools, one engine of truth.</h2></div>
+    <div class="div-grid">
+      <article class="div-card" data-reveal>
+        <div class="sev" data-i18n="configure.audit">Audit</div>
+        <h4 data-i18n="nav.cta">Audit a strategy</h4>
+        <p data-i18n="strip.audit.line">Verify an existing strategy: recomputed metrics, biases detected.</p>
+        <a class="btn btn-primary btn-sm" data-magnetic href="/configure" style="margin-top:14px" data-i18n="strip.audit.cta">Audit now</a>
+      </article>
+      <article class="div-card" data-reveal data-delay="1">
+        <div class="sev" data-i18n="nav.optimizer">Optimizer</div>
+        <h4 data-i18n="strip.optimizer.title">Optimize without lying to yourself</h4>
+        <p data-i18n="strip.optimizer.line">Find parameters that hold out-of-sample, not just on the past.</p>
+        <a class="btn btn-primary btn-sm" data-magnetic href="/pricing/optimizer" style="margin-top:14px" data-i18n="strip.optimizer.cta">Discover the Optimizer</a>
+      </article>
+      <article class="div-card" data-reveal data-delay="2">
+        <div class="sev" data-i18n="nav.marketplace">Marketplace</div>
+        <h4 data-i18n="strip.marketplace.title">Strategy marketplace</h4>
+        <p data-i18n="strip.marketplace.line">Rent or sell strategies that are already audited and certified.</p>
+        <a class="btn btn-primary btn-sm" data-magnetic href="/marketplace" style="margin-top:14px" data-i18n="pr.mp.cta">Browse the marketplace</a>
+      </article>
+    </div>
+  </div>
+</section>
 
 <section class="block" id="product">
   <div class="container">
@@ -225,39 +251,6 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
             <div class="bar-row"><span class="lbl">&nbsp;</span><div class="bar-track"><div class="bar-fill bar-verified" style="--w:.60"></div></div><span class="val pos">60%</span></div>
             <div class="bar-row"><span class="lbl" data-i18n="cmp.b4">Drawdown</span><div class="bar-track"><div class="bar-fill bar-declared" style="--w:.20"></div></div><span class="val dec">−9%</span></div>
             <div class="bar-row"><span class="lbl">&nbsp;</span><div class="bar-track"><div class="bar-fill bar-verified" style="--w:.55"></div></div><span class="val neg">−23.5%</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="block" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
-  <div class="container">
-    <div class="sec-head" data-reveal><span class="eyebrow" data-i18n="mx.eyebrow">Generalisation</span><h2 data-i18n="mx.h2">Robust across a basket, not on a lucky ticker.</h2></div>
-    <div class="matrix-wrap">
-      <div class="panel" data-reveal>
-        <div class="panel-head"><div class="pc-title" data-i18n="mx.panel">Asset × timeframe matrix</div><span class="pc-tag" data-i18n="card.example">Illustrative example</span></div>
-        <div class="panel-body">
-          <div class="matrix" id="matrix"></div>
-          <div style="display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--ink-2)">
-            <span><span class="swatch" style="background:color-mix(in oklab,var(--emerald-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.pass">pass</span></span>
-            <span><span class="swatch" style="background:color-mix(in oklab,var(--amber-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.warn">fragile</span></span>
-            <span><span class="swatch" style="background:color-mix(in oklab,var(--risk-500) 40%,transparent);width:11px;height:11px;border-radius:3px"></span> <span data-i18n="mx.fail">rejected</span></span>
-          </div>
-        </div>
-      </div>
-      <div class="panel" data-reveal data-delay="1">
-        <div class="panel-body score-card">
-          <div class="radial" id="radial">
-            <svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="72" fill="none" stroke="var(--line)" stroke-width="12"/>
-              <circle id="radialArc" cx="85" cy="85" r="72" fill="none" stroke="var(--forest-600)" stroke-width="12" stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="452"/></svg>
-            <div class="num"><b data-count="74">74</b><span data-i18n="mx.score">robustness / 100</span></div>
-          </div>
-          <div class="stress">
-            <div class="s"><div class="t" data-i18n="mx.st1">Fees ×3</div><div class="m pos">PF 1.24</div></div>
-            <div class="s"><div class="t" data-i18n="mx.st2">OOS 2026</div><div class="m pos">+9.1%</div></div>
-            <div class="s"><div class="t" data-i18n="mx.st3">Slippage 2×</div><div class="m dec">PF 1.11</div></div>
           </div>
         </div>
       </div>

@@ -89,7 +89,7 @@ const organizationJsonLd = {
   },
   image: `${PUBLIC_SITE_URL}/og.png`,
   description:
-    "Independent strategy audit and validation for Pine Script and Python trading systems.",
+    "Independent strategy audit and validation for Pine Script, Python, and MQL trading systems.",
   email: "stratverity@gmail.com",
   brand: {
     "@type": "Brand",
@@ -123,7 +123,7 @@ const softwareApplicationJsonLd = {
   operatingSystem: "Web",
   url: PUBLIC_SITE_URL,
   description:
-    "Independent backtest audit platform that recomputes trading strategy metrics, detects look-ahead bias and overfitting, and ties results to the evidence for Pine Script and Python systems.",
+    "Independent backtest audit platform that recomputes trading strategy metrics, detects look-ahead bias and overfitting, and ties results to the evidence for Pine Script, Python, and MQL systems.",
   offers: [
     {
       "@type": "Offer",
@@ -209,7 +209,7 @@ const professionalServiceJsonLd = {
   priceRange: "€0 - €79+",
   areaServed: "Worldwide",
   description:
-    "Independent backtest audit and strategy verification service for Pine Script and Python trading systems.",
+    "Independent backtest audit and strategy verification service for Pine Script, Python, and MQL trading systems.",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -245,7 +245,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | StratVerity",
     },
     description:
-      "Free strategy diagnostics and evidence-based Pine Script and Python audits. Recomputed metrics, bias checks, and clearly defined audit scopes.",
+      "Free strategy diagnostics and evidence-based Pine Script, Python, and MQL audits. Recomputed metrics, bias checks, and clearly defined audit scopes.",
     applicationName: "StratVerity",
     keywords: [
       "backtest audit",
@@ -256,6 +256,8 @@ export async function generateMetadata(): Promise<Metadata> {
       "Pine Script audit",
       "TradingView Pine Script backtest audit",
       "Python trading strategy audit",
+      "MQL4 strategy audit",
+      "MetaTrader expert advisor audit",
       "algorithmic trading strategy validation",
       "look-ahead bias detection",
       "look-ahead bias checker",
@@ -313,7 +315,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title:
         "StratVerity — Trading Strategy Audit & Free Health Check",
       description:
-        "Free strategy diagnostics and evidence-based Pine Script and Python audits. Proof, not storytelling.",
+        "Free strategy diagnostics and evidence-based Pine Script, Python, and MQL audits. Proof, not storytelling.",
       type: "website",
       locale: "en_US",
       alternateLocale: [
@@ -343,9 +345,9 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title:
-        "StratVerity — Backtest Audit & Strategy Verification for Pine Script & Python",
+        "StratVerity — Backtest Audit & Strategy Verification for Pine, Python & MQL",
       description:
-        "Independent, evidence-based audit of Pine and Python strategies. Detect look-ahead bias and overfitting before you trade.",
+        "Independent, evidence-based audit of Pine, Python, and MQL strategies. Detect look-ahead bias and overfitting before you trade.",
       images: [socialImage],
     },
   };

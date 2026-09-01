@@ -38,13 +38,13 @@ function applyDocumentTheme(nextTheme: Theme, persist = false) {
   }
 }
 
-/** Produit → grille tarifaire (un seul lien, plus de doublon Tarifs). */
+/** 3 produits différenciés en tête (Audit / Optimizer / Marketplace), puis contenu secondaire. */
 const navItems = [
-  ["nav.product", "/#pricing"],
-  ["nav.method", "/#method"],
-  ["nav.research", "/#research"],
-  ["nav.freeTools", "/free-tools"],
+  ["configure.audit", "/pricing/audit"],
+  ["nav.optimizer", "/pricing/optimizer"],
   ["nav.marketplace", "/marketplace"],
+  ["nav.freeTools", "/free-tools"],
+  ["nav.method", "/#method"],
   ["nav.faq", "/#faq"],
   ["common.contact", "/contact"],
 ] as const;
