@@ -1,0 +1,158 @@
+/* Shared comparison-table styles for /pricing/audit and /pricing/optimizer.
+   Style de référence : grilles tarifaires denses façon TradingView — colonnes de
+   paliers, tableau de fonctionnalités ligne par ligne, palier "ancre" surligné. */
+
+.page {
+  background:
+    radial-gradient(circle at 82% 4%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 32%),
+    color-mix(in oklab, var(--paper) 86%, transparent);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.hero {
+  margin: 0 auto;
+  max-width: var(--container);
+  padding: clamp(48px, 7vw, 84px) 24px 20px;
+  text-align: center;
+}
+.eyebrow { color: var(--accent); font: 700 10.5px var(--mono), monospace; letter-spacing: 0.16em; text-transform: uppercase; }
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(34px, 4.6vw, 54px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  margin: 16px auto 14px;
+  max-width: 760px;
+}
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero p { color: var(--ink-2); font-size: 16px; line-height: 1.65; margin: 0 auto; max-width: 620px; }
+
+/* Toggle-style banner pointing to the free / cheaper entry point */
+.softNote {
+  align-items: center;
+  background: color-mix(in oklab, var(--accent) 9%, var(--surface));
+  border: 1px solid color-mix(in oklab, var(--accent) 24%, var(--line));
+  border-radius: 999px;
+  color: var(--ink-2);
+  display: inline-flex;
+  font-size: 13px;
+  gap: 8px;
+  margin: 22px auto 0;
+  padding: 9px 16px;
+}
+.softNote a { color: var(--forest-600); font-weight: 700; }
+
+/* ---- Dark comparison surface (deliberately theme-independent, matches the
+   /sell summary sidebar's dark-accent pattern) ---- */
+.compareWrap {
+  margin: 40px auto 0;
+  max-width: var(--container);
+  padding: 0 24px 30px;
+}
+.compareSurface {
+  background:
+    linear-gradient(rgba(98, 237, 160, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(98, 237, 160, 0.045) 1px, transparent 1px),
+    var(--forest-900);
+  background-size: 34px 34px;
+  border: 1px solid rgba(95, 227, 176, .2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 34px 80px rgba(7, 17, 13, 0.25);
+  color: #eafbf3;
+  overflow-x: auto;
+  padding: clamp(18px, 3vw, 30px);
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(170px, 210px) repeat(3, minmax(150px, 1fr));
+  min-width: 720px;
+}
+
+/* Tier header row */
+.tierRow { border-bottom: 1px solid rgba(234, 243, 238, .14); display: grid; gap: 14px; grid-template-columns: subgrid; grid-column: 1 / -1; padding-bottom: 20px; }
+.rowLabelHead { align-self: end; }
+.rowLabelHead span { color: #9fc9b7; font: 700 10.5px var(--mono), monospace; letter-spacing: 0.1em; text-transform: uppercase; }
+.tierCard {
+  background: rgba(234, 243, 238, .04);
+  border: 1px solid rgba(234, 243, 238, .12);
+  border-radius: 16px;
+  padding: 18px 16px;
+  position: relative;
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.tierCard.highlight {
+  background: color-mix(in oklab, var(--emerald-500) 12%, rgba(234, 243, 238, .05));
+  border-color: color-mix(in oklab, var(--emerald-400) 55%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--emerald-400) 30%, transparent), 0 18px 40px -18px rgba(0, 0, 0, .6);
+  transform: translateY(-6px);
+}
+.tierBadge {
+  background: var(--emerald-500);
+  border-radius: 999px;
+  color: #06251a;
+  font: 700 10px var(--mono), monospace;
+  left: 50%;
+  letter-spacing: .06em;
+  padding: 4px 11px;
+  position: absolute;
+  text-transform: uppercase;
+  top: -11px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.tierName { font-size: 15px; font-weight: 700; }
+.tierTagline { color: #b8d4c8; font-size: 12px; line-height: 1.5; margin: 5px 0 14px; min-height: 34px; }
+.tierPrice { align-items: baseline; display: flex; gap: 6px; font-family: var(--mono); }
+.tierPrice strong { font-size: 30px; font-weight: 700; }
+.tierPrice span { color: #9fc9b7; font-size: 12.5px; }
+.tierPriceFrom { color: #9fc9b7; font-size: 11px; margin-top: 2px; }
+.tierCta {
+  background: linear-gradient(180deg, var(--emerald-500), var(--forest-600));
+  border: none;
+  border-radius: 10px;
+  color: #06251a;
+  cursor: pointer;
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 16px;
+  padding: 11px 12px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.tierCta:hover { box-shadow: 0 10px 22px -8px rgba(52, 211, 156, .5); transform: translateY(-1px); }
+.tierCard:not(.highlight) .tierCta { background: rgba(234, 243, 238, .08); color: #eafbf3; }
+.tierCard:not(.highlight) .tierCta:hover { background: rgba(234, 243, 238, .14); box-shadow: none; }
+
+/* Feature group + rows */
+.groupTitle {
+  color: #7dffc0;
+  font: 700 11px var(--mono), monospace;
+  grid-column: 1 / -1;
+  letter-spacing: .1em;
+  padding: 22px 0 8px;
+  text-transform: uppercase;
+}
+.groupTitle:first-of-type { padding-top: 24px; }
+.row { border-bottom: 1px solid rgba(234, 243, 238, .07); display: grid; gap: 14px; grid-template-columns: subgrid; grid-column: 1 / -1; padding: 12px 0; }
+.row:last-child { border-bottom: none; }
+.rowLabel { align-self: center; color: #dcece5; font-size: 13.5px; line-height: 1.4; }
+.cell { align-items: center; align-self: center; display: flex; justify-content: center; text-align: center; }
+.cellText { color: #eafbf3; font-size: 13px; font-weight: 600; }
+.cellCheck { color: var(--emerald-400); }
+.cellDash { color: rgba(234, 243, 238, .28); }
+
+.footNote { color: #9fc9b7; font-size: 12px; margin-top: 18px; padding: 0 4px; }
+
+/* Bottom CTA band, reuses the site-wide cta-band language but scoped */
+.ctaBand { margin: 46px auto 0; max-width: var(--container); padding: 0 24px 90px; text-align: center; }
+.ctaBand p { color: var(--ink-2); font-size: 14px; margin-top: 8px; }
+
+@media (max-width: 900px) {
+  .grid { min-width: 620px; }
+}
