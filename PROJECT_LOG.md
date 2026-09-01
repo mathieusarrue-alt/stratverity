@@ -73,3 +73,21 @@
   HSTS, CSP, anti-framing et `nosniff` présents.
 - Aucun Pine, CURRENT RESEARCH, STABLE TRADING, entitlement Scan ou worker de
   trading modifié ou activé.
+
+## 2026-09-01 — Catalogue public 0 / 19 / 49 / dès 79
+
+- Commit fonctionnel validé : `c1bb7cd` sur la branche
+  `fix/catalogue-seo-truth-20260831`.
+- Les métadonnées, JSON-LD, FAQ et `llms.txt` reflètent désormais la grille
+  publique : outils gratuits à 0 EUR, Essential à 19 EUR, Premium à 49 EUR
+  et Custom à partir de 79 EUR.
+- Les anciennes promesses publiques à 14,99/39 EUR, Auto-Pilot 24/7, MQL
+  facturable et revue humaine ont été retirées des surfaces SEO ciblées.
+- Marketplace et Crash-Test restent fail-closed et hors index tant que leurs
+  portes produit et backend ne sont pas validées.
+- Quality gate reproductible sous npm 10.9.2 : `npm ci` réussi, lint avec
+  0 erreur (12 avertissements non bloquants), build + 26/26 tests frontend,
+  audit des dépendances de production à 0 vulnérabilité, build Amplify et
+  test runtime Amplify 1/1 réussis.
+- Aucun secret, paiement, flag backend, EC2, TBO, Pine, CURRENT RESEARCH ou
+  STABLE TRADING n'a été modifié pendant cette release frontend.
