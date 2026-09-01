@@ -74,6 +74,8 @@ export default function GlobalErrorBoundary({
             >
               Réessayer
             </button>
+            {/* A hard-navigation fallback is intentional in the root error boundary. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a
               href="/"
               style={{

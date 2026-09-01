@@ -190,6 +190,7 @@ export default function CheckoutReturnPage() {
 
   useEffect(() => {
     stoppedRef.current = false;
+    const startTimer = window.setTimeout(() => {
     const params = new URLSearchParams(window.location.search);
     const checkoutSessionId =
       params.get("session_id") || params.get("checkout_session_id") || "";
@@ -267,7 +268,9 @@ export default function CheckoutReturnPage() {
     };
 
     void tick();
+    }, 0);
     return () => {
+      window.clearTimeout(startTimer);
       stoppedRef.current = true;
     };
   }, [fr, loadStatus, mapDeliveryState, runAutoDeliver]);

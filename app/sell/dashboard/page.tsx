@@ -40,7 +40,10 @@ export default function SellerDashboardPage() {
     }
   }
 
-  useEffect(() => { refresh(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const timer = window.setTimeout(() => void refresh(), 0);
+    return () => window.clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function grant(licenseId: string, action: "grant" | "revoke") {
     const response = await fetch("/api/marketplace/sell/dashboard", {

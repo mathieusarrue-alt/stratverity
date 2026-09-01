@@ -128,17 +128,26 @@ const softwareApplicationJsonLd = {
     {
       "@type": "Offer",
       name: "Essential audit",
-      price: "14.99",
+      price: "19.00",
       priceCurrency: "EUR",
-      description: "Single strategy, single asset, single timeframe audit.",
+      description:
+        "Independent fee-adjusted recomputation over two years for one strategy, one asset, and one timeframe.",
     },
     {
       "@type": "Offer",
-      name: "Standard audit",
-      price: "39.00",
+      name: "Premium audit",
+      price: "49.00",
       priceCurrency: "EUR",
       description:
-        "Full audit with recomputed metrics, bias detection, and evidence-linked report.",
+        "Eight-year, single-context audit with multiple test windows, stress scenarios, and walk-forward analysis.",
+    },
+    {
+      "@type": "Offer",
+      name: "Custom audit",
+      price: "79.00",
+      priceCurrency: "EUR",
+      description:
+        "Custom audit from 79 EUR for multi-context scopes, extended robustness analysis, Monte Carlo, PBO, and DSR.",
     },
   ],
   featureList: [
@@ -146,7 +155,7 @@ const softwareApplicationJsonLd = {
     "Overfitting & curve-fitting audit",
     "Robustness Score computation",
     "Verified Backtest Badge (SVG, SHA256-sealed)",
-    "Pine Script, MQL4/5 and Python strategy verification",
+    "Pine Script and Python strategy verification",
   ],
   aggregateRating: undefined,
 };
@@ -184,7 +193,7 @@ const faqJsonLd = {
       name: "How much does a strategy audit cost?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The Essential audit is 14.99 EUR for one strategy, asset, and timeframe. The Standard audit is 39 EUR and includes a full recomputation, bias detection, and an evidence-linked report.",
+        text: "Free diagnostic tools cost 0 EUR. The Essential audit costs 19 EUR, the Premium audit costs 49 EUR, and Custom audits start at 79 EUR. Each paid tier states its scope before checkout.",
       },
     },
   ],
@@ -197,7 +206,7 @@ const professionalServiceJsonLd = {
   url: PUBLIC_SITE_URL,
   email: "stratverity@gmail.com",
   image: `${PUBLIC_SITE_URL}/og.png`,
-  priceRange: "€14.99 - €149",
+  priceRange: "€0 - €79+",
   areaServed: "Worldwide",
   description:
     "Independent backtest audit and strategy verification service for Pine Script and Python trading systems.",
@@ -236,7 +245,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | StratVerity",
     },
     description:
-      "Free trading strategy health check, look-ahead bias detection, Pine Script, Python and MQL audits, plus 24/7 Auto-Pilot execution.",
+      "Free strategy diagnostics and evidence-based Pine Script and Python audits. Recomputed metrics, bias checks, and clearly defined audit scopes.",
     applicationName: "StratVerity",
     keywords: [
       "backtest audit",
@@ -260,14 +269,8 @@ export async function generateMetadata(): Promise<Metadata> {
       "scanner pine script gratuit",
       "verifier code pine script",
       "detecter lookahead bias",
-      "MQL5 static code analyzer free",
-      "MQL4 code analyzer",
-      "StrategyQuant X import",
       "anti repaint verified",
       "repainting detection TradingView",
-      "auto pilot MT5",
-      "deploiement EA MT5 automatique",
-      "execution automatique EA",
       "testeur de bug robot de trading",
     ],
     category: "finance",
@@ -308,9 +311,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title:
-        "StratVerity — Trading Strategy Audit, Free Health Check & Auto-Pilot",
+        "StratVerity — Trading Strategy Audit & Free Health Check",
       description:
-        "Free strategy code health check, look-ahead and repainting detection, Pine Script, Python, MQL and StrategyQuant X audits, plus optional 24/7 Auto-Pilot execution.",
+        "Free strategy diagnostics and evidence-based Pine Script and Python audits. Proof, not storytelling.",
       type: "website",
       locale: "en_US",
       alternateLocale: [
