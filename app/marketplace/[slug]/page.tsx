@@ -14,8 +14,9 @@ import {
   type MarketplaceListing,
   type SaleMode,
 } from "../commerce";
+import StrategyAvatar from "../StrategyAvatar";
 
-/** /marketplace/[slug] — détail + checkout (one_shot | rent_monthly | rent_yearly). */
+/** /marketplace/[slug] — détail + checkout (one_shot | rent_monthly | rent_quarterly | rent_yearly). */
 
 export default function ListingDetail() {
   const params = useParams<{ slug: string }>();
@@ -38,6 +39,7 @@ export default function ListingDetail() {
         if (!found) throw new Error();
         setListing(found);
         if (found.offers?.some((o) => o.mode === "rent_monthly")) setMode("rent_monthly");
+        else if (found.offers?.some((o) => o.mode === "rent_quarterly")) setMode("rent_quarterly");
         else if (found.offers?.some((o) => o.mode === "rent_yearly")) setMode("rent_yearly");
       } catch {
         setError("Listing introuvable.");
@@ -95,13 +97,35 @@ export default function ListingDetail() {
           {KIND_LABEL[listing.kind]} · {listing.platform.join(" / ")}
         </span>
         {listing.badge && <span className="mp-badge">{listing.badge}</span>}
-        <h1>{listing.title}</h1>
+        <div style={{ alignItems: "center", display: "flex", gap: 14, marginBottom: 4 }}>
+          <StrategyAvatar seed={listing.id} label={listing.title} size={48} imageUrl={listing.avatar_url} />
+          <h1 style={{ margin: 0 }}>{listing.title}</h1>
+        </div>
         <p>{listing.description}</p>
         <p className="mp-summary">{deliveryLabel("invite_protected")}</p>
         <p className="mp-summary">
           Un backtest est une mesure historique : il ne garantit aucune
           performance future. Aucune promesse de gains.
         </p>
+        {listing.screenshots && listing.screenshots.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 18 }}>
+            {listing.screenshots.map((url) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={url}
+                src={url}
+                alt={`Capture d'écran — ${listing.title}`}
+                style={{
+                  border: "1px solid var(--line-2)",
+                  borderRadius: 12,
+                  height: 130,
+                  objectFit: "cover",
+                  width: 190,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {buyable && COMMERCE_ENABLED ? (

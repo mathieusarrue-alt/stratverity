@@ -4,6 +4,11 @@ export type StrategyAvatarProps = {
   seed: string; // ex: listing.id, listing.slug, ou golden.id
   label: string; // ex: listing.title, golden.title — sert à générer les initiales
   size?: number; // défaut 40
+  // URL publique https uploadée par le vendeur (listing.avatar_url, Supabase
+  // Storage — décision fondateur 2026-09-02). Si présente, remplace l'avatar
+  // généré par une vraie photo de profil ; sinon fallback sur le dégradé
+  // d'initiales déterministe ci-dessous.
+  imageUrl?: string | null;
 };
 
 // Paire de couleurs pour le dégradé linéaire, indexée par le hash du seed.
@@ -40,11 +45,32 @@ export default function StrategyAvatar({
   seed,
   label,
   size = 40,
+  imageUrl,
 }: StrategyAvatarProps) {
   const gradientId = `sv-grad-${seed.replace(/[^a-zA-Z0-9]/g, "")}`;
   const pair = PALETTE[Math.abs(hashSeed(seed)) % 6];
   const [from, to] = pair;
   const initials = strategyInitials(label);
+
+  if (imageUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={imageUrl}
+        alt={label}
+        width={size}
+        height={size}
+        style={{
+          borderRadius: "50%",
+          display: "block",
+          flexShrink: 0,
+          height: size,
+          objectFit: "cover",
+          width: size,
+        }}
+      />
+    );
+  }
 
   return (
     <svg

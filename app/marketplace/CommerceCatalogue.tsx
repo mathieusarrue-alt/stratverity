@@ -104,7 +104,12 @@ export default function CommerceCatalogue() {
             href={`/marketplace/${listing.slug}`}
             key={listing.id}
           >
-            <StrategyAvatar seed={listing.id} label={listing.title} size={36} />
+            <StrategyAvatar
+              seed={listing.id}
+              label={listing.title}
+              size={36}
+              imageUrl={listing.avatar_url}
+            />
             <span className="mp-engine">
               {KIND_LABEL[listing.kind] ?? listing.kind} ·{" "}
               {listing.platform.join(" / ")}

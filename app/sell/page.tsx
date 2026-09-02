@@ -1,15 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import {
   COMMISSION_PCT,
+  MAX_LISTING_SCREENSHOTS,
   MIN_ONE_SHOT_CENTS,
   MIN_RENT_MONTHLY_CENTS,
+  MIN_RENT_QUARTERLY_CENTS,
   MIN_RENT_YEARLY_CENTS,
   degressivePricingError,
-  yearlySavingsPct,
+  savingsPct,
 } from "../marketplace/commerce";
+import {
+  MediaUploadError,
+  deleteMarketplaceMedia,
+  uploadMarketplaceMedia,
+} from "../marketplace/media-upload";
 import styles from "./sell.module.css";
 
 /**
@@ -21,10 +28,13 @@ import styles from "./sell.module.css";
  * (marketplace_v1_http.py: kind pattern "^(indicator|strategy|toolkit)$") —
  * utilisée ici pour les outils d'optimisation / scripts utilitaires.
  *
- * Principe marketplace (décision fondateur 2026-08-30) : c'est le VENDEUR qui
- * fixe ses 3 prix (achat définitif / location mensuelle / location annuelle),
- * la plateforme n'impose que des planchers anti-abus et une règle bloquante :
- * le prix annuel doit être strictement inférieur à 12× le prix mensuel.
+ * Principe marketplace (décision fondateur 2026-08-30, étendue 2026-09-02
+ * au palier trimestriel) : c'est le VENDEUR qui fixe ses 4 prix (achat
+ * définitif / location mensuelle / trimestrielle / annuelle), la plateforme
+ * n'impose que des planchers anti-abus et une règle bloquante : chaque
+ * palier plus long doit être strictement moins cher que le nombre
+ * équivalent de fois le palier plus court (ex. annuel < 12× mensuel,
+ * trimestriel < 3× mensuel, annuel < 4× trimestriel).
  */
 
 const KINDS = [
@@ -95,6 +105,8 @@ export default function SellListing() {
   const [oneShotPriceEur, setOneShotPriceEur] = useState(String(MIN_ONE_SHOT_CENTS / 100));
   const [rentMonthly, setRentMonthly] = useState(false);
   const [rentMonthlyPriceEur, setRentMonthlyPriceEur] = useState(String(MIN_RENT_MONTHLY_CENTS / 100));
+  const [rentQuarterly, setRentQuarterly] = useState(false);
+  const [rentQuarterlyPriceEur, setRentQuarterlyPriceEur] = useState(String(MIN_RENT_QUARTERLY_CENTS / 100));
   const [rentYearly, setRentYearly] = useState(false);
   const [rentYearlyPriceEur, setRentYearlyPriceEur] = useState(String(MIN_RENT_YEARLY_CENTS / 100));
 
@@ -105,6 +117,70 @@ export default function SellListing() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [doneId, setDoneId] = useState("");
+
+  // Médias vendeur — upload réel via Supabase Storage (décision fondateur
+  // 2026-09-02). avatarUrl/screenshots contiennent déjà les URLs publiques
+  // https renvoyées par Supabase après upload ; c'est ce qui part au backend
+  // dans le payload de dépôt.
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [screenshots, setScreenshots] = useState<string[]>([]);
+  const [screenshotUploading, setScreenshotUploading] = useState(false);
+  const [mediaError, setMediaError] = useState("");
+
+  async function handleAvatarChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setMediaError("");
+    setAvatarUploading(true);
+    try {
+      const previous = avatarUrl;
+      const url = await uploadMarketplaceMedia(file, "avatar");
+      setAvatarUrl(url);
+      if (previous) void deleteMarketplaceMedia(previous);
+    } catch (err) {
+      setMediaError(err instanceof MediaUploadError ? err.message : "Échec de l'upload de la photo de profil.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  }
+
+  function removeAvatar() {
+    if (avatarUrl) void deleteMarketplaceMedia(avatarUrl);
+    setAvatarUrl("");
+  }
+
+  async function handleScreenshotsChange(event: ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files ?? []);
+    event.target.value = "";
+    if (!files.length) return;
+    setMediaError("");
+    const room = MAX_LISTING_SCREENSHOTS - screenshots.length;
+    if (room <= 0) {
+      setMediaError(`Maximum ${MAX_LISTING_SCREENSHOTS} captures d'écran par listing.`);
+      return;
+    }
+    const toUpload = files.slice(0, room);
+    setScreenshotUploading(true);
+    try {
+      for (const file of toUpload) {
+        try {
+          const url = await uploadMarketplaceMedia(file, "screenshot");
+          setScreenshots((prev) => [...prev, url]);
+        } catch (err) {
+          setMediaError(err instanceof MediaUploadError ? err.message : "Échec de l'upload d'un screenshot.");
+        }
+      }
+    } finally {
+      setScreenshotUploading(false);
+    }
+  }
+
+  function removeScreenshot(url: string) {
+    void deleteMarketplaceMedia(url);
+    setScreenshots((prev) => prev.filter((s) => s !== url));
+  }
 
   function toggleMarket(m: string) {
     setMarkets((prev) =>
@@ -120,26 +196,39 @@ export default function SellListing() {
     const eur = Number(rentMonthlyPriceEur) || 0;
     return Math.round(eur * (100 - COMMISSION_PCT)) / 100;
   }, [rentMonthlyPriceEur]);
+  const netRentQuarterly = useMemo(() => {
+    const eur = Number(rentQuarterlyPriceEur) || 0;
+    return Math.round(eur * (100 - COMMISSION_PCT)) / 100;
+  }, [rentQuarterlyPriceEur]);
   const netRentYearly = useMemo(() => {
     const eur = Number(rentYearlyPriceEur) || 0;
     return Math.round(eur * (100 - COMMISSION_PCT)) / 100;
   }, [rentYearlyPriceEur]);
 
-  // Dégressivité annuel < 12×mensuel — bloquant seulement quand les deux
-  // offres de location sont actives (décision fondateur 2026-08-30).
+  // Dégressivité mensuel/trimestriel/annuel — bloquant pour chaque paire de
+  // paliers de location actifs en même temps (décision fondateur 2026-08-30,
+  // étendue 2026-09-02 au palier trimestriel).
   const degressiveError = useMemo(() => {
-    if (!rentMonthly || !rentYearly) return null;
-    const monthlyCents = Math.round((Number(rentMonthlyPriceEur) || 0) * 100);
-    const yearlyCents = Math.round((Number(rentYearlyPriceEur) || 0) * 100);
-    return degressivePricingError(monthlyCents, yearlyCents);
-  }, [rentMonthly, rentYearly, rentMonthlyPriceEur, rentYearlyPriceEur]);
+    const monthlyCents = rentMonthly ? Math.round((Number(rentMonthlyPriceEur) || 0) * 100) : null;
+    const quarterlyCents = rentQuarterly ? Math.round((Number(rentQuarterlyPriceEur) || 0) * 100) : null;
+    const yearlyCents = rentYearly ? Math.round((Number(rentYearlyPriceEur) || 0) * 100) : null;
+    return degressivePricingError(monthlyCents, quarterlyCents, yearlyCents);
+  }, [rentMonthly, rentQuarterly, rentYearly, rentMonthlyPriceEur, rentQuarterlyPriceEur, rentYearlyPriceEur]);
 
-  const savingsPct = useMemo(() => {
+  const quarterlySavingsPct = useMemo(() => {
+    if (!rentMonthly || !rentQuarterly || degressiveError) return null;
+    const monthlyCents = Math.round((Number(rentMonthlyPriceEur) || 0) * 100);
+    const quarterlyCents = Math.round((Number(rentQuarterlyPriceEur) || 0) * 100);
+    if (monthlyCents <= 0 || quarterlyCents <= 0) return null;
+    return savingsPct(monthlyCents, quarterlyCents, 3);
+  }, [rentMonthly, rentQuarterly, degressiveError, rentMonthlyPriceEur, rentQuarterlyPriceEur]);
+
+  const yearlySavingsVsMonthlyPct = useMemo(() => {
     if (!rentMonthly || !rentYearly || degressiveError) return null;
     const monthlyCents = Math.round((Number(rentMonthlyPriceEur) || 0) * 100);
     const yearlyCents = Math.round((Number(rentYearlyPriceEur) || 0) * 100);
     if (monthlyCents <= 0 || yearlyCents <= 0) return null;
-    return yearlySavingsPct(monthlyCents, yearlyCents);
+    return savingsPct(monthlyCents, yearlyCents, 12);
   }, [rentMonthly, rentYearly, degressiveError, rentMonthlyPriceEur, rentYearlyPriceEur]);
 
   async function submit(event: FormEvent) {
@@ -149,8 +238,8 @@ export default function SellListing() {
       setError("Titre, description et handle vendeur sont obligatoires.");
       return;
     }
-    if (!oneShot && !rentMonthly && !rentYearly) {
-      setError("Choisissez au moins un mode de vente (achat, location mensuelle ou annuelle).");
+    if (!oneShot && !rentMonthly && !rentQuarterly && !rentYearly) {
+      setError("Choisissez au moins un mode de vente (achat, location mensuelle, trimestrielle ou annuelle).");
       return;
     }
     if (degressiveError) {
@@ -175,6 +264,13 @@ export default function SellListing() {
           price_cents: cents >= MIN_RENT_MONTHLY_CENTS ? cents : MIN_RENT_MONTHLY_CENTS,
         });
       }
+      if (rentQuarterly) {
+        const cents = Math.round((Number(rentQuarterlyPriceEur) || 0) * 100);
+        offers.push({
+          mode: "rent_quarterly",
+          price_cents: cents >= MIN_RENT_QUARTERLY_CENTS ? cents : MIN_RENT_QUARTERLY_CENTS,
+        });
+      }
       if (rentYearly) {
         const cents = Math.round((Number(rentYearlyPriceEur) || 0) * 100);
         offers.push({
@@ -192,6 +288,8 @@ export default function SellListing() {
         offers,
         seller_handle: sellerHandle.trim(),
         source_filename: fileName || null,
+        avatar_url: avatarUrl || null,
+        screenshots,
         consent: { cgu15: cgu, no_gain: noGain },
       };
       const response = await fetch("/api/marketplace/sell", {
@@ -348,6 +446,64 @@ export default function SellListing() {
                 placeholder="Logique, marchés, unités de temps, réglages recommandés…"
               />
             </label>
+
+            <div className={styles.field}>
+              <span>Photo de profil</span>
+              <div className={styles.avatarRow}>
+                {avatarUrl ? (
+                  <div className={styles.avatarPreview}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={avatarUrl} alt="Avatar du listing" />
+                    <button type="button" onClick={removeAvatar} aria-label="Retirer la photo de profil">
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <label className={styles.avatarPicker}>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      onChange={handleAvatarChange}
+                      disabled={avatarUploading}
+                    />
+                    <span>{avatarUploading ? "…" : "+"}</span>
+                  </label>
+                )}
+                <small>Icône carrée affichée sur la carte du catalogue et la fiche listing. PNG/JPEG/WebP, 5 Mo max.</small>
+              </div>
+            </div>
+
+            <div className={styles.field}>
+              <span>Captures d&apos;écran (TradingView, MetaTrader…)</span>
+              <div className={styles.screenshotGrid}>
+                {screenshots.map((url) => (
+                  <div className={styles.screenshotThumb} key={url}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt="Screenshot du listing" />
+                    <button type="button" onClick={() => removeScreenshot(url)} aria-label="Retirer ce screenshot">
+                      ×
+                    </button>
+                  </div>
+                ))}
+                {screenshots.length < MAX_LISTING_SCREENSHOTS && (
+                  <label className={styles.screenshotAdd}>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/gif"
+                      multiple
+                      onChange={handleScreenshotsChange}
+                      disabled={screenshotUploading}
+                    />
+                    <span>{screenshotUploading ? "…" : "+"}</span>
+                  </label>
+                )}
+              </div>
+              <small>
+                Jusqu&apos;à {MAX_LISTING_SCREENSHOTS} captures d&apos;écran illustrant l&apos;indicateur ou la
+                stratégie en conditions réelles. {screenshots.length}/{MAX_LISTING_SCREENSHOTS} ajoutées.
+              </small>
+              {mediaError && <p className={styles.errorNote}>{mediaError}</p>}
+            </div>
           </fieldset>
 
           <fieldset className={styles.block}>
@@ -395,6 +551,32 @@ export default function SellListing() {
                   </div>
                 )}
               </div>
+              <div className={`${styles.offerCard} ${rentQuarterly ? styles.active : ""}`}>
+                <div className={styles.offerCardHead} onClick={() => setRentQuarterly((v) => !v)}>
+                  <strong>Location trimestrielle</strong>
+                  <span className={styles.toggleDot} />
+                </div>
+                <p>Abonnement tous les 3 mois, minimum {MIN_RENT_QUARTERLY_CENTS / 100} €/trimestre.</p>
+                {rentQuarterly && (
+                  <div className={styles.priceRow}>
+                    <input
+                      type="number"
+                      min={MIN_RENT_QUARTERLY_CENTS / 100}
+                      value={rentQuarterlyPriceEur}
+                      onChange={(e) => setRentQuarterlyPriceEur(e.target.value)}
+                    />
+                    <span>vous touchez ≈ {netRentQuarterly.toFixed(2)} €/trimestre</span>
+                  </div>
+                )}
+                {rentQuarterly && rentMonthly && quarterlySavingsPct !== null && quarterlySavingsPct > 0 && (
+                  <p className={styles.savingsBadge}>
+                    Économie affichée à l&apos;acheteur : −{quarterlySavingsPct} % vs 3 mensualités
+                  </p>
+                )}
+                {rentQuarterly && rentMonthly && degressiveError && (
+                  <p className={styles.errorNote} style={{ marginTop: 10 }}>{degressiveError}</p>
+                )}
+              </div>
               <div className={`${styles.offerCard} ${rentYearly ? styles.active : ""}`}>
                 <div className={styles.offerCardHead} onClick={() => setRentYearly((v) => !v)}>
                   <strong>Location annuelle</strong>
@@ -412,12 +594,12 @@ export default function SellListing() {
                     <span>vous touchez ≈ {netRentYearly.toFixed(2)} €/an</span>
                   </div>
                 )}
-                {rentYearly && rentMonthly && savingsPct !== null && savingsPct > 0 && (
+                {rentYearly && rentMonthly && yearlySavingsVsMonthlyPct !== null && yearlySavingsVsMonthlyPct > 0 && (
                   <p className={styles.savingsBadge}>
-                    Économie affichée à l&apos;acheteur : −{savingsPct} % vs 12 mensualités
+                    Économie affichée à l&apos;acheteur : −{yearlySavingsVsMonthlyPct} % vs 12 mensualités
                   </p>
                 )}
-                {rentYearly && rentMonthly && degressiveError && (
+                {rentYearly && (rentMonthly || rentQuarterly) && degressiveError && (
                   <p className={styles.errorNote} style={{ marginTop: 10 }}>{degressiveError}</p>
                 )}
               </div>
@@ -482,13 +664,19 @@ export default function SellListing() {
                 <strong>{netRentMonthly.toFixed(2)} €/mois</strong>
               </div>
             )}
+            {rentQuarterly && (
+              <div className={styles.summaryLine}>
+                <span>Location trimestrielle, net vendeur</span>
+                <strong>{netRentQuarterly.toFixed(2)} €/trimestre</strong>
+              </div>
+            )}
             {rentYearly && (
               <div className={styles.summaryLine}>
                 <span>Location annuelle, net vendeur</span>
                 <strong>{netRentYearly.toFixed(2)} €/an</strong>
               </div>
             )}
-            {!oneShot && !rentMonthly && !rentYearly && (
+            {!oneShot && !rentMonthly && !rentQuarterly && !rentYearly && (
               <div className={styles.summaryLine}>
                 <span>Activez un mode de vente</span>
                 <strong>—</strong>

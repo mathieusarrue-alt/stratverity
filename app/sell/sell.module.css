@@ -202,6 +202,88 @@
   padding: 6px 9px;
 }
 
+/* Médias vendeur — photo de profil (avatar carré) + captures d'écran
+   (screenshots TradingView/MetaTrader). Upload réel via Supabase Storage,
+   cf. app/marketplace/media-upload.ts. */
+.avatarRow { align-items: center; display: flex; gap: 14px; margin-top: 6px; }
+.avatarPreview,
+.avatarPicker {
+  border-radius: 14px;
+  flex: 0 0 auto;
+  height: 72px;
+  overflow: hidden;
+  position: relative;
+  width: 72px;
+}
+.avatarPreview { border: 1px solid var(--line); }
+.avatarPreview img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.avatarPreview button {
+  align-items: center;
+  background: rgba(10, 15, 13, 0.72);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  height: 20px;
+  justify-content: center;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 20px;
+}
+.avatarPicker {
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px dashed var(--ink-3);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+.avatarPicker input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.avatarPicker span { color: var(--forest-500); font-size: 22px; font-weight: 650; }
+.avatarRow small { color: var(--ink-2); flex: 1 1 auto; font-size: 12px; line-height: 1.55; }
+
+.screenshotGrid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.screenshotThumb,
+.screenshotAdd {
+  border-radius: 12px;
+  flex: 0 0 auto;
+  height: 76px;
+  overflow: hidden;
+  position: relative;
+  width: 112px;
+}
+.screenshotThumb { border: 1px solid var(--line); }
+.screenshotThumb img { display: block; height: 100%; object-fit: cover; width: 100%; }
+.screenshotThumb button {
+  align-items: center;
+  background: rgba(10, 15, 13, 0.72);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  height: 20px;
+  justify-content: center;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 20px;
+}
+.screenshotAdd {
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px dashed var(--ink-3);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+.screenshotAdd input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.screenshotAdd span { color: var(--forest-500); font-size: 20px; font-weight: 650; }
+
 .filePicker {
   align-items: center;
   background: var(--surface-2);

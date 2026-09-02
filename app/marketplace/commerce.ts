@@ -17,7 +17,7 @@ export type ListingState =
   | "SUSPENDED"
   | "DELISTED";
 
-export type SaleMode = "one_shot" | "rent_monthly" | "rent_yearly";
+export type SaleMode = "one_shot" | "rent_monthly" | "rent_quarterly" | "rent_yearly";
 
 export interface ListingOffer {
   mode: SaleMode;
@@ -36,6 +36,12 @@ export interface MarketplaceListing {
   delivery_mode: "invite_protected";
   offers: ListingOffer[];
   seller_handle?: string;
+  // Médias vendeur uploadés via Supabase Storage (décision fondateur
+  // 2026-09-02) — URLs publiques https, ou absents/vides si le vendeur n'a
+  // rien ajouté. avatar_url : photo de profil carrée du listing.
+  // screenshots : captures d'écran illustrant l'indicateur/la stratégie.
+  avatar_url?: string | null;
+  screenshots?: string[];
   state: ListingState;
   badge?: "OPERATOR" | "SEALED";
   created_at?: string;
@@ -84,30 +90,77 @@ export const COMMISSION_PCT = 15;
 // listings à prix dérisoire.
 export const MIN_ONE_SHOT_CENTS = 30_000; // 300 €
 export const MIN_RENT_MONTHLY_CENTS = 2_000; // 20 €/mois
+export const MIN_RENT_QUARTERLY_CENTS = 5_000; // 50 €/trimestre (plancher
+// autonome ; si une offre mensuelle existe aussi, la vraie contrainte est la
+// dégressivité ci-dessous).
 export const MIN_RENT_YEARLY_CENTS = 20_000; // 200 €/an (plancher autonome ;
 // si une offre mensuelle existe aussi, la vraie contrainte est la
 // dégressivité ci-dessous, toujours plus stricte que ce plancher seul).
 
-/** Règle bloquante : si les deux offres coexistent, l'annuel doit être
- * strictement moins cher que 12× le mensuel (sinon "économisez en payant
- * annuel" serait faux pour l'acheteur). Retourne un message d'erreur ou null. */
+// Miroir exact de MAX_SCREENSHOTS côté backend (marketplace_v1.py) — garder
+// synchronisé. Le backend refuse déjà au-delà, ce plafond côté front n'est
+// qu'un garde-fou UX (désactive le bouton d'ajout avant l'envoi du formulaire).
+export const MAX_LISTING_SCREENSHOTS = 6;
+
+/** Échelle des paliers de location, du plus court au plus long, avec le
+ * nombre de "mois équivalents" couverts par chaque palier. Miroir exact de
+ * RENT_LADDER côté backend (marketplace_v1.py) — garder synchronisé. */
+const RENT_LADDER: ReadonlyArray<readonly [SaleMode, number]> = [
+  ["rent_monthly", 1],
+  ["rent_quarterly", 3],
+  ["rent_yearly", 12],
+];
+
+const RENT_DURATION_LABEL: Partial<Record<SaleMode, string>> = {
+  rent_monthly: "mensuel",
+  rent_quarterly: "trimestriel",
+  rent_yearly: "annuel",
+};
+
+/** Règle bloquante : pour chaque paire de paliers de location actifs, le plus
+ * long doit être strictement moins cher que le nombre équivalent de fois le
+ * plus court (sinon "économisez en prenant plus long" serait faux pour
+ * l'acheteur). Prend les 3 prix (null si l'offre correspondante n'est pas
+ * activée) et retourne le premier message d'erreur trouvé, ou null. */
 export function degressivePricingError(
   monthlyCents: number | null,
+  quarterlyCents: number | null,
   yearlyCents: number | null,
 ): string | null {
-  if (monthlyCents === null || yearlyCents === null) return null;
-  if (yearlyCents >= monthlyCents * 12) {
-    return "Le prix annuel doit être strictement inférieur à 12× le prix mensuel (au moins 1 mois offert).";
+  const prices: Partial<Record<SaleMode, number>> = {};
+  if (monthlyCents !== null) prices.rent_monthly = monthlyCents;
+  if (quarterlyCents !== null) prices.rent_quarterly = quarterlyCents;
+  if (yearlyCents !== null) prices.rent_yearly = yearlyCents;
+  const present = RENT_LADDER.filter(([mode]) => mode in prices);
+  for (let i = 0; i < present.length; i++) {
+    for (let j = i + 1; j < present.length; j++) {
+      const [shortMode, shortMonths] = present[i];
+      const [longMode, longMonths] = present[j];
+      const ratio = longMonths / shortMonths;
+      const shortPrice = prices[shortMode] as number;
+      const longPrice = prices[longMode] as number;
+      if (longPrice >= shortPrice * ratio) {
+        return `Le prix ${RENT_DURATION_LABEL[longMode]} doit être strictement inférieur à ${ratio}× le prix ${RENT_DURATION_LABEL[shortMode]} (dégressivité obligatoire).`;
+      }
+    }
   }
   return null;
 }
 
-/** % d'économie affiché à l'acheteur pour l'offre annuelle vs 12 mensualités. */
+/** % d'économie affiché à l'acheteur pour un palier plus long vs le nombre
+ * équivalent de fois le palier plus court (ex. annuel vs 12 mensualités,
+ * trimestriel vs 3 mensualités). */
+export function savingsPct(shortCents: number, longCents: number, monthsRatio: number): number {
+  if (shortCents <= 0) return 0;
+  const fullDuration = shortCents * monthsRatio;
+  if (fullDuration <= 0) return 0;
+  return Math.round((1 - longCents / fullDuration) * 100);
+}
+
+/** @deprecated utiliser savingsPct(monthlyCents, yearlyCents, 12) — conservé
+ * pour compatibilité avec le code appelant existant. */
 export function yearlySavingsPct(monthlyCents: number, yearlyCents: number): number {
-  if (monthlyCents <= 0) return 0;
-  const fullYear = monthlyCents * 12;
-  if (fullYear <= 0) return 0;
-  return Math.round((1 - yearlyCents / fullYear) * 100);
+  return savingsPct(monthlyCents, yearlyCents, 12);
 }
 
 export function formatCents(cents: number): string {
@@ -122,6 +175,7 @@ export function formatCents(cents: number): string {
 export const MODE_LABEL: Record<SaleMode, string> = {
   one_shot: "Accès permanent",
   rent_monthly: "Location mensuelle",
+  rent_quarterly: "Location trimestrielle",
   rent_yearly: "Location annuelle",
 };
 
@@ -129,12 +183,14 @@ export const MODE_LABEL: Record<SaleMode, string> = {
 export const MODE_PRICE_SUFFIX: Record<SaleMode, string> = {
   one_shot: "",
   rent_monthly: " /mois",
+  rent_quarterly: " /trimestre",
   rent_yearly: " /an",
 };
 
 export const MODE_SUMMARY_SUFFIX: Record<SaleMode, string> = {
   one_shot: " — licence à vie",
   rent_monthly: " /mois, résiliable à tout moment",
+  rent_quarterly: " /trimestre, résiliable à tout moment",
   rent_yearly: " /an, résiliable à tout moment",
 };
 
