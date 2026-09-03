@@ -36,7 +36,7 @@ type OrderStatus = {
   payment_status: string;
   order_id: string | null;
   order_status: string;
-  product: "AUDIT" | "SCAN";
+  product: "AUDIT" | "SCAN" | "OPTIMIZER";
   scope_fingerprint: string;
   contexts: ServiceContext[];
   strategies: StrategyStatus[];
