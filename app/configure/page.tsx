@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import styles from "./scope-configurator.module.css";
 import { getSupabaseBrowserClient } from "../supabase/browser";
 import { calculatePrice } from "./pricing";
@@ -30,6 +31,37 @@ const STRATEGY_ACCEPT =
   ".pine,.py,.ipynb,.zip,application/zip,text/x-python";
 // MQL (MetaTrader) : pas encore de rejeu labo -> ce format n'est pas facturé.
 const LAB_MQL_ENABLED = false;
+// Défauts moteur par palier Optimizer (pilotent audit_app.lab.engine côté
+// serveur ; ne changent PAS le prix, qui est flat par palier). Aligné sur
+// 800_LAB_PRODUCT_SPEC.md §7. `monte_carlo_paths: 0` est valide (Essentiel).
+export const OPTIMIZER_DEFAULTS: Record<
+  OptimizerDepth,
+  {
+    walk_forward_folds: number;
+    parameter_variants: number;
+    monte_carlo_paths: number;
+    human_review: boolean;
+  }
+> = {
+  ESSENTIAL: {
+    walk_forward_folds: 2,
+    parameter_variants: 50,
+    monte_carlo_paths: 0,
+    human_review: false,
+  },
+  PRO: {
+    walk_forward_folds: 6,
+    parameter_variants: 50,
+    monte_carlo_paths: 500,
+    human_review: false,
+  },
+  ELITE: {
+    walk_forward_folds: 8,
+    parameter_variants: 100,
+    monte_carlo_paths: 1000,
+    human_review: false,
+  },
+};
 const CHECKOUT_CONTRACT = {
   version: "beta-fr-2026-08-12-v1",
   language: "fr",
@@ -40,8 +72,9 @@ const CHECKOUT_CONTRACT = {
   withdrawal_acknowledged: true,
 } as const;
 
-type Product = "AUDIT" | "SCAN";
+type Product = "AUDIT" | "SCAN" | "OPTIMIZER";
 type AuditDepth = "ESSENTIAL" | "PREMIUM" | "CUSTOM";
+type OptimizerDepth = "ESSENTIAL" | "PRO" | "ELITE";
 type EvaluationMode = "BAR_CLOSE" | "INTRABAR";
 type SubmissionState =
   | "idle"
@@ -110,8 +143,8 @@ function fileExtension(name: string): string {
   return i >= 0 ? name.slice(i).toLowerCase() : "";
 }
 
-function isAllowedStrategyFile(file: File): boolean {
-  return STRATEGY_EXTENSIONS.has(fileExtension(file.name));
+function isAllowedStrategyFile(file: File, extensions: Set<string>): boolean {
+  return extensions.has(fileExtension(file.name));
 }
 
 async function sha256(file: File): Promise<string> {
@@ -190,9 +223,11 @@ function isStripeCheckoutUrl(value: string): boolean {
   }
 }
 
-export default function ScopeConfiguratorPage() {
+function ScopeConfiguratorInner() {
   const { locale, t } = useI18n();
+  const searchParams = useSearchParams();
   const [product, setProduct] = useState<Product>("AUDIT");
+  const [optimizerDepth, setOptimizerDepth] = useState<OptimizerDepth>("PRO");
   const [strategies, setStrategies] = useState<StrategyVersion[]>([]);
   const [assets, setAssets] = useState<string[]>(["BTCUSDT"]);
   const [timeframes, setTimeframes] = useState<string[]>(["15m"]);
@@ -211,7 +246,23 @@ export default function ScopeConfiguratorPage() {
     ownerToken: string;
   } | null>(null);
 
-  const projectedStrategyCount = Math.max(strategies.length, 1);
+  const allowedExtensions =
+      product === "OPTIMIZER" ? new Set([".py"]) : STRATEGY_EXTENSIONS;
+    const allowedAccept =
+      product === "OPTIMIZER" ? ".py,text/x-python" : STRATEGY_ACCEPT;
+
+    // Pré-sélection depuis /pricing/optimizer?product=OPTIMIZER&depth=…
+    useEffect(() => {
+      const p = searchParams.get("product");
+      if (p === "OPTIMIZER") setProduct("OPTIMIZER");
+      const d = searchParams.get("depth");
+      if (d === "ESSENTIAL" || d === "PRO" || d === "ELITE") {
+        setOptimizerDepth(d);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
+
+    const projectedStrategyCount = Math.max(strategies.length, 1);
   const contextCount =
     projectedStrategyCount * assets.length * timeframes.length;
   const effectiveAuditDepth =
@@ -227,19 +278,24 @@ export default function ScopeConfiguratorPage() {
           : contextCount === 1
             ? "BASE"
             : "MATRIX"
-        : evaluationMode === "INTRABAR"
-          ? "PRO"
-          : contextCount === 1
+        : product === "OPTIMIZER"
+          ? contextCount === 1
             ? "BASE"
-            : "MATRIX";
-  const price = calculatePrice({
-    product,
-    contextCount,
-    strategyCount: projectedStrategyCount,
-    auditDepth: effectiveAuditDepth,
-    evaluationMode,
-    retentionDays: Number(retentionDays),
-  });
+            : "MATRIX"
+          : evaluationMode === "INTRABAR"
+            ? "PRO"
+            : contextCount === 1
+              ? "BASE"
+              : "MATRIX";
+    const price = calculatePrice({
+      product,
+      contextCount,
+      strategyCount: projectedStrategyCount,
+      auditDepth: effectiveAuditDepth,
+      evaluationMode,
+      retentionDays: Number(retentionDays),
+      optimizerDepth: product === "OPTIMIZER" ? optimizerDepth : undefined,
+    });
   const formatLocalizedPrice = (cents: number) =>
     new Intl.NumberFormat(locale, {
       style: "currency",
@@ -297,17 +353,30 @@ export default function ScopeConfiguratorPage() {
         ),
       ),
       audit_options: product === "AUDIT" ? auditOptions : null,
-      scan_options:
-        product === "SCAN"
-          ? {
-              evaluation_mode: evaluationMode,
-              retention_days: Number(retentionDays),
-              alert_quota: Math.max(100, contextCount * 100),
-              service_tier: "SHARED",
-            }
-          : null,
-      pricing_status: "TO_BE_DEFINED",
-    };
+            scan_options:
+              product === "SCAN"
+                ? {
+                    evaluation_mode: evaluationMode,
+                    retention_days: Number(retentionDays),
+                    alert_quota: Math.max(100, contextCount * 100),
+                    service_tier: "SHARED",
+                  }
+                : null,
+            optimizer_options:
+              product === "OPTIMIZER"
+                ? {
+                    depth: optimizerDepth,
+                    walk_forward_folds:
+                      OPTIMIZER_DEFAULTS[optimizerDepth].walk_forward_folds,
+                    parameter_variants:
+                      OPTIMIZER_DEFAULTS[optimizerDepth].parameter_variants,
+                    monte_carlo_paths:
+                      OPTIMIZER_DEFAULTS[optimizerDepth].monte_carlo_paths,
+                    human_review: OPTIMIZER_DEFAULTS[optimizerDepth].human_review,
+                  }
+                : null,
+            pricing_status: "TO_BE_DEFINED",
+          };
   };
 
   const promoteEssentialForScope = (nextContextCount: number) => {
@@ -326,29 +395,41 @@ export default function ScopeConfiguratorPage() {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
     if (files.length === 0) return;
-    const rejected = files.filter((file) => !isAllowedStrategyFile(file));
-    if (rejected.length > 0) {
-      const hasMql = rejected.some((f) => {
-        const ext = fileExtension(f.name);
-        return ext === ".mq4" || ext === ".mq5";
-      });
-      setState("error");
-      setNotice(null);
-      if (hasMql) {
-        setFileError(
-          locale === "fr"
-            ? "Le rejeu labo pour MQL (MetaTrader) n'est pas encore disponible. Aucun paiement n'est proposé pour ce format. Pine et Python sont acceptés."
-            : "Lab replay for MQL (MetaTrader) is not available yet. Checkout is disabled for this format. Pine and Python are accepted.",
+    const rejected = files.filter((file) =>
+          !isAllowedStrategyFile(file, allowedExtensions),
         );
-      } else {
-        setFileError(
-          locale === "fr"
-            ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}.`
-            : `Unsupported file: ${rejected.map((f) => f.name).join(", ")}.`,
-        );
-      }
-      return;
-    }
+        if (rejected.length > 0) {
+          if (product === "OPTIMIZER") {
+            setState("error");
+            setNotice(null);
+            setFileError(
+              locale === "fr"
+                ? "L'Optimiseur n'accepte que le Python (.py) pour l'instant. Pine et MQL arrivent bientôt."
+                : "The Optimizer only accepts Python (.py) for now. Pine and MQL are coming soon.",
+            );
+            return;
+          }
+          const hasMql = rejected.some((f) => {
+            const ext = fileExtension(f.name);
+            return ext === ".mq4" || ext === ".mq5";
+          });
+          setState("error");
+          setNotice(null);
+          if (hasMql) {
+            setFileError(
+              locale === "fr"
+                ? "Le rejeu labo pour MQL (MetaTrader) n'est pas encore disponible. Aucun paiement n'est proposé pour ce format. Pine et Python sont acceptés."
+                : "Lab replay for MQL (MetaTrader) is not available yet. Checkout is disabled for this format. Pine and Python are accepted.",
+            );
+          } else {
+            setFileError(
+              locale === "fr"
+                ? `Fichier non accepté : ${rejected.map((f) => f.name).join(", ")}.`
+                : `Unsupported file: ${rejected.map((f) => f.name).join(", ")}.`,
+            );
+          }
+          return;
+        }
     if (strategies.length + files.length > MAX_STRATEGIES) {
       setState("error");
       setNotice({
@@ -661,23 +742,35 @@ export default function ScopeConfiguratorPage() {
               {t("configure.step.service")}
             </legend>
             <div className={styles.productChoices}>
-              {(["AUDIT"] as Product[]).map((choice) => (
-                <button
-                  aria-pressed={product === choice}
-                  className={product === choice ? styles.selectedCard : ""}
-                  key={choice}
-                  onClick={() => {
-                    setProduct(choice);
-                    setPreview(null);
-                  }}
-                  type="button"
-                >
-                  <small>{t("configure.kind.oneTime")}</small>
-                  <strong>{t("configure.audit")}</strong>
-                  <p>{t("configure.auditDescription")}</p>
-                </button>
-              ))}
-            </div>
+                          {(["AUDIT", "OPTIMIZER"] as Product[]).map((choice) => (
+                            <button
+                              aria-pressed={product === choice}
+                              className={product === choice ? styles.selectedCard : ""}
+                              key={choice}
+                              onClick={() => {
+                                setProduct(choice);
+                                setPreview(null);
+                              }}
+                              type="button"
+                            >
+                              <small>{t("configure.kind.oneTime")}</small>
+                              <strong>
+                                {choice === "AUDIT"
+                                  ? t("configure.audit")
+                                  : locale === "fr"
+                                    ? "Optimiseur"
+                                    : "Optimizer"}
+                              </strong>
+                              <p>
+                                {choice === "AUDIT"
+                                  ? t("configure.auditDescription")
+                                  : locale === "fr"
+                                    ? "Optimiser les paramètres avec validation hors-échantillon obligatoire."
+                                    : "Optimize parameters with mandatory out-of-sample validation."}
+                              </p>
+                            </button>
+                          ))}
+                        </div>
             {/* Scan live retiré du choix produit : le checkout est bloqué
                 (configure.msg.scanUnavailable, invitation seule pendant la
                 bêta) — l'afficher comme option active induisait en erreur. */}
@@ -689,20 +782,24 @@ export default function ScopeConfiguratorPage() {
               {t("configure.step.strategies")}
             </legend>
             <label className={styles.filePicker}>
-              <input
-                accept={STRATEGY_ACCEPT}
-                multiple
-                onChange={chooseStrategies}
-                type="file"
-              />
-              <span aria-hidden="true">＋</span>
-              <strong>{t("configure.chooseFiles")}</strong>
-              <small>
-                {locale === "fr"
-                                  ? "Pine · Python · ZIP · dépôt source avant paiement"
-                                  : "Pine · Python · ZIP · source before payment"}
-              </small>
-            </label>
+                          <input
+                            accept={allowedAccept}
+                            multiple
+                            onChange={chooseStrategies}
+                            type="file"
+                          />
+                          <span aria-hidden="true">＋</span>
+                          <strong>{t("configure.chooseFiles")}</strong>
+                          <small>
+                            {locale === "fr"
+                              ? product === "OPTIMIZER"
+                                ? "Python (.py) uniquement · dépôt source avant paiement"
+                                : "Pine · Python · ZIP · dépôt source avant paiement"
+                              : product === "OPTIMIZER"
+                                ? "Python (.py) only · source before payment"
+                                : "Pine · Python · ZIP · source before payment"}
+                          </small>
+                        </label>
             {strategies.length > 0 ? (
               <ul className={styles.strategyList}>
                 {strategies.map((strategy, index) => (
@@ -792,8 +889,54 @@ export default function ScopeConfiguratorPage() {
               <span>05</span>
               {t("configure.step.depth")}
             </legend>
-            {product === "AUDIT" ? (
-              <div className={styles.optionGrid}>
+            {product === "OPTIMIZER" ? (
+                          <div className={styles.optionGrid}>
+                            {(["ESSENTIAL", "PRO", "ELITE"] as OptimizerDepth[]).map(
+                              (depth) => (
+                                <button
+                                  aria-pressed={optimizerDepth === depth}
+                                  className={
+                                    optimizerDepth === depth ? styles.activeOption : ""
+                                  }
+                                  key={depth}
+                                  onClick={() => {
+                                    setOptimizerDepth(depth);
+                                    setPreview(null);
+                                  }}
+                                  type="button"
+                                >
+                                  <strong>
+                                    {depth === "ESSENTIAL"
+                                      ? locale === "fr"
+                                        ? "Essentiel"
+                                        : "Essential"
+                                      : depth === "PRO"
+                                        ? locale === "fr"
+                                          ? "Pro ★ Palier de référence"
+                                          : "Pro ★ Reference tier"
+                                        : locale === "fr"
+                                          ? "Elite"
+                                          : "Elite"}
+                                  </strong>
+                                  <small>
+                                    {depth === "ESSENTIAL"
+                                      ? locale === "fr"
+                                        ? "149 € · 1 stratégie"
+                                        : "€149 · 1 strategy"
+                                      : depth === "PRO"
+                                        ? locale === "fr"
+                                          ? "299 € · walk-forward + Monte-Carlo"
+                                          : "€299 · walk-forward + Monte-Carlo"
+                                        : locale === "fr"
+                                          ? "549 € · tout inclus"
+                                          : "€549 · everything included"}
+                                  </small>
+                                </button>
+                              ),
+                            )}
+                          </div>
+                        ) : product === "AUDIT" ? (
+                          <div className={styles.optionGrid}>
                               {(
                                 ["ESSENTIAL", "PREMIUM", "CUSTOM"] as AuditDepth[]
                               ).map((depth) => (
@@ -911,8 +1054,16 @@ export default function ScopeConfiguratorPage() {
               </button>
             </div>
           ) : null}
-        </aside>
-      </form>
-    </main>
-  );
-}
+                  </aside>
+                </form>
+              </main>
+            );
+          }
+
+          export default function ConfigurePage() {
+            return (
+              <Suspense fallback={<main className={styles.page} />}>
+                <ScopeConfiguratorInner />
+              </Suspense>
+            );
+          }

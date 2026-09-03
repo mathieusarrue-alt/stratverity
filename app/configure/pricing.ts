@@ -1,10 +1,11 @@
-export type PricingProduct = "AUDIT" | "SCAN";
+export type PricingProduct = "AUDIT" | "SCAN" | "OPTIMIZER";
 export type PricingAuditDepth =
   | "ESSENTIAL"
   | "PREMIUM"
   | "STANDARD"
   | "ROBUSTNESS"
   | "CUSTOM";
+export type PricingOptimizerDepth = "ESSENTIAL" | "PRO" | "ELITE";
 export type PricingEvaluationMode = "BAR_CLOSE" | "INTRABAR";
 
 export type PricingLine = {
@@ -32,6 +33,7 @@ type PricingInput = {
   auditDepth: PricingAuditDepth;
   evaluationMode: PricingEvaluationMode;
   retentionDays: number;
+  optimizerDepth?: PricingOptimizerDepth;
 };
 
 // Régime actuel de l'exploitant : franchise en base de TVA.
@@ -166,9 +168,34 @@ export function calculatePrice(input: PricingInput): PricingResult {
     };
   }
 
+  // OPTIMIZER — grille plate : Essentiel 149 € / Pro 299 € / Elite 549 € HT,
+  // une seule ligne ONE_TIME. Miroir de `_flat_optimizer_price` backend
+  // (pricing.py) — mêmes montants, cadence et conventions TVA.
+  if (input.product === "OPTIMIZER") {
+    const depth: PricingOptimizerDepth = input.optimizerDepth ?? "PRO";
+    const amount =
+      depth === "ESSENTIAL" ? 14_900 : depth === "ELITE" ? 54_900 : 29_900;
+    const label =
+      depth === "ESSENTIAL"
+        ? "Optimizer Essentiel · recherche sous contrainte de drawdown + PBO"
+        : depth === "ELITE"
+          ? "Optimizer Elite · + multi-timeframe, stress tests de régime, artefact déployable, prompt d'édition IA, paper-trading"
+          : "Optimizer Pro · + sélection OOS déflatée (CSCV), walk-forward purge, Monte-Carlo, généralisation multi-actifs";
+    return {
+      version: "launch-v0.3",
+      cadence: "ONE_TIME",
+      lines: [{ label, amountExVatCents: amount, cadence: "ONE_TIME" }],
+      subtotalExVatCents: amount,
+      vatCents: 0,
+      totalCents: amount,
+      activationExVatCents: 0,
+      activationVatCents: 0,
+      dueTodayCents: amount,
+    };
+  }
+
   const recurringScope =
-    1_900 +
-    progressiveContextCost(contextCount, SCAN_CONTEXT_BANDS);
+    1_900 + progressiveContextCost(contextCount, SCAN_CONTEXT_BANDS);
   const lines: PricingLine[] = [
     {
       label: "Scan live · 1er contexte inclus",

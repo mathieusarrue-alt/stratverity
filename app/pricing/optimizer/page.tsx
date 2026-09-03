@@ -7,10 +7,11 @@ import styles from "../pricing.module.css";
 /**
  * /pricing/optimizer — comparatif des 3 paliers Optimiseur/Lab (149 / 299 / 549 €).
  * Tarifs et contenu validés par étude de marché (voir 800_LAB_PRODUCT_SPEC.md §7,
- * décisions du 27/08/2026). Aucun checkout self-serve n'existe encore côté Stripe
- * pour ce produit — les CTA ouvrent un email pré-rempli vers l'intake manuel
- * existant, exactement comme le "Custom" côté Audit. Le jour où un checkout dédié
- * est voulu, c'est un chantier backend distinct (Price Stripe + wiring paid job).
+ * décisions du 27/08/2026). Le checkout self-serve est prêt côté frontend :
+ * chaque CTA mène au configurateur (`/configure?product=OPTIMIZER&depth=…`).
+ * L'activation en prod du flag backend
+ * (`STRATVERITY_OPTIMIZER_CHECKOUT_ENABLED`, fail-closed) est décidée
+ * séparément par le fondateur.
  */
 
 export const metadata: Metadata = {
@@ -19,18 +20,6 @@ export const metadata: Metadata = {
     "Comparez les 3 paliers de l'Optimiseur StratVerity : Essentiel, Pro et Elite. Recherche de paramètres avec garde-fous anti-surapprentissage, PBO, walk-forward roulant et Monte-Carlo.",
 };
 
-function mailto(tier: string, price: string) {
-  const subject = encodeURIComponent(`Optimiseur StratVerity — Palier ${tier} (${price})`);
-  const body = encodeURIComponent(
-    `Bonjour,\n\nJe souhaite démarrer une optimisation, palier ${tier}.\n\n` +
-      `Stratégie / plateforme (Pine, Python, MQL) : \n` +
-      `Actif(s) et unité(s) de temps : \n` +
-      `Drawdown maximum accepté : \n` +
-      `Autre contexte utile : \n`,
-  );
-  return `mailto:stratverity@gmail.com?subject=${subject}&body=${body}`;
-}
-
 const TIERS: ComparisonTier[] = [
   {
     id: "essentiel",
@@ -38,7 +27,10 @@ const TIERS: ComparisonTier[] = [
     price: "149 €",
     priceNote: "/ stratégie",
     tagline: "Une optimisation contrainte par ton drawdown max, avec le garde-fou anti-surapprentissage inclus.",
-    cta: { label: "Démarrer — Essentiel", href: mailto("Essentiel", "149 €") },
+    cta: {
+      label: "Démarrer — Essentiel",
+      href: "/configure?product=OPTIMIZER&depth=ESSENTIAL",
+    },
   },
   {
     id: "pro",
@@ -46,7 +38,10 @@ const TIERS: ComparisonTier[] = [
     price: "299 €",
     priceNote: "/ stratégie",
     tagline: "Validation complète : walk-forward roulant, Monte-Carlo et généralisation multi-actifs.",
-    cta: { label: "Démarrer — Pro", href: mailto("Pro", "299 €") },
+    cta: {
+      label: "Démarrer — Pro",
+      href: "/configure?product=OPTIMIZER&depth=PRO",
+    },
     highlight: true,
     badge: "★ Palier de référence",
   },
@@ -56,7 +51,10 @@ const TIERS: ComparisonTier[] = [
     price: "549 €",
     priceNote: "/ stratégie",
     tagline: "Tout Pro, plus le stress-test par régime et un artefact prêt à déployer.",
-    cta: { label: "Démarrer — Elite", href: mailto("Elite", "549 €") },
+    cta: {
+      label: "Démarrer — Elite",
+      href: "/configure?product=OPTIMIZER&depth=ELITE",
+    },
   },
 ];
 
@@ -122,7 +120,7 @@ export default function OptimizerPricingPage() {
       <ComparisonTable
         tiers={TIERS}
         groups={GROUPS}
-        footNote="Prix hors TVA (franchise en base), paiement unique par stratégie. Pas de checkout automatique pour l'instant : chaque commande démarre par un échange direct pour cadrer le drawdown max, le capital et les actifs autorisés. Outil analytique, aucun conseil en investissement, performance passée ≠ performance future."
+        footNote="Prix hors TVA (franchise en base), paiement unique par stratégie. Paiement sécurisé par Stripe, livraison automatique du rapport Optimiseur une fois la commande confirmée. L'Optimiseur accepte actuellement le Python (.py) — Pine et MQL arrivent bientôt. Outil analytique, aucun conseil en investissement : performance passée ≠ performance future."
       />
 
       <ReportExample variant="optimizer" />
