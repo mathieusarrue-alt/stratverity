@@ -11,5 +11,7 @@ import { proxyMarketplace } from "../proxy";
  * → { checkout_url } (redirect Stripe)
  */
 export async function POST(request: Request) {
-  return proxyMarketplace(request, "/v1/marketplace/checkout-sessions");
+  return proxyMarketplace(request, "/v1/marketplace/checkout-sessions", {
+    forwardIdempotencyKey: true,
+  });
 }
