@@ -1,5 +1,24 @@
 # Journal de projet StratVerity
 
+## 2026-09-02 — Contrat frontend TBO sécurisé prêt à relire
+
+- Le frontend Top/Bottom Oscillator est porté sur une branche isolée et reste
+  strictement désactivé par NEXT_PUBLIC_TBO_ENABLED=false.
+- Le checkout exige une identité Supabase serveur, transmet une clé
+  Idempotency-Key bornée uniquement sur la route de paiement et conserve un
+  seul record navigateur actif. Un changement SKU/username renouvelle la clé ;
+  une répétition strictement identique la réutilise.
+- Le retour Stripe n'accepte que https://checkout.stripe.com/c/pay/... sans
+  identifiants ni port. La page de succès ne lit que session_id, interroge la
+  licence avec l'identité propriétaire et borne son polling.
+- Ce contrat frontend dépend du backend TBO sécurisé de la PR
+  mathieusarrue-alt/stratverity-audit-backend#2. La fusion coordonnée et une
+  recette Stripe TEST restent obligatoires avant toute activation.
+- Preuves locales : lint sans erreur, build Vinext réussi, **27/27 tests**
+  frontend réussis et npm audit --omit=dev à **0 vulnérabilité**.
+- Aucun flag, checkout réel, secret, déploiement ou mise en production TBO n'a
+  été exécuté pour ce jalon.
+
 ## 2026-08-20 — Release frontend AWS Amplify
 
 ### Release et qualité

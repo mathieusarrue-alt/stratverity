@@ -737,3 +737,177 @@ test("marketplace remains fail-closed and proxies verified identity server-side"
     /service_role|STRIPE_SECRET_KEY|whsec_/i,
   );
 });
+
+test("TBO checkout stays off and binds identity, idempotency and Stripe return safely", async () => {
+  const [
+    env,
+    layout,
+    page,
+    client,
+    idempotency,
+    proxy,
+    checkoutRoute,
+    licenseRoute,
+    success,
+  ] = await Promise.all([
+      readFile(new URL("../.env.example", import.meta.url), "utf8"),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/layout.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/page.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/TboProductClient.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/checkout-idempotency.ts",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL("../app/api/marketplace/proxy.ts", import.meta.url),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/api/marketplace/checkout-sessions/route.ts",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/api/marketplace/license-for-session/route.ts",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+      readFile(
+        new URL(
+          "../app/marketplace/top-bottom-oscillator/success/page.tsx",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    ]);
+
+  assert.match(env, /NEXT_PUBLIC_TBO_ENABLED=false/);
+  assert.match(layout, /NEXT_PUBLIC_TBO_ENABLED !== "true"/);
+  assert.match(layout, /notFound()/);
+  assert.ok(
+    page.includes(
+      'requireSupabaseUser("/marketplace/top-bottom-oscillator")',
+    ),
+  );
+
+  assert.ok(
+    client.includes("getOrRotateTboCheckoutKey(sku, normalizedUsername)"),
+  );
+  assert.ok(
+    idempotency.includes(
+      'ACTIVE_CHECKOUT_STORAGE_KEY = "stratverity:tbo-checkout:active"',
+    ),
+  );
+  assert.equal(
+    idempotency.split("stratverity:tbo-checkout:active").length - 1,
+    1,
+  );
+  assert.ok(idempotency.includes("version: 1"));
+  assert.ok(idempotency.includes("JSON.parse(raw)"));
+  assert.ok(idempotency.includes("JSON.stringify(record)"));
+  assert.ok(
+    idempotency.includes(
+      "const fingerprint = tboCheckoutFingerprint(sku, username)",
+    ),
+  );
+  assert.ok(idempotency.includes("active?.fingerprint === fingerprint"));
+  assert.ok(idempotency.includes("crypto.randomUUID()"));
+  assert.ok(idempotency.includes("persistRecord(next)"));
+  assert.ok(idempotency.includes("let volatileRecord"));
+  assert.ok(idempotency.includes("catch {"));
+  assert.ok(idempotency.includes("sessionStorage.getItem(ACTIVE_CHECKOUT_STORAGE_KEY)"));
+  assert.ok(idempotency.includes("sessionStorage.setItem("));
+  assert.ok(idempotency.includes("sessionStorage.removeItem(ACTIVE_CHECKOUT_STORAGE_KEY)"));
+  assert.ok(
+    idempotency.indexOf("active?.fingerprint === fingerprint") <
+      idempotency.indexOf("crypto.randomUUID()"),
+  );
+  assert.ok(client.includes('"Idempotency-Key": idempotencyKey'));
+
+  assert.ok(proxy.includes("IDEMPOTENCY_KEY_RE"));
+  assert.ok(proxy.includes("^\\S{16,255}$"));
+  assert.ok(
+    proxy.includes(
+      "options.forwardIdempotencyKey && !IDEMPOTENCY_KEY_RE.test",
+    ),
+  );
+  assert.ok(
+    proxy.includes(
+      'if (options.forwardIdempotencyKey) headers.set("Idempotency-Key"',
+    ),
+  );
+  assert.equal(
+    proxy.split('headers.set("Idempotency-Key"').length - 1,
+    1,
+  );
+  assert.match(checkoutRoute, /forwardIdempotencyKey: true/);
+  assert.doesNotMatch(licenseRoute, /forwardIdempotencyKey/);
+
+  assert.match(proxy, /queryKeys\?: readonly string\[\]/);
+  assert.ok(proxy.includes("for (const key of options.queryKeys ?? [])"));
+  assert.ok(proxy.includes("upstreamUrl.searchParams.set(key, value)"));
+  assert.match(licenseRoute, /queryKeys: \["session_id"\]/);
+  assert.match(licenseRoute, /requireAuth: true/);
+  assert.match(licenseRoute, /SESSION_ID_RE/);
+  assert.match(proxy, /Authorization.*Bearer/);
+
+  assert.match(client, /url\.protocol === "https:"/);
+  assert.match(client, /url\.hostname === "checkout\.stripe\.com"/);
+  assert.match(client, /!url\.username/);
+  assert.match(client, /!url\.password/);
+  assert.match(client, /!url\.port/);
+  assert.ok(client.includes('url.pathname.startsWith("/c/pay/")'));
+  assert.ok(client.includes('search.get("tbo") !== "cancelled"'));
+  assert.ok(client.includes("clearActiveTboCheckout()"));
+  assert.ok(
+    client.includes(
+      'router.replace("/marketplace/top-bottom-oscillator", { scroll: false })',
+    ),
+  );
+
+  assert.ok(success.includes('search.get("session_id")'));
+  assert.ok(!success.includes('search.get("tv_username")'));
+  assert.match(success, /MAX_POLLS = 8/);
+  assert.match(success, /attempts < MAX_POLLS/);
+  assert.match(success, /AbortController/);
+  assert.ok(
+    success.includes(
+      'if (next === "pending_grant" || next === "active")',
+    ),
+  );
+  assert.ok(success.includes("clearActiveTboCheckout()"));
+  assert.ok(
+    success.indexOf("if (!response.ok)") <
+      success.indexOf("clearActiveTboCheckout()"),
+  );
+  assert.ok(
+    success.indexOf('next === "pending_payment"') >
+      success.indexOf("clearActiveTboCheckout()"),
+  );
+  assert.doesNotMatch(success, /owner_token|sk_test_|sk_live_|whsec_/i);
+});
