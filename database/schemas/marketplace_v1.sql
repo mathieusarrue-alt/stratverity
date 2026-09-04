@@ -30,11 +30,11 @@ CREATE TABLE IF NOT EXISTS mp_listings (
     updated_at   TEXT NOT NULL
 );
 
--- Offres (une ou deux par listing : one_shot et/ou rent_monthly).
+-- Offres (jusqu'à 4 par listing : one_shot / rent_monthly / rent_quarterly / rent_yearly).
 CREATE TABLE IF NOT EXISTS mp_offers (
     offer_id    TEXT PRIMARY KEY,
     listing_id  TEXT NOT NULL REFERENCES mp_listings(listing_id),
-    mode        TEXT NOT NULL CHECK (mode IN ('one_shot','rent_monthly')),
+    mode        TEXT NOT NULL CHECK (mode IN ('one_shot','rent_monthly','rent_quarterly','rent_yearly')),
     price_cents INTEGER NOT NULL CHECK (price_cents > 0),
     stripe_price_id TEXT,
     UNIQUE(listing_id, mode)
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS mp_orders (
     order_id      TEXT PRIMARY KEY,
     listing_id    TEXT NOT NULL REFERENCES mp_listings(listing_id),
     buyer_key     TEXT NOT NULL,
-    mode          TEXT NOT NULL CHECK (mode IN ('one_shot','rent_monthly')),
+    mode          TEXT NOT NULL CHECK (mode IN ('one_shot','rent_monthly','rent_quarterly','rent_yearly')),
     handle        TEXT NOT NULL,             -- tradingview_username / mt handle
     amount_cents  INTEGER NOT NULL,
     commission_cents INTEGER NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS mp_licenses (
     listing_id  TEXT NOT NULL REFERENCES mp_listings(listing_id),
     buyer_key   TEXT NOT NULL,
     handle      TEXT NOT NULL,
-    mode        TEXT NOT NULL CHECK (mode IN ('one_shot','rent_monthly')),
+    mode        TEXT NOT NULL CHECK (mode IN ('one_shot','rent_monthly','rent_quarterly','rent_yearly')),
     state       TEXT NOT NULL DEFAULT 'pending_grant' CHECK (state IN ('active','pending_grant','revoked','past_due')),
     message     TEXT NOT NULL DEFAULT '',
     granted_at  TEXT,
