@@ -91,7 +91,7 @@ revoke_pending  --ops clique Révoquer--> revoked
 > Votre accès est en cours pour **@tv_username** : il sera visible d'ici 24 h
 > sous **Indicateurs → Scripts sur invitation seulement**.
 > Vous n'avez rien à répondre. En cas d'erreur de username, contactez-nous
-> (support@stratverity.com) — ne renvoyez jamais votre pseudo par e-mail.
+> (stratverity@gmail.com) — ne renvoyez jamais votre pseudo par e-mail.
 
 ## 6. Seed produit (idempotent, executé au démarrage quand is_public=false OK)
 
