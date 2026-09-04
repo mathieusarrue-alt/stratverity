@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { requireSupabaseUser } from "../supabase/server";
 
 export const metadata: Metadata = {
   title: "Backtest Credibility Score",
@@ -18,12 +17,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ScoreLayout({
+export default function ScoreLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Gate d'authentification : l'accès aux outils exige une session.
-  await requireSupabaseUser("/score");
+  // Outil gratuit public : aucune session requise (cf. /free-tools et la FAQ).
   return <>{children}</>;
 }

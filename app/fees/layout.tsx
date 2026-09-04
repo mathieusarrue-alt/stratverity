@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { requireSupabaseUser } from "../supabase/server";
 
 export const metadata: Metadata = {
   title: "Fee & Slippage Reality Check",
@@ -18,12 +17,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function FeesLayout({
+export default function FeesLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Gate d'authentification : l'accès aux outils exige une session.
-  await requireSupabaseUser("/fees");
+  // Outil gratuit public : aucune session requise (cf. /free-tools et la FAQ).
   return <>{children}</>;
 }

@@ -51,12 +51,12 @@ export const faqEntries: FaqEntry[] = [
   {
     question: "How much does an audit cost and how do subscriptions work?",
     answer:
-      "The audit is a one-time payment: 49 EUR Crash-Test Express, or 19 EUR Essential / 49 EUR Premium / from 79 EUR Custom for a full Audit, with no auto-renewal. The recurring Live Scan is invitation-only during beta and can never be charged without your explicit validation. Access to a delivered report is proof-based and tied to your order.",
+      "The Audit is a one-time payment, no subscription: Essential starts at 19 EUR (1 asset x 1 timeframe, 2 years of history), Premium is 49 EUR (same single context, analyzed in depth over 8 years), and Custom starts from 79 EUR for multi-context reports (several assets/timeframes in one report, volume pricing, up to 10 years of history). The recurring Live Scan (Optimizer) is a separate product with its own opt-in pricing and can never be charged without your explicit validation. Access to a delivered report is proof-based and tied to your order.",
   },
   {
     question: "Which formats can I submit for an audit?",
     answer:
-      "Pine Script, Python scripts, Jupyter notebooks, or a compatible project folder. You can also provide your exported trade list. MQL4 and MQL5 sources are supported for the crash-test and marketplace verification flows.",
+      "Pine Script, Python scripts, Jupyter notebooks, MQL4/MQL5 sources, or a compatible project folder. You can also provide your exported trade list.",
   },
 ];
 
