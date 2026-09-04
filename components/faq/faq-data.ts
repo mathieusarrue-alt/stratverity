@@ -51,7 +51,7 @@ export const faqEntries: FaqEntry[] = [
   {
     question: "How much does an audit cost and how do subscriptions work?",
     answer:
-      "The audit is a one-time payment (European 49 euro crash-test, or 14.99 EUR Essential / 39 EUR Standard), with no auto-renewal. The recurring Live Scan is invitation-only during beta and can never be charged without your explicit validation. Access to a delivered report is proof-based and tied to your order.",
+      "The audit is a one-time payment: 49 EUR Crash-Test Express, or 19 EUR Essential / 49 EUR Premium / from 79 EUR Custom for a full Audit, with no auto-renewal. The recurring Live Scan is invitation-only during beta and can never be charged without your explicit validation. Access to a delivered report is proof-based and tied to your order.",
   },
   {
     question: "Which formats can I submit for an audit?",

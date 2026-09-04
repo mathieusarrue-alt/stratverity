@@ -304,7 +304,7 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
       <article class="card" data-tilt data-reveal>
         <span class="chip" style="align-self:flex-start"><span data-i18n="freeTools.healthTitle">Code Health Check</span></span>
         <h3 data-i18n="ft.healthTitle">Free Health-Check</h3>
-        <p data-i18n="ft.healthBody">Health score, likely issues and recommendations. Instant static analysis: your code never reaches the server.</p>
+        <p data-i18n="ft.healthBody">Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.</p>
         <a class="btn btn-ghost" href="/health-check" data-i18n="freeTools.open">Open tool</a>
       </article>
       <article class="card" data-tilt data-reveal data-delay="1">
@@ -340,8 +340,66 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
 </section>
 
 <section class="block" id="pricing" style="background:color-mix(in oklab,var(--surface-2) 80%,transparent);border-block:1px solid var(--line-2)">
-  <div id="products-overview-mount"></div>
-</section>
+  <div class="container">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow" data-i18n="pr.eyebrow">Pricing</span>
+      <h2 data-i18n="pr.h2">An audit, not a subscription to promises.</h2>
+      <p data-i18n="pr.p">Launch pricing. Indicative rates — final details are shown in the configurator.</p>
+          </div>
+          <div class="price-grid">
+            <div class="price" data-reveal><div class="name" data-i18n="pr.free.n">Free Tools</div><div class="amt" data-i18n="pr.free.amt">€0<small> / forever</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.1">Code Health-Check (Pine, Python, MQL)</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.2">Fee & slippage calculator</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.free.3">Indicative robustness score</span></li></ul>
+              <a class="btn btn-ghost" href="/free-tools" style="width:100%;justify-content:center" data-i18n="pr.free.cta">Start for free</a></div>
+            <div class="price" data-reveal><div class="name" data-i18n="pr.a.n">Essential audit</div><div class="amt" data-i18n="pr.a.amt">€19<small> / strategy</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.1">Independent net-of-fees recompute</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.2">2-year history · 1 asset · 1 timeframe</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.a.3">Divergence report</span></li></ul>
+              <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
+            <div class="price feat" data-reveal data-delay="1"><div class="name" data-i18n="pr.b.n">Premium audit</div><div class="amt" data-i18n="pr.b.amt">€49<small> / strategy</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.1">8-year history · single context</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.2">Multiple windows and stress scenarios</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.b.3">Walk-forward + score and pointers</span></li></ul>
+              <a class="btn btn-primary" data-magnetic href="/configure" style="width:100%;justify-content:center" data-i18n="pr.choose">Choose</a></div>
+            <div class="price" data-reveal data-delay="2"><div class="name" data-i18n="pr.c.n">Custom audit</div><div class="amt" data-i18n="pr.c.amt">from €79<small> / strategy</small></div>
+              <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.1">10-year history · multi-context</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.2">Monte-Carlo · PBO / DSR</span></li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="pr.c.3">Extended robustness matrix</span></li></ul>
+              <a class="btn btn-ghost" href="/configure" style="width:100%;justify-content:center" data-i18n="pr.c.cta">Configure</a></div>
+          </div>
+          <div class="price-compare" data-reveal>
+            <h3 data-i18n="pr.compare.h">What each plan includes</h3>
+            <div class="table-scroll">
+              <table class="compare-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="pr.compare.col0">What you get</th>
+                    <th data-i18n="pr.compare.col1">Free</th>
+                    <th data-i18n="pr.compare.col2">Essential €19</th>
+                    <th data-i18n="pr.compare.col3">Premium €49</th>
+                    <th data-i18n="pr.compare.col4">Custom from €79</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td data-i18n="pr.compare.r0c0">Health-Check, Fee Calc, indicative score</td><td data-i18n="pr.compare.yes">Yes</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><td data-i18n="pr.compare.r1c0">Independent net-of-fees recompute</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                  <tr><td data-i18n="pr.compare.r2c0">Declared vs recomputed report</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                  <tr><td data-i18n="pr.compare.r3c0">History</td><td>—</td><td data-i18n="pr.compare.r3c2">2 years</td><td data-i18n="pr.compare.r3c3">8 years</td><td data-i18n="pr.compare.r3c4">10 years</td></tr>
+                  <tr><td data-i18n="pr.compare.r4c0">Contexts (strategy × asset × TF)</td><td>—</td><td data-i18n="pr.compare.r4c2">1</td><td data-i18n="pr.compare.r4c3">1</td><td data-i18n="pr.compare.r4c4">Several</td></tr>
+                  <tr><td data-i18n="pr.compare.r5c0">Windows / regimes</td><td>—</td><td data-i18n="pr.compare.r5c2">1</td><td data-i18n="pr.compare.r5c3">Several</td><td data-i18n="pr.compare.r5c4">Extended</td></tr>
+                  <tr><td data-i18n="pr.compare.r6c0">Fee / slippage stress</td><td>—</td><td data-i18n="pr.compare.r6c2">1</td><td data-i18n="pr.compare.r6c3">Several</td><td data-i18n="pr.compare.r6c4">Extended</td></tr>
+                  <tr><td data-i18n="pr.compare.r7c0">Parameter variants</td><td>—</td><td data-i18n="pr.compare.r7c2">1</td><td data-i18n="pr.compare.r7c3">Several</td><td data-i18n="pr.compare.r7c4">Extended</td></tr>
+                  <tr><td data-i18n="pr.compare.r8c0">Walk-forward / out-of-sample</td><td>—</td><td data-i18n="pr.compare.r8c2">Minimal</td><td data-i18n="pr.compare.yes">Yes</td><td data-i18n="pr.compare.r8c4">Yes + matrix</td></tr>
+                  <tr><td data-i18n="pr.compare.r9c0">Monte-Carlo</td><td>—</td><td>—</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                  <tr><td data-i18n="pr.compare.r10c0">PBO / DSR / anti-scam flags</td><td>—</td><td>—</td><td data-i18n="pr.compare.r10c3">Score + pointers</td><td data-i18n="pr.compare.r10c4">Complete</td></tr>
+                  <tr><td data-i18n="pr.compare.r11c0">Control assets</td><td>—</td><td>—</td><td>—</td><td data-i18n="pr.compare.yes">Yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
 
 <section class="block" id="faq">
   <div class="container">

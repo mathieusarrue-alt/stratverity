@@ -202,7 +202,7 @@ const englishFallbackRows = [
   ["ft.title", "Un diagnostic avant l'audit, en quelques secondes.", "A quick diagnosis before the audit, in seconds."],
   ["ft.lead", "Le Health-Check et le calculateur de frais scannent votre stratégie sans conserver votre code : quelques secondes pour repérer ses faiblesses avant de payer un audit complet.", "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit."],
   ["ft.healthTitle", "Health-Check gratuit", "Free Health-Check"],
-  ["ft.healthBody", "Score de santé, erreurs probables et recommandations. Analyse statique instantanée : votre code n'est pas envoyé au serveur.", "Health score, likely issues and recommendations. Instant static analysis: your code never reaches the server."],
+  ["ft.healthBody", "Score de santé, erreurs probables et recommandations. Analyse statique instantanée : votre code n'est jamais stocké, il est supprimé immédiatement après l'analyse.", "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis."],
   ["ft.crashTitle", "Calculateur de frais", "Fee calculator"],
     ["ft.crashBody", "Estimez l'impact réel des frais et du slippage sur un backtest déclaré.", "Estimate the real impact of fees and slippage on a declared backtest."],
   ["ft.registryTitle", "Vérifier une certification", "Verify a certification"],
