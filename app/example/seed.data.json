@@ -1,0 +1,340 @@
+{
+ "_provenance": {
+  "seed": "s002_momentum_breakout",
+  "engine_version": "0.28.0",
+  "report_id": "report:5ed61713635ac0f11824816fd4fb925d",
+  "seal": "5ed61713635ac0f11824816fd4fb925d9a6d0d4006a50443b1a1fdbe7bc2485e",
+  "seal_short": "5ed61713635ac0f1",
+  "window": "2023-07 → 2026-07 · EURUSD 1h · 3 ans",
+  "generated_at": "2026-09-12",
+  "note": "toutes les valeurs = sorties du moteur audit_app (CLI audit-tradingview, sceau reproductible)"
+ },
+ "metrics": {
+  "net_profit": 0.31,
+  "pf_2025": 3.5,
+  "pf_2023": 2.333,
+  "win_rate": 7.03,
+  "max_dd_pct": 0.0004,
+  "avg_r_net": null,
+  "trade_count": 626
+ },
+ "visible_bias": {
+  "check": "metrics.declared_consistency",
+  "message": "Certaines métriques déclarées diffèrent des valeurs recalculées.",
+  "mismatch": {
+   "net_profit": {
+    "calculated": 0.31,
+    "declared": -0.02,
+    "tolerance": 2e-08
+   }
+  }
+ },
+ "locked_biases": [
+  {
+   "check": "pine.protective_exits",
+   "message": "Aucune sortie strategy.exit avec stop/loss n'est visible."
+  },
+  {
+   "check": "pine.slippage",
+   "message": "Le slippage n'est pas déclaré dans strategy()."
+  }
+ ],
+ "equity": [
+  {
+   "time": "2023-07",
+   "equity_pct": 0.0,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2023-08",
+   "equity_pct": -0.0001,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2023-09",
+   "equity_pct": -0.0002,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2023-10",
+   "equity_pct": -0.0003,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2023-11",
+   "equity_pct": 0.0001,
+   "net": 0.04,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2023-12",
+   "equity_pct": 0.0004,
+   "net": 0.03,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-01",
+   "equity_pct": 0.0003,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-02",
+   "equity_pct": 0.0002,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-03",
+   "equity_pct": 0.0002,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-04",
+   "equity_pct": 0.0002,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-05",
+   "equity_pct": 0.0003,
+   "net": 0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-06",
+   "equity_pct": 0.0004,
+   "net": 0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-07",
+   "equity_pct": 0.0006,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-08",
+   "equity_pct": 0.0008,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-09",
+   "equity_pct": 0.0008,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-10",
+   "equity_pct": 0.0008,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-11",
+   "equity_pct": 0.0006,
+   "net": -0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2024-12",
+   "equity_pct": 0.0006,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-01",
+   "equity_pct": 0.0006,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-02",
+   "equity_pct": 0.0008,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-03",
+   "equity_pct": 0.001,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-04",
+   "equity_pct": 0.0014,
+   "net": 0.04,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-05",
+   "equity_pct": 0.0016,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-06",
+   "equity_pct": 0.002,
+   "net": 0.04,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-07",
+   "equity_pct": 0.002,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-08",
+   "equity_pct": 0.0022,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-09",
+   "equity_pct": 0.0024,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-10",
+   "equity_pct": 0.0024,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-11",
+   "equity_pct": 0.0024,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2025-12",
+   "equity_pct": 0.0026,
+   "net": 0.02,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-01",
+   "equity_pct": 0.0029,
+   "net": 0.03,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-02",
+   "equity_pct": 0.003,
+   "net": 0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-03",
+   "equity_pct": 0.0029,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-04",
+   "equity_pct": 0.0032,
+   "net": 0.03,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-05",
+   "equity_pct": 0.0032,
+   "net": 0.0,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-06",
+   "equity_pct": 0.0031,
+   "net": -0.01,
+   "bench_pct": 0.0
+  },
+  {
+   "time": "2026-07",
+   "equity_pct": 0.0031,
+   "net": 0.0,
+   "bench_pct": 0.0
+  }
+ ],
+ "heatmap": [
+  {
+   "y": "2025",
+   "m": 8,
+   "pct": 0.0002,
+   "net": 0.02
+  },
+  {
+   "y": "2025",
+   "m": 9,
+   "pct": 0.0002,
+   "net": 0.02
+  },
+  {
+   "y": "2025",
+   "m": 10,
+   "pct": 0.0,
+   "net": 0.0
+  },
+  {
+   "y": "2025",
+   "m": 11,
+   "pct": 0.0,
+   "net": 0.0
+  },
+  {
+   "y": "2025",
+   "m": 12,
+   "pct": 0.0002,
+   "net": 0.02
+  },
+  {
+   "y": "2026",
+   "m": 1,
+   "pct": 0.0003,
+   "net": 0.03
+  },
+  {
+   "y": "2026",
+   "m": 2,
+   "pct": 0.0001,
+   "net": 0.01
+  },
+  {
+   "y": "2026",
+   "m": 3,
+   "pct": -0.0001,
+   "net": -0.01
+  },
+  {
+   "y": "2026",
+   "m": 4,
+   "pct": 0.0003,
+   "net": 0.03
+  },
+  {
+   "y": "2026",
+   "m": 5,
+   "pct": 0.0,
+   "net": 0.0
+  },
+  {
+   "y": "2026",
+   "m": 6,
+   "pct": -0.0001,
+   "net": -0.01
+  },
+  {
+   "y": "2026",
+   "m": 7,
+   "pct": 0.0,
+   "net": 0.0
+  }
+ ]
+}
