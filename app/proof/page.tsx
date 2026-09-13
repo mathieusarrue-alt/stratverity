@@ -12,6 +12,7 @@ export const metadata: Metadata = {
       "Sealed SHA-256 audit reports, recomputed net of fees. We publish every verdict, including failures — a wall of only good grades would be worthless.",
     type: "website",
     url: "https://www.stratverity.com/proof",
+    images: [{ url: "https://www.stratverity.com/og-proof.png", width: 1200, height: 630, alt: "StratVerity — Proof Wall" }],
   },
 };
 
