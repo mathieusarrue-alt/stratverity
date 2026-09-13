@@ -541,7 +541,7 @@ test("certification UI derives the three trust states from the engine", async ()
 
   // La page interroge l'endpoint public de certification côté serveur.
   assert.match(page, /\/v1\/certifications\//);
-  assert.match(page, /NEXT_PUBLIC_BACKTESTPROOF_API_URL/);
+  assert.match(page, /NEXT_PUBLIC_STRATVERITY_API_URL/);
   assert.match(page, /generateMetadata/);
   assert.doesNotMatch(state + view + page, /sk_test_|whsec_|STRIPE_SECRET_KEY/);
 });

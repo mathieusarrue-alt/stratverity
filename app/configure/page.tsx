@@ -16,7 +16,7 @@ import { useI18n } from "../i18n/I18nProvider";
 import type { Locale, MessageKey } from "../i18n/messages";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
+  process.env.NEXT_PUBLIC_STRATVERITY_API_URL ??
   "https://api.stratverity.com";
 
 const MAX_STRATEGIES = 10;

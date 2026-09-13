@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Check, Copy, RefreshCw, TrendingUp } from "lucide-react";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ?? "https://api.stratverity.com";
+  process.env.NEXT_PUBLIC_STRATVERITY_API_URL ?? "https://api.stratverity.com";
 
 type Status = "loading" | "ready" | "error";
 

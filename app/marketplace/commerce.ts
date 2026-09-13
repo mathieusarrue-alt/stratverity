@@ -47,6 +47,82 @@ export interface MarketplaceListing {
   created_at?: string;
 }
 
+// ---------- Phase 6 : enrichment (media, offres v2, reviews vérifiées) ----------
+
+export type OfferV2Kind = "subscription" | "one_shot" | "lifetime_access" | "lifetime_source";
+
+export interface OfferV2 {
+  offer_id: string;
+  kind: OfferV2Kind;
+  duration_months: number | null;
+  price_cents: number;
+  currency: string;
+  stripe_price_id?: string | null;
+  active: number;
+}
+
+export interface ListingMedia {
+  media_id: string;
+  kind: "image" | "screenshot" | "video";
+  url: string;
+  alt_text: string;
+  sort_order: number;
+  sha256: string;
+  size_bytes: number;
+}
+
+export interface VerifiedReview {
+  review_id: string;
+  rating: number;
+  title: string;
+  body: string;
+  created_at: string;
+}
+
+export interface EnrichedListing extends MarketplaceListing {
+  media: ListingMedia[];
+  offers_v2: OfferV2[];
+  reviews: {
+    items: VerifiedReview[];
+    count: number;
+    avg_rating: number;
+  };
+}
+
+/** Remise effective d'une offre v2 vs le tarif mensuel (ex. 3 mois -10 %). */
+export function offerDiscountPct(offer: OfferV2, monthlyPriceCents: number | null): number | null {
+  if (!monthlyPriceCents || monthlyPriceCents <= 0) return null;
+  if (offer.kind !== "subscription" || !offer.duration_months) return null;
+  const perMonth = offer.price_cents / offer.duration_months;
+  const discount = (1 - perMonth / monthlyPriceCents) * 100;
+  return Math.round(discount);
+}
+
+export function offerLabel(offer: OfferV2): string {
+  switch (offer.kind) {
+    case "subscription":
+      return `${offer.duration_months} mois`;
+    case "one_shot":
+      return "One-shot";
+    case "lifetime_access":
+      return "Accès à vie";
+    case "lifetime_source":
+      return "Source (P1)";
+  }
+}
+
+export function formatCentsV2(offer: OfferV2): string {
+  const euros = (offer.price_cents / 100).toLocaleString("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: offer.price_cents % 100 === 0 ? 0 : 2,
+  });
+  if (offer.kind === "subscription" && offer.duration_months) {
+    return `${euros} / ${offer.duration_months} mois`;
+  }
+  return euros;
+}
+
 export interface LicenseView {
   listing_id: string;
   title: string;
