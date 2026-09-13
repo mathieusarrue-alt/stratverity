@@ -5,7 +5,7 @@ import type { CertificationData } from "../certification-state";
 import { buildCertificationView } from "../certification-state";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ?? "https://api.stratverity.com";
+  process.env.NEXT_PUBLIC_STRATVERITY_API_URL ?? "https://api.stratverity.com";
 const SITE_ORIGIN =
   process.env.NEXT_PUBLIC_SITE_ORIGIN ?? "https://stratverity.com";
 

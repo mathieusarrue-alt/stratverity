@@ -6,7 +6,7 @@ import styles from "../crash-test.module.css";
 import { useCT } from "../i18n";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ??
+  process.env.NEXT_PUBLIC_STRATVERITY_API_URL ??
   "https://api.stratverity.com";
 
 type Diagnostic = {

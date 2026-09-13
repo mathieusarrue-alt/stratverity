@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const API_ORIGIN = process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ?? "https://api.stratverity.com";
+const API_ORIGIN = process.env.NEXT_PUBLIC_STRATVERITY_API_URL ?? "https://api.stratverity.com";
 
 export default function PurchaseClient({ enabled, sessionId }: { enabled: boolean; sessionId: string }) {
   const router = useRouter();

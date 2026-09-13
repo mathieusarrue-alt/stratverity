@@ -1,6 +1,6 @@
 import { getSupabaseServerClient } from "../../supabase/server";
 
-const API_ORIGIN = process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ?? "https://api.stratverity.com";
+const API_ORIGIN = process.env.NEXT_PUBLIC_STRATVERITY_API_URL ?? "https://api.stratverity.com";
 const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN ?? "https://www.stratverity.com";
 const MAX_BYTES = 64 * 1024;
 
@@ -14,12 +14,13 @@ const PATHS = new Set([
   "/v1/marketplace/sell",
   "/v1/marketplace/sell/listings",
   "/v1/marketplace/sell/dashboard",
-  "/v1/marketplace/licenses",
-  "/v1/marketplace/favorites",
-  "/v1/marketplace/grants",
-  "/v1/marketplace/operator-listings",
-  "/v1/marketplace/license-for-session",
-]);
+    "/v1/marketplace/licenses",
+    "/v1/marketplace/favorites",
+    "/v1/marketplace/grants",
+    "/v1/marketplace/operator-listings",
+    "/v1/marketplace/license-for-session",
+    "/v1/marketplace/listings/enriched",
+  ]);
 
 function safeOrigin(raw: string): string {
   const parsed = new URL(raw);
@@ -30,7 +31,11 @@ function safeOrigin(raw: string): string {
 }
 
 export async function proxyMarketplace(request: Request, path: string): Promise<Response> {
-  if (!PATHS.has(path)) return Response.json({ error: "NOT_FOUND" }, { status: 404 });
+  const staticAllowed = PATHS.has(path);
+  const dynamicAllowed = path.startsWith("/v1/marketplace/listings/") && path.endsWith("/enriched");
+  if (!staticAllowed && !dynamicAllowed) {
+    return Response.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
   const siteOrigin = safeOrigin(SITE_ORIGIN);
   if (request.method !== "GET" && request.headers.get("origin") !== siteOrigin) {
     return Response.json({ error: "ORIGIN_NOT_ALLOWED" }, { status: 403 });

@@ -62,8 +62,8 @@ export async function proxyEligibility(
   }
 
   const apiOrigin = bareOrigin(
-    process.env.NEXT_PUBLIC_BACKTESTPROOF_API_URL ?? DEFAULT_API_ORIGIN,
-    "NEXT_PUBLIC_BACKTESTPROOF_API_URL",
+    process.env.NEXT_PUBLIC_STRATVERITY_API_URL ?? DEFAULT_API_ORIGIN,
+    "NEXT_PUBLIC_STRATVERITY_API_URL",
   );
   const incomingUrl = new URL(request.url);
   const target = new URL(backendPath, apiOrigin);
