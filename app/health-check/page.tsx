@@ -358,20 +358,49 @@ export default function HealthCheckPage() {
           </div>
 
           {result.warnings.length > 0 && (
-            <div className={styles.warnings}>
-              <h2>{t("health.attention")}</h2>
-              <ul>
-                {result.warnings.map((warning, index) => (
-                  <li key={`${warning}-${index}`} className={styles.warningCard}>
-                    <span className={styles.warningIcon}>
-                      <IconAlert />
-                    </span>
-                    <span>{warning}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+                      <div className={styles.warnings}>
+                        <h2>{t("health.attention")}</h2>
+                        <ul>
+                          {result.warnings.slice(0, 1).map((warning, index) => (
+                            <li key={`${warning}-${index}`} className={styles.warningCard}>
+                              <span className={styles.warningIcon}>
+                                <IconAlert />
+                              </span>
+                              <span>{warning}</span>
+                            </li>
+                          ))}
+                          {result.warnings.slice(1).map((warning, index) => (
+                            <li
+                              key={`locked-${index}`}
+                              className={styles.warningCard}
+                              style={{ filter: "blur(5px)", color: "#8B98A5" }}
+                            >
+                              <span className={styles.warningIcon}>🔒</span>
+                              <span>{warning.slice(0, 42)}…</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {result.warnings.length > 1 && (
+                          <div style={{ marginTop: 14 }}>
+                            <p style={{ margin: 0 }}>
+                              🔓 Unlock the {result.warnings.length - 1} remaining
+                              finding{result.warnings.length - 1 > 1 ? "s" : ""} + full report — from €19
+                            </p>
+                            <Link href="/pricing/audit" className={styles.ctaButton}>
+                              Unlock findings <span aria-hidden="true">→</span>
+                            </Link>
+                            <p style={{ fontSize: 12, color: "#7b8f86", marginTop: 8 }}>
+                              Read-only analysis. Code deleted right after the scan.
+                            </p>
+                          </div>
+                        )}
+                        {result.warnings.length === 1 && (
+                          <p style={{ fontSize: 13, color: "#7b8f86", marginTop: 10 }}>
+                            That&rsquo;s the full scan output — no finding is hidden.
+                          </p>
+                        )}
+                      </div>
+                    )}
 
           <div className={styles.cta}>
             <p>{result.cta}</p>
