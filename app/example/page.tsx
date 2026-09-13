@@ -12,6 +12,7 @@ export const metadata: Metadata = {
       "A real audit, end to end. Recomputed metrics, detected biases, sealed SHA-256 verdict. Judge us on the report.",
     type: "website",
     url: "https://www.stratverity.com/example",
+    images: [{ url: "https://www.stratverity.com/og-example.png", width: 1200, height: 630, alt: "StratVerity — Example audit report" }],
   },
 };
 
@@ -148,7 +149,7 @@ export default function ExamplePage() {
           </div>
         ))}
         <a
-          href="/pricing/audit"
+          href="/pricing/audit?src=example"
           style={{ display: "inline-block", marginTop: 18, padding: "12px 22px", background: GREEN, color: "#04120c", borderRadius: 10, fontWeight: 700, fontSize: 15, textDecoration: "none" }}
         >
           🔓 Unlock the full bias breakdown — from €19
