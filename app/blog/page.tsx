@@ -61,6 +61,60 @@ const articles: Article[] = [
     readingTime: "8 min",
     tags: ["backtest", "biais", "vendeur stratégie"],
   },
+  {
+    slug: "esperance-mathematique-trading",
+    title: "L'espérance mathématique : la seule métrique qui prédit si vous serez rentable",
+    excerpt:
+      "Le winrate se vend bien, le Profit Factor rassure, mais c'est l'espérance mathématique en R qui répond à la vraie question : ce processus, répété des centaines de fois, m'enrichit-il ?",
+    date: "2026-09-17",
+    readingTime: "7 min",
+    tags: ["espérance mathématique", "expectancy", "R-multiple"],
+  },
+  {
+    slug: "position-sizing-money-management",
+    title: "Position sizing : pourquoi la meilleure stratégie du monde peut vous ruiner",
+    excerpt:
+      "Une stratégie à espérance positive peut quand même ruiner un compte si le dimensionnement des positions est mal calibré. Risque de ruine, ATR-sizing, Critère de Kelly.",
+    date: "2026-09-17",
+    readingTime: "8 min",
+    tags: ["position sizing", "money management", "gestion du risque"],
+  },
+  {
+    slug: "mql4-mql5-pine-script-differences",
+    title: "MQL4 vs MQL5 vs Pine Script : ce que ça change pour auditer une stratégie",
+    excerpt:
+      "Repaint Pine Script, mode 'Open prices only' MQL4, netting vs hedging MQL5 : les pièges spécifiques à chaque langage qui faussent un backtest sans toucher à la logique de trading.",
+    date: "2026-09-17",
+    readingTime: "8 min",
+    tags: ["MQL4", "MQL5", "Pine Script"],
+  },
+  {
+    slug: "slippage-execution-backtest-realiste",
+    title: "Slippage et exécution réelle : pourquoi votre backtest ment sur l'exécution",
+    excerpt:
+      "Latence, profondeur de marché, gaps sur les stops : ce qui sépare un prix théorique de signal d'un prix réel d'exécution, et comment le modéliser correctement.",
+    date: "2026-09-17",
+    readingTime: "7 min",
+    tags: ["slippage", "exécution", "liquidité"],
+  },
+  {
+    slug: "long-only-vs-long-short",
+    title: "Long-only vs Long/Short : ce que ça change pour le risque et le backtest",
+    excerpt:
+      "Un backtest long-only flatteur peut simplement refléter un marché haussier. Ce que le short ajoute vraiment en termes de risque, de coûts et de robustesse.",
+    date: "2026-09-17",
+    readingTime: "7 min",
+    tags: ["long/short", "exposition directionnelle", "gestion du risque"],
+  },
+  {
+    slug: "robustesse-multi-actifs-backtest",
+    title: "Robustesse multi-actifs : pourquoi une stratégie qui marche sur un seul actif ne suffit pas",
+    excerpt:
+      "Tester sur plusieurs actifs corrélés n'apporte presque aucune garantie supplémentaire. Comment estimer le nombre de vérifications réellement indépendantes.",
+    date: "2026-09-17",
+    readingTime: "8 min",
+    tags: ["multi-actifs", "diversification", "généralisation"],
+  },
 ];
 
 export default function BlogPage() {
