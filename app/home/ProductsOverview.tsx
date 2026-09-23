@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Gauge, ShieldCheck, SlidersHorizontal, Store } from "lucide-react";
+import { Gauge } from "lucide-react";
 import { useI18n } from "../i18n/I18nProvider";
+import ProductMark from "../components/ProductMark";
 import styles from "./ProductsOverview.module.css";
 
 /**
@@ -53,10 +54,10 @@ const LOCAL: Record<string, { fr: string; en: string }> = {
 };
 
 const ITEMS = [
-  { key: "free", icon: Gauge, href: "/free-tools" },
-  { key: "audit", icon: ShieldCheck, href: "/pricing/audit" },
-  { key: "optimizer", icon: SlidersHorizontal, href: "/pricing/optimizer" },
-  { key: "marketplace", icon: Store, href: "/marketplace" },
+  { key: "free", mark: null, href: "/free-tools" },
+  { key: "audit", mark: "audit", href: "/pricing/audit" },
+  { key: "optimizer", mark: "optimizer", href: "/pricing/optimizer" },
+  { key: "marketplace", mark: "marketplace", href: "/marketplace" },
 ] as const;
 
 export default function ProductsOverview() {
@@ -79,12 +80,16 @@ export default function ProductsOverview() {
         </div>
 
         <ul className={styles.grid}>
-          {ITEMS.map(({ key, icon: Icon, href }) => (
+          {ITEMS.map(({ key, mark, href }) => (
             <li key={key}>
               <Link className={styles.card} href={href}>
                 <div className={styles.top}>
                   <span className={styles.iconWrap} aria-hidden="true">
-                    <Icon className={styles.icon} strokeWidth={1.9} />
+                    {mark ? (
+                      <ProductMark product={mark} className={styles.icon} />
+                    ) : (
+                      <Gauge className={styles.icon} strokeWidth={1.9} />
+                    )}
                   </span>
                   <span className={styles.tag}>{tx(`prod.${key}.tag`)}</span>
                 </div>

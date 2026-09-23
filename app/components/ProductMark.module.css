@@ -1,0 +1,28 @@
+.root {
+  color: var(--emerald-500);
+  display: inline-block;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.sm {
+  height: 36px;
+  width: 36px;
+}
+
+.md {
+  height: 52px;
+  width: 52px;
+}
+
+.lg {
+  height: 72px;
+  width: 72px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .root {
+    transition: color 180ms cubic-bezier(.22, .61, .36, 1),
+      transform 220ms cubic-bezier(.22, .61, .36, 1);
+  }
+}
