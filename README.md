@@ -1,5 +1,12 @@
 # vinext-starter
 
+## StratVerity — reprise du parcours Audit privé
+
+Le lot est sur la branche de revue `codex/private-audit-rehearsal-20261111`.
+Lire le [guide commun frontend/backend](https://github.com/mathieusarrue-alt/stratverity-audit-backend/blob/codex/private-audit-rehearsal-20261111/backend/docs/PRIVATE_AUDIT_REHEARSAL.md).
+Le devis est calculé localement ; le parcours privé n'est actif qu'en
+développement sur la boucle locale. Aucun paiement de production.
+
 A clean full-stack starter running on
 [vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
 Drizzle support.

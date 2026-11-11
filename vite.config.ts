@@ -37,16 +37,30 @@ const localBindingConfig = {
     : [],
 };
 
-export default defineConfig(async () => {
+export default defineConfig(async ({ command }) => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= "false";
   process.env.WRANGLER_LOG_PATH ??= ".wrangler/logs";
   process.env.MINIFLARE_REGISTRY_PATH ??= ".wrangler/registry";
+  // Local worker requests don't necessarily inherit Node's private env.
+  // Compile only explicitly enabled loopback addresses into the dev worker.
+  const localSite = process.env.STRATVERITY_PRIVATE_AUDIT_SITE;
+  const localUpstream = process.env.STRATVERITY_PRIVATE_AUDIT_UPSTREAM;
+  const loopback = /^http:\/\/127\.0\.0\.1:[1-9][0-9]{0,4}$/;
+  const localAuditDefines = command === "serve" && process.env.STRATVERITY_PRIVATE_AUDIT_LOCAL === "1" &&
+    localSite && localUpstream && loopback.test(localSite) && loopback.test(localUpstream) && localSite !== localUpstream
+    ? {
+        "process.env.STRATVERITY_PRIVATE_AUDIT_LOCAL": JSON.stringify("1"),
+        "process.env.STRATVERITY_PRIVATE_AUDIT_SITE": JSON.stringify(localSite),
+        "process.env.STRATVERITY_PRIVATE_AUDIT_UPSTREAM": JSON.stringify(localUpstream),
+      }
+    : undefined;
 
   if (isAwsAmplifyBuild) {
     const { nitro } = await import("nitro/vite");
     return {
+      define: localAuditDefines,
       plugins: [
         vinext(),
         nitro({
@@ -61,6 +75,7 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    define: localAuditDefines,
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,

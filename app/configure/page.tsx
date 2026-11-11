@@ -7,6 +7,10 @@ import { useSearchParams } from "next/navigation";
 import styles from "./scope-configurator.module.css";
 import { getSupabaseBrowserClient } from "../supabase/browser";
 import { calculatePrice } from "./pricing";
+import AuditCoveragePanel from "./audit-coverage-panel";
+import { hasPrivateAuditCoverage, readAuditCoverage } from "./audit-coverage";
+import type { CoverageContext } from "./audit-coverage";
+import { freezePrivateAudit, localAuditScope, privateAuditLocalMode, reserveLocalAudit } from "./private-audit-client";
 import {
   MARKET_CATALOG,
   MARKET_ASSET_IDS,
@@ -98,6 +102,8 @@ type StrategyVersion = {
 
 type PreviewResponse = {
   scope_fingerprint: string;
+  audit_pre_admission?: unknown;
+  contexts: CoverageContext[];
   product: Product;
   offer_family: "BASE" | "MATRIX" | "PRO" | "CUSTOM";
   context_count: number;
@@ -239,6 +245,8 @@ function ScopeConfiguratorInner() {
   const [notice, setNotice] = useState<UiNotice>(null);
   const [fileError, setFileError] = useState("");
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
+  const [previewRequest, setPreviewRequest] = useState<{ payload: string; revision: number; attempt?: string } | null>(null);
+  const previewRevision = useRef(0);
   const [contractAccepted, setContractAccepted] = useState(false);
   const checkoutAttemptRef = useRef<{
     scopeHash: string;
@@ -534,16 +542,42 @@ function ScopeConfiguratorInner() {
       return;
     }
     const payload = buildPayload();
+    const serialized = JSON.stringify(payload);
+    const revision = ++previewRevision.current;
+    setPreview(null);
+    setPreviewRequest(null);
     setState("submitting");
     setFileError("");
     setNotice({ key: "configure.msg.validatingScope" });
     try {
+      if (privateAuditLocalMode()) {
+        if (payload.product !== "AUDIT" || window.location.hostname !== "127.0.0.1" ||
+          strategies.length !== 1 || fileExtension(strategies[0].file.name) !== ".py") {
+          throw new Error("Private Audit requires local single context");
+        }
+        const localScope = localAuditScope(payload);
+        const attempt = crypto.randomUUID();
+        const proof = await freezePrivateAudit(attempt, localScope, strategies[0].file, strategies[0].sha256);
+        if (revision !== previewRevision.current) return;
+        const scopeHash = typeof proof.scope_fingerprint === "string" ? proof.scope_fingerprint : "";
+        const coverage = readAuditCoverage({ scope_fingerprint: scopeHash, audit_pre_admission: proof },
+          localScope.contexts, Date.now());
+        if (coverage.status === "INVALID" || coverage.status === "EXPIRED") throw new Error("Invalid Audit coverage");
+        setPreview({ scope_fingerprint: scopeHash, audit_pre_admission: proof, contexts: localScope.contexts,
+          product: "AUDIT", offer_family: offerFamily, context_count: 1, pricing_status: "TO_BE_DEFINED",
+          technical_estimate: { quote_required: true, quote_reasons: [] } });
+        setPreviewRequest({ payload: serialized, revision, attempt });
+        setState("success");
+        setNotice({ key: "configure.msg.scopeConfirmed" });
+        return;
+      }
       const response = await fetch(`${API_URL}/v1/service-scopes/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: serialized,
       });
       const result = (await response.json()) as PreviewResponse;
+      if (revision !== previewRevision.current) return;
       if (!response.ok) {
         setPreview(null);
         setState(response.status >= 500 ? "fallback" : "error");
@@ -555,10 +589,14 @@ function ScopeConfiguratorInner() {
         });
         return;
       }
+      if (!result || typeof result.scope_fingerprint !== "string" || result.product !== payload.product
+          || !Array.isArray(result.contexts)) throw new Error("Invalid scope preview");
       setPreview(result);
+      setPreviewRequest({ payload: serialized, revision });
       setState("success");
       setNotice({ key: "configure.msg.scopeConfirmed" });
     } catch {
+      if (revision !== previewRevision.current) return;
       setPreview(null);
       setState("fallback");
       setNotice({ key: "configure.msg.apiFallback" });
@@ -566,7 +604,9 @@ function ScopeConfiguratorInner() {
   };
 
   const startCheckout = async () => {
-    if (!preview || strategies.length === 0) return;
+    if (privateAuditLocalMode()) return;
+    if (!preview || strategies.length === 0 || hasPrivateAuditCoverage(preview)
+      || previewRequest?.payload !== JSON.stringify(buildPayload())) return;
     if (product === "SCAN") {
       setState("error");
       setNotice({ key: "configure.msg.scanUnavailable" });
@@ -992,12 +1032,21 @@ function ScopeConfiguratorInner() {
               )}
             </span>
           </div>
-          <div className={styles.livePrice}>
+          <div className={styles.livePrice} role="status" aria-atomic="true">
             <span>{t("configure.launchPrice")}</span>
             <strong>
               {formatLocalizedPrice(price.totalCents)}
-              <small>{t("configure.totalSuffix")}</small>
+              <small>{t(price.cadence === "MONTHLY" ? "configure.perMonth" : "configure.totalSuffix")}</small>
             </strong>
+            {price.cadence === "MONTHLY" && (
+              <span>
+                {t("configure.firstPayment", { amount: formatLocalizedPrice(price.dueTodayCents) })}
+                {" · "}
+                {t("configure.activationIncluded", {
+                  amount: formatLocalizedPrice(price.activationExVatCents + price.activationVatCents),
+                })}
+              </span>
+            )}
           </div>
           <button
             className={styles.submit}
@@ -1027,10 +1076,25 @@ function ScopeConfiguratorInner() {
               ? t("configure.msg.multicontextAutoCustom")
               : message || t("configure.defaultMessage")}
           </p>
-          {preview ? (
+          {preview && previewRequest?.payload === JSON.stringify(buildPayload()) ? (
             <div className={styles.serverProof}>
               <span>{t("configure.serverValidated")}</span>
               <strong>{preview.scope_fingerprint.slice(0, 18)}…</strong>
+              {hasPrivateAuditCoverage(preview) ? (
+                <AuditCoveragePanel key={previewRequest.revision}
+                  coverage={readAuditCoverage(preview, preview.contexts, Date.now())}
+                  reserve={previewRequest.attempt ? async (receipt) => {
+                    if (previewRevision.current !== previewRequest.revision ||
+                      previewRequest.payload !== JSON.stringify(buildPayload())) throw new Error("Changed scope");
+                    const coverage = readAuditCoverage(preview, preview.contexts, Date.now());
+                    if (!("expiresAt" in coverage)) throw new Error("Expired coverage");
+                    await reserveLocalAudit(previewRequest.attempt!, localAuditScope(buildPayload()), {
+                      scopeHash: preview.scope_fingerprint, expiresAt: coverage.expiresAt,
+                      cents: price.dueTodayCents, receipt,
+                    });
+                  } : undefined}
+                  locale={locale === "fr" ? "fr" : "en"} />
+              ) : privateAuditLocalMode() ? null : <>
               <label className={styles.contractAcceptance}>
                 <input
                   checked={contractAccepted}
@@ -1052,6 +1116,7 @@ function ScopeConfiguratorInner() {
                   ? t("configure.openingStripe")
                   : t("configure.continueStripe")}
               </button>
+              </>}
             </div>
           ) : null}
                   </aside>

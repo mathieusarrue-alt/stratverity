@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(path = "/") {
+async function render(path = "/", init = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -10,6 +10,7 @@ async function render(path = "/") {
   return worker.fetch(
     new Request(`http://localhost${path}`, {
       headers: { accept: "text/html" },
+      ...init,
     }),
     {
       ASSETS: {
@@ -22,6 +23,15 @@ async function render(path = "/") {
     },
   );
 }
+
+test("production bundle refuses the private Audit bridge before any session or payment", async () => {
+  const response = await render("/api/private-audit/local.test/quote", {
+    method:"POST", headers:{Origin:"http://localhost", "Content-Type":"application/json"}, body:"{}",
+  });
+  assert.equal(response.status,404);
+  assert.equal(response.headers.get("cache-control"),"no-store");
+  assert.deepEqual(await response.json(),{error:"PRIVATE_AUDIT_REQUEST_REFUSED"});
+});
 
 test("server-renders the StratVerity landing page with JSON-LD pricing", async () => {
   const response = await render();
@@ -435,6 +445,27 @@ test("scope configurator publishes a deterministic launch price grid (v0.3)", as
   assert.match(pricing, /franchise en base de TVA/i);
   assert.match(pricing, /activationExVatCents = 2_900 \* strategyCount/);
   assert.doesNotMatch(pricing, /quote|devis/i);
+});
+
+test("instant quote uses current choices and separates monthly and first payments", async () => {
+  const { calculatePrice } = await import("../app/configure/pricing.ts");
+  const base = {
+    product: "AUDIT", auditDepth: "PREMIUM", contextCount: 1, strategyCount: 1,
+    evaluationMode: "BAR_CLOSE", retentionDays: 30,
+  };
+  assert.equal(calculatePrice(base).dueTodayCents, 4900);
+  assert.equal(calculatePrice({ ...base, contextCount: 2 }).dueTodayCents, 8700);
+  assert.equal(calculatePrice({ ...base, product: "OPTIMIZER", optimizerDepth: "ELITE" }).dueTodayCents, 54900);
+  const scan = calculatePrice({ ...base, product: "SCAN", strategyCount: 2 });
+  assert.deepEqual([scan.cadence, scan.totalCents, scan.dueTodayCents], ["MONTHLY", 1900, 7700]);
+
+  const page = await readFile(new URL("../app/configure/page.tsx", import.meta.url), "utf8");
+  const card = page.split('className={styles.livePrice}')[1].split("<button")[0];
+  assert.match(card, /formatLocalizedPrice\(price.totalCents\)/);
+  assert.match(card, /configure\.perMonth/);
+  assert.match(card, /formatLocalizedPrice\(price.dueTodayCents\)/);
+  assert.doesNotMatch(card, /\b(preview|fetch|await|submitting)\b/);
+  assert.match(page, /const price = calculatePrice\(/);
 });
 
 test("deployment metadata and worker output are present", async () => {
