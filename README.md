@@ -87,3 +87,7 @@ The public site uses Supabase Auth with server-side cookie sessions.
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+# Qualification du 20 novembre 2026
+
+[Build, tests publics et limites](FRONTEND_PUBLIC_QUALIFICATION.md) :
+branche `codex/frontend-qualification-20261120`, sans déploiement.
