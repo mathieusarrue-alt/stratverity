@@ -40,11 +40,13 @@ export function ExampleCharts({ points }: { points: ExampleEquityPoint[] }) {
     .filter((p) => p.bench_pct !== null && p.bench_pct !== undefined)
     .map((p) => ({ time: p.time, value: p.bench_pct as number }));
 
-  let peak = -1e9;
+  // equity_pct is cumulative return % of initial capital, not absolute equity.
+  // Include that initial capital in the high-water mark before the first sample.
+  let peak = 0;
   const under: LineData[] = [];
   for (const p of points) {
     if (p.equity_pct > peak) peak = p.equity_pct;
-    under.push({ time: p.time, value: Math.min(0, p.equity_pct - peak) });
+    under.push({ time: p.time, value: Math.min(0, (p.equity_pct - peak) / (100 + peak) * 100) });
   }
 
   useEffect(() => {

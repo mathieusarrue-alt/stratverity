@@ -97,7 +97,8 @@ export default function ExamplePage() {
         <div style={S.label}>EQUITY (engine recompute) vs BUY&HOLD EURUSD — % of initial capital</div>
         <ExampleCharts points={seed.equity} />
         <div style={{ ...S.sub, fontSize: 12, color: "#8B98A5" }}>
-          Underwater: distance to the running peak (unrealized drawdown). Benchmark: EURUSD 1h close over the same window.
+          Drawdown of the plotted equity samples, including initial capital; not an intrabar mark-to-market reconstruction.
+          This sampled curve is not a replacement for the report's original maximum drawdown. Benchmark: EURUSD 1h close over the same window.
         </div>
       </div>
 

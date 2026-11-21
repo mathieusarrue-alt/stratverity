@@ -1,5 +1,24 @@
 # Frontend — reprise publique et qualification locale
 
+## 21 novembre : unité du drawdown de la démo corrigée
+
+Bloc séparé après53d6fef, plan relu avantcode. Le graphique soustrayait deux
+rendements cumulés en% du capital initial, soit des POINTS, puis appelait ce
+tracé « unrealized drawdown ». Correction : E=100+rendement, picinitial=100,
+DD=100×(E/pic−1). Cas100→120→110 :−8.333333%, pas−10points ; perteinitiale
+immédiate désormais prise en compte. Aucun clamp de perte à−100 ni prix inventé.
+Réemploi des principes du module backend metrics/equity_curve.py ; pas de
+nouveau moteur ni dépendance. La légende précise échantillons affichés,
+capitalinitial inclus, pas de reconstruction intrabougieMTM et pas de
+substitution au MaxDD original du rapport. Seed et métriques scellées INCHANGÉS.
+
+Baseline depuisparent :1échec/4verts, preuve
+`evidence/drawdown_units_baseline_20261121.xml`. Final `npm test` : typesDOMet
+Workerzérodiagnostic, build réussi, **54tests verts**, preuve
+`evidence/drawdown_units_final_20261121.xml`. Cinq tests reproduits indépendamment,
+oracles0→20→10, pertesinitiales, plat, doublementpuisretourinitial. Pas de
+recettevisuelle navigateur, modificationPython/Pine/MQL ni déploiement.
+
 ## 21 novembre : qualification des types et API graphiques
 
 Branche séparée `codex/frontend-type-runtime-20261121`, après le lot capacité.

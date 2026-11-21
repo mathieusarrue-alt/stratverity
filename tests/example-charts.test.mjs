@@ -7,7 +7,7 @@ import test from 'node:test';
 import ts from 'typescript';
 
 const require=createRequire(import.meta.url);
-function witness(failSecond=false) {
+function witness(failSecond=false, fixturePoints) {
   const source=process.env.CHART_SOURCE_PARENT==='1'
     ? execFileSync('git',['show','HEAD:app/example/ExampleCharts.tsx'],{encoding:'utf8'})
     : readFileSync(new URL('../app/example/ExampleCharts.tsx',import.meta.url),'utf8');
@@ -25,7 +25,7 @@ function witness(failSecond=false) {
   const {outputText}=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,
     jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}});
   new Function('require','module','exports',outputText)(fakeRequire,mod,mod.exports);
-  const points=[{time:'2024-01-01',equity_pct:0,bench_pct:0,net:0},
+  const points=fixturePoints ?? [{time:'2024-01-01',equity_pct:0,bench_pct:0,net:0},
     {time:'2024-01-02',equity_pct:20,bench_pct:null,net:20},
     {time:'2024-01-03',equity_pct:10,bench_pct:5,net:10}];
   mod.exports.ExampleCharts({points});
@@ -52,6 +52,28 @@ test('unmount removes both charts using supported API',()=>{
 test('partially created chart is still removed after initialization fails',()=>{
   const {charts,cleanup}=witness(true);
   assert.equal(charts.length,1);cleanup();assert.equal(charts[0].removed,1);
+});
+
+test('drawdown uses relative peak equity and includes the initial capital',()=>{
+  for (const [returns,expected] of [
+    [[0,20,10],[0,0,-100/12]],
+    [[-5,-10],[-5,-10]],
+    [[0,0,0],[0,0,0]],
+    [[0,100,0],[0,0,-50]],
+  ]) {
+    const fixture=returns.map((value,i)=>({time:`2024-01-0${i+1}`,equity_pct:value,bench_pct:null,net:0}));
+    const {charts,cleanup}=witness(false,fixture);
+    const actual=charts[1].series[0].data.map(row=>row.value);
+    assert.equal(actual.length,expected.length);
+    for (let i=0;i<actual.length;i++) {
+      assert.ok(Number.isFinite(actual[i]));
+      assert.ok(Math.abs(actual[i]-expected[i])<1e-10,`${actual[i]} != ${expected[i]}`);
+    }
+    cleanup();
+  }
+  const page=readFileSync(new URL('../app/example/page.tsx',import.meta.url),'utf8');
+  assert.doesNotMatch(page,/unrealized drawdown/);
+  assert.match(page,/not an intrabar mark-to-market reconstruction/);
 });
 
 test('separate DOM and Worker projects still cover every source file',()=>{
