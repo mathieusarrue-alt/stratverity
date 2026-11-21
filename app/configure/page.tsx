@@ -8,7 +8,7 @@ import styles from "./scope-configurator.module.css";
 import { getSupabaseBrowserClient } from "../supabase/browser";
 import { calculatePrice } from "./pricing";
 import AuditCoveragePanel from "./audit-coverage-panel";
-import { hasPrivateAuditCoverage, readAuditCoverage } from "./audit-coverage";
+import { hasPrivateAuditCoverage, readAuditCoverage, auditAssetId, readAuditCapacity, auditCapacityMessage } from "./audit-coverage";
 import type { CoverageContext } from "./audit-coverage";
 import { freezePrivateAudit, localAuditScope, privateAuditLocalMode, reserveLocalAudit } from "./private-audit-client";
 import {
@@ -280,6 +280,11 @@ function ScopeConfiguratorInner() {
     (auditDepth === "ESSENTIAL" || auditDepth === "PREMIUM")
       ? "CUSTOM"
       : auditDepth;
+  const auditCapacity=readAuditCapacity(effectiveAuditDepth,assets.flatMap(asset => timeframes.map(timeframe => ({
+    strategy_version_id:"selection", asset_id:auditAssetId(product,asset), timeframe,
+  }))),projectedStrategyCount);
+  const auditCapacityBlocked=product==="AUDIT" && !privateAuditLocalMode()
+    && auditCapacity.status!=="FITS_STATIC_COUNT_ONLY";
   const offerFamily =
       product === "AUDIT"
         ? effectiveAuditDepth === "CUSTOM"
@@ -356,7 +361,7 @@ function ScopeConfiguratorInner() {
         assets.flatMap((asset) =>
           timeframes.map((timeframe) => ({
             strategy_version_id: strategy.id,
-            asset_id: asset,
+            asset_id: auditAssetId(product,asset),
             timeframe,
           })),
         ),
@@ -607,6 +612,9 @@ function ScopeConfiguratorInner() {
 
   const startCheckout = async () => {
     if (privateAuditLocalMode()) return;
+    const actualScope=buildPayload();
+    if (product==="AUDIT" && readAuditCapacity(actualScope.audit_options?.depth,
+      actualScope.contexts,actualScope.strategies.length).status!=="FITS_STATIC_COUNT_ONLY") return;
     if (!preview || strategies.length === 0 || hasPrivateAuditCoverage(preview)
       || previewRequest?.payload !== JSON.stringify(buildPayload())) return;
     if (product === "SCAN") {
@@ -1055,6 +1063,7 @@ function ScopeConfiguratorInner() {
             disabled={
               state === "submitting" ||
               state === "checkout" ||
+              auditCapacityBlocked ||
               strategies.length === 0
             }
             type="submit"
@@ -1066,6 +1075,9 @@ function ScopeConfiguratorInner() {
             </span>
             <i aria-hidden="true">→</i>
           </button>
+          {auditCapacityBlocked && <p role="status" className={styles.warning}>
+            {auditCapacityMessage(auditCapacity,locale)}
+          </p>}
           <p
             aria-live="polite"
             className={`${styles.message} ${
@@ -1110,7 +1122,7 @@ function ScopeConfiguratorInner() {
               </label>
               <button
                 className={styles.checkoutButton}
-                disabled={state === "checkout" || !contractAccepted}
+                disabled={state === "checkout" || !contractAccepted || auditCapacityBlocked}
                 onClick={startCheckout}
                 type="button"
               >

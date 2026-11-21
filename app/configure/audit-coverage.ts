@@ -18,6 +18,52 @@ const steps: Record<string, number> = { "15m": 900_000, "1h": 3_600_000, "4h": 1
   "1d": 86_400_000, "1w": 604_800_000 };
 const historyYears: Record<string, number> = { ESSENTIAL:2, PREMIUM:8, STANDARD:8, ROBUSTNESS:8, CUSTOM:10 };
 
+// Explicit Spot identities, not a suffix heuristic or a data availability claim.
+const auditAssets: Record<string,string> = {
+  BTCUSDT:"BINANCE:BTCUSDT", ETHUSDT:"BINANCE:ETHUSDT", SOLUSDT:"BINANCE:SOLUSDT",
+  XRPUSDT:"BINANCE:XRPUSDT", BNBUSDT:"BINANCE:BNBUSDT", ADAUSDT:"BINANCE:ADAUSDT",
+  DOGEUSDT:"BINANCE:DOGEUSDT", AVAXUSDT:"BINANCE:AVAXUSDT", LINKUSDT:"BINANCE:LINKUSDT",
+  LTCUSDT:"BINANCE:LTCUSDT",
+};
+
+export function auditAssetId(product: string, asset: string): string {
+  return product === "AUDIT" && Object.hasOwn(auditAssets,asset) ? auditAssets[asset] : asset;
+}
+
+export type AuditCapacity = { status: "FITS_STATIC_COUNT_ONLY" | "HISTORY_EXCEEDS_L1_CAPACITY"
+  | "CAPACITY_UNVERIFIED" | "MULTI_CONTEXT_REVIEW_REQUIRED"; minBars?: number; maxBars?: number; years?: number };
+
+export function readAuditCapacity(depth: unknown, contexts: CoverageContext[], strategyCount=1): AuditCapacity {
+  if (!Array.isArray(contexts) || !Number.isSafeInteger(strategyCount) || strategyCount < 1
+    || contexts.length === 0) return {status:"CAPACITY_UNVERIFIED"};
+  if (contexts.length !== 1 || strategyCount !== 1) return {status:"MULTI_CONTEXT_REVIEW_REQUIRED"};
+  const context=contexts[0];
+  if (!record(context) || typeof depth !== "string" || !Object.hasOwn(historyYears,depth)
+    || typeof context.asset_id !== "string" || !/^BINANCE:[A-Z0-9]{1,64}$/.test(context.asset_id)
+    || typeof context.timeframe !== "string" || !Object.hasOwn(steps,context.timeframe)) return {status:"CAPACITY_UNVERIFIED"};
+  const years=historyYears[depth], step=steps[context.timeframe];
+  // Bounds for any Gregorian year and grid phase; not an exact candle count.
+  // No wall-clock dependency: stable SSR and immediate recalculation on selection.
+  const minBars=Math.floor(365*years*86_400_000/step);
+  const maxBars=Math.ceil(366*years*86_400_000/step)+1;
+  if (!Number.isSafeInteger(minBars) || !Number.isSafeInteger(maxBars)) return {status:"CAPACITY_UNVERIFIED"};
+  return {status:minBars>100_000 ? "HISTORY_EXCEEDS_L1_CAPACITY"
+    : maxBars<=100_000 ? "FITS_STATIC_COUNT_ONLY" : "CAPACITY_UNVERIFIED", minBars,maxBars,years};
+}
+
+export function auditCapacityMessage(capacity: AuditCapacity, locale: string): string {
+  if (capacity.status === "FITS_STATIC_COUNT_ONLY") return "";
+  if (capacity.status === "HISTORY_EXCEEDS_L1_CAPACITY") return locale === "fr"
+    ? "Cette durée et cette unité de temps dépassent la capacité actuelle du moteur. Choisissez une profondeur plus courte ou une unité de temps supérieure. La période ne sera pas réduite automatiquement."
+    : "This history and timeframe exceed the current engine capacity. Select a shorter depth or a higher timeframe. The period will not be silently reduced.";
+  if (capacity.status === "MULTI_CONTEXT_REVIEW_REQUIRED") return locale === "fr"
+    ? "L'achat automatique est actuellement limité à une stratégie et un contexte. Le prix estimé reste affiché, sans ouverture de paiement."
+    : "Automatic checkout is currently limited to one strategy and one context. The estimated price remains visible without opening a payment.";
+  return locale === "fr"
+    ? "Le calendrier ou la capacité de cette sélection n'est pas encore qualifié pour l'achat automatique. Aucun paiement ne sera ouvert."
+    : "The calendar or capacity of this selection is not yet qualified for automatic checkout. No payment will be opened.";
+}
+
 function yearCutoff(end: number, years: number): number | undefined {
   const date = new Date(end), year = date.getUTCFullYear()-years, month = date.getUTCMonth();
   if (year < 1) return;

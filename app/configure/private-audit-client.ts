@@ -8,7 +8,9 @@ export function privateAuditLocalMode() {
 export function localAuditScope<T extends { contexts: { asset_id: string; timeframe: string }[] }>(scope: T): T {
   if (scope.contexts.length !== 1) throw new Error("Single context required");
   const context = scope.contexts[0];
-  const asset = { BTCUSDT:"BINANCE:BTCUSDT", ETHUSDT:"BINANCE:ETHUSDT" }[context.asset_id as "BTCUSDT" | "ETHUSDT"];
+  const allowed: Record<string,string> = { BTCUSDT:"BINANCE:BTCUSDT", ETHUSDT:"BINANCE:ETHUSDT",
+    "BINANCE:BTCUSDT":"BINANCE:BTCUSDT", "BINANCE:ETHUSDT":"BINANCE:ETHUSDT" };
+  const asset = Object.hasOwn(allowed,context.asset_id) ? allowed[context.asset_id] : undefined;
   const timeframe = context.timeframe.toLowerCase();
   if (typeof asset !== "string" || !["15m","1h","4h","1d","1w"].includes(timeframe)) {
     throw new Error("Local Audit market is not supported");

@@ -1,0 +1,20 @@
+{
+  "classification": "TYPECHECK_BASELINE_COMPARISON_NOT_RUNTIME_PARITY",
+  "baseline_commit": "563d28f7edf36f1e0e7f7d57154d4f875469a956",
+  "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false --pretty false",
+  "typecheck_exit_code": 1,
+  "baseline_diagnostic_count": 13,
+  "current_diagnostic_count": 13,
+  "code_file_message_sequences_identical": true,
+  "comparison": "TypeScript CompilerHost readFile overlay from git show HEAD for audit-coverage.ts, page.tsx, private-audit-client.ts; no filesystem source replacement",
+  "diagnostics": [
+    {"file":"app/components/I18nErrorBoundary.tsx","codes":[2416]},
+    {"file":"app/config/market-catalog.ts","codes":[2769]},
+    {"file":"app/example/ExampleCharts.tsx","codes":[2561,2353,2339,2339,2339,2339]},
+    {"file":"app/layout.tsx","codes":[2786]},
+    {"file":"app/marketplace/[slug]/page.tsx","codes":[2322]},
+    {"file":"db/index.ts","codes":[2307]},
+    {"file":"worker/index.ts","codes":[2304,2552]}
+  ],
+  "production_changed": false
+}

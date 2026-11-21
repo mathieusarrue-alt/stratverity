@@ -12,6 +12,8 @@ const quote = {authorization:false,scope_fingerprint:hash,quote_sha256:hash,
 
 test("local mapping is exact and does not reuse a traditional symbol", () => {
   assert.equal(localAuditScope(scope).contexts[0].asset_id,"BINANCE:BTCUSDT");
+  assert.equal(localAuditScope(localAuditScope(scope)).contexts[0].asset_id,"BINANCE:BTCUSDT");
+  assert.throws(()=>localAuditScope({contexts:[{asset_id:"BINANCE:SOLUSDT",timeframe:"15m"}]}));
   assert.equal(scope.contexts[0].asset_id,"BTCUSDT");
   assert.throws(()=>localAuditScope({contexts:[{asset_id:"XAUUSD",timeframe:"15m"}]}));
   assert.throws(()=>localAuditScope({contexts:[{asset_id:"BTCUSDT",timeframe:"1m"}]}));

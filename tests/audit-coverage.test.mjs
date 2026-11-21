@@ -18,7 +18,7 @@ function load(name) {
   return mod.exports;
 }
 
-const { hasPrivateAuditCoverage, readAuditCoverage } = load("audit-coverage.ts");
+const { hasPrivateAuditCoverage, readAuditCoverage, auditAssetId, readAuditCapacity, auditCapacityMessage } = load("audit-coverage.ts");
 const Panel = load("audit-coverage-panel.tsx").default;
 const context = { asset_id:"BINANCE:BTCUSDT", strategy_version_id:"wolf.v1", timeframe:"15m" };
 const now = Date.parse("2026-11-10T07:00:00Z");
@@ -33,6 +33,67 @@ const view = {
 const preview = value => ({ scope_fingerprint, audit_pre_admission:value,
   technical_estimate:{cost_drivers:{depth:"PREMIUM"}} });
 const parse = (value, contexts=[context], clock=now) => readAuditCoverage(preview(value),contexts,clock);
+
+test("static capacity matrix uses all catalogue depths and five timeframes without data claims", () => {
+  const catalogue=JSON.parse(readFileSync(new URL('./fixtures/audit_history_catalogue.json',import.meta.url),'utf8'));
+  // Same fixture already checked against the backend pricing catalogue below.
+  const depths={ESSENTIAL:2,PREMIUM:8,STANDARD:8,ROBUSTNESS:8,CUSTOM:10};
+  assert.ok(catalogue);
+  for (const [depth,years] of Object.entries(depths)) for (const timeframe of ['15m','1h','4h','1d','1w']) {
+    const result=readAuditCapacity(depth,[{...context,timeframe}]);
+    assert.equal(result.status,timeframe==='15m' && years>2 ? 'HISTORY_EXCEEDS_L1_CAPACITY' : 'FITS_STATIC_COUNT_ONLY');
+    assert.equal(result.years,years);
+    assert.ok(Number.isSafeInteger(result.minBars) && result.minBars<=result.maxBars);
+    assert.equal(Object.hasOwn(result,'authorization'),false);
+    assert.equal(Object.hasOwn(result,'data_available'),false);
+  }
+});
+
+test("unknown calendars, unsupported timeframes, multiple contexts and malformed depth stay blocked", () => {
+  for (const depth of [null,undefined,true,2,'__proto__','UNKNOWN']) assert.equal(readAuditCapacity(depth,[context]).status,'CAPACITY_UNVERIFIED');
+  for (const asset_id of ['BTCUSDT','EURUSD','MT5:EURUSD','YAHOO:SPY','BINANCE:BTC/USD']) {
+    assert.equal(readAuditCapacity('ESSENTIAL',[{...context,asset_id}]).status,'CAPACITY_UNVERIFIED');
+  }
+  assert.equal(readAuditCapacity('ESSENTIAL',[{...context,timeframe:'5m'}]).status,'CAPACITY_UNVERIFIED');
+  assert.equal(readAuditCapacity('ESSENTIAL',[]).status,'CAPACITY_UNVERIFIED');
+  assert.equal(readAuditCapacity('ESSENTIAL',[context],0).status,'CAPACITY_UNVERIFIED');
+  assert.equal(readAuditCapacity('ESSENTIAL',[context],true).status,'CAPACITY_UNVERIFIED');
+  assert.equal(readAuditCapacity('ESSENTIAL',[context],2).status,'MULTI_CONTEXT_REVIEW_REQUIRED');
+  assert.equal(readAuditCapacity('ESSENTIAL',[context,context]).status,'MULTI_CONTEXT_REVIEW_REQUIRED');
+});
+
+test("provider identities are explicit for the ten audit crypto selections only", () => {
+  const {MARKET_CATALOG}=load('../config/market-catalog.ts');
+  const crypto=MARKET_CATALOG.filter(asset=>asset.class==='crypto');
+  assert.equal(crypto.length,10);
+  for (const asset of MARKET_CATALOG) {
+    assert.equal(auditAssetId('AUDIT',asset.id),asset.class==='crypto' ? 'BINANCE:'+asset.id : asset.id);
+    assert.equal(auditAssetId('OPTIMIZER',asset.id),asset.id);
+    assert.equal(auditAssetId('SCAN',asset.id),asset.id);
+  }
+  for (const asset of ['FAKEUSDT','__proto__','toString','btcUSDT','BINANCE:BTCUSDT']) assert.equal(auditAssetId('AUDIT',asset),asset);
+});
+
+test("selection changes immediately and messages separate capacity from price and data", () => {
+  assert.equal(readAuditCapacity('PREMIUM',[context]).status,'HISTORY_EXCEEDS_L1_CAPACITY');
+  assert.equal(readAuditCapacity('PREMIUM',[{...context,timeframe:'1h'}]).status,'FITS_STATIC_COUNT_ONLY');
+  for (const locale of ['fr','en']) {
+    assert.match(auditCapacityMessage(readAuditCapacity('PREMIUM',[context]),locale),locale==='fr' ? /pas réduite automatiquement/ : /not be silently reduced/);
+    assert.match(auditCapacityMessage(readAuditCapacity('ESSENTIAL',[{...context,asset_id:'EURUSD'}]),locale),locale==='fr' ? /Aucun paiement/ : /No payment/);
+    assert.equal(auditCapacityMessage(readAuditCapacity('ESSENTIAL',[context]),locale),'');
+  }
+});
+
+test("checkout guard uses canonical captured payload before email, upload and payment calls", () => {
+  const page=readFileSync(new URL('../app/configure/page.tsx',import.meta.url),'utf8');
+  assert.match(page,/asset_id: auditAssetId\(product,asset\)/);
+  const handler=page.slice(page.indexOf('const startCheckout = async () =>'),page.indexOf('const startCheckout = async () =>')+2200);
+  assert.ok(handler.indexOf('privateAuditLocalMode()')<handler.indexOf('readAuditCapacity'));
+  assert.ok(handler.indexOf('const actualScope=buildPayload()')<handler.indexOf('readAuditCapacity'));
+  assert.ok(handler.indexOf('readAuditCapacity')<handler.indexOf('await sessionEmail()'));
+  assert.match(page,/disabled=\{state === "checkout" \|\| !contractAccepted \|\| auditCapacityBlocked\}/);
+  assert.match(page,/auditCapacityBlocked && <p role="status"/);
+});
 
 test("absent differs from null and no private preview grants payment", () => {
   assert.equal(hasPrivateAuditCoverage({ scope_fingerprint }),false);

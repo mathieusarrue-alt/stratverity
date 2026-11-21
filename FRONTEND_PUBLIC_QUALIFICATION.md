@@ -1,5 +1,32 @@
 # Frontend — reprise publique et qualification locale
 
+## 21 novembre : capacité avant paiement, identité fournisseur explicite
+
+Branche de revue `codex/audit-capacity-prepayment-20261121`. Devis local toujours
+instantané et prix inchangés. PourAUDIT, dixcryptos ducatalogue sont reliées
+EXPLICITEMENT àleur identitéSpotBinance ; aucune heuristique suffixeUSDT,
+aucun changement de scopeSCAN/OPTIMIZER. Le même mapper construit scopeetguard.
+Bornes calendaires365..366jours/an sans réseau niDate.now : dépassementcertain
+100kbarres, fournisseur nonqualifié oumulticontexte bloquent le nouveaupaiement
+avec messageFR/EN, sans tronquerl'historique. Comptefits n'est PAS donnéequalifiée.
+Le serveur recontrôle dans latransaction etprotège aussilesréservationslegacy
+sansStripe ; sessionsStripe déjàattachées préservéesaprèscontrôlesidentité.
+
+Buildvinext réussi et **49tests verts** (28HTML+21couverture/privé), preuve
+`evidence/audit_capacity_front_final_20261121.xml`. Revue indépendante45tests
+reproduits. Le guardcheckout examinelepayloadcapturé avantemail/upload/fetch ;
+bouton disabled seuln'estpaslecontrôleserveur. PrivateLocal resteBTC/ETH
+uniquement, conversionidempotente, pasnouveaupoolmarché. Aucun clicbrowserréel
+ou compte/paiementréel qualifié danscebloc. Sources/docs copiéescanoniquement
+aprèscontrôleshash, aucunmainmodifié ou déploiement.
+
+Contrôle additionnel `node node_modules/typescript/bin/tsc --noEmit --incremental false` :
+**13diagnostics**, identiquesauparent563d28. ComparaisonviaTypeScriptCompilerHost
+readFileoverlayenmémoire des3sourceschangées depuisgitHEAD, sanscheckoutécrasant.
+Fichiers : I18nErrorBoundary, market-catalog, ExampleCharts, layout, marketplace,
+db, worker. Buildtranspilevert n'est PAS typesglobauxverts ; prochainbloc séparé.
+Voir `evidence/audit_capacity_types_baseline_20261121.json`.
+
 ## Complément du 21 novembre : cohérence de couverture
 
 Branche de revue `codex/coverage-projection-calendar-20261121` : correction du
