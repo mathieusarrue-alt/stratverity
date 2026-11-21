@@ -5,6 +5,7 @@
 import { useEffect, useRef } from "react";
 import {
   createChart,
+  ColorType,
   LineSeries,
   AreaSeries,
   type LineData,
@@ -21,13 +22,13 @@ export interface ExampleEquityPoint {
 
 const BASE_OPTS: DeepPartial<ChartOptions> = {
   layout: {
-    backgroundColor: "transparent",
+    background: { type: ColorType.Solid, color: "transparent" },
     textColor: "#8B98A5",
     fontFamily: "monospace",
     fontSize: 11,
   },
   rightPriceScale: { visible: true, borderVisible: false },
-  timeAxis: { visible: true },
+  timeScale: { visible: true },
 };
 
 export function ExampleCharts({ points }: { points: ExampleEquityPoint[] }) {
@@ -59,14 +60,17 @@ export function ExampleCharts({ points }: { points: ExampleEquityPoint[] }) {
       const bh = c.addSeries(LineSeries, { color: "rgba(139,152,165,0.55)", lineStyle: 3 });
       eq.setData(equity);
       bh.setData(bench);
-      const uw = c2.addSeries(AreaSeries, { color: "#EF4444", backgroundColor: "rgba(239,68,68,0.35)" });
+      const uw = c2.addSeries(AreaSeries, { lineColor: "#EF4444",
+        topColor: "rgba(239,68,68,0.35)", bottomColor: "rgba(239,68,68,0.05)" });
       uw.setData(under);
+      c.timeScale().fitContent();
+      c2.timeScale().fitContent();
     } catch {
       /* charts indisponible : la page reste lisible sans graphique */
     }
     return () => {
-      if (c && typeof c.dispose === "function") c.dispose();
-      if (c2 && typeof c2.dispose === "function") c2.dispose();
+      c?.remove();
+      c2?.remove();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

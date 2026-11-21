@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="v5 options and plotted equity stay explicit" time="0.074542" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs" failure="Expected values to be strictly deep-equal:&#10;+ actual - expected&#10;&#10;+ undefined&#10;- {&#10;-   color: 'transparent',&#10;-   type: 'solid'&#10;- }&#10;">
+		<failure type="testCodeFailure" message="Expected values to be strictly deep-equal:&#10;+ actual - expected&#10;&#10;+ undefined&#10;- {&#10;-   color: 'transparent',&#10;-   type: 'solid'&#10;- }">
+[Error [ERR_TEST_FAILURE]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ undefined
+- {
+-   color: 'transparent',
+-   type: 'solid'
+- }
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   color: 'transparent',
+  -   type: 'solid'
+  - }
+  
+      at TestContext.&lt;anonymous> (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/example-charts.test.mjs:38:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.start (node:internal/test_runner/test:1191:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { type: 'solid', color: 'transparent' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="unmount removes both charts using supported API" time="0.036722" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs" failure="Expected values to be strictly deep-equal:&#10;+ actual - expected&#10;&#10;  [&#10;+   0,&#10;+   0&#10;-   1,&#10;-   1&#10;  ]&#10;">
+		<failure type="testCodeFailure" message="Expected values to be strictly deep-equal:&#10;+ actual - expected&#10;&#10;  [&#10;+   0,&#10;+   0&#10;-   1,&#10;-   1&#10;  ]">
+[Error [ERR_TEST_FAILURE]: Expected values to be strictly deep-equal:
++ actual - expected
+
+  [
++   0,
++   0
+-   1,
+-   1
+  ]
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   0,
+  +   0
+  -   1,
+  -   1
+    ]
+  
+      at TestContext.&lt;anonymous> (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/example-charts.test.mjs:49:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 0, 0 ],
+    expected: [ 1, 1 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="partially created chart is still removed after initialization fails" time="0.035803" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs" failure="Expected values to be strictly equal:&#10;&#10;0 !== 1&#10;">
+		<failure type="testCodeFailure" message="Expected values to be strictly equal:&#10;&#10;0 !== 1">
+[Error [ERR_TEST_FAILURE]: Expected values to be strictly equal:
+
+0 !== 1
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.&lt;anonymous> (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/example-charts.test.mjs:54:50)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="separate DOM and Worker projects still cover every source file" time="0.056974" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs"/>
+	<!-- tests 4 -->
+	<!-- suites 0 -->
+	<!-- pass 1 -->
+	<!-- fail 3 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 394.6712 -->
+</testsuites>

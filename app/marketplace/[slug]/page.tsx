@@ -155,7 +155,7 @@ export default function ListingDetail() {
               <img
                 key={i}
                 src={m.url}
-                alt={("alt_text" in m && m.alt_text) || `Capture d'écran — ${listing.title}`}
+                alt={("alt_text" in m && typeof m.alt_text === "string" && m.alt_text) || `Capture d'écran — ${listing.title}`}
                 style={{
                   border: "1px solid var(--line-2)",
                   borderRadius: 12,

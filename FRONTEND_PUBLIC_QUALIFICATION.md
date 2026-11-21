@@ -1,5 +1,48 @@
 # Frontend — reprise publique et qualification locale
 
+## 21 novembre : qualification des types et API graphiques
+
+Branche séparée `codex/frontend-type-runtime-20261121`, après le lot capacité.
+Les13diagnostics antérieurs sont corrigés : ErrorBoundary réutilise ErrorInfo
+React (componentStack nullable), filtreSet typé explicitement, altMarketplace
+n'accepte qu'une string ; aucun changement de catalogue, prix ou droits.
+Deux premières corrections produisent du JavaScript strictement identique,
+comparé par la revue indépendante. Graphiques : optionslayout/timeScale et
+AreaSeries de lightweight-charts v5, remove() effectif au démontage, nettoyage
+d'un chart créé partiellement et fitContent(). Valeurs de courbes inchangées.
+
+**`npm run typecheck` passe pour DOM ET Worker, zéro diagnostic.** Les types
+Cloudflare ont été générés LOCALEMENT par Wrangler4.122.0/workerd1.20260811.1,
+compatibility_date2026-08-12/nodejs_compat (mêmes paramètres que le build).
+Fichier573174octets, SHA A310E4F72EEDDF95C4E04A388F5E5AF2599F10099B7A578C0D5D4997341BC951.
+En-têteslicenceApache2/Microsoft/Cloudflare conservés. Pas de paquet ajouté,
+pas deconfig compte/secret/binding. Script `gpt_generate_worker_types.mjs`
+assainit env et utilise un nouveau dossierlocal ; refuse tout écrasement.
+Le script est un générateur initial : surclonecontenantdéjàle.d.ts, le refus
+est attendu, pas un besoin de régénérer pour lancer les tests.
+
+L'inclusion de ces types dans DOM provoquait des collisions Element/Response ;
+deuxprojets stricts les séparent. Worker/db/exemplesD1/tousles.d.ts sont contrôlés
+côtéWorker, pas cachés : test de partition vérifie que TOUTES les sources
+initiales sont couvertes par l'union. `DB?` reste optionnelle et getDb refuse
+son absence ; cela ne prouve pas qu'un bindingD1 est déployé.
+skipLibCheck préexistant conservé, ni any ni @ts-ignore ni strict:false ajoutés.
+
+`npm test` inclut maintenant types+build+**53tests**, au lieu des seuls28HTML.
+Preuve `evidence/frontend_types_runtime_final_20261121.xml` ; baselinegraphique
+surparent0b5d896 :3échecs/1vert, `chart_v5_baseline_20261121.xml`.
+Revue indépendante : deuxprojets typecheck et4tests graphiques/partition
+reproduits. Ce sont doublesAPI/SSR, PAS une validation visuelle navigateur.
+Warnings ViteconfigLoader futur etchunks>500k conservés, pas de miseàjourpaquet
+ou de déploiement. Aucun moteur Python/Pine/MQL ni résultat trading changé.
+
+Sources consultées / décision ADAPTER : types locaux installés React et
+lightweight-charts5.2.1 ; documentation officielle migrationv5 et génération
+Wrangler (https://tradingview.github.io/lightweight-charts/docs/migrations/from-v4-to-v5,
+https://developers.cloudflare.com/workers/languages/typescript/).
+GitHub/X/Reddit limitations de session déjà consignées ; pas de code externe
+hors déclarations officielles générées. Rollback : brancheparent, pas de DB migrée.
+
 ## 21 novembre : capacité avant paiement, identité fournisseur explicite
 
 Branche de revue `codex/audit-capacity-prepayment-20261121`. Devis local toujours

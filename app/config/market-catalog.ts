@@ -99,7 +99,7 @@ export function timeframesForAssets(assetIds: readonly string[]): string[] {
     const asset = MARKET_ASSET_BY_ID[id];
     if (!asset) continue;
     const next = new Set(asset.tfs);
-    set = set ? new Set([...set].filter((t) => next.has(t))) : next;
+    set = set ? new Set([...set].filter((t: string) => next.has(t))) : next;
   }
   const list = set ? [...set] : [];
   return list.sort((a, b) => ALL_CATALOG_TIMEFRAMES.indexOf(a) - ALL_CATALOG_TIMEFRAMES.indexOf(b));

@@ -1,6 +1,6 @@
 "use client";
 
-import { Component, type ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
@@ -22,7 +22,7 @@ export class I18nErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error, info: { componentStack?: string } = {}) {
+  componentDidCatch(error: Error, info: ErrorInfo = {}) {
     console.error("[I18nErrorBoundary]", error, info.componentStack);
   }
 

@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "worker", "db", "examples/d1", "types/cloudflare-runtime.d.ts", "types/cloudflare-bindings.d.ts"]
 }
