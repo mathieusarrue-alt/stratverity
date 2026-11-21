@@ -16,6 +16,16 @@ export type CoverageState = { status: "ABSENT" | "INVALID" | "EXPIRED" | ClosedS
 const sha = /^[0-9a-f]{64}$/;
 const steps: Record<string, number> = { "15m": 900_000, "1h": 3_600_000, "4h": 14_400_000,
   "1d": 86_400_000, "1w": 604_800_000 };
+const historyYears: Record<string, number> = { ESSENTIAL:2, PREMIUM:8, STANDARD:8, ROBUSTNESS:8, CUSTOM:10 };
+
+function yearCutoff(end: number, years: number): number | undefined {
+  const date = new Date(end), year = date.getUTCFullYear()-years, month = date.getUTCMonth();
+  if (year < 1) return;
+  const last = new Date(end);
+  last.setUTCFullYear(year, month+1, 0);
+  date.setUTCFullYear(year, month, Math.min(date.getUTCDate(),last.getUTCDate()));
+  return date.getTime();
+}
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -32,7 +42,7 @@ export function hasPrivateAuditCoverage(preview: object): boolean {
   return Object.hasOwn(preview, "audit_pre_admission");
 }
 
-export function readAuditCoverage(preview: { scope_fingerprint: string; audit_pre_admission?: unknown },
+export function readAuditCoverage(preview: { scope_fingerprint: string; audit_pre_admission?: unknown; technical_estimate?: unknown },
   contexts: CoverageContext[], now: number): CoverageState {
   if (!hasPrivateAuditCoverage(preview)) return { status: "ABSENT" };
   const v = preview.audit_pre_admission;
@@ -58,6 +68,18 @@ export function readAuditCoverage(preview: { scope_fingerprint: string; audit_pr
   const start = utcMillis(w.first_open), end = utcMillis(w.last_close), expiresAt = utcMillis(v.expires_at);
   if (start === undefined || end === undefined || expiresAt === undefined || !Number.isFinite(now)
     || end-start !== steps[w.timeframe]*w.bars || end > now || expiresAt < end) return { status: "INVALID" };
+  const estimate=preview.technical_estimate;
+  const drivers=record(estimate) ? estimate.cost_drivers : undefined;
+  const depth=record(drivers) ? drivers.depth : undefined;
+  const anchor=w.timeframe==="1w" ? 4*86_400_000 : 0;
+  const nonzeroFraction=(value: unknown) => typeof value === "string" && /\.[0-9]*[1-9][0-9]*(?:Z|\+00:00)$/.test(value);
+  const hardCutoff=yearCutoff(end,20), targetCutoff=yearCutoff(end,w.target_years);
+  if (typeof w.asset_id !== "string" || !/^BINANCE:[A-Z0-9]{1,64}$/.test(w.asset_id)
+    || typeof depth !== "string" || !Object.hasOwn(historyYears,depth) || w.target_years !== historyYears[depth]
+    || nonzeroFraction(w.first_open) || nonzeroFraction(w.last_close)
+    || (start-anchor)%steps[w.timeframe] !== 0 || (end-anchor)%steps[w.timeframe] !== 0
+    || hardCutoff === undefined || targetCutoff === undefined || start < hardCutoff
+    || w.reduced !== (start > targetCutoff)) return { status:"INVALID" };
   if (expiresAt <= now) return { status: "EXPIRED" };
   return { status: v.status, receipt: v.receipt_sha256, expiresAt, window: {
     ...contexts[0], first_open: String(w.first_open), last_close: String(w.last_close),

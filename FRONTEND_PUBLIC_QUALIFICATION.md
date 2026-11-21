@@ -1,5 +1,25 @@
 # Frontend — reprise publique et qualification locale
 
+## Complément du 21 novembre : cohérence de couverture
+
+Branche de revue `codex/coverage-projection-calendar-20261121` : correction du
+parser de fenêtre privée et de sa cible de palier. L'interface refuse les faux
+historiques complets, grillesH4/W1 décalées, fractions sousmilliseconde et
+fenêtres au-delà de20ans. Années calendaires/leapday, fournisseur explicite et
+depth du scope contrôlés. Le prix est toujours calculé localement, sans nouveau
+réseau/délai, aucun tarif ni paiement modifié.
+
+Buildvinext réussi ; **44tests verts** (28HTML+16privé/couverture), preuve
+`evidence/coverage_projection_front_20261121.xml`. Tests positifsH4/W1/années
+bissextiles et cataloguecommun2/8/10ans. Fixture de catalogue
+`tests/fixtures/audit_history_catalogue.json`, SHA
+9f1fd578eadab5197f0861cadccdde9af85291ed8d453be2bfe252b09db066af,
+identique à celle du backend. Guide détaillé dans le backend :
+`backend/docs/COVERAGE_PROJECTION_CONSISTENCY.md` sur la branche de même nom.
+Pas de nouvelle recette navigateur, d'activation production ou de couverture
+marché supplémentaire déduite du succès logiciel. La qualification du20nov
+ci-dessous reste historique ; le présent complément la prolonge.
+
 Branche `codex/frontend-qualification-20261120`, au-dessus de
 `codex/private-audit-rehearsal-20261111`. Aucun changement de code produit,
 déploiement, paiement ou commande réelle par ce lot.

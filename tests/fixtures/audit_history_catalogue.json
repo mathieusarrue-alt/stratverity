@@ -1,0 +1,11 @@
+{
+  "schema": "audit-history-projection-contract@1",
+  "pricing_version": "launch-v0.3",
+  "history_years_by_depth": {
+    "ESSENTIAL": 2,
+    "PREMIUM": 8,
+    "STANDARD": 8,
+    "ROBUSTNESS": 8,
+    "CUSTOM": 10
+  }
+}

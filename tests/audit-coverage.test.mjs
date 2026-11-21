@@ -30,7 +30,8 @@ const view = {
   contexts:[{...context, first_open:"2026-11-10T06:15:00+00:00", last_close:"2026-11-10T07:00:00+00:00",
     bars:3,target_years:8,reduced:true}],
 };
-const preview = value => ({ scope_fingerprint, audit_pre_admission:value });
+const preview = value => ({ scope_fingerprint, audit_pre_admission:value,
+  technical_estimate:{cost_drivers:{depth:"PREMIUM"}} });
 const parse = (value, contexts=[context], clock=now) => readAuditCoverage(preview(value),contexts,clock);
 
 test("absent differs from null and no private preview grants payment", () => {
@@ -79,7 +80,8 @@ const p = new URL("./fixtures/audit-coverage-replay.json", import.meta.url);
 test("rendered API fixture uses real frozen coverage without claiming max history", () => {
   const fixture = JSON.parse(readFileSync(p,"utf8"));
   const item = fixture.preview;
-  const state = readAuditCoverage({scope_fingerprint:item.scope_fingerprint,audit_pre_admission:item},
+  const state = readAuditCoverage({scope_fingerprint:item.scope_fingerprint,audit_pre_admission:item,
+    technical_estimate:{cost_drivers:{depth:"PREMIUM"}}},
     item.contexts, Date.parse(fixture.captured_at));
   assert.equal(state.status,"CONFIRM_EXACT_REDUCED_WINDOW");
   assert.equal(state.window.bars,99840);
@@ -88,4 +90,60 @@ test("rendered API fixture uses real frozen coverage without claiming max histor
   assert.match(html,/2026-11-10 06:45:00/);
   assert.match(html,/Cet aperçu ne permet pas de payer/);
   assert.doesNotMatch(html,/historique maximum|Stripe|<button/i);
+});
+
+test("calendar projection rejects false full history, off-grid H4, Sunday weekly and over-cap data", () => {
+  const cases = [
+    { status:"PRIVATE_QUOTE_POSSIBLE",requires_confirmation:false,window:{reduced:false} },
+    { window:{timeframe:"4h",first_open:"2026-11-09T18:15:00Z",last_close:"2026-11-10T06:15:00Z"} },
+    { window:{timeframe:"1w",first_open:"2026-10-18T00:00:00Z",last_close:"2026-11-08T00:00:00Z"} },
+    { window:{first_open:"2026-11-10T06:00:00.000001Z",last_close:"2026-11-10T06:45:00.000001Z"} },
+    { status:"PRIVATE_QUOTE_POSSIBLE",requires_confirmation:false,window:{timeframe:"1d",first_open:"2006-11-09T00:00:00Z",last_close:"2026-11-10T00:00:00Z",bars:7306,reduced:false} },
+    { window:{asset_id:"PEPPERSTONE:BTCUSDT"} },
+    { window:{target_years:2} },
+  ];
+  for (const {window,...change} of cases) {
+    const w={...view.contexts[0],...window};
+    const result=parse({...view,...change,contexts:[w]},[{...context,asset_id:w.asset_id,timeframe:w.timeframe}]);
+    assert.equal(result.status,"INVALID",JSON.stringify(window));
+  }
+});
+
+test("calendar projection retains H4, Monday weekly and leap-day calendar-year windows", () => {
+  for (const [timeframe,first_open,last_close,bars,depth,target_years,reduced] of [
+    ["4h","2026-11-09T16:00:00Z","2026-11-10T04:00:00Z",3,"PREMIUM",8,true],
+    ["1w","2026-10-19T00:00:00Z","2026-11-09T00:00:00Z",3,"PREMIUM",8,true],
+    ["1d","2022-02-28T00:00:00Z","2024-02-29T00:00:00Z",731,"ESSENTIAL",2,false],
+    ["1d","2006-11-10T00:00:00Z","2026-11-10T00:00:00Z",7305,"PREMIUM",8,false],
+  ]) {
+    const w={...view.contexts[0],timeframe,first_open,last_close,bars,target_years,reduced};
+    const state=readAuditCoverage({scope_fingerprint,audit_pre_admission:{...view,
+      requires_confirmation:reduced,status:reduced?"CONFIRM_EXACT_REDUCED_WINDOW":"PRIVATE_QUOTE_POSSIBLE",contexts:[w]},
+      technical_estimate:{cost_drivers:{depth}}},[{...context,timeframe}],Date.parse(last_close));
+    assert.equal(state.status,reduced?"CONFIRM_EXACT_REDUCED_WINDOW":"PRIVATE_QUOTE_POSSIBLE");
+    const html=renderToStaticMarkup(createElement(Panel,{coverage:state,locale:"fr"}));
+    assert.match(html,/Période vérifiée|Historique plus court/);
+    assert.doesNotMatch(html,/<button|Stripe|checkout/);
+  }
+});
+
+test("verified window requires the scope history target, but blocked states stay blocked", () => {
+  assert.equal(readAuditCoverage({scope_fingerprint,audit_pre_admission:view},[context],now).status,"INVALID");
+  assert.equal(readAuditCoverage({...preview(view),technical_estimate:{cost_drivers:{depth:"UNKNOWN"}}},[context],now).status,"INVALID");
+  const state=readAuditCoverage({scope_fingerprint,audit_pre_admission:{...view,status:"DATA_NOT_VERIFIED",contexts:[]}},[context],now);
+  assert.equal(state.status,"DATA_NOT_VERIFIED");
+});
+
+test("history projection catalogue matches backend release fixture for all depths", () => {
+  const catalogue=JSON.parse(readFileSync(new URL('./fixtures/audit_history_catalogue.json',import.meta.url),'utf8'));
+  assert.equal(catalogue.pricing_version,'launch-v0.3');
+  for (const [depth,target_years] of Object.entries(catalogue.history_years_by_depth)) {
+    const state=readAuditCoverage({...preview({...view,contexts:[{...view.contexts[0],target_years}]}),
+      technical_estimate:{cost_drivers:{depth}}},[context],now);
+    assert.equal(state.status,'CONFIRM_EXACT_REDUCED_WINDOW');
+    const wrong=target_years===2 ? 8 : 2;
+    const bad=readAuditCoverage({...preview({...view,contexts:[{...view.contexts[0],target_years:wrong}]}),
+      technical_estimate:{cost_drivers:{depth}}},[context],now);
+    assert.equal(bad.status,'INVALID');
+  }
 });

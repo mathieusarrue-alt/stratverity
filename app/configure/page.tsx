@@ -111,6 +111,7 @@ type PreviewResponse = {
   technical_estimate: {
     quote_required: boolean;
     quote_reasons: string[];
+    cost_drivers?: { depth: string };
   };
 };
 
@@ -560,12 +561,13 @@ function ScopeConfiguratorInner() {
         const proof = await freezePrivateAudit(attempt, localScope, strategies[0].file, strategies[0].sha256);
         if (revision !== previewRevision.current) return;
         const scopeHash = typeof proof.scope_fingerprint === "string" ? proof.scope_fingerprint : "";
-        const coverage = readAuditCoverage({ scope_fingerprint: scopeHash, audit_pre_admission: proof },
+        const coverage = readAuditCoverage({ scope_fingerprint: scopeHash, audit_pre_admission: proof,
+          technical_estimate:{cost_drivers:{depth:effectiveAuditDepth}} },
           localScope.contexts, Date.now());
         if (coverage.status === "INVALID" || coverage.status === "EXPIRED") throw new Error("Invalid Audit coverage");
         setPreview({ scope_fingerprint: scopeHash, audit_pre_admission: proof, contexts: localScope.contexts,
           product: "AUDIT", offer_family: offerFamily, context_count: 1, pricing_status: "TO_BE_DEFINED",
-          technical_estimate: { quote_required: true, quote_reasons: [] } });
+          technical_estimate: { quote_required: true, quote_reasons: [], cost_drivers:{depth:effectiveAuditDepth} } });
         setPreviewRequest({ payload: serialized, revision, attempt });
         setState("success");
         setNotice({ key: "configure.msg.scopeConfirmed" });
