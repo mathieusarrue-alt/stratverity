@@ -7,7 +7,7 @@ const moduleSource=readFileSync(new URL("../app/configure/private-audit-flow.ts"
   .replaceAll('"./private-audit-client"',JSON.stringify(new URL("../app/configure/private-audit-client.ts",import.meta.url).href));
 const emitted=ts.transpileModule(moduleSource,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
 const {createAuditTransaction,loadAuditTransaction,saveAuditTransaction,sendAuditTransaction,
-  privateReturnContext,pollPrivateAudit}=await import("data:text/javascript;base64,"+Buffer.from(emitted).toString("base64"));
+  privateReturnContext,pollPrivateAudit,listAuditTransactions,preflightNewAuditTransaction}=await import("data:text/javascript;base64,"+Buffer.from(emitted).toString("base64"));
 
 const hash="a".repeat(64),expires=Date.parse("2026-11-22T12:00:00Z");
 const scope={schema_version:"0.1.0",scope_id:"scope-preview",product:"AUDIT",offer_family:"BASE",
@@ -26,6 +26,16 @@ const reply={authorization:false,checkout_attempt_id:"checkout-"+"c".repeat(32),
     subtotal_ex_vat_cents:4900,activation_ex_vat_cents:0,due_today_ex_vat_cents:4900,
     tax_calculation:"STRIPE_AUTOMATIC_TAX_AT_CHECKOUT"}};
 const pending={authorization:false,checkout_status:"CHECKOUT_CREATED",job_status:null,delivery_status:null,report_ready:false};
+
+test("new preview preflight refuses corrupt, full, blocked or silently unwritable storage without eviction",()=>{
+  const s=storage();preflightNewAuditTransaction(s);assert.equal(s.raw(),"[]");
+  for(let i=0;i<8;i++)saveAuditTransaction(s,{...transaction("attempt"+i),initiated:true});
+  const before=s.raw();assert.throws(()=>preflightNewAuditTransaction(s));assert.equal(s.raw(),before);
+  const listed=listAuditTransactions(s);assert.equal(Object.isFrozen(listed),true);assert.equal(listed.length,8);
+  for(const blocked of [{getItem:()=>{throw Error("read");},setItem:()=>assert.fail()},
+    {getItem:()=>"[]",setItem:()=>{throw Error("write");}},
+    {getItem:()=>null,setItem:()=>{}},{getItem:()=>"corrupt",setItem:()=>assert.fail()}])assert.throws(()=>preflightNewAuditTransaction(blocked));
+});
 
 test("context is deep frozen and only exact scope metadata is accepted",()=>{
   const t=transaction();assert.equal(Object.isFrozen(t.scope.contexts[0]),true);

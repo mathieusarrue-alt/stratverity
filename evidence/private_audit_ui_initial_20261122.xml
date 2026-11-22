@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="private panel shows frozen readable context, price and explicit consent" time="0.061306" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:15)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+}
+		</failure>
+	</testcase>
+	<testcase name="immediate busy ref refuses double submit; navigation occurs only after response" time="0.013396" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+}
+		</failure>
+	</testcase>
+	<testcase name="selection staleness or unmount suppresses navigation without replacing original transaction" time="0.007126" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+}
+		</failure>
+	</testcase>
+	<testcase name="expired new quote disables first preparation; lost-response initiated retry remains available" time="0.006759" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+}
+		</failure>
+	</testcase>
+	<testcase name="known session offers status without another checkout" time="0.007220" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+}
+		</failure>
+	</testcase>
+	<testcase name="return shell is disabled off flag and never polls absent/ambiguous context" time="0.006328" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:15)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+}
+		</failure>
+	</testcase>
+	<testcase name="SPA query change cancels old status and cannot display its late ready result" time="0.005449" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs" failure="Maximum call stack size exceeded">
+		<failure type="testCodeFailure" message="Maximum call stack size exceeded">
+[Error [ERR_TEST_FAILURE]: Maximum call stack size exceeded] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: RangeError: Maximum call stack size exceeded
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:15)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+      at Array.flatMap (&lt;anonymous>)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:22:110)
+      at all (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/private-audit-ui.test.mjs:23:44)
+}
+		</failure>
+	</testcase>
+	<testcase name="config private ABA epoch and exact payload guards precede source and quote; legacy isolated" time="0.000866" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-ui.test.mjs"/>
+	<!-- tests 8 -->
+	<!-- suites 0 -->
+	<!-- pass 1 -->
+	<!-- fail 7 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 60269.305 -->
+</testsuites>

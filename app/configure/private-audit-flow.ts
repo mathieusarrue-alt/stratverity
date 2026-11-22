@@ -74,6 +74,15 @@ export function loadAuditTransaction(storage:ContextStorage,attempt:string){
   if(!ID.test(attempt))return fail();
   return list(storage).find(t=>t.attempt===attempt)??null;
 }
+export function listAuditTransactions(storage:ContextStorage):readonly AuditTransaction[]{
+  return Object.freeze(list(storage));
+}
+/** Probe this namespace before uploading a new source; never evict a pending attempt. */
+export function preflightNewAuditTransaction(storage:ContextStorage){
+  const all=list(storage);if(all.length>=8)return fail();
+  const raw=JSON.stringify(all);storage.setItem(KEY,raw);
+  if(storage.getItem(KEY)!==raw)return fail();
+}
 export function saveAuditTransaction(storage:ContextStorage,value:AuditTransaction){
   const t=parse(JSON.parse(JSON.stringify(value))),all=list(storage),index=all.findIndex(x=>x.attempt===t.attempt);
   if(index>=0){const old=all[index];if(identity(old)!==identity(t)||old.initiated&&!t.initiated

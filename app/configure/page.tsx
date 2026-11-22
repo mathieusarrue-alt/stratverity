@@ -11,6 +11,10 @@ import AuditCoveragePanel from "./audit-coverage-panel";
 import { hasPrivateAuditCoverage, readAuditCoverage, auditAssetId, readAuditCapacity, auditCapacityMessage } from "./audit-coverage";
 import type { CoverageContext } from "./audit-coverage";
 import { freezePrivateAudit, localAuditScope, privateAuditLocalMode, reserveLocalAudit } from "./private-audit-client";
+import PrivateAuditCheckoutPanel from "./private-audit-checkout-panel";
+import {createAuditTransaction,loadAuditTransaction,listAuditTransactions,saveAuditTransaction,
+  privateAuditCheckoutUiMode,preflightNewAuditTransaction} from "./private-audit-flow";
+import type {AuditTransaction} from "./private-audit-flow";
 import {
   MARKET_CATALOG,
   MARKET_ASSET_IDS,
@@ -248,6 +252,11 @@ function ScopeConfiguratorInner() {
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
   const [previewRequest, setPreviewRequest] = useState<{ payload: string; revision: number; attempt?: string } | null>(null);
   const previewRevision = useRef(0);
+  const currentPayloadRef=useRef("");
+  const [privateTransaction,setPrivateTransaction]=useState<AuditTransaction|null>(null);
+  const [recoveries,setRecoveries]=useState<readonly AuditTransaction[]>([]);
+  const [privateStorageError,setPrivateStorageError]=useState(false);
+  const privateCheckoutEnabled=privateAuditCheckoutUiMode();
   const [contractAccepted, setContractAccepted] = useState(false);
   const checkoutAttemptRef = useRef<{
     scopeHash: string;
@@ -392,6 +401,18 @@ function ScopeConfiguratorInner() {
             pricing_status: "TO_BE_DEFINED",
           };
   };
+
+  const currentPayload=JSON.stringify(buildPayload());
+  if(privateAuditLocalMode()&&currentPayloadRef.current!==currentPayload)previewRevision.current++;
+  currentPayloadRef.current=currentPayload;
+  useEffect(()=>{
+    setPrivateTransaction(null);
+    if(privateAuditLocalMode()){setPreview(null);setPreviewRequest(null);setState("idle");}
+    if(privateCheckoutEnabled&&window.location.hostname==="127.0.0.1"){
+      try{setRecoveries(listAuditTransactions(window.sessionStorage).filter(t=>t.initiated));setPrivateStorageError(false);}
+      catch{setRecoveries([]);setPrivateStorageError(true);}
+    }
+  },[currentPayload,privateCheckoutEnabled]);
 
   const promoteEssentialForScope = (nextContextCount: number) => {
       // ESSENTIAL et PREMIUM sont mono-contexte : si l'utilisateur ajoute un
@@ -550,6 +571,12 @@ function ScopeConfiguratorInner() {
     const payload = buildPayload();
     const serialized = JSON.stringify(payload);
     const revision = ++previewRevision.current;
+    setPrivateTransaction(null);
+    if(privateCheckoutEnabled&&window.location.hostname==="127.0.0.1"){
+      try{setRecoveries(listAuditTransactions(window.sessionStorage).filter(t=>t.initiated));
+        preflightNewAuditTransaction(window.sessionStorage);setPrivateStorageError(false);}
+      catch{setPrivateStorageError(true);return;}
+    }
     setPreview(null);
     setPreviewRequest(null);
     setState("submitting");
@@ -564,7 +591,7 @@ function ScopeConfiguratorInner() {
         const localScope = localAuditScope(payload);
         const attempt = crypto.randomUUID();
         const proof = await freezePrivateAudit(attempt, localScope, strategies[0].file, strategies[0].sha256);
-        if (revision !== previewRevision.current) return;
+        if (revision !== previewRevision.current || serialized!==currentPayloadRef.current) return;
         const scopeHash = typeof proof.scope_fingerprint === "string" ? proof.scope_fingerprint : "";
         const coverage = readAuditCoverage({ scope_fingerprint: scopeHash, audit_pre_admission: proof,
           technical_estimate:{cost_drivers:{depth:effectiveAuditDepth}} },
@@ -584,7 +611,7 @@ function ScopeConfiguratorInner() {
         body: serialized,
       });
       const result = (await response.json()) as PreviewResponse;
-      if (revision !== previewRevision.current) return;
+      if (revision !== previewRevision.current || privateAuditLocalMode()&&serialized!==currentPayloadRef.current) return;
       if (!response.ok) {
         setPreview(null);
         setState(response.status >= 500 ? "fallback" : "error");
@@ -1099,13 +1126,26 @@ function ScopeConfiguratorInner() {
                   coverage={readAuditCoverage(preview, preview.contexts, Date.now())}
                   reserve={previewRequest.attempt ? async (receipt) => {
                     if (previewRevision.current !== previewRequest.revision ||
-                      previewRequest.payload !== JSON.stringify(buildPayload())) throw new Error("Changed scope");
+                      previewRequest.payload !== currentPayloadRef.current) throw new Error("Changed scope");
                     const coverage = readAuditCoverage(preview, preview.contexts, Date.now());
                     if (!("expiresAt" in coverage)) throw new Error("Expired coverage");
-                    await reserveLocalAudit(previewRequest.attempt!, localAuditScope(buildPayload()), {
+                    const capturedScope=localAuditScope(buildPayload());
+                    const capturedPayload=previewRequest.payload,capturedRevision=previewRequest.revision;
+                    const quote=await reserveLocalAudit(previewRequest.attempt!, capturedScope, {
                       scopeHash: preview.scope_fingerprint, expiresAt: coverage.expiresAt,
                       cents: price.dueTodayCents, receipt,
                     });
+                    if(previewRevision.current!==capturedRevision||currentPayloadRef.current!==capturedPayload)throw new Error("Changed scope");
+                    if(privateCheckoutEnabled){
+                      if(window.location.hostname!=="127.0.0.1")throw new Error("Local checkout only");
+                      try{
+                        const existing=loadAuditTransaction(window.sessionStorage,previewRequest.attempt!);
+                        const transaction=existing??createAuditTransaction(previewRequest.attempt!,capturedScope,quote,
+                          capturedRevision,`private-${crypto.randomUUID()}`);
+                        if(transaction.quote.quote_sha256!==quote.quote_sha256||JSON.stringify(transaction.scope)!==JSON.stringify(capturedScope))throw new Error("Changed quote");
+                        saveAuditTransaction(window.sessionStorage,transaction);setPrivateTransaction(transaction);setPrivateStorageError(false);
+                      }catch(error){setPrivateStorageError(true);throw error;}
+                    }
                   } : undefined}
                   locale={locale === "fr" ? "fr" : "en"} />
               ) : privateAuditLocalMode() ? null : <>
@@ -1131,8 +1171,29 @@ function ScopeConfiguratorInner() {
                   : t("configure.continueStripe")}
               </button>
               </>}
+              {privateCheckoutEnabled&&privateTransaction&&previewRequest.attempt===privateTransaction.attempt?
+                <PrivateAuditCheckoutPanel key={`${privateTransaction.attempt}:${privateTransaction.revision}`}
+                  transaction={privateTransaction} locale={locale==="fr"?"fr":"en"} contract={CHECKOUT_CONTRACT}
+                  label={<span>{t("configure.contract.beforeTerms")}{" "}<Link href="/legal/terms">{t("common.conditions")}</Link></span>}
+                  current={()=>window.location.hostname==="127.0.0.1"&&previewRevision.current===privateTransaction.revision
+                    &&currentPayloadRef.current===previewRequest.payload}
+                  navigate={url=>window.location.assign(url)}/> :null}
             </div>
           ) : null}
+          {privateCheckoutEnabled&&privateStorageError?<p role="status">{locale==="fr"
+            ?"Le stockage local est indisponible ou saturé. Aucune nouvelle préparation ne peut être démarrée."
+            :"Local storage is unavailable or full. A new preparation cannot be started."}</p>:null}
+          {privateCheckoutEnabled&&recoveries.filter(t=>t.attempt!==privateTransaction?.attempt).length>0?
+            <section aria-label={locale==="fr"?"Reprendre une tentative privée":"Resume a private attempt"}>
+              <h3>{locale==="fr"?"Tentatives privées à reprendre":"Private attempts to resume"}</h3>
+              <p>{locale==="fr"?"Ces devis restent liés à leur sélection d’origine, pas aux choix actuels."
+                :"These quotes remain bound to their original selection, not your current choices."}</p>
+              {recoveries.filter(t=>t.attempt!==privateTransaction?.attempt).map(transaction=>
+                <PrivateAuditCheckoutPanel key={`${transaction.attempt}:${previewRevision.current}`} transaction={transaction}
+                  locale={locale==="fr"?"fr":"en"} contract={CHECKOUT_CONTRACT}
+                  label={<span>{t("configure.contract.beforeTerms")}{" "}<Link href="/legal/terms">{t("common.conditions")}</Link></span>}
+                  current={()=>window.location.hostname==="127.0.0.1"&&privateAuditCheckoutUiMode()&&currentPayloadRef.current===currentPayload}
+                  navigate={url=>window.location.assign(url)}/>)}</section>:null}
                   </aside>
                 </form>
               </main>

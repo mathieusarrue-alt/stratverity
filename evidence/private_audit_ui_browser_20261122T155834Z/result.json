@@ -1,0 +1,25 @@
+{
+  "fixture_only": true,
+  "env_files_read": false,
+  "nonloopback_allowed": false,
+  "pass_": true,
+  "private_operations": [
+    "source",
+    "freeze",
+    "quote",
+    "checkout",
+    "checkout",
+    "status",
+    "source",
+    "freeze"
+  ],
+  "recovery_same_key_scope_quote": true,
+  "real_provider_requests": 0,
+  "blocked_external": 1,
+  "browser_errors": [],
+  "instant_price_before_fetch": "DEVIS INSTANTAN\u00c9\n19\u00a0\u20ac au total",
+  "duplicate_query_no_status": true,
+  "source_not_stored": true,
+  "aba_deferred_freeze_refused": true,
+  "eight_pending_preflight_no_upload": true
+}

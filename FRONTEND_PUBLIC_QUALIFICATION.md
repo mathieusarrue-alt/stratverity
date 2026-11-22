@@ -1,5 +1,75 @@
 # Frontend — reprise publique et qualification locale
 
+Rejeu indépendant principal sur sources finales : npmtest86PASS, typesDOM/Worker
+etbuildPASS ; JUnit private_audit_ui_global_principal_20261122.xml.
+Navigateur complet rejoué par principal, résultat PASS et capture réellement
+ouverte : evidence/private_audit_ui_browser_20261122T155834Z/. Reprise exacte,
+query doublon, ABA déféré et8places avant acquisition confirmés, zéro pageerror.
+Recette HTTP/consumer/Docker distincte dans backendbranche
+codex/private-http-docker-rehearsal-20261122 ; aucune activation native déduite.
+
+## 22 novembre — raccord UI privé DEV construit et qualifié localement, OFF hors recette
+
+ADAPTER le noyau local et les composants existants, sans nouvelle dépendance.
+Plan 1–6 relu par principal avant code : composant checkout isolé, garde
+révision ET payload aux frontières asynchrones, reprise explicite des anciennes
+tentatives initiées après reload, retour dédié statut seul. Contrat existant
+CHECKOUT_CONTRACT conservé à l'identique ; jamais de token/source/email dans
+le cache. Ni prix local, calcul moteur, chemin legacy ou production modifiés.
+Flags dev/loopback existants et opt-in checkout restent OFF hors recette.
+La recherche ReactuseEffect/Auth/Supabase de la session principale est réutilisée ;
+Hermes install.lock toujours bloqué, délégation GPT puis revue indépendante.
+Branche `codex/private-audit-ui-wiring-20261122`, parent579775d.
+Le configurateur conserve maintenant devis/scope/révision/tentative/clé figés,
+présente le contrat EXISTANT et passe au transport checkout privé sans emprunter
+le chemin legacy. Toute sélection effective invalide le devis et le consentement,
+y compris A→B→A pendant une requête. Les tentatives initiées restent récupérables
+explicitement après reload (même devis/clé/contrat), même si la réponse HTTP a
+été perdue. La version du contrat est figée pour ce bloc DEV ; un changement
+de version exige réconciliation serveur, pas une nouvelle clé automatique.
+
+Préflight lecture/écriture sur le namespace AVANT source/freeze ; stockage
+corrompu/bloqué/silencieusement non inscriptible ou8tentatives refuse une
+nouvelle préparation sans éviction. Une reprise existante reste possible.
+Premier devis expiré : bouton désactivé ; tentative déjà initiée : reprise
+permise localement mais autorité TTL/idempotence exclusivement serveur.
+L'indicateur initiated ne prouve ni réception serveur ni paiement.
+
+`/configure/private-success` ne fait QUE le statut privé : query unique,
+contexte sessionStorage strict, flags dev+127, garde query SPA/fragment et
+cleanup/unmount. Pas de HTML/email/source/download/owner_token/Stripe polling.
+Noindex + no-referrer,24polls max et20s/requête (noyau déjà qualifié).
+Report prêt ne signifie pas email reçu. Une session connue offre aussi un
+lien de statut sans devoir relancer checkout. Aucun flag, API réelle,
+paiement, compte, email, production ou fournisseur n'est activé ici.
+
+Qualification : `npm test` **86/86 PASS**, DOM+Worker0diagnostic et buildPASS.
+JUnit durable `evidence/private_audit_ui_global_qualified_20261122.xml`.
+8tests UI transpilent les TSX réellement modifiés (consentement, busyref,
+stale/unmount, expiry/reprise, session connue, OFF, query SPA) ;12tests noyau
+incluent stockage et préflight. Ce ne sont pas des parités de paiement.
+
+Navigateur Chrome réel + Playwright existant, ENV enfant allowlistée et
+`envDir` Vite VIDE : recette uniquement fixtures Auth/API, aucune donnée
+personnelle/cookie réel ni lecture de `.env`. Blocage de tout non-loopback
+AVANT navigation ; l'URL Stripe est refusée, jamais chargée. Preuve finale
+`evidence/private_audit_ui_browser_20261122T155630Z/result.json` et
+`private-return.png` : prix19€ affiché avant fetch, source→freeze→quote,
+checkout réponse perdue→reload→reprise EXACTE body+clé, retour statut,
+query doublon sans appel, vraie réponse freeze différée après A→B→A refusée,
+stockage8pending refusé avant upload sans éviction. Zéro exception navigateur
+signalée sur le parcours principal. La recette HTTP/composition/Docker est
+séparée et conduite par le principal ; cette preuve UI ne l'anticipe pas.
+
+Échecs conservés : harnais TSX initial récursif corrigé (pas moteur),
+harnais CSS CommonJS après cosmétique (global_final :84PASS/2FAIL), corrigé
+par mock export default conforme puis global_qualified :86PASS,
+navigateur155237 sonde readinessGET405 (route POST inchangée),155319 mock
+NOT_READY/report_ready incohérent correctement rejeté,155513 état submitting
+resté bloqué après rejet stale. Ce dernier vrai défaut UI est corrigé par
+reset idle dans l'invalidation privée et rejoué au navigateur155630.
+Anciennes sections « UI NON raccordée » ci-dessous sont HISTORIQUES.
+
 ## 22 novembre — noyau transaction locale/retour, UI NON raccordée
 
 Branche `codex/private-audit-ui-return-20261122`, parent1934556. Plan relu :
