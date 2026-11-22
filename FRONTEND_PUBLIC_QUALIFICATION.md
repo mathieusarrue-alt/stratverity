@@ -1,5 +1,104 @@
 # Frontend — reprise publique et qualification locale
 
+## 22 novembre 22:50 UTC — recette finale PILOTE durci, PASS local seulement
+
+La recette2246 reste close et ses artefacts sont INCHANGÉS. Une revue
+indépendante a ensuite motivé un delta de HARNAIS SEULEMENT, pas de produit :
+garde réseau limitée aux DEUX origines exactes site+Authfake (backend direct
+interdit), WebSocket limité au site ; ownership ExitStack assurant fermeture
+context puis browser même sur assertion ; hash fixture Auth AVANT exec_module
+et recheck après import. Source finale driver SHA
+`49d69e1c20f51a59af7a8181d02f61e68db9e9be681d46567ed81505c37d0f18`.
+Sept tests unitaires sans service/Docker/browser ont été rejoués PASS ; sortie
+durable `evidence/private_integrated_harness_unit_20261122.txt` (0.016s).
+Ils couvrent origines/WS, import avant exécution/changement en cours, export
+SHA sans clé brute, clé invalide et ordre de cleanup sur assertion.
+
+Ce changement de pilote justifie UNE nouvelle sortie neuve
+`SAAS_AUDIT_BACKTEST/evidence/PRIVATE_BROWSER_DOCKER_20261122T2250Z/`,
+pas une relance inchangée du lot2246. `browser-proof.json` final lu sur disque :
+PASS, contrôleur exit0,16pins stables, zéro exception navigateur ; deux
+dispatches checkout mais UNE réponse reçue par la page (première201 attachée
+puis abortée volontairement). Deux observations durables exportent les MÊMES
+attempt/keySHA/requestSHA/quoteSHA/session/responseSHA, jamais la clé brute.
+Une gatewayfixture et UN Docker, pendingfalse puis jobSUCCEEDED/DELIVERED,
+report_ready=true via vrai handler-cookie Next/proxy/HTTP local. Pas de mock
+source/freeze/quote/status. Les captures pending.png/ready.png sont conservées.
+
+La preuve initiale2246 et ses limites d'export restent décrites ci-dessous à
+titre historique ;2250 est la référence du HARNAIS FINAL. Les limites métier
+restent identiques : Supabase Auth/Stripe/SES fictifs, code fixe technique,
+horloge UI/backend historique sur capture21nov, NodeSSR et expiryAuth réels,
+aucun fournisseur/paiement/email/déploiement/flagproduction réel. Les résultats
+des deux lots ne sont pas additionnables ni une preuve d'idempotence universelle.
+Le produit, ses86tests antérieurs et ses flags permanents sont INCHANGÉS.
+
+## 22 novembre 22:46 UTC — recette navigateur/proxy/HTTP/Docker UNIQUE, locale seulement
+
+Décision **ADAPTER** : réemploi par importlib d'Auth/USER/free_port du driver UI
+déjà qualifié, sans copie de ces primitives ni dépendance installée. Nouveau
+`tests/private-audit-integrated-browser.py` seulement ; aucun produit UI,
+transport, proxy, moteur, Vite ou flag permanent modifié. Branche depuis3471eac.
+La recherche/revue du bloc précédent est réutilisée, et le plan intégré a été
+relu par principal avant lancement. Hermes reste verrouillé ; fallback GPT.
+
+UNE exécution neuve autorisée par principal, sortie privée absolue :
+`SAAS_AUDIT_BACKTEST/evidence/PRIVATE_BROWSER_DOCKER_20261122T2246Z/`.
+`browser-proof.json` sur disque : **PASS**, contrôleur exit0 et16entrées épinglées
+avant/après inchangées (sources front, deux drivers, contrôleur et4fichiers
+capture). Syntaxe py_compile et --help du nouveau driver PASS.
+
+Chrome neuf headless→vrai handler Next de cookiefixture→vrai proxy HTTP local→
+composition backend→Docker réellement isolé/image épinglée→vrai statut privé.
+Source exclusivement le témoin technique FIXE fourni par contrôleur ; aucun
+code client réel. Auth et gateway/mail restent SIMULÉS. Environnement enfant
+allowlisté, envDir Vite VIDE, aucune lecture .env ni session utilisateur. Tout
+réseau navigateur non-loopback est bloqué AVANT navigation ; la navigation
+Stripe exacte est observée puis ABORTÉE, jamais chargée ni route.fetch.
+La seule interception est checkout : route.fetch vers le site local exact,
+sans retry ni redirection,201JSON+body complet reçus, puis abort du premier
+retour APRÈS attachement. Source/freeze/quote/status ne sont pas mockés.
+
+Parcours réel : prix19€ immédiat avant fetch ; source200/freeze200/quote200 ;
+premier checkout201 attaché mais réponse perdue ; reload ; reprise explicite
+avec mêmes attempt/clé/body/devis/CS ; second checkout201. Une seule session
+gatewayfixture. URL retour construite UNIQUEMENT depuis template serveur
+épinglé inspecté, pas inventée par navigateur. Premier statut CHECKOUT_CREATED,
+job/delivery null et report_ready=false ; commande stdin deliver→webhooksfake→
+1Docker SUCCEEDED puis replay IDLE ; poll via même proxy retourne jobSUCCEEDED,
+deliveryDELIVERED/report_ready=true. Cela ne prouve pas réception email réelle.
+Cache seulement métadonnées, zéro exception navigateur. Captures pending.png
+et ready.png conservées ; leur revue visuelle indépendante appartient au principal.
+Principal confirme exit0 et a réellement ouvert ready.png. Limite du résumé
+durable : operations ne montre QU'UNE réponse checkout côté navigateur, car la
+première a été abortée après route.fetch. Le driver a asserté DEUX réponses201
+et leur identité exacte en mémoire, corroborées par DEUX POST201 dans vite.log
+et UNE session en SQLite ; il n'a pas exporté la liste des checkouts. Aucune
+réécriture des artefacts2246 ni seconde campagne pour embellir cette preuve.
+Une future recette pourra exporter les deux observations avec SHA de clé et
+compteurs dispatch/réception plutôt que la clé brute.
+
+Horloges distinctes et explicites : page.clock utilise UNIQUEMENT le cutoff
+historique21nov22:30:42.762568UTC de la capture gelée. Auth expiry est calculée
+sur heure réelle+3600s ; Node/SSR garde l'heure réelle ; contrôleur possède son
+horloge historique injectée. Aucune actualisation des données22nov revendiquée.
+
+Le backend a fourni finishproof et stop avec exit0. La preuve backend reste
+générique (`browser_route_qualified=false` historique) ; la liaison navigateur
+est portée par browser-proof séparée. Ne pas publier backend-private : SQLite,
+HTML/enveloppes et fichiers techniques y restent privés. Pas de Stripe, SES,
+Supabase, broker réel, validation exactement-une-fois sous tous crashes,
+qualification ACL/quotas physiques/destinataire réel ou déploiement déduits.
+Flags de recette existent uniquement dans les sous-processus détruits.
+
+Reproduction (nouveau dossier absolu obligatoire, Python global Playwright
+existant pour driver ; Python qualification pour contrôleur) :
+`python tests/private-audit-integrated-browser.py --backend <backend-absolu>
+--python <venv-qualification/Scripts/python.exe> --capture <CURRENT_FIVE_TF_20261121T2231Z>
+--output <NOUVEAU-dossier-absolu>`.
+Ne pas relancer ce lot clos ; prochaine porte = destinataire serveur/livraison
+authentifiée et contrôles ACL/rétention, après revue indépendante.
+
 Correction texte post-raccord relue indépendamment : le panneau couverture
 précise maintenant que la couverture SEULE n'autorise aucun paiement, plutôt
 que nier la possibilité d'un checkout distinct après devis réservé. Prix,

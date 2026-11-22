@@ -1,0 +1,161 @@
+{
+  "schema": "private-integrated-browser@1",
+  "authorization": false,
+  "pass_": true,
+  "fixture_only": true,
+  "external_browser_requests_allowed": false,
+  "env_files_loaded": false,
+  "real_provider": false,
+  "native_auth_qualified": false,
+  "broker_parity": false,
+  "physical_quotas_qualified": false,
+  "browser_clock_only": "2026-11-21T22:30:42.762568+00:00",
+  "auth_expiry_real_clock": true,
+  "server_clock_historical": true,
+  "operations": [
+    [
+      "source",
+      200
+    ],
+    [
+      "freeze",
+      200
+    ],
+    [
+      "quote",
+      200
+    ],
+    [
+      "checkout",
+      201
+    ],
+    [
+      "status",
+      200
+    ],
+    [
+      "status",
+      200
+    ]
+  ],
+  "lost_response_after_attach": true,
+  "retry_same_attempt_key_body_quote_session": true,
+  "provider_calls": 1,
+  "docker_runs": 1,
+  "source_sha256": "b4c5b66b347a5a697f1051d25d1aa2ba6b233abd43276091f9fa9437db0f0630",
+  "pending": {
+    "checkout_status": "CHECKOUT_CREATED",
+    "job_status": null,
+    "delivery_status": null,
+    "report_ready": false,
+    "authorization": false
+  },
+  "ready_status": {
+    "checkout_status": "PAID_PENDING_PROVISIONING",
+    "job_status": "SUCCEEDED",
+    "delivery_status": "DELIVERED",
+    "report_ready": true,
+    "authorization": false
+  },
+  "controller_exit": 0,
+  "instant_price_before_fetch": "DEVIS INSTANTAN\u00c9\n19\u00a0\u20ac au total",
+  "blocked_external": 1,
+  "browser_errors": [],
+  "cache_metadata_only": true,
+  "pinned_return_template_used": true,
+  "backend_proof_sha256": "dc148988c245ae026bfe004c1c78137681edf5222163b7ac82994d4f02abed9b",
+  "checkout_dispatches": 2,
+  "browser_checkout_responses": 1,
+  "checkouts": [
+    {
+      "attempt": "693015f2-0a79-445e-b388-7372a3597083",
+      "key_sha256": "f09ed5fea0abfaebeaa2ae382a896c7ebaa5bfe1513a15781d828482f70ceb0a",
+      "request_sha256": "51d67185fdfcd8946514477cd8be9941a05064a22e5043f50b9de988beef1818",
+      "quote_sha256": "b3172a39828872ce86012de1bb63777f1aab46acc2015ae425f7c68275a40fd3",
+      "session": "cs_test_fake001",
+      "response_sha256": "c58183bd9b846d0e8022bed3779611168725771e02589238e97805b754f24e60"
+    },
+    {
+      "attempt": "693015f2-0a79-445e-b388-7372a3597083",
+      "key_sha256": "f09ed5fea0abfaebeaa2ae382a896c7ebaa5bfe1513a15781d828482f70ceb0a",
+      "request_sha256": "51d67185fdfcd8946514477cd8be9941a05064a22e5043f50b9de988beef1818",
+      "quote_sha256": "b3172a39828872ce86012de1bb63777f1aab46acc2015ae425f7c68275a40fd3",
+      "session": "cs_test_fake001",
+      "response_sha256": "c58183bd9b846d0e8022bed3779611168725771e02589238e97805b754f24e60"
+    }
+  ],
+  "browser_origins": [
+    "http://127.0.0.1:60155",
+    "http://127.0.0.1:60196"
+  ],
+  "browser_direct_backend_allowed": false,
+  "auth_fixture_pinned_before_import": true,
+  "browser_cleanup_on_assertion": true,
+  "input_pins_stable": true,
+  "input_pins": [
+    {
+      "name": "private-audit-client.ts",
+      "sha256": "8539aa759b0229e69322ff8cd809bb7f3cfdb282587a9f9813aed81d5eef692c"
+    },
+    {
+      "name": "private-audit-flow.ts",
+      "sha256": "00bbf4765211b4c1c7cc5a456d882867d4be6171277fda8727b60c64b851d670"
+    },
+    {
+      "name": "bridge.ts",
+      "sha256": "b288e7ddf1540d92fb489fdc9388f74a53992c1648cd83a9ef93feea5710f4e9"
+    },
+    {
+      "name": "route.ts",
+      "sha256": "1e6d37f857e6f7b88e9f76704a1d18fad0a8956826395bd0cf35fb4f5beb2a52"
+    },
+    {
+      "name": "page.tsx",
+      "sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7"
+    },
+    {
+      "name": "page.tsx",
+      "sha256": "947cd8e72625ec1c4ec73caa5455f562599a5cd0239686ff03c1d28f371ae93a"
+    },
+    {
+      "name": "layout.tsx",
+      "sha256": "8ac51638b661ee1331a3b3a200c3ae27b06507199b6c64166147b197ebc24f36"
+    },
+    {
+      "name": "private-audit-checkout-panel.tsx",
+      "sha256": "b10dbcb086d136cc55fc28707b23001859c14299398713b7594266b06f384683"
+    },
+    {
+      "name": "vite.config.ts",
+      "sha256": "54f6fdb5a0d67039def04069df7aea23446ee31158c070deb5867232eb7c12df"
+    },
+    {
+      "name": "private-audit-ui-browser.py",
+      "sha256": "9fbe428aa335c46714bfb80fc545bdd584a949f5c9a61bd48ab5115a6048f4c6"
+    },
+    {
+      "name": "private-audit-integrated-browser.py",
+      "sha256": "49d69e1c20f51a59af7a8181d02f61e68db9e9be681d46567ed81505c37d0f18"
+    },
+    {
+      "name": "gpt_private_http_docker_rehearsal.py",
+      "sha256": "6dc365911a10a25c308ef0413b9f70c5d9e518953488fd0398f297405ce05409"
+    },
+    {
+      "name": "verification.json",
+      "sha256": "3b680de092710fdb91b495447b71c21bc8158045dcbc3a1e1a650f5164da3637"
+    },
+    {
+      "name": "15m.csv.gz",
+      "sha256": "a7ddd3b52fa06141368b0be3a558867d57343406ed414a549ceabab0c17e16f5"
+    },
+    {
+      "name": "15m.csv.gz.source.json",
+      "sha256": "02ce1decc65a01a05fdbcf3dfb063b40be0fd078c31b420fdfa447abd985b178"
+    },
+    {
+      "name": "BTCUSDT_15m_second.json",
+      "sha256": "4251eca03f83d9fb659f7037815297ea3e81c42168d0c82cf2623a74bd947ab6"
+    }
+  ]
+}
