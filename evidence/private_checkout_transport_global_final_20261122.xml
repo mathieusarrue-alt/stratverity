@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="static capacity matrix uses all catalogue depths and five timeframes without data claims" time="0.001310" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="unknown calendars, unsupported timeframes, multiple contexts and malformed depth stay blocked" time="0.000110" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="provider identities are explicit for the ten audit crypto selections only" time="0.010154" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="selection changes immediately and messages separate capacity from price and data" time="0.000169" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="checkout guard uses canonical captured payload before email, upload and payment calls" time="0.000391" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="absent differs from null and no private preview grants payment" time="0.000252" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="exact window, malformed clock, expiry and changed context" time="0.001036" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="render verified window in French and English without a payment CTA" time="0.013224" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="unavailable, invalid, expired do not display a checkbox or dates" time="0.000604" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="rendered API fixture uses real frozen coverage without claiming max history" time="0.001177" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="calendar projection rejects false full history, off-grid H4, Sunday weekly and over-cap data" time="0.000206" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="calendar projection retains H4, Monday weekly and leap-day calendar-year windows" time="0.001708" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="verified window requires the scope history target, but blocked states stay blocked" time="0.000168" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="history projection catalogue matches backend release fixture for all depths" time="0.000759" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="v5 options and plotted equity stay explicit" time="0.047417" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs"/>
+	<testcase name="unmount removes both charts using supported API" time="0.007782" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs"/>
+	<testcase name="partially created chart is still removed after initialization fails" time="0.006196" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs"/>
+	<testcase name="drawdown uses relative peak equity and includes the initial capital" time="0.016797" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs"/>
+	<testcase name="separate DOM and Worker projects still cover every source file" time="0.062879" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\example-charts.test.mjs"/>
+	<testcase name="disabled, invalid targets and non-allowlisted actions cannot read a session" time="0.014466" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="only cookie-derived token and exact allowed destination are forwarded" time="0.002014" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="unverified session does not read body; bounds work without declared length" time="0.000494" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="oversized, redirect and authorization-bearing upstream replies fail closed" time="0.001319" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="checkout and status need a strict separate opt-in before reading the session" time="0.000581" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="checkout forwards only cookie bearer plus exact key and projects 201 without redirect" time="0.000655" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="duplicate or malformed checkout key fails before session or upstream" time="0.000410" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="status uses 200 and strips key, private identities and report fields" time="0.001330" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="bad checkout upstream states, costs and origins remain closed" time="0.002994" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="local mapping is exact and does not reuse a traditional symbol" time="0.000686" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="file bytes including BOM survive and incorrect deposit prevents freeze" time="0.012618" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="explicit reduced consent, exact amount, and a still-current window are required" time="0.000712" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="reserved quote is immutable, projected and returned for the next step" time="0.000250" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="checkout sends only exact request and key, validates reply and never redirects" time="0.001354" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="expired retry is explicit and keeps exact quote and idempotency key" time="0.000853" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="Stripe URL boundary allows official opaque fragment but never a different origin" time="0.000531" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="checkout rejects mismatched identity, price, status, URL and response code" time="0.000893" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="private status projection contains no legacy owner or report authority" time="0.000533" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="invalid operation, attempt or key cannot dispatch; strict response code applies" time="0.000612" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="production bundle refuses the private Audit bridge before any session or payment" time="0.041214" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="server-renders the StratVerity landing page with JSON-LD pricing" time="0.175213" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="every frontend response receives the shared security policy" time="0.315760" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="scope configurator requires login and redirects to /login" time="0.033528" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="landing uses the centralized 12-language design source" time="0.005098" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="application routes use the generated 12-locale catalogue with English default" time="0.008273" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="public login offers verified email and real Supabase OAuth actions" time="0.060486" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="contact details are public and match the current contract" time="0.056403" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="published JSON-LD on layout matches current pricing 19/49/dès79" time="0.000882" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="every public route receives the shared interactive art direction" time="0.160854" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="mobile theme follows the real document state and survives restricted storage" time="0.001111" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="customer account stays protected by server-side Supabase identity" time="0.023040" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="scope configurator targets the bounded preview endpoint and MAX_STRATEGIES 10" time="0.000593" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="legal beta bundle is public and excludes client-code resale" time="0.172249" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="checkout return never claims provisioning before the signed webhook" time="0.022134" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="checkout and return page bind uploads to one browser-held owner token" time="0.001484" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="private admin console keeps its bearer secret in volatile component state" time="0.001733" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="scope configurator publishes a deterministic launch price grid (v0.3)" time="0.000719" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="instant quote uses current choices and separates monthly and first payments" time="0.018474" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="deployment metadata and worker output are present" time="0.001042" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="public certification page renders a status shell for any audit id" time="0.103321" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="certification SEO indexes only genuinely sealed certificates" time="0.001415" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="certification UI derives the three trust states from the engine" time="0.000851" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="marketplace is hard-off: noindex, disabled, commerce off" time="0.001804" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="disabled product surfaces stay out of indexing and submission" time="0.000933" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="free tools are public, localized and linked from research" time="0.028466" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="eligibility proxy is same-site, bounded and fail-closed" time="0.001145" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<testcase name="marketplace remains fail-closed and proxies verified identity server-side" time="0.001092" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\rendered-html.test.mjs"/>
+	<!-- tests 66 -->
+	<!-- suites 0 -->
+	<!-- pass 66 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 1339.9924 -->
+</testsuites>

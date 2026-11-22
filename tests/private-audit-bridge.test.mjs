@@ -58,3 +58,95 @@ test("oversized, redirect and authorization-bearing upstream replies fail closed
     assert.equal(response.headers.get("location"),null);
   }
 });
+
+const checkout = {authorization:false,checkout_attempt_id:"checkout-"+"a".repeat(32),checkout_session_id:"cs_test_fixture001",
+  checkout_url:"https://checkout.stripe.com/c/pay/cs_test_fixture001#fidkd%2Fopaque",scope_fingerprint:"a".repeat(64),
+  quote_sha256:"b".repeat(64),status:"CHECKOUT_CREATED",pricing:{currency:"eur",cadence:"ONE_TIME",
+    subtotal_ex_vat_cents:4900,activation_ex_vat_cents:0,due_today_ex_vat_cents:4900,
+    tax_calculation:"STRIPE_AUTOMATIC_TAX_AT_CHECKOUT"}};
+const key="fixture-checkout-key-0001";
+const checkoutRequest = (extra={}) => request({headers:{Origin:site,"Content-Type":"application/json",
+  "Idempotency-Key":key,Authorization:"Bearer browser-controlled"},...extra});
+
+test("checkout and status need a strict separate opt-in before reading the session", async () => {
+  for (const checkoutEnabled of [undefined,false,1,"true",null]) {
+    const readToken=()=>assert.fail("session read");
+    for (const operation of ["checkout","status"]) {
+      assert.equal((await proxyPrivateAudit(checkoutRequest(),"a",operation,config({checkoutEnabled,readToken}))).status,404);
+    }
+  }
+  const disabled=await proxyPrivateAudit(checkoutRequest(),"a","checkout",config({development:false,checkoutEnabled:true,
+    readToken:()=>assert.fail("session read")}));
+  assert.equal(disabled.status,404);
+});
+
+test("checkout forwards only cookie bearer plus exact key and projects 201 without redirect", async () => {
+  const result=await proxyPrivateAudit(checkoutRequest(),"a","checkout",config({checkoutEnabled:true,send:async(url,init)=>{
+    assert.equal(url,upstream+"/v1/private-audit/intakes/a/checkout");
+    assert.deepEqual(init.headers,{Authorization:"Bearer cookie-token",Origin:site,"Content-Type":"application/json","Idempotency-Key":key});
+    assert.equal(init.redirect,"manual");
+    return Response.json({...checkout,owner_token:"hidden",pricing:{...checkout.pricing,internal:"hidden"}},
+      {status:201,headers:{"Set-Cookie":"private=1",Location:"https://evil.test"}});
+  }}));
+  assert.equal(result.status,201);assert.equal(result.headers.get("cache-control"),"no-store");
+  assert.equal(result.headers.get("location"),null);assert.equal(result.headers.get("set-cookie"),null);
+  assert.deepEqual(await result.json(),checkout);
+});
+
+test("duplicate or malformed checkout key fails before session or upstream", async () => {
+  for (const value of [undefined,"short","a".repeat(256),"invalid key has spaces",key+", "+key]) {
+    const h={Origin:site,"Content-Type":"application/json",...(value ? {"Idempotency-Key":value} : {})};
+    const result=await proxyPrivateAudit(request({headers:h}),"a","checkout",config({checkoutEnabled:true,
+      readToken:()=>assert.fail("session read"),send:async()=>assert.fail("upstream called")}));
+    assert.equal(result.status,400);assert.equal(result.headers.get("cache-control"),"no-store");
+  }
+});
+
+test("status uses 200 and strips key, private identities and report fields", async () => {
+  const status={checkout_status:"PAID_PENDING_PROVISIONING",job_status:"SUCCEEDED",delivery_status:"DELIVERED",
+    report_ready:true,authorization:false};
+  const result=await proxyPrivateAudit(checkoutRequest(),"a","status",config({checkoutEnabled:true,send:async(_url,init)=>{
+    assert.deepEqual(init.headers,{Authorization:"Bearer cookie-token",Origin:site,"Content-Type":"application/json"});
+    return Response.json({...status,source:"hidden",email:"hidden",report_id:"hidden",report_url:"hidden"});
+  }}));
+  assert.equal(result.status,200);assert.deepEqual(await result.json(),status);
+  for (const bad of [{...status,report_ready:"true"},{...status,job_status:"unknown"},
+    {...status,checkout_status:"CHECKOUT_CREATED"},{...status,delivery_status:null}]) {
+    assert.equal((await proxyPrivateAudit(request(),"a","status",config({checkoutEnabled:true,
+      send:async()=>Response.json(bad)}))).status,503);
+  }
+});
+
+test("bad checkout upstream states, costs and origins remain closed", async () => {
+  for (const bad of [{...checkout,checkout_url:"https://evilstripe.com/pay"},
+    {...checkout,checkout_url:"https://checkout.stripe.com:444/pay"},
+    {...checkout,checkout_url:"https://checkout.stripe.com:/pay"},
+    {...checkout,checkout_url:"https://.stripe.com/pay"},
+    {...checkout,checkout_url:"https://-bad.stripe.com/pay"},
+    {...checkout,checkout_url:"https://bad-.stripe.com/pay"},
+    {...checkout,checkout_url:"https://check..stripe.com/pay"},
+    {...checkout,checkout_url:"https://ｓｔｒｉｐｅ.com/pay"},
+    {...checkout,checkout_url:"https://%73tripe.com/pay"},
+    {...checkout,checkout_url:"https://%EF%BD%93tripe.com/pay"},
+    {...checkout,checkout_url:"https://user:pw@checkout.stripe.com/pay"},
+    {...checkout,quote_sha256:"bad"},{...checkout,scope_fingerprint:"bad"},
+    {...checkout,pricing:{...checkout.pricing,due_today_ex_vat_cents:1}},
+    {...checkout,status:"DELIVERED"},{...checkout,authorization:true}]) {
+    const result=await proxyPrivateAudit(checkoutRequest(),"a","checkout",config({checkoutEnabled:true,
+      send:async()=>Response.json(bad,{status:201})}));
+    assert.equal(result.status,503);assert.equal(result.headers.get("cache-control"),"no-store");
+  }
+  for (const status of [200,202,302]) {
+    assert.equal((await proxyPrivateAudit(checkoutRequest(),"a","checkout",config({checkoutEnabled:true,
+      send:async()=>Response.json(checkout,{status})}))).status,503);
+  }
+  for (const status of [400,401,403,404,409,413,415,429,503]) {
+    const result=await proxyPrivateAudit(checkoutRequest(),"a","checkout",config({checkoutEnabled:true,
+      send:async()=>Response.json({private:"ignored"},{status})}));
+    assert.equal(result.status,status);assert.equal((await result.json()).private,undefined);
+  }
+  const explicit443={...checkout,checkout_url:"https://checkout.stripe.com:443/c/pay/a?opaque=%2F#fidkd%2Fopaque"};
+  const positive=await proxyPrivateAudit(checkoutRequest(),"a","checkout",config({checkoutEnabled:true,
+    send:async()=>Response.json(explicit443,{status:201})}));
+  assert.equal(positive.status,201);assert.equal((await positive.json()).checkout_url,explicit443.checkout_url);
+});

@@ -1,5 +1,72 @@
 # Frontend — reprise publique et qualification locale
 
+Rejeu indépendant final par l'agent principal après durcissement URL :
+`npm test` PASS (types DOM/Worker0, build,66tests), puis JUnit durable
+`evidence/private_checkout_transport_global_final_20261122.xml` 66/66.
+ClientSHA8539AA759B0229E69322FF8CD809BB7F3CFDB282587A9F9813AED81D5EEF692C,
+bridgeSHAB288E7DDF1540D92FB489FDC9388F74A53992C1648CD83A9EF93FEEA5710F4E9.
+Ces tests ne raccordent PAS encore les pagesUI/retour et n'activent aucun flag.
+
+## 22 novembre — transport privé checkout/statut, contrat avant code
+
+Décision ADAPTER le client et le proxy loopback existants, sans nouvelle
+dépendance ni SDK/provider. Pré-scan client/bridge/configurateur/retour/tests,
+plan relu par l'agent principal avant ce bloc. Recherche de la session backend
+réutilisée (docs Auth/Supabase/Stripe), pas de recherche externe supplémentaire.
+Hermes indisponible install.lock confirmé par le principal ; délégation GPT.
+
+Le bloc TRANSPORT reçoit checkout/statut derrière un second opt-in booléen,
+OFF par défaut et développement/loopback obligatoires. Le Bearer ne vient que
+du serveur. Idempotency-Key ASCII unique n'est transmis que pour checkout.
+201 seulement pour checkout, 200 pour les autres opérations ; projections
+explicites/no-store et aucune redirection HTTP suivie automatiquement.
+Le devis validé retourné par reserveLocalAudit devient immutable. Les helpers
+valident prix/scope/quote/IDs/URL, sans devenir une autorité de paiement.
+Une option locale allowExpiredRetry explicite conserve le même devis/clé pour
+un réessai initié ; elle ne contourne jamais le TTL imposé par le backend.
+
+Aucun changement page/configurateur/success, UI/redirect automatique, owner_token,
+activation de production, données, moteur ou exécution client. Le retour legacy
+reste incompatible avec l'identité privée ; ne pas brancher un bouton avant sa
+qualification séparée. Les fragments opaques Stripe sont conservés sans
+interprétation ni retrait : l'exemple officiel Checkout utilise `#fidkd...`.
+Cela n'autorise jamais un autre hôte, des credentials ou un autre port.
+
+Implémentation du transport sur `codex/private-checkout-transport-20261122` :
+nouvelle variable serveur `STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL` lue mais
+jamais activée par ce bloc ; elle exige aussi NODE_ENV=development, l'ancien
+opt-in privé et deux origines loopback distinctes. Checkout POST201/statut
+POST200, token de cookie uniquement ; en-tête de clé ignoré sur statut et
+doublons fusionnés avec virgule refusés sur checkout. Réponses de paiement
+projetées sans lignes de cible historique, identité propriétaire ou champs
+privés imbriqués ; aucun Location/Set-Cookie retransmis. Le fragment Stripe
+opaque est retourné identique, aucune navigation automatique par ces helpers.
+Source officielle consultée côté agent principal :
+https://docs.stripe.com/api/checkout/sessions/object
+
+`npm test` réussi : types DOM/Worker sans diagnostic, build vinext réussi,
+**66tests verts** (54 précédents +12 nouveaux). Groupe client/bridge19verts ;
+comptes chevauchants. JUnit `evidence/private_checkout_transport_20261122.xml`
+rejoué après build. Warnings préexistants ViteconfigLoader et chunks>500kB,
+pas de mise à jour de paquet. Prix local instantané inchangé, aucun fetch de
+prix nouveau ni modification page/success, aucune activation ou livraison.
+Les réponses réseau sont des doubles de test, pas un vrai checkout Stripe ni
+une connexion Supabase distante. Le helper `allowExpiredRetry:true` conserve
+devis et clé fournis, mais ne prouve pas qu'une tentative a effectivement été
+initiée : le backend vérifie encore propriétaire, session et TTL applicable.
+Les pages restent volontairement non raccordées tant que leur retour privé et
+la provenance du destinataire serveur ne sont pas qualifiés séparément.
+
+Durcissement URL après revue indépendante : l'autorité BRUTE doit aussi être
+ASCII DNS (pas de conversion IDN/percent-host par URL()), sans port vide final,
+avec labels DNS1..63caractères et tirets seulement internes. Refus explicites
+`checkout.stripe.com:`, `.stripe.com`, `-bad.stripe.com`, labels vides et hôtes
+Unicode/percent-encodés ; port443 et query/fragmentopaques conservés identiques.
+Les deux validateurs ont les mêmes fixtures. Après correction : groupe19tests
+verts, typechecksDOM/Worker0diagnostic etbuildréussi ; preuve additionnelle
+`evidence/private_checkout_transport_focus_final_20261122.xml`. La preuve66
+initiale reste intacte, le principal reproduira la suite complète finale.
+
 ## 21 novembre : unité du drawdown de la démo corrigée
 
 Bloc séparé après53d6fef, plan relu avantcode. Le graphique soustrayait deux

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="disabled, invalid targets and non-allowlisted actions cannot read a session" time="0.015680" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="only cookie-derived token and exact allowed destination are forwarded" time="0.002515" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="unverified session does not read body; bounds work without declared length" time="0.000504" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="oversized, redirect and authorization-bearing upstream replies fail closed" time="0.001496" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="checkout and status need a strict separate opt-in before reading the session" time="0.000641" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="checkout forwards only cookie bearer plus exact key and projects 201 without redirect" time="0.000694" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="duplicate or malformed checkout key fails before session or upstream" time="0.000526" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="status uses 200 and strips key, private identities and report fields" time="0.001413" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="bad checkout upstream states, costs and origins remain closed" time="0.004328" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-bridge.test.mjs"/>
+	<testcase name="local mapping is exact and does not reuse a traditional symbol" time="0.000567" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="file bytes including BOM survive and incorrect deposit prevents freeze" time="0.012371" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="explicit reduced consent, exact amount, and a still-current window are required" time="0.000706" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="reserved quote is immutable, projected and returned for the next step" time="0.000246" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="checkout sends only exact request and key, validates reply and never redirects" time="0.001130" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="expired retry is explicit and keeps exact quote and idempotency key" time="0.000491" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="Stripe URL boundary allows official opaque fragment but never a different origin" time="0.000179" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="checkout rejects mismatched identity, price, status, URL and response code" time="0.000847" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="private status projection contains no legacy owner or report authority" time="0.000507" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<testcase name="invalid operation, attempt or key cannot dispatch; strict response code applies" time="0.000236" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-client.test.mjs"/>
+	<!-- tests 19 -->
+	<!-- suites 0 -->
+	<!-- pass 19 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 109.1221 -->
+</testsuites>
