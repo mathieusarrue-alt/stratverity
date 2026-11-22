@@ -1,5 +1,44 @@
 # Frontend — reprise publique et qualification locale
 
+## 22 novembre — noyau transaction locale/retour, UI NON raccordée
+
+Branche `codex/private-audit-ui-return-20261122`, parent1934556. Plan relu :
+ADAPTER le transport existant dans un petit module pur, sans dépendance.
+Le périmètre effectivement construit ici est SEULEMENT
+`app/configure/private-audit-flow.ts`, ses tests et leur inscription npm.
+Aucun changement de page/configurateur, aucune page private-success créée,
+aucun bouton/flag/paiement/serveur activé : le reste du plan UI est EN ATTENTE.
+
+Métadonnées seules : scope Audit mono-contexte exact (SHA/version, jamais le
+fichier/nom/source/email/token), devis, révision, tentative et clé immuables.
+Un namespace sessionStorage est borné à64KiBUTF8 et8TENTATIVES au total,
+sans éviction/remplacement de tentative pour faire de la place. Transition
+initiated persistée avant dispatch ; storage impossible ou première expiration
+refusent avant fetch. Réessai conserve devis/clé d'origine. Ce marqueur client
+ne prouve pas un envoi ni une autorité de paiement côté serveur.
+
+Retour parsé strictement : un attempt et un session_id, aucun autre champ ;
+contexte local initié requis, session locale différente refusée. Le poller
+appelle UNIQUEMENT statusPrivateAudit, au maximum24fois, intervalle2.5s,
+timeout20s/requête, annulation et garde stale avant/après réponse/callback.
+Correction relevée en revue : stop() depuis onStatus doit terminer avant
+d'attendre un nouvel intervalle ; cas testé. Reportready n'est pas emailreçu.
+
+**11 nouveaux tests verts**, deux typechecksDOM/Worker sans diagnostic et
+buildréussi ; rejoueglobal **77testsverts**, dontles66précédents, nonadditionnables.
+Preuves `evidence/private_audit_flow_final_qualified_20261122.xml` (11) et
+`evidence/private_audit_flow_global_20261122.xml` (77). PremièrecollecteNode
+échouait surimportTSextensionless avant exécution des cas ; tracesinitiales
+conservées. Teststranspilent la VRAIsource viaTypeScript installé, avecseul
+import du helper changé en URLfichier .ts pourNode ; pas de copie métier ni
+assouplissement tsconfig. Les testsutilisent stockage/fetchdoubles, pasbrowser,
+Supabase/Stripe/emailréels. Les shellsFR/EN et leur raccord UI restent à coder
+et à qualifier, ne pas déduire parcoursclientterminé de ce noyau testé.
+
+Revue indépendante finale par l'agent principal : source et scopebuilder relus,
+`npm test`77/77+typesDOM/Worker0+buildPASS reproduits. Preuve distincte
+`evidence/private_audit_flow_global_principal_20261122.xml`,77casverts.
+
 Rejeu indépendant final par l'agent principal après durcissement URL :
 `npm test` PASS (types DOM/Worker0, build,66tests), puis JUnit durable
 `evidence/private_checkout_transport_global_final_20261122.xml` 66/66.

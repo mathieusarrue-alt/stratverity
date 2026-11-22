@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="context is deep frozen and only exact scope metadata is accepted" time="0.001293" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="global namespace retains at most eight attempts without evicting any" time="0.001709" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="64 KiB UTF8 bound and corrupt/duplicate contexts refuse without clearing storage" time="0.000388" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="same-attempt identity, quote, key and initiated state cannot be reassigned" time="0.000882" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="marker persists before dispatch; response loss reuses the original key and quote" time="0.015057" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="uninitiated expiry or marker-write failure cannot dispatch" time="0.000344" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="return query is unique, bounded and tied to initiated local metadata" time="0.000751" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="status polling is bounded and never initiates payment or delivery" time="0.320734" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="stale response and cleanup abort cannot update the view" time="0.000826" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="request timeout stops polling and a ready status is not an email claim" time="0.014202" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<testcase name="stopping inside a status update finishes before scheduling the next interval" time="0.000557" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\private-audit-flow.test.mjs"/>
+	<!-- tests 11 -->
+	<!-- suites 0 -->
+	<!-- pass 11 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 724.7741 -->
+</testsuites>
