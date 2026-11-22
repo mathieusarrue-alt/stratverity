@@ -20,7 +20,7 @@ const labels = {
     agree: "J’accepte cette période réduite pour cette sélection.",
     agreed: "Période acceptée pour cet aperçu uniquement.",
     reset: "La confirmation précédente ne s’applique pas. Relancez l’aperçu.",
-    noPayment: "Cet aperçu ne permet pas de payer.",
+    noPayment: "La couverture seule n’autorise aucun paiement.",
   },
   en: {
     title: "Data coverage",
@@ -38,7 +38,7 @@ const labels = {
     agree: "I accept this shorter period for this selection.",
     agreed: "Period accepted for this preview only.",
     reset: "The previous confirmation does not apply. Run the preview again.",
-    noPayment: "Payment is not available from this preview.",
+    noPayment: "Data coverage alone does not authorize payment.",
   },
 } as const;
 

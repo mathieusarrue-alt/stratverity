@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="static capacity matrix uses all catalogue depths and five timeframes without data claims" time="0.001222" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="unknown calendars, unsupported timeframes, multiple contexts and malformed depth stay blocked" time="0.000107" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="provider identities are explicit for the ten audit crypto selections only" time="0.009369" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="selection changes immediately and messages separate capacity from price and data" time="0.000170" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="checkout guard uses canonical captured payload before email, upload and payment calls" time="0.000396" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="absent differs from null and no private preview grants payment" time="0.000248" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="exact window, malformed clock, expiry and changed context" time="0.001046" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="render verified window in French and English without a payment CTA" time="0.012885" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="unavailable, invalid, expired do not display a checkbox or dates" time="0.000599" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="rendered API fixture uses real frozen coverage without claiming max history" time="0.001349" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs" failure="The input did not match the regular expression /Cet aperçu ne permet pas de payer/. Input:&#10;&#10;'&lt;section aria-label=&amp;quot;Couverture des données&amp;quot;>&lt;h3>Couverture des données&lt;/h3>&lt;p>&lt;strong>Historique plus court que demandé&lt;/strong>&lt;/p>&lt;p>BINANCE:BTCUSDT · 15M&lt;/p>&lt;dl>&lt;dt>Durée demandée&lt;/dt>&lt;dd>8 ans&lt;/dd>&lt;dt>Dates vérifiées (UTC, clôture de fin)&lt;/dt>&lt;dd>2024-01-05 06:45:00+00:00 → 2026-11-10 06:45:00+00:00&lt;/dd>&lt;dt>Bougies clôturées&lt;/dt>&lt;dd>99 840&lt;/dd>&lt;/dl>&lt;label>&lt;input type=&amp;quot;checkbox&amp;quot;/> J’accepte cette période réduite pour cette sélection.&lt;/label>&lt;p role=&amp;quot;status&amp;quot;>&lt;/p>&lt;p>La couverture seule n’autorise aucun paiement.&lt;/p>&lt;/section>'&#10;">
+		<failure type="testCodeFailure" message="The input did not match the regular expression /Cet aperçu ne permet pas de payer/. Input:&#10;&#10;'&lt;section aria-label=&amp;quot;Couverture des données&amp;quot;>&lt;h3>Couverture des données&lt;/h3>&lt;p>&lt;strong>Historique plus court que demandé&lt;/strong>&lt;/p>&lt;p>BINANCE:BTCUSDT · 15M&lt;/p>&lt;dl>&lt;dt>Durée demandée&lt;/dt>&lt;dd>8 ans&lt;/dd>&lt;dt>Dates vérifiées (UTC, clôture de fin)&lt;/dt>&lt;dd>2024-01-05 06:45:00+00:00 → 2026-11-10 06:45:00+00:00&lt;/dd>&lt;dt>Bougies clôturées&lt;/dt>&lt;dd>99 840&lt;/dd>&lt;/dl>&lt;label>&lt;input type=&amp;quot;checkbox&amp;quot;/> J’accepte cette période réduite pour cette sélection.&lt;/label>&lt;p role=&amp;quot;status&amp;quot;>&lt;/p>&lt;p>La couverture seule n’autorise aucun paiement.&lt;/p>&lt;/section>'">
+[Error [ERR_TEST_FAILURE]: The input did not match the regular expression /Cet aperçu ne permet pas de payer/. Input:
+
+'&lt;section aria-label="Couverture des données">&lt;h3>Couverture des données&lt;/h3>&lt;p>&lt;strong>Historique plus court que demandé&lt;/strong>&lt;/p>&lt;p>BINANCE:BTCUSDT · 15M&lt;/p>&lt;dl>&lt;dt>Durée demandée&lt;/dt>&lt;dd>8 ans&lt;/dd>&lt;dt>Dates vérifiées (UTC, clôture de fin)&lt;/dt>&lt;dd>2024-01-05 06:45:00+00:00 → 2026-11-10 06:45:00+00:00&lt;/dd>&lt;dt>Bougies clôturées&lt;/dt>&lt;dd>99 840&lt;/dd>&lt;/dl>&lt;label>&lt;input type="checkbox"/> J’accepte cette période réduite pour cette sélection.&lt;/label>&lt;p role="status">&lt;/p>&lt;p>La couverture seule n’autorise aucun paiement.&lt;/p>&lt;/section>'
+] {
+  code: 'ERR_TEST_FAILURE',
+  failureType: 'testCodeFailure',
+  cause: AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Cet aperçu ne permet pas de payer/. Input:
+  
+  '&lt;section aria-label="Couverture des données">&lt;h3>Couverture des données&lt;/h3>&lt;p>&lt;strong>Historique plus court que demandé&lt;/strong>&lt;/p>&lt;p>BINANCE:BTCUSDT · 15M&lt;/p>&lt;dl>&lt;dt>Durée demandée&lt;/dt>&lt;dd>8 ans&lt;/dd>&lt;dt>Dates vérifiées (UTC, clôture de fin)&lt;/dt>&lt;dd>2024-01-05 06:45:00+00:00 → 2026-11-10 06:45:00+00:00&lt;/dd>&lt;dt>Bougies clôturées&lt;/dt>&lt;dd>99 840&lt;/dd>&lt;/dl>&lt;label>&lt;input type="checkbox"/> J’accepte cette période réduite pour cette sélection.&lt;/label>&lt;p role="status">&lt;/p>&lt;p>La couverture seule n’autorise aucun paiement.&lt;/p>&lt;/section>'
+  
+      at TestContext.&lt;anonymous> (file:///C:/Users/mathi/Documents/Codex/stratverity-publication-20261111/front/tests/audit-coverage.test.mjs:152:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1325:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+      at Test.postRun (node:internal/test_runner/test:1465:19)
+      at Test.run (node:internal/test_runner/test:1390:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '&lt;section aria-label="Couverture des données">&lt;h3>Couverture des données&lt;/h3>&lt;p>&lt;strong>Historique plus court que demandé&lt;/strong>&lt;/p>&lt;p>BINANCE:BTCUSDT · 15M&lt;/p>&lt;dl>&lt;dt>Durée demandée&lt;/dt>&lt;dd>8 ans&lt;/dd>&lt;dt>Dates vérifiées (UTC, clôture de fin)&lt;/dt>&lt;dd>2024-01-05 06:45:00+00:00 → 2026-11-10 06:45:00+00:00&lt;/dd>&lt;dt>Bougies clôturées&lt;/dt>&lt;dd>99 840&lt;/dd>&lt;/dl>&lt;label>&lt;input type="checkbox"/> J’accepte cette période réduite pour cette sélection.&lt;/label>&lt;p role="status">&lt;/p>&lt;p>La couverture seule n’autorise aucun paiement.&lt;/p>&lt;/section>',
+    expected: /Cet aperçu ne permet pas de payer/,
+    operator: 'match',
+    diff: 'simple'
+  }
+}
+		</failure>
+	</testcase>
+	<testcase name="calendar projection rejects false full history, off-grid H4, Sunday weekly and over-cap data" time="0.000186" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="calendar projection retains H4, Monday weekly and leap-day calendar-year windows" time="0.001252" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="verified window requires the scope history target, but blocked states stay blocked" time="0.000098" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<testcase name="history projection catalogue matches backend release fixture for all depths" time="0.000682" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\audit-coverage.test.mjs"/>
+	<!-- tests 14 -->
+	<!-- suites 0 -->
+	<!-- pass 13 -->
+	<!-- fail 1 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 281.5141 -->
+</testsuites>

@@ -149,7 +149,7 @@ test("rendered API fixture uses real frozen coverage without claiming max histor
   const html = renderToStaticMarkup(createElement(Panel,{coverage:state,locale:"fr"}));
   assert.match(html,/2024-01-05 06:45:00/);
   assert.match(html,/2026-11-10 06:45:00/);
-  assert.match(html,/Cet aperçu ne permet pas de payer/);
+  assert.match(html,/La couverture seule n’autorise aucun paiement/);
   assert.doesNotMatch(html,/historique maximum|Stripe|<button/i);
 });
 
@@ -185,6 +185,7 @@ test("calendar projection retains H4, Monday weekly and leap-day calendar-year w
     const html=renderToStaticMarkup(createElement(Panel,{coverage:state,locale:"fr"}));
     assert.match(html,/Période vérifiée|Historique plus court/);
     assert.doesNotMatch(html,/<button|Stripe|checkout/);
+    assert.match(html,/La couverture seule n’autorise aucun paiement/);
   }
 });
 

@@ -1,5 +1,10 @@
 # Frontend — reprise publique et qualification locale
 
+Correction texte post-raccord relue indépendamment : le panneau couverture
+précise maintenant que la couverture SEULE n'autorise aucun paiement, plutôt
+que nier la possibilité d'un checkout distinct après devis réservé. Prix,
+consentements, états, flags et permissions inchangés.
+
 Rejeu indépendant principal sur sources finales : npmtest86PASS, typesDOM/Worker
 etbuildPASS ; JUnit private_audit_ui_global_principal_20261122.xml.
 Navigateur complet rejoué par principal, résultat PASS et capture réellement
