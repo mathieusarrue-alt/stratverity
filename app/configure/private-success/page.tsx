@@ -4,6 +4,7 @@ import {useSearchParams} from "next/navigation";
 import {useI18n} from "../../i18n/I18nProvider";
 import {privateAuditCheckoutUiMode,privateReturnContext,pollPrivateAudit} from "../private-audit-flow";
 import styles from "../scope-configurator.module.css";
+import PrivateReportDownload from "../private-report-download";
 
 const messages={
   fr:{title:"Suivi privé de votre audit",inactive:"Ce retour privé local est désactivé.",checking:"Vérification authentifiée en cours…",
@@ -45,6 +46,7 @@ function PrivateAuditSuccessInner(){
   return <main className={styles.page}><meta name="robots" content="noindex,nofollow"/><meta name="referrer" content="no-referrer"/>
     <section className={styles.intro}><div><h1>{text.title}</h1><div className={styles.privacyNote}>
       <p role="status">{text[enabled?(view.query===query?view.phase:"checking"):"inactive"]}</p></div>
+      {enabled&&view.query===query&&view.phase==="ready"?<PrivateReportDownload key={query} search={query} locale={locale==="fr"?"fr":"en"}/>:null}
       <p><a href="/configure">{text.back}</a></p></div></section></main>;
 }
 export default function PrivateAuditSuccess(){return <Suspense fallback={<main/>}><PrivateAuditSuccessInner/></Suspense>;}

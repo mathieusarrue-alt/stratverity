@@ -3,6 +3,7 @@ const actions = new Set(["source", "freeze", "coverage", "quote"]);
 const ACTION_LIMIT = 64 * 1024;
 const SOURCE_LIMIT = 6 * 2 * 1024 * 1024 + ACTION_LIMIT;
 const RESPONSE_LIMIT = 128 * 1024;
+const REPORT_LIMIT = 8 * 1024 * 1024;
 const ATTEMPT = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const BEARER = /^[A-Za-z0-9._~+/-]{1,4096}={0,2}$/;
 const IDEMPOTENCY = /^[A-Za-z0-9._:-]{16,255}$/;
@@ -15,6 +16,7 @@ type BridgeConfig = {
   development: boolean;
   enabled: boolean;
   checkoutEnabled?: boolean;
+  reportEnabled?: boolean;
   site?: string;
   upstream?: string;
   readToken: () => Promise<string | undefined>;
@@ -110,19 +112,22 @@ function statusProjection(data: Record<string,unknown>) {
     || !(data.job_status === null || typeof data.job_status === "string" && JOB_STATES.has(data.job_status))
     || ![null,"DELIVERED","NOT_READY"].includes(data.delivery_status as string | null)
     || typeof data.report_ready !== "boolean"
-    || (data.report_ready && (data.checkout_status !== "PAID_PENDING_PROVISIONING" || data.delivery_status !== "DELIVERED"))) return null;
+    || (data.report_ready && (data.checkout_status !== "PAID_PENDING_PROVISIONING" || data.delivery_status !== "DELIVERED" || data.job_status !== "SUCCEEDED"))) return null;
   return {checkout_status:data.checkout_status,job_status:data.job_status,delivery_status:data.delivery_status,
     report_ready:data.report_ready,authorization:false};
 }
 
 export async function proxyPrivateAudit(request: Request, attempt: string, operation: string, config: BridgeConfig) {
   if (config.development !== true || config.enabled !== true
-    || (config.checkoutEnabled !== undefined && typeof config.checkoutEnabled !== "boolean")) return failure(404);
+    || (config.checkoutEnabled !== undefined && typeof config.checkoutEnabled !== "boolean")
+    || (config.reportEnabled !== undefined && typeof config.reportEnabled !== "boolean")
+    || config.reportEnabled === true && config.checkoutEnabled !== true) return failure(404);
   const privateOperation = operation === "checkout" || operation === "status";
+  const reportOperation = operation === "report" && config.reportEnabled === true && config.checkoutEnabled === true;
   const site = localOrigin(config.site);
   const upstream = localOrigin(config.upstream);
   if (!site || !upstream || site === upstream || !ATTEMPT.test(attempt)
-    || !(actions.has(operation) || privateOperation && config.checkoutEnabled === true)) return failure(404);
+    || !(actions.has(operation) || privateOperation && config.checkoutEnabled === true || reportOperation)) return failure(404);
   if (request.method !== "POST") return failure(405);
   if (request.headers.get("origin") !== site || new URL(request.url).origin !== site) return failure(403);
   if (!isJson(request.headers) || ![null, "identity"].includes(request.headers.get("content-encoding"))) return failure(415);
@@ -140,6 +145,19 @@ export async function proxyPrivateAudit(request: Request, attempt: string, opera
         ...(operation === "checkout" ? {"Idempotency-Key":key!} : {}) },
         redirect: "manual", cache: "no-store", signal: AbortSignal.timeout(20_000) },
     );
+    if (reportOperation && response.status === 200) {
+      if (response.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/octet-stream"
+        || ![null,"identity"].includes(response.headers.get("content-encoding"))) {
+        void response.body?.cancel().catch(() => undefined);return failure(503);
+      }
+      let bytes:Uint8Array<ArrayBuffer>;
+      try{bytes=await readBounded(response,REPORT_LIMIT);}catch{
+        void response.body?.cancel().catch(()=>undefined);return failure(503);
+      }
+      return new Response(bytes,{status:200,headers:{...headers,"Content-Type":"application/octet-stream",
+        "Content-Disposition":'attachment; filename="stratverity-audit.html"',"X-Robots-Tag":"noindex, nofollow",
+        "Content-Security-Policy":"default-src 'none'; sandbox; base-uri 'none'; frame-ancestors 'none'"}});
+    }
     const expectedStatus=operation === "checkout" ? 201 : 200;
     if (response.status !== expectedStatus || !isJson(response.headers)) {
       void response.body?.cancel().catch(() => undefined);

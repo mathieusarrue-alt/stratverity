@@ -7,6 +7,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ att
     development: process.env.NODE_ENV === "development",
     enabled: process.env.STRATVERITY_PRIVATE_AUDIT_LOCAL === "1",
     checkoutEnabled: process.env.STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL === "1",
+    reportEnabled: process.env.STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL === "1",
     site: process.env.STRATVERITY_PRIVATE_AUDIT_SITE,
     upstream: process.env.STRATVERITY_PRIVATE_AUDIT_UPSTREAM,
     readToken: async () => {

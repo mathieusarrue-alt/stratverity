@@ -10,6 +10,50 @@ const request = (options = {}) => new Request(site + "/api/private-audit/a.b/quo
 const config = (extra = {}) => ({ development:true, enabled:true, site, upstream,
   readToken: async () => "cookie-token", ...extra });
 
+const binaryHeaders={"Content-Type":"application/octet-stream"};
+const binaryConfig=extra=>config({checkoutEnabled:true,reportEnabled:true,...extra});
+test("report needs its own strict opt-in and checkout before identity/body",async()=>{
+  for(const extra of [{reportEnabled:false},{reportEnabled:undefined},{reportEnabled:1},{checkoutEnabled:false}]){
+    assert.equal((await proxyPrivateAudit(request(),"a","report",binaryConfig({readToken:()=>assert.fail("auth"),...extra}))).status,404);
+  }
+  assert.equal((await proxyPrivateAudit(request(),"a","report",binaryConfig({readToken:async()=>undefined,send:()=>assert.fail("upstream")}))).status,401);
+});
+test("report is an exact attachment with only cookie auth and safe constant headers",async()=>{
+  const bytes=new TextEncoder().encode("<html>é fixture</html>");
+  const response=await proxyPrivateAudit(request({headers:{Origin:site,"Content-Type":"application/json",Authorization:"Bearer evil","Idempotency-Key":"untrusted"}}),"a","report",binaryConfig({send:async(url,init)=>{
+    assert.equal(url,upstream+"/v1/private-audit/intakes/a/report");assert.equal(init.redirect,"manual");assert.equal(init.cache,"no-store");
+    assert.deepEqual(init.headers,{Authorization:"Bearer cookie-token",Origin:site,"Content-Type":"application/json"});
+    return new Response(bytes,{headers:{...binaryHeaders,"Set-Cookie":"bad=1","Location":"https://evil.test","Content-Disposition":"inline; filename=unsafe.html","X-Private":"secret"}});
+  }}));
+  assert.equal(response.status,200);assert.deepEqual(new Uint8Array(await response.arrayBuffer()),bytes);
+  assert.equal(response.headers.get("content-disposition"),'attachment; filename="stratverity-audit.html"');
+  for(const name of ["set-cookie","location","x-private"])assert.equal(response.headers.get(name),null);
+  assert.equal(response.headers.get("cache-control"),"no-store");assert.equal(response.headers.get("x-content-type-options"),"nosniff");
+  assert.equal(response.headers.get("referrer-policy"),"no-referrer");assert.equal(response.headers.get("x-robots-tag"),"noindex, nofollow");
+  assert.match(response.headers.get("content-security-policy"),/frame-ancestors 'none'/);
+});
+test("report actual byte bound includes chunked replies and rejects empty/compressed/redirect/MIME",async()=>{
+  const max=8*1024*1024;
+  const accepted=await proxyPrivateAudit(request(),"a","report",binaryConfig({send:async()=>new Response(new Uint8Array(max),{headers:binaryHeaders})}));
+  assert.equal(accepted.status,200);assert.equal((await accepted.arrayBuffer()).byteLength,max);
+  let cancelled=false;
+  const stream=new ReadableStream({start(c){c.enqueue(new Uint8Array(max));c.enqueue(new Uint8Array(1));},cancel(){cancelled=true;}});
+  assert.equal((await proxyPrivateAudit(request(),"a","report",binaryConfig({send:async()=>new Response(stream,{headers:binaryHeaders})}))).status,503);assert.equal(cancelled,true);
+  for(const value of [new Response(null,{headers:binaryHeaders}),new Response("x",{headers:{"Content-Type":"text/html"}}),
+    new Response("x",{headers:{...binaryHeaders,"Content-Encoding":"gzip"}}),new Response("x",{headers:{...binaryHeaders,"Content-Length":"2"}}),
+    new Response(null,{status:302,headers:{Location:"https://evil.test"}})]){
+    assert.equal((await proxyPrivateAudit(request(),"a","report",binaryConfig({send:async()=>value}))).status,503);
+  }
+});
+test("report header oversize and mismatched length both cancel upstream bodies",async()=>{
+  for(const declared of [String(8*1024*1024+1),"2"]){
+    const response=new Response("x",{headers:{...binaryHeaders,"Content-Length":declared}});
+    let cancelled=0;const original=response.body.cancel.bind(response.body);response.body.cancel=(...args)=>{cancelled++;return original(...args);};
+    assert.equal((await proxyPrivateAudit(request(),"a","report",binaryConfig({send:async()=>response}))).status,503);
+    assert.equal(cancelled,1);
+  }
+});
+
 test("disabled, invalid targets and non-allowlisted actions cannot read a session", async () => {
   const readToken = () => assert.fail("session read");
   for (const extra of [{development:false}, {enabled:false}, {upstream:"https://example.test"},
@@ -111,7 +155,7 @@ test("status uses 200 and strips key, private identities and report fields", asy
   }}));
   assert.equal(result.status,200);assert.deepEqual(await result.json(),status);
   for (const bad of [{...status,report_ready:"true"},{...status,job_status:"unknown"},
-    {...status,checkout_status:"CHECKOUT_CREATED"},{...status,delivery_status:null}]) {
+    {...status,checkout_status:"CHECKOUT_CREATED"},{...status,delivery_status:null},{...status,job_status:"RUNNING"},{...status,job_status:null}]) {
     assert.equal((await proxyPrivateAudit(request(),"a","status",config({checkoutEnabled:true,
       send:async()=>Response.json(bad)}))).status,503);
   }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { freezePrivateAudit, localAuditScope, reserveLocalAudit, checkoutPrivateAudit,
-  statusPrivateAudit, privateAuditCheckoutUrl, privateAuditPost } from "../app/configure/private-audit-client.ts";
+  statusPrivateAudit, privateAuditCheckoutUrl, privateAuditPost,downloadPrivateAudit } from "../app/configure/private-audit-client.ts";
 
 const hash = "a".repeat(64);
 const scope = {contexts:[{asset_id:"BTCUSDT",timeframe:"15m",strategy_version_id:"wolf.v1"}]};
@@ -10,6 +10,34 @@ const expected = {scopeHash:hash,expiresAt,cents:4900,receipt:"b".repeat(64)};
 const quote = {authorization:false,scope_fingerprint:hash,quote_sha256:hash,
   pricing_version:"launch-v0.3",expires_at:"2026-11-10T07:13:30.679288+00:00",
   price:{currency:"eur",cadence:"ONE_TIME",due_today_ex_vat_cents:4900}};
+
+const attachment={"Content-Type":"application/octet-stream","Content-Disposition":'attachment; filename="stratverity-audit.html"'};
+test("report helper sends only scope/session and returns original attachment bytes",async()=>{
+  const bytes=new TextEncoder().encode("<html>é opaque attachment</html>");
+  const result=await downloadPrivateAudit("fixture",scope,"cs_fixture",async(url,init)=>{
+    assert.equal(url,"/api/private-audit/fixture/report");assert.deepEqual(JSON.parse(init.body),{scope,checkout_session_id:"cs_fixture"});
+    assert.deepEqual(init.headers,{"Content-Type":"application/json"});assert.equal(init.credentials,"same-origin");assert.equal(init.cache,"no-store");assert.equal(init.redirect,"error");assert.ok(init.signal);
+    return new Response(bytes,{headers:attachment});
+  });assert.deepEqual(result,bytes);
+  await assert.rejects(downloadPrivateAudit("../bad",scope,"cs_fixture",()=>assert.fail("fetch")));
+  await assert.rejects(downloadPrivateAudit("fixture",scope,"not-session",()=>assert.fail("fetch")));
+});
+test("report helper enforces binary byte bounds independently of declared length",async()=>{
+  const max=8*1024*1024;
+  assert.equal((await downloadPrivateAudit("a",scope,"cs_fixture",async()=>new Response(new Uint8Array(max),{headers:attachment}))).byteLength,max);
+  for(const response of [new Response(new Uint8Array(max+1),{headers:attachment}),new Response(null,{headers:attachment}),
+    new Response("x",{headers:{...attachment,"Content-Length":"2"}}),new Response("x",{headers:{...attachment,"Content-Encoding":"gzip"}}),
+    new Response("x",{headers:{...attachment,"Content-Disposition":"inline"}}),new Response("x",{headers:{...attachment,"Content-Type":"text/html"}}),
+    Response.json({authorization:false}),new Response(null,{status:404})]){
+    await assert.rejects(downloadPrivateAudit("a",scope,"cs_fixture",async()=>response));
+  }
+});
+test("report cancellation interrupts a stalled response stream without returning partial bytes",async()=>{
+  const abort=new AbortController();let cancelled=false;
+  const stream=new ReadableStream({start(c){c.enqueue(new Uint8Array([1]));},cancel(){cancelled=true;}});
+  const pending=downloadPrivateAudit("a",scope,"cs_fixture",async()=>new Response(stream,{headers:attachment}),abort.signal);
+  setTimeout(()=>abort.abort(),0);await assert.rejects(pending);assert.equal(cancelled,true);
+});
 
 test("local mapping is exact and does not reuse a traditional symbol", () => {
   assert.equal(localAuditScope(scope).contexts[0].asset_id,"BINANCE:BTCUSDT");
@@ -141,7 +169,7 @@ test("private status projection contains no legacy owner or report authority", a
   assert.deepEqual(returned,status);assert.equal(Object.isFrozen(returned),true);
   for (const altered of [{...status,checkout_status:"unknown"},{...status,job_status:"unknown"},
     {...status,delivery_status:"unknown"},{...status,report_ready:"true"},
-    {...status,checkout_status:"CHECKOUT_CREATED"},{...status,delivery_status:null}]) {
+    {...status,checkout_status:"CHECKOUT_CREATED"},{...status,delivery_status:null},{...status,job_status:"RUNNING"},{...status,job_status:null}]) {
     await assert.rejects(statusPrivateAudit("a",scope,"cs_test_fixture001",async()=>Response.json(altered)));
   }
 });

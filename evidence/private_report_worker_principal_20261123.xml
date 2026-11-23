@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="Worker preserves exact strict report security without changing attachment bytes or status" time="0.043967" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\worker-security.test.mjs"/>
+	<testcase name="Worker baseline remains identical for ordinary responses and refuses arbitrary weaker CSP/referrer" time="0.020893" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\worker-security.test.mjs"/>
+	<testcase name="Worker preserves only stronger exact no-referrer on errors and applies the same rule to image wrapper" time="0.005436" classname="test" file="C:\Users\mathi\Documents\Codex\stratverity-publication-20261111\front\tests\worker-security.test.mjs"/>
+	<!-- tests 3 -->
+	<!-- suites 0 -->
+	<!-- pass 3 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 252.4839 -->
+</testsuites>

@@ -1,0 +1,235 @@
+{
+  "schema": "private-integrated-browser@1",
+  "authorization": false,
+  "pass_": true,
+  "fixture_only": true,
+  "external_browser_requests_allowed": false,
+  "env_files_loaded": false,
+  "real_provider": false,
+  "native_auth_qualified": false,
+  "broker_parity": false,
+  "physical_quotas_qualified": false,
+  "browser_clock_only": "2026-11-21T22:30:42.762568+00:00",
+  "auth_expiry_real_clock": true,
+  "server_clock_historical": true,
+  "operations": [
+    [
+      "source",
+      200
+    ],
+    [
+      "freeze",
+      200
+    ],
+    [
+      "quote",
+      200
+    ],
+    [
+      "checkout",
+      201
+    ],
+    [
+      "status",
+      200
+    ],
+    [
+      "report",
+      404
+    ],
+    [
+      "status",
+      200
+    ],
+    [
+      "report",
+      200
+    ]
+  ],
+  "lost_response_after_attach": true,
+  "retry_same_attempt_key_body_quote_session": true,
+  "provider_calls": 1,
+  "docker_runs": 1,
+  "source_sha256": "b4c5b66b347a5a697f1051d25d1aa2ba6b233abd43276091f9fa9437db0f0630",
+  "pending": {
+    "checkout_status": "CHECKOUT_CREATED",
+    "job_status": null,
+    "delivery_status": null,
+    "report_ready": false,
+    "authorization": false
+  },
+  "ready_status": {
+    "checkout_status": "PAID_PENDING_PROVISIONING",
+    "job_status": "SUCCEEDED",
+    "delivery_status": "DELIVERED",
+    "report_ready": true,
+    "authorization": false
+  },
+  "controller_exit": 0,
+  "instant_price_before_fetch": "DEVIS INSTANTAN\u00c9\n19\u00a0\u20ac au total",
+  "blocked_external": 1,
+  "browser_errors": [],
+  "cache_metadata_only": true,
+  "pinned_return_template_used": true,
+  "backend_proof_sha256": "8871f23a8bca4fee3e09f59ca6ddf1b948ae5d7c8019628ea6e432a65c54a4bb",
+  "checkout_dispatches": 2,
+  "browser_checkout_responses": 1,
+  "checkouts": [
+    {
+      "attempt": "5b99fb00-0a99-4910-88b7-95bdaa904a90",
+      "key_sha256": "b66c1765f6cc1cc26877fd8d39d43d9a207e259fe46997ab7908ddf93ed3eafa",
+      "request_sha256": "51d67185fdfcd8946514477cd8be9941a05064a22e5043f50b9de988beef1818",
+      "quote_sha256": "b3172a39828872ce86012de1bb63777f1aab46acc2015ae425f7c68275a40fd3",
+      "session": "cs_test_fake001",
+      "response_sha256": "1a0e1b5a87c7ac41de6992b966c42ebb231cc7794f00b113bc9a4855cf1a5867"
+    },
+    {
+      "attempt": "5b99fb00-0a99-4910-88b7-95bdaa904a90",
+      "key_sha256": "b66c1765f6cc1cc26877fd8d39d43d9a207e259fe46997ab7908ddf93ed3eafa",
+      "request_sha256": "51d67185fdfcd8946514477cd8be9941a05064a22e5043f50b9de988beef1818",
+      "quote_sha256": "b3172a39828872ce86012de1bb63777f1aab46acc2015ae425f7c68275a40fd3",
+      "session": "cs_test_fake001",
+      "response_sha256": "1a0e1b5a87c7ac41de6992b966c42ebb231cc7794f00b113bc9a4855cf1a5867"
+    }
+  ],
+  "browser_origins": [
+    "http://127.0.0.1:59331",
+    "http://127.0.0.1:59339"
+  ],
+  "browser_direct_backend_allowed": false,
+  "auth_fixture_pinned_before_import": true,
+  "browser_cleanup_on_assertion": true,
+  "download": {
+    "bytes": 9452,
+    "sha256": "0e2823438bb4a144c0f8583a1e63a23ad9b6f74e367bcf1bd20f03a2196ca74c",
+    "filename": "stratverity-audit.html",
+    "headers": {
+      "content-type": "application/octet-stream",
+      "content-disposition": "attachment; filename=\"stratverity-audit.html\"",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "x-robots-tag": "noindex, nofollow",
+      "content-security-policy": "default-src 'none'; sandbox; base-uri 'none'; frame-ancestors 'none'"
+    },
+    "pending_refusal": {
+      "status": 404,
+      "error": "PRIVATE_AUDIT_REQUEST_REFUSED",
+      "cache_control": "no-store"
+    }
+  },
+  "public_legacy_get_confinement_qualified": false,
+  "input_pins_stable": true,
+  "input_pins": [
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\private-audit-client.ts",
+      "name": "private-audit-client.ts",
+      "sha256": "a43b7df58b1661c28e0b3d86aae067a39cf7f544b79a281d49bbb5df84235582"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\private-audit-flow.ts",
+      "name": "private-audit-flow.ts",
+      "sha256": "00bbf4765211b4c1c7cc5a456d882867d4be6171277fda8727b60c64b851d670"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\api\\private-audit\\bridge.ts",
+      "name": "bridge.ts",
+      "sha256": "b790ed8f6a15cfdb866e2e122eb7815b7b9c6ba5b5b6b7070d2a3fcedd753342"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\api\\private-audit\\[attempt]\\[operation]\\route.ts",
+      "name": "route.ts",
+      "sha256": "d4dc008c96e02e269bf4db19ab10e8610846c7100d0f43550c8b6dd1f0e94733"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\page.tsx",
+      "name": "page.tsx",
+      "sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\private-success\\page.tsx",
+      "name": "page.tsx",
+      "sha256": "285dcea273008d6ac8f89c8998244fa37e48529e23cd9bdefb155ef3036ec574"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\private-success\\layout.tsx",
+      "name": "layout.tsx",
+      "sha256": "8ac51638b661ee1331a3b3a200c3ae27b06507199b6c64166147b197ebc24f36"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\private-audit-checkout-panel.tsx",
+      "name": "private-audit-checkout-panel.tsx",
+      "sha256": "b10dbcb086d136cc55fc28707b23001859c14299398713b7594266b06f384683"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\vite.config.ts",
+      "name": "vite.config.ts",
+      "sha256": "059d6dcd0c8671777a23af5310f20687843fa8d3b6aa9a38bb7577717a76c7a0"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\tests\\private-audit-ui-browser.py",
+      "name": "private-audit-ui-browser.py",
+      "sha256": "9fbe428aa335c46714bfb80fc545bdd584a949f5c9a61bd48ab5115a6048f4c6"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\app\\configure\\private-report-download.tsx",
+      "name": "private-report-download.tsx",
+      "sha256": "9622f1583f61adbc753370526b3d023fc2f9b2d4f4e5e44c87a0afb5d13ca483"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\worker\\index.ts",
+      "name": "index.ts",
+      "sha256": "af82249324bf0593a13bde5569ff448d7e1b166cd454ae88e30fcc9becf57767"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\front\\tests\\private-audit-integrated-browser.py",
+      "name": "private-audit-integrated-browser.py",
+      "sha256": "aec06d53a043729aa9bfb2c1769ddb4e81eb1ed7cdd9173bd5c122f939297031"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\back\\backend\\scripts\\gpt_private_http_docker_rehearsal.py",
+      "name": "gpt_private_http_docker_rehearsal.py",
+      "sha256": "5c3d4f5b3c2877dfd541b4f016c50738a7d26151cc027855e496c3290f2eb1ef"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Claude\\Projects\\trading\\SAAS_AUDIT_BACKTEST\\evidence\\CURRENT_FIVE_TF_20261121T2231Z\\verification.json",
+      "name": "verification.json",
+      "sha256": "3b680de092710fdb91b495447b71c21bc8158045dcbc3a1e1a650f5164da3637"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Claude\\Projects\\trading\\SAAS_AUDIT_BACKTEST\\evidence\\CURRENT_FIVE_TF_20261121T2231Z\\snapshots\\BINANCE_BTCUSDT\\15m.csv.gz",
+      "name": "15m.csv.gz",
+      "sha256": "a7ddd3b52fa06141368b0be3a558867d57343406ed414a549ceabab0c17e16f5"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Claude\\Projects\\trading\\SAAS_AUDIT_BACKTEST\\evidence\\CURRENT_FIVE_TF_20261121T2231Z\\snapshots\\BINANCE_BTCUSDT\\15m.csv.gz.source.json",
+      "name": "15m.csv.gz.source.json",
+      "sha256": "02ce1decc65a01a05fdbcf3dfb063b40be0fd078c31b420fdfa447abd985b178"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Claude\\Projects\\trading\\SAAS_AUDIT_BACKTEST\\evidence\\CURRENT_FIVE_TF_20261121T2231Z\\BTCUSDT_15m_second.json",
+      "name": "BTCUSDT_15m_second.json",
+      "sha256": "4251eca03f83d9fb659f7037815297ea3e81c42168d0c82cf2623a74bd947ab6"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\back\\backend\\audit_app\\api\\private_audit_intake_http.py",
+      "name": "private_audit_intake_http.py",
+      "sha256": "66b9d682ac97396c9bc9a843711d82af55fd966cad6c22acd7609c1b94ede4d3"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\back\\backend\\audit_app\\provisioning\\private_audit_composition.py",
+      "name": "private_audit_composition.py",
+      "sha256": "9c61cf7b01a53a906d042617f870abed436f7991017a7be2048cc8f718e8515a"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\back\\backend\\audit_app\\provisioning\\private_audit_status.py",
+      "name": "private_audit_status.py",
+      "sha256": "18fc0133acedab1c5d64c1427d476fd591dcf7d1b0e96d80733aba5890bd2149"
+    },
+    {
+      "path": "C:\\Users\\mathi\\Documents\\Codex\\stratverity-publication-20261111\\back\\backend\\audit_app\\delivery\\auto_pipeline.py",
+      "name": "auto_pipeline.py",
+      "sha256": "18f4fe3c5b96626030df2b6946f05812d6b1f1abc585bdb4d25c0835dc3e53cd"
+    }
+  ]
+}

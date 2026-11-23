@@ -15,9 +15,9 @@ function harness(path,mocks,props={}){
   const mod={exports:{}};
   const source=readFileSync(new URL(path,import.meta.url),'utf8');
   const output=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
-  new Function('require','module','exports',output)(name=>name==='react'?react:name.endsWith('.module.css')?{default:{}}:mocks[name]??require(name),mod,mod.exports);
+  new Function('require','module','exports',output)(name=>name==='react'?react:name==='../private-report-download'?{default:()=>null}:name.endsWith('.module.css')?{default:{}}:mocks[name]??require(name),mod,mod.exports);
   fn=mod.exports.default;
-  function render(){cursor=0;tree=fn(props);if(tree.type==='suspense')tree=tree.props.children.type();
+  function render(){cursor=0;tree=fn(props);if(tree?.type==='suspense')tree=tree.props.children.type();
     const jobs=pending;pending=[];jobs.forEach(job=>job());return tree;}
   function all(node=tree){if(node==null||typeof node==='boolean')return[];if(Array.isArray(node))return node.flatMap(all);
     return[node,...(typeof node==='object'&&node.props?.children!==undefined?all(node.props.children):[])];}
@@ -87,4 +87,34 @@ test('config private ABA epoch and exact payload guards precede source and quote
   assert.match(source,/revision !== previewRevision.current \|\| serialized!==currentPayloadRef.current/);
   assert.match(source,/previewRevision.current!==capturedRevision\|\|currentPayloadRef.current!==capturedPayload/);
   assert.match(source,/const startCheckout = async \(\) => \{\s*if \(privateAuditLocalMode\(\)\) return;/);
+});
+
+function reportPanel({enabled=true,download=async()=>new Uint8Array([1,2,3])}={}){
+  const original={window:global.window,document:global.document,create:URL.createObjectURL,revoke:URL.revokeObjectURL};
+  const clicked=[],revoked=[];let calls=0,signal;
+  global.window={location:{hostname:'127.0.0.1',search:'?attempt=a&session_id=cs_fixture',hash:''},sessionStorage:{}};
+  global.document={body:{appendChild(){}},createElement(){return{click(){clicked.push({href:this.href,download:this.download});},remove(){}};}};
+  URL.createObjectURL=()=>"blob:fixture";URL.revokeObjectURL=url=>revoked.push(url);
+  const h=harness('../app/configure/private-report-download.tsx',{'./private-audit-client':{
+    privateAuditReportUiMode:()=>enabled,downloadPrivateAudit:async(_a,_scope,_session,_send,s)=>{calls++;signal=s;return download(s);}},
+    './private-audit-flow':{privateReturnContext:()=>({transaction:{attempt:'a',scope:{fixture:true}},session:'cs_fixture'})}},
+    {search:'attempt=a&session_id=cs_fixture',locale:'fr'});
+  return{...h,clicked,revoked,calls:()=>calls,signal:()=>signal,cleanup(){h.unmount();URL.createObjectURL=original.create;URL.revokeObjectURL=original.revoke;global.window=original.window;global.document=original.document;}};
+}
+test('report download is explicit, flag gated and never renders report HTML',async()=>{
+  const off=reportPanel({enabled:false});assert.equal(off.find('button'),undefined);assert.equal(off.calls(),0);off.cleanup();
+  const h=reportPanel();assert.equal(h.calls(),0);await h.find('button').props.onClick();h.render();
+  assert.deepEqual(h.clicked,[{href:'blob:fixture',download:'stratverity-audit.html'}]);assert.match(h.text(),/préparé/);
+  await new Promise(r=>setTimeout(r,1));assert.deepEqual(h.revoked,['blob:fixture']);h.cleanup();
+});
+test('report download blocks double click and suppresses stale or unmounted response',async()=>{
+  for(const kind of ['query','unmount']){let resolve;const h=reportPanel({download:()=>new Promise(r=>resolve=r)});
+    const click=h.find('button').props.onClick,a=click(),b=click();assert.equal(h.calls(),1);
+    if(kind==='query')window.location.search='?attempt=b&session_id=cs_other';else h.unmount();
+    if(kind==='unmount')assert.equal(h.signal().aborted,true);
+    resolve(new Uint8Array([1]));await Promise.all([a,b]);assert.deepEqual(h.clicked,[]);h.cleanup();}
+});
+test('report unavailable does not offer a second payment or expose error details',async()=>{
+  const h=reportPanel({download:async()=>{throw Error('PRIVATE INTERNAL DATA');}});await h.find('button').props.onClick();h.render();
+  assert.match(h.text(),/sans nouveau paiement/);assert.doesNotMatch(h.text(),/PRIVATE INTERNAL/);assert.deepEqual(h.clicked,[]);h.cleanup();
 });

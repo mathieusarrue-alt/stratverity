@@ -134,9 +134,40 @@ export async function statusPrivateAudit(attempt: string, scope: object, checkou
     || !(data.job_status === null || typeof data.job_status === "string" && jobStates.has(data.job_status))
     || ![null,"DELIVERED","NOT_READY"].includes(data.delivery_status as string | null)
     || typeof data.report_ready !== "boolean"
-    || (data.report_ready && (data.checkout_status !== "PAID_PENDING_PROVISIONING" || data.delivery_status !== "DELIVERED"))) {
+    || (data.report_ready && (data.checkout_status !== "PAID_PENDING_PROVISIONING" || data.delivery_status !== "DELIVERED" || data.job_status !== "SUCCEEDED"))) {
     throw new Error("Unexpected private Audit status");
   }
   return Object.freeze({authorization:false,checkout_status:String(data.checkout_status),job_status:data.job_status,
     delivery_status:data.delivery_status,report_ready:data.report_ready});
+}
+
+export function privateAuditReportUiMode(){
+  return privateAuditLocalMode() && process.env.NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL === "1"
+    && process.env.NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL === "1";
+}
+
+/** Bytes only: never parse or render the persisted HTML in the application. */
+export async function downloadPrivateAudit(attempt:string,scope:object,session:string,
+  send:typeof fetch=fetch,signal?:AbortSignal){
+  if(!attemptId.test(attempt)||!sessionId.test(session))throw new Error("Invalid private Audit report request");
+  signal=signal?AbortSignal.any([signal,AbortSignal.timeout(20000)]):AbortSignal.timeout(20000);
+  const response=await send(`/api/private-audit/${encodeURIComponent(attempt)}/report`,{
+    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({scope,checkout_session_id:session}),
+    credentials:"same-origin",redirect:"error",cache:"no-store",signal});
+  const max=8*1024*1024,length=response.headers.get("content-length");
+  if(response.status!==200||response.headers.get("content-type")?.split(";")[0].trim().toLowerCase()!=="application/octet-stream"
+    ||response.headers.get("content-disposition")!=='attachment; filename="stratverity-audit.html"'
+    ||![null,"identity"].includes(response.headers.get("content-encoding"))
+    ||length!==null&&(!/^[0-9]{1,20}$/.test(length)||Number(length)>max||response.headers.has("transfer-encoding"))){
+    void response.body?.cancel().catch(()=>undefined);throw new Error("Private Audit report unavailable");
+  }
+  const reader=response.body?.getReader();if(!reader)throw new Error("Private Audit report unavailable");
+  const abort=()=>{void reader.cancel().catch(()=>undefined);};signal?.addEventListener("abort",abort,{once:true});
+  let size=0;const chunks:Uint8Array[]=[];
+  try{for(;;){if(signal?.aborted)throw new Error("Private Audit report cancelled");
+    const{done,value}=await reader.read();if(done)break;size+=value.byteLength;
+    if(size>max)throw new Error("Private Audit report too large");chunks.push(value);}
+    if(signal?.aborted||!size||length!==null&&Number(length)!==size)throw new Error("Private Audit report unavailable");
+    const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;
+  }catch(error){void reader.cancel().catch(()=>undefined);throw error;}finally{signal?.removeEventListener("abort",abort);reader.releaseLock();}
 }

@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "filename": "stratverity-audit.html",
+  "headers": {
+    "content-type": "application/octet-stream",
+    "content-disposition": "attachment; filename=\"stratverity-audit.html\"",
+    "cache-control": "no-store",
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "no-referrer",
+    "x-robots-tag": "noindex, nofollow",
+    "content-security-policy": "default-src 'none'; sandbox; base-uri 'none'; frame-ancestors 'none'"
+  },
+  "headers_truncated": [],
+  "bytes": 9452,
+  "sha256": "0e2823438bb4a144c0f8583a1e63a23ad9b6f74e367bcf1bd20f03a2196ca74c",
+  "pending_refusal": {
+    "status": 404,
+    "error": "PRIVATE_AUDIT_REQUEST_REFUSED",
+    "cache_control": "no-store"
+  },
+  "http_body_sha256": "0e2823438bb4a144c0f8583a1e63a23ad9b6f74e367bcf1bd20f03a2196ca74c"
+}

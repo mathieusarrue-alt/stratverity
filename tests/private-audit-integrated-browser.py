@@ -60,6 +60,39 @@ def checkout_observation(attempt, key, request_body, response_body):
         session=response["checkout_session_id"],response_sha256=hashlib.sha256(response_body).hexdigest())
 
 
+ATTACHMENT_HEADERS={"content-type":"application/octet-stream",
+        "content-disposition":'attachment; filename="stratverity-audit.html"',
+        "cache-control":"no-store","x-content-type-options":"nosniff",
+        "referrer-policy":"no-referrer","x-robots-tag":"noindex, nofollow",
+        "content-security-policy":"default-src 'none'; sandbox; base-uri 'none'; frame-ancestors 'none'"}
+
+
+def attachment_observed(status, filename, headers, content, pending):
+    # Diagnostic before validation; only fixed non-credential fields, no HTML.
+    observed={k:headers.get(k) for k in ATTACHMENT_HEADERS}
+    truncated=[k for k,v in observed.items() if type(v) is str and len(v)>4096]
+    observed={k:v[:4096] if type(v) is str else None for k,v in observed.items()}
+    return dict(status=status,filename=filename[:255] if type(filename) is str else None,
+        headers=observed,headers_truncated=truncated,
+        bytes=len(content) if type(content) is bytes else None,
+        sha256=hashlib.sha256(content).hexdigest() if type(content) is bytes else None,
+        pending_refusal={k:pending.get(k) for k in ('status','error','cache_control')})
+
+
+def download_observation(status, filename, headers, content, pending):
+    mismatches=[]
+    if status!=200:mismatches.append('status')
+    if filename!="stratverity-audit.html":mismatches.append('filename')
+    if type(content) is not bytes or not 0<len(content)<=8388608:mismatches.append('bytes')
+    mismatches.extend('headers.'+k for k,v in ATTACHMENT_HEADERS.items() if headers.get(k)!=v)
+    if pending!={"status":404,"error":"PRIVATE_AUDIT_REQUEST_REFUSED","cache_control":"no-store"}:
+        mismatches.append('pending_refusal')
+    if mismatches:
+        raise ValueError("Private attachment differs: "+','.join(mismatches)[:700])
+    return dict(bytes=len(content),sha256=hashlib.sha256(content).hexdigest(),filename=filename,
+        headers=dict(ATTACHMENT_HEADERS),pending_refusal=pending)
+
+
 def runtime_env():
     # No application variables, credentials, proxies or browser profiles inherited.
     allowed = ["SystemRoot", "WINDIR", "COMSPEC", "PATH", "TEMP", "TMP", "USERPROFILE", "LOCALAPPDATA", "APPDATA"]
@@ -121,10 +154,13 @@ def run(args):
         "app/api/private-audit/bridge.ts","app/api/private-audit/[attempt]/[operation]/route.ts",
         "app/configure/page.tsx","app/configure/private-success/page.tsx","app/configure/private-success/layout.tsx",
         "app/configure/private-audit-checkout-panel.tsx","vite.config.ts","tests/private-audit-ui-browser.py",
-        "tests/private-audit-integrated-browser.py"]]
+        "app/configure/private-report-download.tsx","worker/index.ts","tests/private-audit-integrated-browser.py"]]
     pin_paths += [args.backend/"scripts/gpt_private_http_docker_rehearsal.py",args.capture/"verification.json",
         args.capture/"snapshots/BINANCE_BTCUSDT/15m.csv.gz",args.capture/"snapshots/BINANCE_BTCUSDT/15m.csv.gz.source.json",
         args.capture/"BTCUSDT_15m_second.json"]
+    pin_paths += [args.backend/path for path in ["audit_app/api/private_audit_intake_http.py",
+        "audit_app/provisioning/private_audit_composition.py","audit_app/provisioning/private_audit_status.py",
+        "audit_app/delivery/auto_pipeline.py"]]
     before={str(path):digest(path) for path in pin_paths}
     fixture_path=ROOT/"tests/private-audit-ui-browser.py"
     fixture=load_fixture(fixture_path,before[str(fixture_path)])
@@ -147,6 +183,7 @@ def run(args):
             NEXT_PUBLIC_STRATVERITY_API_URL=ready["upstream"],STRATVERITY_PRIVATE_AUDIT_UPSTREAM=ready["upstream"],
             NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_LOCAL="1",STRATVERITY_PRIVATE_AUDIT_LOCAL="1",
             NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL="1",STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL="1",
+            NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL="1",STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL="1",
             STRATVERITY_PRIVATE_AUDIT_SITE=site,WRANGLER_SEND_METRICS="false",WRANGLER_WRITE_LOGS="false",BROWSER="none")
         js="""import {createServer} from 'vite';
           const s=await createServer({envDir:process.argv[1],server:{host:'127.0.0.1',port:Number(process.argv[2]),strictPort:true}});
@@ -235,10 +272,41 @@ def run(args):
                     page.wait_for_timeout(50)
                 assert statuses and statuses[-1]["report_ready"] is False and statuses[-1]["authorization"] is False
                 before_delivery=statuses[-1]
+                pending_report=page.evaluate("""async()=>{
+                  const q=new URLSearchParams(location.search),attempt=q.get('attempt'),session=q.get('session_id');
+                  const all=JSON.parse(sessionStorage.getItem('stratverity.private-audit.ui.v1')||'[]');
+                  const t=all.find(x=>x.attempt===attempt);
+                  if(!t||t.checkout_session_id!==session)throw new Error('Private fixture return binding differs');
+                  const r=await fetch('/api/private-audit/'+encodeURIComponent(attempt)+'/report',{
+                    method:'POST',credentials:'same-origin',redirect:'error',cache:'no-store',
+                    headers:{'Content-Type':'application/json'},body:JSON.stringify({scope:t.scope,checkout_session_id:session})});
+                  const body=await r.json();return {status:r.status,error:body.error,cache_control:r.headers.get('cache-control')};
+                }""")
+                assert pending_report==dict(status=404,error="PRIVATE_AUDIT_REQUEST_REFUSED",cache_control="no-store")
+                expect(page.get_by_role("button",name=re.compile("Télécharger mon rapport|Download my report"))).to_have_count(0)
                 page.screenshot(path=str(output/"pending.png"),full_page=True)
                 delivered=controller.command("deliver");assert delivered=={"first":"SUCCEEDED","second":"IDLE"}
-                expect(page.get_by_role("status")).to_contain_text(re.compile("réception.*email.*pas vérifiée|Email receipt has not been verified"),timeout=30000)
+                expect(page.get_by_role("status").filter(has_text=re.compile("réception.*email.*pas vérifiée|Email receipt has not been verified"))).to_have_count(1,timeout=30000)
                 assert statuses[-1]["report_ready"] is True and statuses[-1]["authorization"] is False
+                button=page.get_by_role("button",name=re.compile("Télécharger mon rapport|Download my report"))
+                expect(button).to_be_enabled()
+                with page.expect_download(timeout=30000) as downloaded, page.expect_response(
+                        lambda r:urlsplit(r.url).path.endswith('/report') and r.status==200,timeout=30000) as report_response:
+                    button.click()
+                attachment=downloaded.value
+                assert attachment.failure() is None
+                attachment.save_as(str(output/"report-download.html"))
+                actual_bytes=(output/"report-download.html").read_bytes()
+                report_response=report_response.value
+                response_bytes=report_response.body()
+                observed_attachment=attachment_observed(report_response.status,attachment.suggested_filename,
+                    report_response.all_headers(),actual_bytes,pending_report)
+                observed_attachment['http_body_sha256']=hashlib.sha256(response_bytes).hexdigest()
+                with (output/"attachment-observed.json").open('x',encoding='utf8') as handle:
+                    json.dump(observed_attachment,handle,indent=2)
+                assert actual_bytes==response_bytes,"Downloaded bytes differ from HTTP response body"
+                download=download_observation(report_response.status,attachment.suggested_filename,
+                    report_response.all_headers(),actual_bytes,pending_report)
                 page.screenshot(path=str(output/"ready.png"),full_page=True)
                 cache=page.evaluate("sessionStorage.getItem('stratverity.private-audit.ui.v1')")
                 assert not re.search(r'"(?:source|email|filename|owner_token|access_token)"',cache)
@@ -246,8 +314,10 @@ def run(args):
                 assert not any(op in {"source","freeze","quote","status"} and code!=200 for op,code in operations)
                 browser_checkout_responses=sum(op=="checkout" for op,_ in operations)
                 assert dispatches[0]==2 and browser_checkout_responses==1
+                assert [code for op,code in operations if op=="report"]==[404,200]
                 finished=controller.command("finish")
                 assert finished["docker_runs"]==1 and finished["gateway_calls"]==1 and finished["input_hashes_stable"] is True
+                assert download["sha256"]==finished["report_sha256"]==digest(output/"backend-private/report.html")
                 stop=controller.command("stop");assert stop=={"stopped":True}
                 controller.process.wait(timeout=20);exit_code=controller.process.returncode;assert exit_code==0
                 proof.update(pass_=True,browser_clock_only=cutoff.isoformat(),auth_expiry_real_clock=True,server_clock_historical=True,
@@ -258,7 +328,8 @@ def run(args):
                     pinned_return_template_used=True,backend_proof_sha256=digest(output/"backend-private/proof.json"),
                     checkout_dispatches=dispatches[0],browser_checkout_responses=browser_checkout_responses,
                     checkouts=checkouts,browser_origins=[site,auth_origin],browser_direct_backend_allowed=False,
-                    auth_fixture_pinned_before_import=True,browser_cleanup_on_assertion=True)
+                    auth_fixture_pinned_before_import=True,browser_cleanup_on_assertion=True,
+                    download=download,public_legacy_get_confinement_qualified=False)
     except Exception as error:
         proof.update(error_type=type(error).__name__,error=str(error)[:1000]);raise
     finally:
@@ -270,7 +341,7 @@ def run(args):
         if auth is not None:auth.shutdown();auth.server_close()
         after={str(path):digest(path) for path in pin_paths}
         proof["input_pins_stable"]=before==after
-        proof["input_pins"]=[dict(name=Path(path).name,sha256=sha) for path,sha in before.items()]
+        proof["input_pins"]=[dict(path=path,name=Path(path).name,sha256=sha) for path,sha in before.items()]
         if before!=after:proof.update(pass_=False,pin_failure=True)
         (output/"browser-proof.json").write_text(json.dumps(proof,indent=2),encoding="utf8")
         print(str(output),flush=True)

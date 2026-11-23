@@ -36,17 +36,21 @@ const CONTENT_SECURITY_POLICY = [
   "media-src 'self'",
   "upgrade-insecure-requests",
 ].join("; ");
+// Preserve only this known stricter internal attachment policy, never an
+// arbitrary route/upstream CSP which could weaken the site-wide baseline.
+const PRIVATE_REPORT_SECURITY_POLICY = "default-src 'none'; sandbox; base-uri 'none'; frame-ancestors 'none'";
 
 function withSecurityHeaders(response: Response): Response {
   const headers = new Headers(response.headers);
-  headers.set("Content-Security-Policy", CONTENT_SECURITY_POLICY);
+  headers.set("Content-Security-Policy", headers.get("Content-Security-Policy") === PRIVATE_REPORT_SECURITY_POLICY
+    ? PRIVATE_REPORT_SECURITY_POLICY : CONTENT_SECURITY_POLICY);
   headers.set(
     "Strict-Transport-Security",
     "max-age=31536000; includeSubDomains",
   );
   headers.set("X-Content-Type-Options", "nosniff");
   headers.set("X-Frame-Options", "DENY");
-  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("Referrer-Policy", headers.get("Referrer-Policy") === "no-referrer" ? "no-referrer" : "strict-origin-when-cross-origin");
   headers.set(
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(), payment=(), usb=()",

@@ -58,6 +58,11 @@ export default defineConfig(async ({ command }) => {
           process.env.NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL === "1" ? {
             "process.env.STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL": JSON.stringify("1"),
             "process.env.NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_CHECKOUT_LOCAL": JSON.stringify("1"),
+            ...(process.env.STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL === "1" &&
+              process.env.NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL === "1" ? {
+                "process.env.STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL": JSON.stringify("1"),
+                "process.env.NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL": JSON.stringify("1"),
+              } : {}),
           } : {}),
       }
     : undefined;

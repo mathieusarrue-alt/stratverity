@@ -1,5 +1,107 @@
 # Frontend — reprise publique et qualification locale
 
+## 23 novembre — téléchargement natif final0518Z PASS, NON activé en production
+
+Recette neuve conduite par principal APRÈS correctionWorker, sortie canonique
+`evidence/PRIVATE_REPORT_BROWSER_20261123T0518Z/`. browser-proof.json et
+attachment-observed.json lus sur disque : **PASS**, contrôleur exit0, fichier
+natifstratverity-audit.html de9452octets, SHA
+0e2823438bb4a144c0f8583a1e63a23ad9b6f74e367bcf1bd20f03a2196ca74c
+identique au body HTTP. Sept headers attendus réellement observés, notamment
+CSPstrict exacte et Referrer-Policy no-referrer désormais préservées par Worker.
+Refus404JSONsafe/no-store avant disponibilité ;200attachment aprèsSUCCEEDED.
+Les échecs0512/0515 restent CLOS INCHANGÉS et expliquent ce nouveau lot.
+
+Classepreuve : Chrome télécharge réellement via cookiehandlerNext/proxyHTTP/
+backend/composition/Docker locaux ; AuthSupabase, gatewayStripe et emailSES
+restent fictifs. Une session/uneexécutionDocker, horloges UI/backend surcapture
+historique et Auth/NodeSSR surtempsréel comme documenté précédemment. Pas de
+provenance broker/paiement/email/fournisseur réel ni confidentialitéproduction
+ou quotas physiques déduits. Aucune ouverture/interprétationHTML par l'UI.
+Revue indépendante finale et publication pilotées par principal ; cet agent
+n'a lancé aucun nouveau navigateur, effectuéaucuncommit/push/copiecanonique
+ou activé de flag permanent.
+
+Sources front figées, **99testsPASS +typesDOM/Worker/buildPASS** ; preuve
+private_report_worker_front_final_20261123.xml et rejeu indépendant principal
+private_report_front_principal_worker_final_20261123.xml (99PASS). Principal a
+réellement ouvert les captures pending/ready et confirmé bouton/notice download.
+Aucune capacité20ans ou couverturemulti-actifs supplémentaire déduite de cette
+recette technique BTCM15 surcapture bornée. Les sections EN ATTENTE
+ci-dessous décrivent les étapes HISTORIQUES avant cette recette finale.
+
+## 23 novembre — correction Worker après observation navigateur,99testsPASS
+
+Les recettes privées0512/0515 ne sont PAS qualifiées : téléchargement natif
+de9452octets exacts et SHA0e282343...96ca74c observés, mais les headers CSP et
+Referrer-Policy étaient remplacés par le wrapper Worker global. Diagnostic
+durable attachment-observed.json sous PRIVATE_REPORT_BROWSER_20261123T0515Z.
+Ne pas confondre fichier reçu avec conformité de sécurité complète.
+
+Correction bornée worker/index.ts : conserver SEULEMENT la CSP restrictive
+EXACTE interne du rapport et Referrer-Policy no-referrer EXACT ; toutes autres
+CSP/referrer reviennent aux politiques globales antérieures. HSTS/DENY/nosniff/
+Permissions-Policy/COOP/autresprotections inchangés. Pas de préservation générale
+de headers amont susceptibles d'affaiblir le site ; aucun changement du contrat
+bridge, bytes, MIME/filename, flags ou autre produit.
+
+Trois nouveaux tests transpilent réellement Worker et fetchwrapper : attachment
+strict avec bytes/statut/disposition conservés, pages ordinaires202 et fausses
+CSP/referrer, erreurs404 et imagewrapper. npm test **99/99PASS**, DOM/Worker0 et
+buildPASS ; JUnit evidence/private_report_worker_front_final_20261123.xml.
+SHAworker AF82249324BF0593A13BDE5569FF448D7E1B166CD454AE88E30FCC9BECF57767.
+Principal a aussi rejoué3testsWorkerPASS. Une NOUVELLE recette navigateur sur
+ce correctif reste à faire par principal ;0512/0515 restent closes inchangées.
+Pas de flagproduction, fournisseur réel, commit ou déploiement par cet agent.
+
+## 23 novembre — téléchargement privé DEV construit, preuve navigateur EN ATTENTE
+
+Décision **ADAPTER** bridge/client/retour privés existants, sans dépendance.
+Plan relu avant code, recherche Playwright/React/Auth antérieure réutilisée ;
+backend de confinement legacy conduit séparément par principal. Branche front
+`codex/private-audit-report-front-20261123`, parent e779098. Aucun pilote
+navigateur/Docker de téléchargement lancé à ce bloc, aucune activation réelle.
+
+Ajout POSTreport : cookie serveur uniquement, scope/session exacts envoyés par
+helper, aucun owner_token/reportID/URLGET/idempotency-key transmis. Opt-ins
+serveur `STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL` et UI
+`NEXT_PUBLIC_STRATVERITY_PRIVATE_AUDIT_REPORT_LOCAL` distincts OFF ; nécessitent
+checkoutON + dev/local127. DefinesVite uniquementdansceprofildev. Rien dans.env.
+Le backend reste autorité propriétaire/paiement/binding/jobSUCCEEDED/ledger.
+Statuts incohérents readytrue/RUNNING ou jobnull maintenant refusés aussi par
+client etproxy. Aucun droit de rapport déduit du seul booléen UI.
+
+Proxy : requête64KiB, réponse binaire1..8MiB réels, y compris sans longueur,
+annulation upstream sur erreurs/headeroversize/mismatch ; timeout20s, pasredirect,
+pascompression inattendue. Réponse octetstream/attachment nomASCIIconstant
+stratverity-audit.html, no-store/nosniff/no-referrer/noindex et CSP restrictive
+incluant sandbox/frame-ancestorsnone ; Set-Cookie/Location/autresheadersamont
+jamais relayés. Helper client recontrôle statut/MIME/disposition/taille réelle,
+timeout/abort et ne parse ni ne rend leHTML. Aucun rapport stocké danslecache.
+
+Nouveau `private-report-download.tsx` : bouton après ready, clic explicite,
+busyref immédiat, relecture contexte strict, gardequery/fragment/unmount, abort
+et URLBlob révoquée. Aucun iframe/innerHTML/navigationHTML/autodownload ; erreur
+générique invite à revérifier la même tentative sans nouveau paiement. Un fichier
+préparé pourdownload n'est pas une preuve de sauvegarde disque ou d'email reçu.
+Configurateur/pricing/checkouts/flow/legacy/données/moteurs INCHANGÉS.
+
+Qualification auteur : **npm test96/96PASS**, DOM/Worker0diagnostic/buildPASS.
+JUnitdurable `evidence/private_report_front_global_20261123.xml`. Dix nouveaux
+cas inclus dans96 : gating/auth/headers, borne8MiB/+1/flux/headeroversize,
+annulation, bytesidentiques, jobguard, UIexplicite/OFF/doubleclic/stale/unmount,
+révocationBlob et erreur sans détailprivé. Focus37PASS chevauchant ces tests,
+PASadditionnable. Premierfocus35/36 conservé dans
+`private_report_front_initial_20261123.xml` : harnaisTSX supposa tree nonnull
+alors queflagOFF rendnull ; corrigé dansleharnais, pasdanslecontrat produit.
+
+Limites : revue/rejeu principal requis ; pasencore de preuve téléchargement
+Chrome via vraiproxy/backend, paspreuveStripe/Supabase/SES/broker réelle,
+pasactivation/merge/déploiement. Attachment empêche le rendu par l'application,
+pas une certification universelle du contenuHTML ouvert ensuite horsapplication.
+La routelegacypublique est confinée danslebackend séparément ; nepas revendiquer
+une confidentialité globale déployée àpartirde ce bloc frontendlocal.
+
 ## 22 novembre 22:50 UTC — recette finale PILOTE durci, PASS local seulement
 
 La recette2246 reste close et ses artefacts sont INCHANGÉS. Une revue
