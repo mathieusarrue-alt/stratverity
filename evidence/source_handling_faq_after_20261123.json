@@ -1,0 +1,68 @@
+{
+  "faq_changes": [
+    {
+      "locale": "fr",
+      "old": "Non. Votre code alimente le calcul d'audit en lecture seule et n'est jamais publié, revendu ni exécuté avec des ordres réels. L'analyse est statique ; les fichiers opérationnels sont supprimés selon la politique de conservation, seules les empreintes et preuves de commande sont gardées.",
+      "new": "Votre code n’est ni publié ni revendu. Selon l’outil et le profil choisis, l’analyse est statique ou réalisée par exécution isolée, sans envoi d’ordres réels. Une copie privée peut être conservée pour l’analyse et le suivi de votre commande. Les durées de conservation et les modalités de suppression restent à préciser avant l’ouverture commerciale."
+    },
+    {
+      "locale": "en",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "zh",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "hi",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "es",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "ar",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "pt",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "bn",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "de",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "it",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "ru",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    },
+    {
+      "locale": "ko",
+      "old": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+      "new": "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch."
+    }
+  ],
+  "legal_sha256": "926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856",
+  "health_sha256": "23fae7451dc7d2bd8e28dfec98357ffbaed0a52b840e330024dc7accea527dc0",
+  "checkout_page_sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7",
+  "unchanged_guarded_materials": true
+}

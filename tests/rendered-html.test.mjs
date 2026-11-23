@@ -1,6 +1,44 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
+import { createHash } from "node:crypto";
+import { messages as sourceHandlingMessages } from "../app/i18n/messages.ts";
+import { landingMarkup as sourceHandlingLanding } from "../app/home/landing-markup.ts";
+
+test("source-handling FAQ distinguishes retained copies and isolated execution in all existing fallbacks",()=>{
+  assert.equal(Object.keys(sourceHandlingMessages).length,12);
+  const fr=sourceHandlingMessages.fr['faq.a8'],en=sourceHandlingMessages.en['faq.a8'];
+  assert.match(fr,/copie privée peut être conservée/);assert.match(fr,/statique ou réalisée par exécution isolée/);
+  assert.match(fr,/sans envoi d’ordres réels/);assert.match(fr,/restent à préciser avant l’ouverture commerciale/);
+  assert.match(en,/private copy may be retained/);assert.match(en,/static or performed through isolated execution/);
+  assert.match(en,/without sending live trading orders/);assert.match(en,/still need to be specified before commercial launch/);
+  for(const[locale,dictionary]of Object.entries(sourceHandlingMessages)){
+    if(locale!=='fr')assert.equal(dictionary['faq.a8'],en);
+    assert.doesNotMatch(dictionary['faq.a8'],/only fingerprints|seules les empreintes|files are deleted|fichiers opérationnels sont supprimés/);
+  }
+});
+
+test("source-handling landing bootstrap agrees with messages; independent server shells still render",async()=>{
+  const answer=sourceHandlingLanding.match(/data-i18n="faq.a8">([^<]+)<\/div>/)?.[1];
+  assert.equal(answer,sourceHandlingMessages.en['faq.a8']);
+  for(const path of ['/','/faq']){
+    // Landing injection is client-side. The separate server FAQ is outside this change.
+    const response=await render(path);assert.equal(response.status,200);
+  }
+});
+
+test("FAQ correction does not change legal translations, health-tool claim or checkout contract",async()=>{
+  const sha=value=>createHash('sha256').update(value).digest('hex');
+  const legal=Object.fromEntries(Object.entries(sourceHandlingMessages).map(([locale,dictionary])=>
+    [locale,Object.fromEntries(Object.entries(dictionary).filter(([key])=>key.startsWith('legal.')))]));
+  const health=Object.fromEntries(Object.entries(sourceHandlingMessages).map(([locale,dictionary])=>[locale,dictionary['ft.healthBody']]));
+  assert.equal(sha(JSON.stringify(legal)),'926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856');
+  assert.equal(sha(JSON.stringify(health)),'23fae7451dc7d2bd8e28dfec98357ffbaed0a52b840e330024dc7accea527dc0');
+  const page=await readFile(new URL('../app/configure/page.tsx',import.meta.url),'utf8');
+  const contract=page.match(/const CHECKOUT_CONTRACT = \{[\s\S]*?\} as const;/)?.[0];assert.ok(contract);
+  assert.equal(sha(contract.replaceAll('\r\n','\n')),'a5090ef8df642ee331becb91e966f486d3401957d1a9c1924985456f29939de5');
+  assert.match(contract,/c6500f4c391351fb245d3c1c445e77c91f866d70b9d1a121b7b334e8b2e95c7c/);
+});
 
 async function render(path = "/", init = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);

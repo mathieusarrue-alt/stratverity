@@ -1,0 +1,19 @@
+{
+  "faq": {
+    "fr": "Non. Votre code alimente le calcul d'audit en lecture seule et n'est jamais publié, revendu ni exécuté avec des ordres réels. L'analyse est statique ; les fichiers opérationnels sont supprimés selon la politique de conservation, seules les empreintes et preuves de commande sont gardées.",
+    "en": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "zh": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "hi": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "es": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "ar": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "pt": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "bn": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "de": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "it": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "ru": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept.",
+    "ko": "No. Your code powers read-only audit computation and is never published, resold or executed with real orders. Analysis is static; operational files are deleted under the retention policy, only fingerprints and order evidence are kept."
+  },
+  "legal_sha256": "926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856",
+  "health_sha256": "23fae7451dc7d2bd8e28dfec98357ffbaed0a52b840e330024dc7accea527dc0",
+  "checkout_page_sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7"
+}

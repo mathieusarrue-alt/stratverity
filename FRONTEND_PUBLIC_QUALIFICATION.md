@@ -1,5 +1,44 @@
 # Frontend — reprise publique et qualification locale
 
+## 23 novembre — phase1 FAQ traitement des sources corrigée, REVISE factuel
+
+Branche codex/source-handling-faq-20261123 depuis3d7fb35, plan relu avant code.
+ADAPTER les copies existantes, sans nouveau cadre juridique ni durée inventée.
+Préflight communication trading lu ; recherche primaire CNIL transparence/
+conservation France/UE réutilisée de la session principale23nov17:08UTC.
+Périmètre websiteFR/EN+fallbacks, pas publicité payante/launch/conseil juridique.
+
+Seulement faq.a8 : lignefallbacklanding et12messages(FR+11copiesENexistantes).
+Le texte ne nie plus toute conservation ni toute exécution : non-publication/
+non-revente, analyse statique OU exécution isolée selonprofil, sans ordre réel,
+copie privée pouvantêtre conservée pouranalyse/suivicommande, modalités/durées
+de suppression encoreàpréciser avantouverturecommerciale. AucunTTL30/90/365j
+supposé, aucunclaimrendement ni nouveau consentement/contrat/prix/flag.
+
+Audit durable evidence/source_handling_faq_before_20261123.json et
+source_handling_faq_after_20261123.json :12pairesold/new sansPII ; SHA des
+traductionslegal.* inchangé926ec3fd...446e856, healthBody inchangé23fae745...
+527dc0 etpagecheckoutinchangée7e05fe92...0319c7. ContratCHECKOUT_CONTRACT
+normaliséSHAa5090ef8...939de5 et empreintec6500f4c...e95c7c inchangés.
+Ne pas présenter cette correction commevalidationjuridiqueREADY ou comme
+politique de rétention techniquement activée : verdict **REVISE**, àfinaliser.
+
+Qualification : **npm test102PASS**, typesDOM/Worker0 etbuildPASS ; preuve
+evidence/source_handling_faq_qualified_20261123.xml. Trois nouveaux tests :
+12messages etENfallbacks concordants, exportlandingMarkup identiqueàFAQEN,
+smokes200 desshells / et/faq, guardslegal/health/contrat. Pasbrowser/hydration
+revendiqués : landingMarkup est injecté paruseEffect, pasSSR ; /faq a sonpropre
+components/faq/faq-data. Ancienstests tropglobaux échoués sontconservés dans
+source_handling_faq_initial_20261123.xml puisfinal_20261123.xml(101/102).
+Ils ont révélé les frontières du rendu, aucun texteproduit modifié pourcontourner.
+
+**Phase2 ouverte, nontraitée ici** : ft.healthBody etautresclaims distincts,
+ainsi que FAQSSR/faq-data gardent leur propre périmètre àvérifier/corriger.
+Des fichiers temporaires Pine/MQL rendent certaines promesses «jamaisstocké»
+trop fortes selon revueprincipale ; ce bloc ne les a PAS modifiées. Legalterms,
+licence, Stripe, fingerprints etprix sontintacts. Aucuncommit/push/déploiement
+ou lancementréel effectué par cet agent.
+
 ## 23 novembre — téléchargement natif final0518Z PASS, NON activé en production
 
 Recette neuve conduite par principal APRÈS correctionWorker, sortie canonique
