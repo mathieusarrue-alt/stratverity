@@ -1,5 +1,47 @@
 # Frontend — reprise publique et qualification locale
 
+## 24 novembre — phase3 question publication/revente uniquement,107testsPASS
+
+Branche `codex/source-handling-question-20261124` depuis `eb773c1`. Décision
+**ADAPTER** une ambiguïté résiduelle relue : l'ancienne question « partagé ou
+stocké ? » suivie de « Non » pouvait nier la conservation pourtant expliquée
+par FAQa8. Douze questions FAQq1 sont maintenant limitées à la publication et
+à la revente ; les termes localisés sont repris des réponses existantes.
+FR : « Votre code est-il publié ou revendu ? » ; EN : « Is my strategy code
+published or resold? ». Fallback anglais du bootstrap landing aligné.
+
+Périmètre exact : **12 clés faq.q1 + un fallback**. Toutes les réponses FAQa1
+restent inchangées, comme FAQa8 (copie privée possible, modalités de conservation
+à préciser), les 36 textes de phase2, legal.*, le contrat et la page checkout.
+Aucune nouvelle promesse sur stockage/suppression/droits, aucune durée ni
+politique juridique ajoutée. API, moteurs, données, paiements, flags de production
+et Marketplace inchangés. Générateur du design non relancé.
+
+Preuves neuves : `evidence/source_handling_question_before_20261124.json` et
+`source_handling_question_after_20261124.json`, contenant les 12 couples old/new
+et les empreintes de garde. Deux tests dédiés vérifient les 12 questions,
+l'absence de question de stockage, le fallback EN et les réponses/disclosures
+inchangées. Les gardes legal/contrat existantes restent actives.
+
+Baseline réelle AVANT changement de copie : **1 échec / 1 succès**, fichier
+`source_handling_question_baseline_20261124.xml` conservé. Après adaptation :
+**8 ciblés PASS**, types DOM/Worker PASS, build PASS puis **107 tests PASS**
+dans `source_handling_question_qualified_20261124.xml` (mêmes huit fichiers de
+tests que npm test). Commandes exécutées séparément : npm run typecheck,
+npm run build, node --test avec sortie JUnit. Aucun navigateur ou fournisseur
+réel lancé ; pas de déploiement, commit ou push par l'auteur avant revue.
+
+Empreintes de garde stables : FAQa1 `97a46b66…da6bb6c`, FAQa8
+`2a50facd…bb69d9`, trois disclosures de phase2 `b16ba796…5d2de27`,
+legal.* `926ec3fd…446e856`, page checkout `7e05fe92…0319c7`,
+contrat `a5090ef8…939de5`. Cette correction sémantique ne qualifie ni
+l'effacement technique ni une politique internationale de confidentialité.
+
+Revue principal du diff des douze questions et des empreintes : conforme.
+Rejeu principal107/107PASS, preuve
+`evidence/source_handling_question_principal_20261124.xml` ; aucun ancien
+résultat ou texte de réponse remplacé pour faire passer les contrôles.
+
 ## 24 novembre — phase2 communications free/health/exemple/FAQ alignées,105testsPASS
 
 Branche codex/source-handling-all-surfaces-20261124 depuis6019dc4 (phase1

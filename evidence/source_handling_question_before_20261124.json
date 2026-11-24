@@ -1,0 +1,51 @@
+{
+  "schema": "source-handling-question-review@1",
+  "parent": "eb773c1",
+  "questions": {
+    "fr": {
+      "faq.q1": "Mon code de stratégie est-il partagé ou stocké ?"
+    },
+    "en": {
+      "faq.q1": "Is my strategy code shared or stored?"
+    },
+    "zh": {
+      "faq.q1": "我的策略代码会被分享或存储吗？"
+    },
+    "hi": {
+      "faq.q1": "क्या मेरी रणनीति का कोड साझा या संग्रहीत किया जाता है?"
+    },
+    "es": {
+      "faq.q1": "¿Se comparte o almacena el código de mi estrategia?"
+    },
+    "ar": {
+      "faq.q1": "هل تتم مشاركة كود استراتيجيتي أو تخزينه؟"
+    },
+    "pt": {
+      "faq.q1": "O código da minha estratégia é partilhado ou armazenado?"
+    },
+    "bn": {
+      "faq.q1": "আমার কৌশলের কোড কি শেয়ার বা সংরক্ষণ করা হয়?"
+    },
+    "de": {
+      "faq.q1": "Wird der Code meiner Strategie geteilt oder gespeichert?"
+    },
+    "it": {
+      "faq.q1": "Il codice della mia strategia viene condiviso o memorizzato?"
+    },
+    "ru": {
+      "faq.q1": "Передаётся ли или хранится код моей стратегии?"
+    },
+    "ko": {
+      "faq.q1": "내 전략 코드가 공유되거나 저장되나요?"
+    }
+  },
+  "guards": {
+    "answers1_sha256": "97a46b66c37aff5ac990748d1e39a9366ff2a8283dca5c27d18c9b576da6bb6c",
+    "answers8_sha256": "2a50facd8dd4bd35718b01b9965ebf22a7a3fa9adf3761641ebd887e28bb69d9",
+    "phase2_sha256": "b16ba796f2d549fb7d9ac705e35815915c8ae84c1e0b051b7f79ef88b5d2de27",
+    "legal_sha256": "926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856",
+    "checkout_page_sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7",
+    "checkout_contract_sha256": "a5090ef8df642ee331becb91e966f486d3401957d1a9c1924985456f29939de5"
+  }
+}
+

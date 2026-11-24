@@ -1,0 +1,104 @@
+{
+  "schema": "source-handling-question-review@1",
+  "parent": "eb773c1",
+  "changes": [
+    {
+      "locale": "fr",
+      "key": "faq.q1",
+      "old": "Mon code de stratégie est-il partagé ou stocké ?",
+      "new": "Votre code est-il publié ou revendu ?"
+    },
+    {
+      "locale": "en",
+      "key": "faq.q1",
+      "old": "Is my strategy code shared or stored?",
+      "new": "Is my strategy code published or resold?"
+    },
+    {
+      "locale": "zh",
+      "key": "faq.q1",
+      "old": "我的策略代码会被分享或存储吗？",
+      "new": "我的策略代码会被公开或转售吗？"
+    },
+    {
+      "locale": "hi",
+      "key": "faq.q1",
+      "old": "क्या मेरी रणनीति का कोड साझा या संग्रहीत किया जाता है?",
+      "new": "क्या मेरी रणनीति का कोड प्रकाशित या पुनर्विक्रय किया जाता है?"
+    },
+    {
+      "locale": "es",
+      "key": "faq.q1",
+      "old": "¿Se comparte o almacena el código de mi estrategia?",
+      "new": "¿Se publica o revende el código de mi estrategia?"
+    },
+    {
+      "locale": "ar",
+      "key": "faq.q1",
+      "old": "هل تتم مشاركة كود استراتيجيتي أو تخزينه؟",
+      "new": "هل يُنشر كود استراتيجيتي أو يُعاد بيعه؟"
+    },
+    {
+      "locale": "pt",
+      "key": "faq.q1",
+      "old": "O código da minha estratégia é partilhado ou armazenado?",
+      "new": "O código da minha estratégia é publicado ou revendido?"
+    },
+    {
+      "locale": "bn",
+      "key": "faq.q1",
+      "old": "আমার কৌশলের কোড কি শেয়ার বা সংরক্ষণ করা হয়?",
+      "new": "আমার কৌশলের কোড কি প্রকাশ বা পুনর্বিক্রয় করা হয়?"
+    },
+    {
+      "locale": "de",
+      "key": "faq.q1",
+      "old": "Wird der Code meiner Strategie geteilt oder gespeichert?",
+      "new": "Wird der Code meiner Strategie veröffentlicht oder weiterverkauft?"
+    },
+    {
+      "locale": "it",
+      "key": "faq.q1",
+      "old": "Il codice della mia strategia viene condiviso o memorizzato?",
+      "new": "Il codice della mia strategia viene pubblicato o rivenduto?"
+    },
+    {
+      "locale": "ru",
+      "key": "faq.q1",
+      "old": "Передаётся ли или хранится код моей стратегии?",
+      "new": "Код моей стратегии публикуется или перепродаётся?"
+    },
+    {
+      "locale": "ko",
+      "key": "faq.q1",
+      "old": "내 전략 코드가 공유되거나 저장되나요?",
+      "new": "내 전략 코드가 공개되거나 재판매되나요?"
+    }
+  ],
+  "guards": {
+    "answers1_sha256": "97a46b66c37aff5ac990748d1e39a9366ff2a8283dca5c27d18c9b576da6bb6c",
+    "answers8_sha256": "2a50facd8dd4bd35718b01b9965ebf22a7a3fa9adf3761641ebd887e28bb69d9",
+    "phase2_sha256": "b16ba796f2d549fb7d9ac705e35815915c8ae84c1e0b051b7f79ef88b5d2de27",
+    "legal_sha256": "926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856",
+    "checkout_page_sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7",
+    "checkout_contract_sha256": "a5090ef8df642ee331becb91e966f486d3401957d1a9c1924985456f29939de5"
+  },
+  "unchanged": {
+    "answers1_sha256": true,
+    "answers8_sha256": true,
+    "phase2_sha256": true,
+    "legal_sha256": true,
+    "checkout_page_sha256": true,
+    "checkout_contract_sha256": true
+  },
+  "scope": "QUESTION_ONLY_NO_NEW_RETENTION_POLICY",
+  "qualification": {
+    "tests": 107,
+    "failures": 0,
+    "typescript_dom_worker": true,
+    "build": true,
+    "baseline_tests": 2,
+    "baseline_failures": 1
+  }
+}
+

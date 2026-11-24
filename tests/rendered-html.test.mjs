@@ -6,6 +6,31 @@ import { messages as sourceHandlingMessages } from "../app/i18n/messages.ts";
 import { landingMarkup as sourceHandlingLanding } from "../app/home/landing-markup.ts";
 import { faqEntries,faqJsonLdEntries } from "../components/faq/faq-data.ts";
 
+test("publication-question names only publication and resale in twelve existing locales",()=>{
+  const expected={fr:"Votre code est-il publié ou revendu ?",en:"Is my strategy code published or resold?",
+    zh:"我的策略代码会被公开或转售吗？",hi:"क्या मेरी रणनीति का कोड प्रकाशित या पुनर्विक्रय किया जाता है?",
+    es:"¿Se publica o revende el código de mi estrategia?",ar:"هل يُنشر كود استراتيجيتي أو يُعاد بيعه؟",
+    pt:"O código da minha estratégia é publicado ou revendido?",bn:"আমার কৌশলের কোড কি প্রকাশ বা পুনর্বিক্রয় করা হয়?",
+    de:"Wird der Code meiner Strategie veröffentlicht oder weiterverkauft?",it:"Il codice della mia strategia viene pubblicato o rivenduto?",
+    ru:"Код моей стратегии публикуется или перепродаётся?",ko:"내 전략 코드가 공개되거나 재판매되나요?"};
+  assert.deepEqual(Object.keys(sourceHandlingMessages),Object.keys(expected));
+  for(const[locale,question]of Object.entries(expected)){
+    assert.equal(sourceHandlingMessages[locale]['faq.q1'],question);
+    assert.doesNotMatch(question,/stock|stor|存储|संग्रहीत|almacena|تخزين|armazen|সংরক্ষণ|gespeichert|memorizzat|хранится|저장/i);
+  }
+  const bootstrap=sourceHandlingLanding.match(/data-i18n="faq.q1">([^<]+)<\/span>/)?.[1];
+  assert.equal(bootstrap,expected.en);
+});
+
+test("publication-question leaves both answers and phase-two disclosures unchanged",()=>{
+  const selected=keys=>Object.fromEntries(Object.entries(sourceHandlingMessages).map(([locale,dictionary])=>
+    [locale,Object.fromEntries(keys.map(key=>[key,dictionary[key]]))]));
+  const sha=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+  assert.equal(sha(selected(['faq.a1'])),'97a46b66c37aff5ac990748d1e39a9366ff2a8283dca5c27d18c9b576da6bb6c');
+  assert.equal(sha(selected(['faq.a8'])),'2a50facd8dd4bd35718b01b9965ebf22a7a3fa9adf3761641ebd887e28bb69d9');
+  assert.equal(sha(selected(['ft.lead','ft.healthBody','health.privacy'])),'b16ba796f2d549fb7d9ac705e35815915c8ae84c1e0b051b7f79ef88b5d2de27');
+});
+
 test("source-handling FAQ distinguishes retained copies and isolated execution in all existing fallbacks",()=>{
   assert.equal(Object.keys(sourceHandlingMessages).length,12);
   const fr=sourceHandlingMessages.fr['faq.a8'],en=sourceHandlingMessages.en['faq.a8'];
