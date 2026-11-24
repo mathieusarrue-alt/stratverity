@@ -1,0 +1,24 @@
+{
+  "schema": "health-unavailable-browser@1",
+  "pass_": false,
+  "fixture_only": true,
+  "authorization": false,
+  "real_eligibility": false,
+  "real_provider": false,
+  "submitted_code_executed": false,
+  "env_files_loaded": false,
+  "failure_type": "AssertionError",
+  "failure": "",
+  "input_pins_stable": true,
+  "input_pins": {
+    "tests\\health-unavailable-browser.py": "05f3c745b7b53a2a4948ae42b8510eea9b502f8c122f8f2446c515493d43475a",
+    "app\\health-check\\page.tsx": "8e14782c51f7d8ed16f0a601bb0e73aa5c07e9ba50032cefabb320eed5b290a6",
+    "app\\api\\health-check\\route.ts": "f327c77a799c2f4f14f6481864d010ec3dadd7474ff445c2883d81a6bfdd2b40",
+    "app\\api\\eligibility\\proxy.ts": "f28114b5f8176afb33af72859c63ad98e98cbe6fa4ebfea55cc7e0a61c14749a",
+    "app\\i18n\\messages.ts": "933b6bb719b80af1964fe24f67c3266d8935b9556db7e926a7ff2ef83e313dff",
+    "vite.config.ts": "059d6dcd0c8671777a23af5310f20687843fa8d3b6aa9a38bb7577717a76c7a0",
+    "worker\\index.ts": "af82249324bf0593a13bde5569ff448d7e1b166cd454ae88e30fcc9becf57767",
+    "backend/audit_app\\health_check\\__init__.py": "6af4f09e7383b80a16f2fb4146434bcdfca200e3305cbd67f40e2c305306b7c0",
+    "backend/audit_app\\api\\health_check_http.py": "428753ddfe3b7450d3b1edab25e7c7d2ac80713218acdff5132e5d1c9823f3ef"
+  }
+}

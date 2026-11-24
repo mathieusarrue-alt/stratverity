@@ -1,0 +1,83 @@
+{
+  "schema": "health-unavailable-browser@1",
+  "pass_": true,
+  "fixture_only": true,
+  "authorization": false,
+  "real_eligibility": false,
+  "real_provider": false,
+  "submitted_code_executed": false,
+  "env_files_loaded": false,
+  "http_observations": [
+    [
+      200,
+      {
+        "score": 100,
+        "verdict": "Excellent",
+        "warnings": [],
+        "details": {
+          "malware": "CLEAN",
+          "scope": {
+            "language": "python",
+            "declared_symbol": "BTCUSDT",
+            "declared_timeframe": "1h",
+            "detected_symbols": [],
+            "detected_timeframes": [],
+            "is_multi_symbol": false,
+            "is_multi_timeframe": false,
+            "extra_contexts": 0,
+            "warnings": []
+          },
+          "static_checks": "basic"
+        },
+        "cta": "Votre strat\u00e9gie semble saine. Pour une analyse approfondie (multi-actifs, multi-UT, backtest recalcul\u00e9), passez au Crash-Test Express \u00e0 49\u20ac."
+      }
+    ],
+    [
+      503,
+      {
+        "detail": {
+          "code": "HEALTH_CHECK_UNAVAILABLE"
+        }
+      }
+    ]
+  ],
+  "statuses": [
+    200,
+    503
+  ],
+  "first_score": 100,
+  "first_profile": "python-basic",
+  "error": {
+    "detail": {
+      "code": "HEALTH_CHECK_UNAVAILABLE"
+    }
+  },
+  "old_result_removed_before_failure": true,
+  "no_old_score_verdict_cta_after_error": true,
+  "scanner_calls": 2,
+  "backend_exit": 0,
+  "browser_errors": [],
+  "blocked_requests": 0,
+  "browser_direct_backend_allowed": false,
+  "source_sha256": "7acc5bd0c847da91b056ac914c717e49b6f4cf630f72ecb18c7279caffde50d1",
+  "http_response_statuses": [
+    200,
+    503
+  ],
+  "owned_process_exit_codes": {
+    "frontend": 0,
+    "backend": 0
+  },
+  "input_pins_stable": true,
+  "input_pins": {
+    "tests\\health-unavailable-browser.py": "26a30b5ef21748ba79398d92f97fe6a123f1f7fb138ce6c63b1729956c24224f",
+    "app\\health-check\\page.tsx": "8e14782c51f7d8ed16f0a601bb0e73aa5c07e9ba50032cefabb320eed5b290a6",
+    "app\\api\\health-check\\route.ts": "f327c77a799c2f4f14f6481864d010ec3dadd7474ff445c2883d81a6bfdd2b40",
+    "app\\api\\eligibility\\proxy.ts": "f28114b5f8176afb33af72859c63ad98e98cbe6fa4ebfea55cc7e0a61c14749a",
+    "app\\i18n\\messages.ts": "933b6bb719b80af1964fe24f67c3266d8935b9556db7e926a7ff2ef83e313dff",
+    "vite.config.ts": "059d6dcd0c8671777a23af5310f20687843fa8d3b6aa9a38bb7577717a76c7a0",
+    "worker\\index.ts": "af82249324bf0593a13bde5569ff448d7e1b166cd454ae88e30fcc9becf57767",
+    "backend/audit_app\\health_check\\__init__.py": "6af4f09e7383b80a16f2fb4146434bcdfca200e3305cbd67f40e2c305306b7c0",
+    "backend/audit_app\\api\\health_check_http.py": "428753ddfe3b7450d3b1edab25e7c7d2ac80713218acdff5132e5d1c9823f3ef"
+  }
+}

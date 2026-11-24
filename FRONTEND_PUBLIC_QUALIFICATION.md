@@ -1,5 +1,31 @@
 # Frontend — reprise publique et qualification locale
 
+## 24 novembre — recette Health succès puis indisponibilité CLOSE
+
+Pilote tests/health-unavailable-browser.py réemploie Vite envDirvide, environnement
+filtré, Chromevierge et garde réseau loopback avantnavigation. Vrai frontend et
+proxyNext→vraiFastAPIHealth, sansadaptateuréligibilité, sourcePythonSYNTHÉTIQUE
+jamaisexécutée. Backend054c3aa/frontb0f2892 inchangés. Aucunfournisseur, compte,
+paiement, codeclient ouconfigurationproduction utilisés.
+
+Premierlot0519FAILconservé : l'observation par callback+lecture JSON n'avait pas
+validé la liste exacte des réponses, malgré POST200 puis503 visibles danslog et
+UIerreuratteinte. Cause de timing non prouvée par ce premier journal incomplet.
+Pilote corrigé SEULEMENT : deux attentes de réponses explicites et diagnostics
+durables avant assertions. Contrat exact200→503/bodycodeinchangé, pasproduit
+affaibli. SHAfinal26A30B5EF21748BA79398D92F97FE6A123F1F7FB138CE6C63B1729956C24224F.
+
+Recette principale0521 EXIT0/PASS : premier score100/basic synthétique, puis
+retrait de l'ancien score/verdict/CTA AVANT libération de la panne, réponse503
+exacte HEALTH_CHECK_UNAVAILABLE et aucunancienrésultat APRÈS. Deuxappels, zéro
+exceptionnavigateur, neufpinsstables. Captures success.png/unavailable.png
+réellementouvertes parprincipal. Deuxprocessuscontrôlés terminés exit0.
+Preuves publiques evidence/health_unavailable_browser_20261124.json etinitial.
+Les captures/logs bruts restent dans le dossier de recette local ; pas de
+garantie après arrêt brutal. Éligibilité réelle/reprise de gratuité NONqualifiées.
+Le libellé visible « HTTP503 » reste technique ; une améliorationUXdistincte
+et la cohérence CTA49€/lien19€ sont àtraiter, sans modifier les prix ici.
+
 ## 24 novembre — phase3 question publication/revente uniquement,107testsPASS
 
 Branche `codex/source-handling-question-20261124` depuis `eb773c1`. Décision
