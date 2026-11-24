@@ -1,0 +1,224 @@
+{
+  "changes": [
+    {
+      "locale": "fr",
+      "key": "ft.lead",
+      "old": "Le Health-Check et le calculateur de frais scannent votre stratégie sans conserver votre code : quelques secondes pour repérer ses faiblesses avant de payer un audit complet.",
+      "new": "Analyse statique du code, sans exécuter votre stratégie ni envoyer d’ordres réels. Certains formats utilisent des fichiers temporaires. Des empreintes et résultats peuvent être conservés."
+    },
+    {
+      "locale": "fr",
+      "key": "ft.healthBody",
+      "old": "Score de santé, erreurs probables et recommandations. Analyse statique instantanée : votre code n'est jamais stocké, il est supprimé immédiatement après l'analyse.",
+      "new": "Analyse statique du code, sans exécuter votre stratégie ni envoyer d’ordres réels. Certains formats utilisent des fichiers temporaires. Des empreintes et résultats peuvent être conservés."
+    },
+    {
+      "locale": "fr",
+      "key": "health.privacy",
+      "old": "Votre code n'est pas stocké. Analyse statique uniquement — aucune exécution.",
+      "new": "Analyse statique ; fichiers temporaires possibles. Empreintes et résultats susceptibles d’être conservés."
+    },
+    {
+      "locale": "en",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "en",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "en",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "zh",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "zh",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "zh",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "hi",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "hi",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "hi",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "es",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "es",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "es",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ar",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ar",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ar",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "pt",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "pt",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "pt",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "bn",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "bn",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "bn",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "de",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "de",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "de",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "it",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "it",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "it",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ru",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ru",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ru",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ko",
+      "key": "ft.lead",
+      "old": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ko",
+      "key": "ft.healthBody",
+      "old": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "new": "Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained."
+    },
+    {
+      "locale": "ko",
+      "key": "health.privacy",
+      "old": "Your code is not stored. Static analysis only — no execution.",
+      "new": "Static analysis; temporary files may be used. Fingerprints and results may be retained."
+    }
+  ],
+  "legal_sha256": "926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856",
+  "checkout_page_sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7",
+  "phase1_faq_sha256": "d85336467b320c985f6b9b5222d368dca35aac19fa26a62c1f33d932173a3068",
+  "unchanged_guarded_materials": true
+}

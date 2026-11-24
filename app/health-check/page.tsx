@@ -390,7 +390,7 @@ export default function HealthCheckPage() {
                                                           Unlock findings <span aria-hidden="true">→</span>
                             </Link>
                             <p style={{ fontSize: 12, color: "#7b8f86", marginTop: 8 }}>
-                              Read-only analysis. Code deleted right after the scan.
+                              {t("health.privacy")}
                             </p>
                           </div>
                         )}

@@ -298,13 +298,13 @@ export const landingMarkup = `<svg width="0" height="0" style="position:absolute
     <div class="sec-head" data-reveal>
       <span class="eyebrow" data-i18n="ft.eyebrow">FREE TOOLS & DIAGNOSTICS</span>
       <h2 data-i18n="ft.title">A quick diagnosis before the audit, in seconds.</h2>
-      <p data-i18n="ft.lead">The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.</p>
+      <p data-i18n="ft.lead">Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained.</p>
     </div>
     <div class="feature-grid">
       <article class="card" data-tilt data-reveal>
         <span class="chip" style="align-self:flex-start"><span data-i18n="freeTools.healthTitle">Code Health Check</span></span>
         <h3 data-i18n="ft.healthTitle">Free Health-Check</h3>
-        <p data-i18n="ft.healthBody">Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.</p>
+        <p data-i18n="ft.healthBody">Static code analysis, without executing your strategy or sending live trading orders. Some formats use temporary files. Fingerprints and results may be retained.</p>
         <a class="btn btn-ghost" href="/health-check" data-i18n="freeTools.open">Open tool</a>
       </article>
       <article class="card" data-tilt data-reveal data-delay="1">

@@ -1,0 +1,67 @@
+{
+  "selected": {
+    "fr": {
+      "ft.lead": "Le Health-Check et le calculateur de frais scannent votre stratégie sans conserver votre code : quelques secondes pour repérer ses faiblesses avant de payer un audit complet.",
+      "ft.healthBody": "Score de santé, erreurs probables et recommandations. Analyse statique instantanée : votre code n'est jamais stocké, il est supprimé immédiatement après l'analyse.",
+      "health.privacy": "Votre code n'est pas stocké. Analyse statique uniquement — aucune exécution."
+    },
+    "en": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "zh": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "hi": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "es": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "ar": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "pt": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "bn": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "de": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "it": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "ru": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    },
+    "ko": {
+      "ft.lead": "The Health-Check and the fee calculator scan your strategy without storing your code: a few seconds to spot its weaknesses before you pay for a full audit.",
+      "ft.healthBody": "Health score, likely issues and recommendations. Instant static analysis: your code is never stored, it is deleted immediately after analysis.",
+      "health.privacy": "Your code is not stored. Static analysis only — no execution."
+    }
+  },
+  "legal_sha256": "926ec3fd83fac30f6eaa1d8304fbbacae10ee594bbbbb13654f0da74f446e856",
+  "checkout_page_sha256": "7e05fe925bc16312a4271cb4f312dc011a92a13de1fd31ad100098b67d0319c7",
+  "phase1_faq_sha256": "d85336467b320c985f6b9b5222d368dca35aac19fa26a62c1f33d932173a3068"
+}

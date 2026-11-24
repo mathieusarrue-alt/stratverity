@@ -1,5 +1,53 @@
 # Frontend — reprise publique et qualification locale
 
+## 24 novembre — phase2 communications free/health/exemple/FAQ alignées,105testsPASS
+
+Branche codex/source-handling-all-surfaces-20261124 depuis6019dc4 (phase1
+publiée et102tests historiques conservés). Plan relu avant code ; préflight
+communication trading et recherche primaire CNIL transparence/conservation
+France/UE de la session précédente réutilisés. **ADAPTER** les copies, sans
+nouvelle règle juridique/contrat ni durée inventée. Verdict factuel REVISE,
+pas READY juridique ou lancement international/pub payante autorisé.
+
+Périmètre exact :36messages(12locales×ft.lead/ft.healthBody/health.privacy),
+deuxfallbackslanding, noteinlinehealth réutilisanthealth.privacy, deuxclaims
+exemplepayé avec lienFAQ, une réponseFAQdatasetEN. FR+fallbacksENexistants
+uniquement, pas de traduction supplémentaire improvisée. FreeHealth reste
+statique SANS exécution de stratégie ni ordre réel ; fichiers temporaires
+possibles selonformat et empreintes/résultats susceptibles d'être conservés.
+Exemplepayé distingue statique OU exécution isolée selonprofil, copie privée
+possible poursuivicommande. FAQSSR etJSONLD reprennent EXACTEMENT FAQa8EN
+qualifiéephase1. Aucune promesse de nonstockage/suppression immédiate ni
+chiffrement inventée. Modalités/durées restentàpréciser avantcommercial.
+
+Audit evidence/source_handling_phase2_before_20261124.json etafter_20261124.json :
+36pairesold/new, guardslegaux/checkout/FAQphase1 inchangésTrue. SHAlegal.*
+926ec3fd...446e856 ; pagecheckout7e05fe92...0319c7 ; FAQphase1d8533646...73a3068.
+VerrouhealthBody ancien volontairement remplacé par nouveauSHA95e435a4...96a7f6de
+pour refléter le périmètre phase2 explicitement approuvé ; empreintescontrat et
+versionsjuridiques/prix/flags inchangées. Aucun changement API/moteur/sourceTTL.
+
+Qualification auteur puis principal : **npm test105/105PASS**, typesDOM/Worker0/buildPASS ;
+JUnit evidence/source_handling_phase2_qualified_20261124.xml. Trois casajoutés :
+fallbacks12×3+bootstraplanding, vraiSSRhealth/exemple et vraieFAQ/faq HTML+JSONLD.
+Home resteunbootstrapuseEffect : sa copie est testée depuisexport/messages,
+pasdepuisunehydrationbrowserimaginaire. Premier105cas104PASS/1FAIL conservé
+danssource_handling_phase2_initial_20261124.xml : testavaitincorrectementexigé
+FAQSSRsurhomepage ; bornéensuiteau /faq réellementserveur, pas contournement
+parchangementproduit. Aucunbrowserréel ou providercontactéparcetagent.
+
+Limites : rétention encoreàdéfinir/implémenter et validationjuridiqueglobale
+non acquise ; copiesmarketing ne constituent pas unenforcement de stockage.
+Fichiersgeneratedlanding/messages modifiés danspérimètre autorisé, générateur
+designnonrelancé ; tests protègentcontre unerégénérationréintroduisantlesanciens
+claims. Revue/rejeuprincipal avantpublication ; aucuncommit/push/merge/flagprod
+ou politique30/90/365jours inventée par cetagent.
+
+Rejeu principal indépendant du build et des tests le24novembre05:04UTC :
+105/105PASS, preuve evidence/source_handling_phase2_principal_20261124.xml.
+Les avertissements Vite (imports JSON/extensions et taille de chunk) sont
+existants, non masqués et ne constituent pas une qualification navigateur.
+
 ## 23 novembre — phase1 FAQ traitement des sources corrigée, REVISE factuel
 
 Branche codex/source-handling-faq-20261123 depuis3d7fb35, plan relu avant code.

@@ -36,7 +36,7 @@ export const faqEntries: FaqEntry[] = [
   {
     question: "Is my strategy source code shared, stored, or resold?",
     answer:
-      "No. Your code powers read-only audit computation and is never published, resold, or executed with real orders. Analysis is static; operational files are deleted under our retention policy, and only fingerprints and order evidence are kept.",
+      "Your code is not published or resold. Depending on the selected tool and profile, analysis is static or performed through isolated execution, without sending live trading orders. A private copy may be retained for analysis and order follow-up. Retention periods and deletion procedures still need to be specified before commercial launch.",
   },
   {
     question: "How does the Affiliate Program and payout work?",

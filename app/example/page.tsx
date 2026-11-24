@@ -156,14 +156,15 @@ export default function ExamplePage() {
           🔓 Unlock the full bias breakdown — from €19
         </a>
         <div style={{ fontSize: 12, color: "#8B98A5", marginTop: 6 }}>
-          Read-only analysis. Code deleted right after the scan.
+          Depending on the selected profile, analysis is static or performed through isolated execution, without sending live trading orders.
         </div>
       </div>
 
       {/* Footer proof */}
       <div style={{ paddingTop: 26, borderTop: "1px solid rgba(255,255,255,0.07)", marginTop: 26 }}>
         <p style={{ ...S.sub, fontSize: 13, color: "#8B98A5" }}>
-          Your code is never stored — deleted immediately after analysis.{" "}
+          A private copy may be retained for analysis and order follow-up.{" "}
+          <a href="/faq" style={{ color: GREEN }}>Source-handling FAQ</a>.{" "}
           <a href="/gallery" style={{ color: GREEN }}>Verify a certificate →</a>
         </p>
         <p style={{ ...S.sub, fontSize: 12, color: "#6a737d", marginTop: 6 }}>
