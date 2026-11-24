@@ -1,0 +1,3 @@
+# Backend-only generated Health schema: preserve generator bytes on Windows.
+/drizzle-health/*.sql -text
+/drizzle-health/meta/*.json -text

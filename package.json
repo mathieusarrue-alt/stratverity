@@ -14,7 +14,8 @@
     "test:amplify": "node --test tests/amplify-runtime.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit --incremental false && tsc --noEmit --incremental false -p tsconfig.worker.json",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "db:generate:health": "drizzle-kit generate --config=drizzle.health.config.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.4",

@@ -1,0 +1,183 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "ffd9b57a-953c-411c-a4a9-e8e9a538cd99",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "health_attempts": {
+      "name": "health_attempts",
+      "columns": {
+        "attempt_id": {
+          "name": "attempt_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "owner_ref": {
+          "name": "owner_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "binding_sha": {
+          "name": "binding_sha",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "grant_id": {
+          "name": "grant_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_sha": {
+          "name": "source_sha",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "profile_sha": {
+          "name": "profile_sha",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "generation": {
+          "name": "generation",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "max_attempts": {
+          "name": "max_attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token_sha": {
+          "name": "token_sha",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reserved_bytes": {
+          "name": "reserved_bytes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "result_json": {
+          "name": "result_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "result_sha": {
+          "name": "result_sha",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "finished_at": {
+          "name": "finished_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "limits_json": {
+          "name": "limits_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "health_attempts_grant_unique": {
+          "name": "health_attempts_grant_unique",
+          "columns": [
+            "grant_id"
+          ],
+          "isUnique": true
+        },
+        "health_attempts_owner_idx": {
+          "name": "health_attempts_owner_idx",
+          "columns": [
+            "owner_ref"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "health_attempts_status_check": {
+          "name": "health_attempts_status_check",
+          "value": "\"health_attempts\".\"status\" IN ('RUNNING','FAILED_TECHNICAL','SUCCEEDED','EXHAUSTED')"
+        },
+        "health_attempts_generation_check": {
+          "name": "health_attempts_generation_check",
+          "value": "\"health_attempts\".\"generation\" >= 1"
+        },
+        "health_attempts_attempts_check": {
+          "name": "health_attempts_attempts_check",
+          "value": "\"health_attempts\".\"attempts\" >= 1 AND \"health_attempts\".\"attempts\" <= \"health_attempts\".\"max_attempts\""
+        },
+        "health_attempts_max_attempts_check": {
+          "name": "health_attempts_max_attempts_check",
+          "value": "\"health_attempts\".\"max_attempts\" >= 1"
+        },
+        "health_attempts_reserved_bytes_check": {
+          "name": "health_attempts_reserved_bytes_check",
+          "value": "\"health_attempts\".\"reserved_bytes\" > 0"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

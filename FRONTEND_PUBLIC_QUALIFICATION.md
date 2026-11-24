@@ -1,5 +1,25 @@
 # Frontend — reprise publique et qualification locale
 
+## 24 novembre17UTC — schéma Health backend dédié, génération seulement
+
+ADAPTER Drizzle déjà installé, sans nouvelle dépendance. `db/health-attempts.ts`
+et `drizzle.health.config.ts` sont SÉPARÉS du schéma D1 vide par défaut.
+`npm run db:generate:health` génère `drizzle-health/0000_luxuriant_lady_deathstrike.sql`
+et ses snapshot/journal : une table17colonnes,2index,5checks,aucunFKlegacy.
+La copie backend `audit_app/storage/migrations/001_health_attempts.sql` est
+identique octetpour octet : SHA256
+1fd2d125e4586e481748b42fd175eb98feeadd2ca04fdebd2d18732215151274.
+AttributsGit -text bornés àcesartefacts afin de conserver ces octets.
+
+Génération auteur etprincipal répétée : « No schema changes ». Vérification
+typesDOM/Worker auteurPASS. Defaultdb/schema.ts, defaultdrizzle.config.ts et
+lockfile inchangés ; aucune base D1 ou production ouverte/appliquée. Python
+appliquera explicitement la migration aux SEULES bases fixtures de qualification.
+Le registre backend n'est pas monté dans une route ni activé en production.
+Pas de valeur commerciale de reprises/rétention inventée. HTTPHealth actuel,
+prix ettextepublic inchangés par ce bloc ; les testsfront107 précédents restent
+preuves du produitinchangé, pas de nouvelle recette d'intégration du lifecycle.
+
 ## 24 novembre — recette Health succès puis indisponibilité CLOSE
 
 Pilote tests/health-unavailable-browser.py réemploie Vite envDirvide, environnement
