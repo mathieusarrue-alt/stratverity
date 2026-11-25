@@ -1,0 +1,102 @@
+{
+  "schema": "health-lifecycle-browser@1",
+  "pass_": true,
+  "fixture_only": true,
+  "authorization": false,
+  "real_provider": false,
+  "production_activated": false,
+  "submitted_code_executed": false,
+  "env_files_loaded": false,
+  "eligibility_fixture": true,
+  "lifecycle_fixture": true,
+  "os_ca_modified": false,
+  "stage": "COMPLETE",
+  "health_browser_statuses": [
+    503,
+    200
+  ],
+  "dispatches": 3,
+  "identical_request_hashes": true,
+  "real_lost_response_sha256": "31a37710b63c8e7b539f3a1b6584ebc3decdd8c9fe7ab850f85c2aa0d56f20cb",
+  "cached_response_sha256": "31a37710b63c8e7b539f3a1b6584ebc3decdd8c9fe7ab850f85c2aa0d56f20cb",
+  "inspections": [
+    {
+      "scans": 1,
+      "grants": 1,
+      "rows": 1,
+      "messages": 1,
+      "attempts": [
+        {
+          "status": "FAILED_TECHNICAL",
+          "attempts": 1,
+          "generation": 1,
+          "result_sha": null
+        }
+      ]
+    },
+    {
+      "scans": 2,
+      "grants": 1,
+      "rows": 1,
+      "messages": 1,
+      "attempts": [
+        {
+          "status": "SUCCEEDED",
+          "attempts": 2,
+          "generation": 2,
+          "result_sha": "31a37710b63c8e7b539f3a1b6584ebc3decdd8c9fe7ab850f85c2aa0d56f20cb"
+        }
+      ]
+    },
+    {
+      "scans": 2,
+      "grants": 1,
+      "rows": 1,
+      "messages": 1,
+      "attempts": [
+        {
+          "status": "SUCCEEDED",
+          "attempts": 2,
+          "generation": 2,
+          "result_sha": "31a37710b63c8e7b539f3a1b6584ebc3decdd8c9fe7ab850f85c2aa0d56f20cb"
+        }
+      ]
+    }
+  ],
+  "session_cookie_secure_httponly": true,
+  "email_cookie_secure_httponly": true,
+  "captured_messages": 1,
+  "browser_errors": [],
+  "blocked_requests": 0,
+  "source_sha256": "7acc5bd0c847da91b056ac914c717e49b6f4cf630f72ecb18c7279caffde50d1",
+  "owned_process_exit_codes": {
+    "frontend": 0,
+    "backend": 0
+  },
+  "input_pins_stable": true,
+  "input_pins": {
+    "front/tests\\health-lifecycle-browser.py": "2a36535ddf3d3291704ade4b0302fd9ef5d95c610335d0bef8939da3f4f6caef",
+    "front/tests\\health-unavailable-browser.py": "26a30b5ef21748ba79398d92f97fe6a123f1f7fb138ce6c63b1729956c24224f",
+    "front/app\\health-check\\page.tsx": "8e14782c51f7d8ed16f0a601bb0e73aa5c07e9ba50032cefabb320eed5b290a6",
+    "front/app\\api\\health-check\\route.ts": "f327c77a799c2f4f14f6481864d010ec3dadd7474ff445c2883d81a6bfdd2b40",
+    "front/app\\api\\eligibility\\proxy.ts": "f28114b5f8176afb33af72859c63ad98e98cbe6fa4ebfea55cc7e0a61c14749a",
+    "front/app\\api\\eligibility\\session\\route.ts": "347b5872eb1a866e92ea1c45dbb2e129df357a7d4c48824bc5052818fd8e13d5",
+    "front/app\\api\\eligibility\\email\\request\\route.ts": "3fef2e8e80ab1a315316760baec3be70ed3f58e42f7baa2070cd15ef8c62def8",
+    "front/app\\api\\eligibility\\email\\confirm\\route.ts": "7283083ae2c0232b48a5e264331a28d05f7086ca0eaea4f63fd659370df8b244",
+    "front/app\\i18n\\messages.ts": "933b6bb719b80af1964fe24f67c3266d8935b9556db7e926a7ff2ef83e313dff",
+    "front/vite.config.ts": "059d6dcd0c8671777a23af5310f20687843fa8d3b6aa9a38bb7577717a76c7a0",
+    "front/worker\\index.ts": "af82249324bf0593a13bde5569ff448d7e1b166cd454ae88e30fcc9becf57767",
+    "backend/audit_app\\health_check\\__init__.py": "6af4f09e7383b80a16f2fb4146434bcdfca200e3305cbd67f40e2c305306b7c0",
+    "backend/audit_app\\health_check\\attempts.py": "18c1db80ae54e8d1433b0e83344432fec6a1b11675fd3a9e806e7aca1c6d38d5",
+    "backend/audit_app\\health_check\\lifecycle_service.py": "261c785f6125da703fba3e144c26dba0a354f85c90698159405709aa41fa53af",
+    "backend/audit_app\\api\\health_check_http.py": "23ce08a070e9b16100b168524ef00ed0e4c9d79f1708c4b6db0caabea0bde010",
+    "backend/audit_app\\api\\eligibility_http.py": "997054a8a9e146a77277b61e9d7791766d1ae8ba1008557e42dc4c0ebd99e167",
+    "backend/audit_app\\api\\eligibility_fastapi.py": "d327552edd1b00326ebf55eddb776bcf0a46fab8f826f73433c79b88cb6baf6f",
+    "backend/audit_app\\eligibility\\service.py": "6f0c16552ebdcd95977457f980f639f980e0e3b32ca53b5986ba7520930df755",
+    "backend/audit_app\\eligibility\\registry.py": "ca70b5cdc8bf613acf81154c649f051ae767c36d56c8df1a3355ebb15185038b",
+    "backend/audit_app\\eligibility\\proofs.py": "64d6d4dfb8b6ad54b7e8971b16883d5c95c60e25c217d13cd23eabfbd7e194ec",
+    "backend/audit_app\\eligibility\\proof_registry.py": "8447b2c592f55aeba74107df1512ab05f916667572f93bfbdcc44e37fe4e9090",
+    "backend/audit_app\\eligibility\\identity.py": "d9696d242ec2c4e277c038d132e8947f7f781d0e7643b09eb8fe3edc609c76fd",
+    "backend/audit_app\\storage\\migrations\\001_health_attempts.sql": "1fd2d125e4586e481748b42fd175eb98feeadd2ca04fdebd2d18732215151274"
+  }
+}

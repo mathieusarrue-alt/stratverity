@@ -1,5 +1,37 @@
 # Frontend — reprise publique et qualification locale
 
+## 25 novembre — recette HTTPS cookies et reprise Health CLOSE/PASS
+
+Pilote tests/health-lifecycle-browser.py, helpershistoriques26a30b5inchangés,
+nouveauprofilChromevierge HTTPSloopback ; certificatfixturetemporaire etexception
+TLSUNIQUEMENTdanscontextebrowser, aucunCAOSinstallé. EnfantViteenvfiltré/envDir
+vide, backendFastAPIréel avecinjectionHealthlocale/SQLitejetable. Vraiorigin
+HTTPSsansréécriture, session/emailpreuvescodecsréelsavecFAKEkeys. FakeEmailSender
+enmémoireseulement, aucuncourrielouproviderexterne. Aucuncomportementclient
+ou serveurproduction modifié par ce pilote.
+
+HEALTH_LIFECYCLE_BROWSER_20261125T0510Z EXIT0/PASS : vraiparcourssession→cookie
+__Host-ab_session→demandeverification→confirmationparproxy→__Host-ab_email,
+secure/HttpOnly/Path=/ vérifiés. TroisrequêtesHealthidentiques :503(panneattestée),
+vrai200persistéreçuparroute.fetch PUISperducôtébrowser(aucuneréponsefactice),
+200cache àlareprise. Seulement2scans,1grant,1ligneSUCCEEDED/génération2/attempts2.
+Réponseperdue=cache=SHA31a37710b63c8e7b539f3a1b6584ebc3decdd8c9fe7ab850f85c2aa0d56f20cb.
+23pinsstables,zéroerreurnavigateur/deuxprocessusexit0 ; troiscapturesmasquées
+réellementouvertesprincipal montrentHTTP503,puisFailedtofetch,puisScore100.
+Ce100estunexempletechniquePythonbasic, PASrobustesse/qualité/profitstratégie.
+
+Preuvepublique evidence/health_lifecycle_browser_20261125.json. Logsprivés peuvent
+contenirURLssynthétiques : JAMAISpubliés. Cookies,clé/certificat,SQLite sontfixtures
+temporaires, pas des credentials réels. HarnaisSHA2a36535ddf3d3291704ade4b0302fd9ef5d95c610335d0bef8939da3f4f6caef.
+Le principal a ajoutédiagnosticstage/logsprivés etexitnonzérosipinsFAILavantrun,
+pasaprèsunéchec ; aucungardeproduitdétourné. Aucunsecondrunidentiquerequis.
+
+Reste : injectionNONactivéedanscreate_app/server/env, aucuneconfigurationproduction
+dereprises/rétentionchoisie, aucunemailnatif/identitéprovider/compteclientqualifié.
+La recette prouve le transportlocal+codecéligibilité ; pasdéploiementprod, droits
+catalogue20ans ouparitébroker. UX«HTTP503»/CTAtexteFR49€vsliendès19€ restent
+despointsdistinctsàaligner, sansmodifierlesprixoulicencesàl'aveugle.
+
 ## 24 novembre17UTC — schéma Health backend dédié, génération seulement
 
 ADAPTER Drizzle déjà installé, sans nouvelle dépendance. `db/health-attempts.ts`
